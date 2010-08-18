@@ -30,9 +30,9 @@
 # $Id: nic.ucf 14902 2010-08-06 09:24:48Z pus $
 #
 # Data paths in MI ASYNCs:
-INST "*mi_async*/reg_*" TNM = "TNM_MI_ASYNC_REGS";
-INST "*" TNM = "TNM_ANYTHING";
-TIMESPEC TSmaxdelay_mi_async = FROM "TNM_MI_ASYNC_REGS" TO TNM_ANYTHING 6 ns DATAPATHONLY;
-
-INST "*mi_async*/regasync_*" TNM = "TNM_MI_ASYNC_REGASYNC";
-TIMESPEC TSmaxdelay_mi_async_regasync = FROM FFS to TNM_MI_ASYNC_REGASYNC 6 ns DATAPATHONLY;
+#INST "*mi_async*/reg_*" TNM = "TNM_MI_ASYNC_REGS";
+#INST "*" TNM = "TNM_ANYTHING";
+#TIMESPEC TSmaxdelay_mi_async = FROM "TNM_MI_ASYNC_REGS" TO TNM_ANYTHING 6 ns DATAPATHONLY;
+#
+#INST "*mi_async*/regasync_*" TNM = "TNM_MI_ASYNC_REGASYNC";
+#TIMESPEC TSmaxdelay_mi_async_regasync = FROM FFS to TNM_MI_ASYNC_REGASYNC 6 ns DATAPATHONLY;

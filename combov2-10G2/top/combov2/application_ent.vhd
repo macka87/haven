@@ -49,164 +49,38 @@ entity APPLICATION is
       RESET                : in std_logic;
 
       -- ----------------------------------------------------------------------
-      -- NETWORK INTERFACE 0
-      -- ----------------------------------------------------------------------
-      -- Input buffer interface
-      IBUF0_TX_SOF_N       :  in std_logic;
-      IBUF0_TX_SOP_N       :  in std_logic;
-      IBUF0_TX_EOP_N       :  in std_logic;
-      IBUF0_TX_EOF_N       :  in std_logic;
-      IBUF0_TX_SRC_RDY_N   :  in std_logic;
-      IBUF0_TX_DST_RDY_N   : out std_logic;
-      IBUF0_TX_DATA        :  in std_logic_vector(63 downto 0);
-      IBUF0_TX_REM         :  in std_logic_vector(2 downto 0);
-
-      -- PACODAG interface
-      IBUF0_CTRL_CLK       :  in std_logic;
-      IBUF0_CTRL_DATA      : out std_logic_vector(63 downto 0);
-      IBUF0_CTRL_REM       : out std_logic_vector(2 downto 0);
-      IBUF0_CTRL_SRC_RDY_N : out std_logic;
-      IBUF0_CTRL_SOP_N     : out std_logic;
-      IBUF0_CTRL_EOP_N     : out std_logic;
-      IBUF0_CTRL_DST_RDY_N :  in std_logic;
-      IBUF0_CTRL_RDY       : out std_logic;
-
-      -- IBUF status interface
-      IBUF0_SOP            :  in std_logic;
-      IBUF0_PAYLOAD_LEN    :  in std_logic_vector(15 downto 0);
-      IBUF0_FRAME_ERROR    :  in std_logic; -- 0: OK, 1: Error occured
-      IBUF0_CRC_CHECK_FAILED: in std_logic; -- 0: OK, 1: Bad CRC 
-      IBUF0_MAC_CHECK_FAILED: in std_logic; -- 0: OK, 1: Bad MAC
-      IBUF0_LEN_BELOW_MIN  :  in std_logic; -- 0: OK, 1: Length is below min
-      IBUF0_LEN_OVER_MTU   :  in std_logic; -- 0: OK, 1: Length is over MTU
-      IBUF0_STAT_DV        :  in std_logic;
-
-      -- Output buffer interface
-      OBUF0_RX_SOF_N       : out std_logic;
-      OBUF0_RX_SOP_N       : out std_logic;
-      OBUF0_RX_EOP_N       : out std_logic;
-      OBUF0_RX_EOF_N       : out std_logic;
-      OBUF0_RX_SRC_RDY_N   : out std_logic;
-      OBUF0_RX_DST_RDY_N   :  in std_logic;
-      OBUF0_RX_DATA        : out std_logic_vector(63 downto 0);
-      OBUF0_RX_REM         : out std_logic_vector(2 downto 0);
-
-      -- ----------------------------------------------------------------------
-      -- NETWORK INTERFACE 1
-      -- ----------------------------------------------------------------------
-      -- Input buffer interface
-      IBUF1_TX_SOF_N       :  in std_logic;
-      IBUF1_TX_SOP_N       :  in std_logic;
-      IBUF1_TX_EOP_N       :  in std_logic;
-      IBUF1_TX_EOF_N       :  in std_logic;
-      IBUF1_TX_SRC_RDY_N   :  in std_logic;
-      IBUF1_TX_DST_RDY_N   : out std_logic;
-      IBUF1_TX_DATA        :  in std_logic_vector(63 downto 0);
-      IBUF1_TX_REM         :  in std_logic_vector(2 downto 0);
-
-      -- PACODAG interface
-      IBUF1_CTRL_CLK       :  in std_logic;
-      IBUF1_CTRL_DATA      : out std_logic_vector(63 downto 0);
-      IBUF1_CTRL_REM       : out std_logic_vector(2 downto 0);
-      IBUF1_CTRL_SRC_RDY_N : out std_logic;
-      IBUF1_CTRL_SOP_N     : out std_logic;
-      IBUF1_CTRL_EOP_N     : out std_logic;
-      IBUF1_CTRL_DST_RDY_N :  in std_logic;
-      IBUF1_CTRL_RDY       : out std_logic;
-
-      -- IBUF status interface
-      IBUF1_SOP            :  in std_logic;
-      IBUF1_PAYLOAD_LEN    :  in std_logic_vector(15 downto 0);
-      IBUF1_FRAME_ERROR    :  in std_logic; -- 0: OK, 1: Error occured
-      IBUF1_CRC_CHECK_FAILED: in std_logic; -- 0: OK, 1: Bad CRC 
-      IBUF1_MAC_CHECK_FAILED: in std_logic; -- 0: OK, 1: Bad MAC
-      IBUF1_LEN_BELOW_MIN  :  in std_logic; -- 0: OK, 1: Length is below min
-      IBUF1_LEN_OVER_MTU   :  in std_logic; -- 0: OK, 1: Length is over MTU
-      IBUF1_STAT_DV        :  in std_logic;
-
-      -- Output buffer interface
-      OBUF1_RX_SOF_N       : out std_logic;
-      OBUF1_RX_SOP_N       : out std_logic;
-      OBUF1_RX_EOP_N       : out std_logic;
-      OBUF1_RX_EOF_N       : out std_logic;
-      OBUF1_RX_SRC_RDY_N   : out std_logic;
-      OBUF1_RX_DST_RDY_N   :  in std_logic;
-      OBUF1_RX_DATA        : out std_logic_vector(63 downto 0);
-      OBUF1_RX_REM         : out std_logic_vector(2 downto 0);
-
-      -- ----------------------------------------------------------------------
       -- DMA INTERFACE
       -- ----------------------------------------------------------------------
       -- network interfaces interface
       -- input interface
-      RX0_DATA       :  in std_logic_vector(63 downto 0);
-      RX0_DREM       :  in std_logic_vector(2 downto 0);
-      RX0_SOF_N      :  in std_logic;
-      RX0_EOF_N      :  in std_logic;
-      RX0_SOP_N      :  in std_logic;
-      RX0_EOP_N      :  in std_logic;
-      RX0_SRC_RDY_N  :  in std_logic;
-      RX0_DST_RDY_N  : out std_logic;
+      RX_DATA            :  in std_logic_vector(63 downto 0);
+      RX_DREM            :  in std_logic_vector(2 downto 0);
+      RX_SOF_N           :  in std_logic;
+      RX_EOF_N           :  in std_logic;
+      RX_SOP_N           :  in std_logic;
+      RX_EOP_N           :  in std_logic;
+      RX_SRC_RDY_N       :  in std_logic;
+      RX_DST_RDY_N       : out std_logic;
 
-      RX1_DATA       :  in std_logic_vector(63 downto 0);
-      RX1_DREM       :  in std_logic_vector(2 downto 0);
-      RX1_SOF_N      :  in std_logic;
-      RX1_EOF_N      :  in std_logic;
-      RX1_SOP_N      :  in std_logic;
-      RX1_EOP_N      :  in std_logic;
-      RX1_SRC_RDY_N  :  in std_logic;
-      RX1_DST_RDY_N  : out std_logic;
-
-      -- output interfaces
-      TX0_DATA       : out std_logic_vector(63 downto 0);
-      TX0_DREM       : out std_logic_vector(2 downto 0);
-      TX0_SOF_N      : out std_logic;
-      TX0_EOF_N      : out std_logic;
-      TX0_SOP_N      : out std_logic;
-      TX0_EOP_N      : out std_logic;
-      TX0_SRC_RDY_N  : out std_logic;
-      TX0_DST_RDY_N  :  in std_logic;
-
-      TX1_DATA       : out std_logic_vector(63 downto 0);
-      TX1_DREM       : out std_logic_vector(2 downto 0);
-      TX1_SOF_N      : out std_logic;
-      TX1_EOF_N      : out std_logic;
-      TX1_SOP_N      : out std_logic;
-      TX1_EOP_N      : out std_logic;
-      TX1_SRC_RDY_N  : out std_logic;
-      TX1_DST_RDY_N  :  in std_logic;
-
-      -- ----------------------------------------------------------------------
-      -- ICS INTERFACE
-      -- ----------------------------------------------------------------------
-      -- Internal Bus interface (Fast)
-      IB_UP_DATA        : out std_logic_vector(63 downto 0);
-      IB_UP_SOF_N       : out std_logic;
-      IB_UP_EOF_N       : out std_logic;
-      IB_UP_SRC_RDY_N   : out std_logic;
-      IB_UP_DST_RDY_N   : in  std_logic;
-      IB_DOWN_DATA      : in  std_logic_vector(63 downto 0);
-      IB_DOWN_SOF_N     : in  std_logic;
-      IB_DOWN_EOF_N     : in  std_logic;
-      IB_DOWN_SRC_RDY_N : in  std_logic;
-      IB_DOWN_DST_RDY_N : out std_logic;
+      -- output interface
+      TX_DATA            : out std_logic_vector(63 downto 0);
+      TX_DREM            : out std_logic_vector(2 downto 0);
+      TX_SOF_N           : out std_logic;
+      TX_EOF_N           : out std_logic;
+      TX_SOP_N           : out std_logic;
+      TX_EOP_N           : out std_logic;
+      TX_SRC_RDY_N       : out std_logic;
+      TX_DST_RDY_N       :  in std_logic;
 
       -- MI32 interface (Slow, efficient)
-      MI32_DWR          : in  std_logic_vector(31 downto 0);
-      MI32_ADDR         : in  std_logic_vector(31 downto 0);
-      MI32_RD           : in  std_logic;
-      MI32_WR           : in  std_logic;
-      MI32_BE           : in  std_logic_vector(3 downto 0);
-      MI32_DRD          : out std_logic_vector(31 downto 0);
-      MI32_ARDY         : out std_logic;
-      MI32_DRDY         : out std_logic;
-
-      -- -------------------------------------------------------------------
-      -- TIMESTAMPS FOR PACODAG
-      -- -------------------------------------------------------------------
-      TS             : in std_logic_vector(63 downto 0);
-      TS_DV          : in std_logic;
-      TS_CLK         : in std_logic
+      MI32_DWR           : in  std_logic_vector(31 downto 0);
+      MI32_ADDR          : in  std_logic_vector(31 downto 0);
+      MI32_RD            : in  std_logic;
+      MI32_WR            : in  std_logic;
+      MI32_BE            : in  std_logic_vector(3 downto 0);
+      MI32_DRD           : out std_logic_vector(31 downto 0);
+      MI32_ARDY          : out std_logic;
+      MI32_DRDY          : out std_logic
    );
 
 end APPLICATION;
