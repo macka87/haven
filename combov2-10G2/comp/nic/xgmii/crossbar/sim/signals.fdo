@@ -1,0 +1,149 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Jan Viktorin <xvikto03@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 14217 2010-07-02 15:55:34Z xvikto03 $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+
+proc mi32_sim {NAME PATH} {
+   add wave -divider "$NAME"   
+      add_wave "-noupdate -color yellow -label IB_RESET"   $PATH/IB_RESET
+      add_wave "-noupdate -color yellow -label IB_CLK"     $PATH/IB_CLK
+      add_wave "-noupdate -label CLK"                      $PATH/CLK
+      add_wave "-noupdate -hex -label MI32"                $PATH/MI32
+      add_wave "-noupdate -hex -label CTRL"                $PATH/CTRL
+      add_wave "-noupdate -hex -label STROBE"              $PATH/STROBE
+      add_wave "-noupdate -hex -label BUSY"                $PATH/BUSY
+      add_wave "-noupdate -hex -label STATUS"              $PATH/STATUS
+}
+
+proc crossbar_config {NAME PATH} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color blue -label CLK"  $PATH/CLK
+      add_wave "-noupdate -color blue -label RESET"  $PATH/RESET
+      add_wave "-noupdate -hex -color blue -label MAPPING"  $PATH/MAPPING
+      add_wave "-noupdate -hex -color blue -label reg_map"  $PATH/reg_map
+      add_wave "-noupdate -hex -color orange -label DWR"  $PATH/DWR
+      add_wave "-noupdate -hex -color blue -label ADDR"  $PATH/ADDR
+      add_wave "-noupdate -color blue -label RD"  $PATH/RD
+      add_wave "-noupdate -color orange -label WR"  $PATH/WR
+      add_wave "-noupdate -color blue -label BE"  $PATH/BE
+      add_wave "-noupdate -hex -color blue -label DRD"  $PATH/DRD
+      add_wave "-noupdate -color blue -label ARDY"  $PATH/ARDY
+      add_wave "-noupdate -color blue -label DRDY"  $PATH/DRDY
+}
+
+proc strict {NAME PATH} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color blue -label CLK"  $PATH/CLK
+      add_wave "-noupdate -color blue -label RESET"  $PATH/RESET
+   
+      add_wave "-noupdate -color blue -label sel_idle"  $PATH/SEL_IDLE
+      add_wave "-noupdate -hex -color green -label MAPPING"  $PATH/MAPPING
+      add_wave "-noupdate -color blue -label MAPPING_WE"  $PATH/MAPPING_WE
+      add_wave "-noupdate -hex -color yellow -label CROSSBAR_MAP"  $PATH/crossbar_map
+      
+   add wave -divider "Port A"
+      add_wave "-noupdate -color blue -label RX_STATE0"  $PATH/foreach_port_gen_fsm__0/rx_fsm_i/state
+      add_wave "-noupdate -color white -label RX_INSIDE_PACKET0"  $PATH/foreach_port_gen_fsm__0/rx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color white -label TX_INSIDE_PACKET0"  $PATH/foreach_port_gen_fsm__0/tx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color blue -label REMAP_STATE0"  $PATH/foreach_port_gen_fsm__0/remap_fsm_i/state
+      add_wave "-noupdate -color orange -label MAPPING_ACK"  $PATH/foreach_port_gen_fsm__0/remap_fsm_i/MAPPING_ACK
+
+   add wave -divider "Port B"
+      add_wave "-noupdate -color blue -label RX_STATE1"  $PATH/foreach_port_gen_fsm__1/rx_fsm_i/state
+      add_wave "-noupdate -color white -label RX_INSIDE_PACKET1"  $PATH/foreach_port_gen_fsm__1/rx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color white -label TX_INSIDE_PACKET1"  $PATH/foreach_port_gen_fsm__1/tx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color blue -label REMAP_STATE1"  $PATH/foreach_port_gen_fsm__1/remap_fsm_i/state
+      add_wave "-noupdate -color orange -label MAPPING_ACK"  $PATH/foreach_port_gen_fsm__1/remap_fsm_i/MAPPING_ACK
+
+   add wave -divider "Port C"
+      add_wave "-noupdate -color blue -label RX_STATE2"  $PATH/foreach_port_gen_fsm__2/rx_fsm_i/state
+      add_wave "-noupdate -color white -label RX_INSIDE_PACKET2"  $PATH/foreach_port_gen_fsm__2/rx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color white -label TX_INSIDE_PACKET2"  $PATH/foreach_port_gen_fsm__2/tx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color blue -label REMAP_STATE2"  $PATH/foreach_port_gen_fsm__2/remap_fsm_i/state
+      add_wave "-noupdate -color orange -label MAPPING_ACK"  $PATH/foreach_port_gen_fsm__2/remap_fsm_i/MAPPING_ACK
+
+   add wave -divider "Port D"
+      add_wave "-noupdate -color blue -label RX_STATE3"  $PATH/foreach_port_gen_fsm__3/rx_fsm_i/state
+      add_wave "-noupdate -color white -label RX_INSIDE_PACKET3"  $PATH/foreach_port_gen_fsm__3/rx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color white -label TX_INSIDE_PACKET3"  $PATH/foreach_port_gen_fsm__3/tx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color blue -label REMAP_STATE3"  $PATH/foreach_port_gen_fsm__3/remap_fsm_i/state
+      add_wave "-noupdate -color orange -label MAPPING_ACK"  $PATH/foreach_port_gen_fsm__3/remap_fsm_i/MAPPING_ACK
+
+   add wave -divider "Port E"
+      add_wave "-noupdate -color blue -label RX_STATE4"  $PATH/foreach_port_gen_fsm__4/rx_fsm_i/state
+      add_wave "-noupdate -color white -label RX_INSIDE_PACKET4"  $PATH/foreach_port_gen_fsm__4/rx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color white -label TX_INSIDE_PACKET4"  $PATH/foreach_port_gen_fsm__4/tx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color blue -label REMAP_STATE4"  $PATH/foreach_port_gen_fsm__4/remap_fsm_i/state
+      add_wave "-noupdate -color orange -label MAPPING_ACK"  $PATH/foreach_port_gen_fsm__4/remap_fsm_i/MAPPING_ACK
+
+   add wave -divider "Port F"
+      add_wave "-noupdate -color blue -label RX_STATE5"  $PATH/foreach_port_gen_fsm__5/rx_fsm_i/state
+      add_wave "-noupdate -color white -label RX_INSIDE_PACKET5"  $PATH/foreach_port_gen_fsm__5/rx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color white -label TX_INSIDE_PACKET5"  $PATH/foreach_port_gen_fsm__5/tx_fsm_i/INSIDE_PACKET
+      add_wave "-noupdate -color blue -label REMAP_STATE5"  $PATH/foreach_port_gen_fsm__5/remap_fsm_i/state
+      add_wave "-noupdate -color orange -label MAPPING_ACK"  $PATH/foreach_port_gen_fsm__5/remap_fsm_i/MAPPING_ACK
+}
+
+proc crossbar {NAME PATH} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color blue -label CLK"  $PATH/CLK
+      add_wave "-noupdate -color blue -label RESET"  $PATH/RESET
+   
+      add_wave "-noupdate -color white -label RX_SOP0"  $PATH/RX_SOP(0)
+      add_wave "-noupdate -color yellow -label RX_EOP0"  $PATH/RX_EOP(0)
+      add_wave "-noupdate -color white -label RX_SOP1"  $PATH/RX_SOP(1)
+      add_wave "-noupdate -color yellow -label RX_EOP1"  $PATH/RX_EOP(1)
+      add_wave "-noupdate -color white -label RX_SOP2"  $PATH/RX_SOP(2)
+      add_wave "-noupdate -color yellow -label RX_EOP2"  $PATH/RX_EOP(2)
+      add_wave "-noupdate -color green -label RX_SOP3"  $PATH/RX_SOP(3)
+      add_wave "-noupdate -color orange -label RX_EOP3"  $PATH/RX_EOP(3)
+      add_wave "-noupdate -color green -label RX_SOP4"  $PATH/RX_SOP(4)
+      add_wave "-noupdate -color orange -label RX_EOP4"  $PATH/RX_EOP(4)
+      add_wave "-noupdate -color green -label RX_SOP5"  $PATH/RX_SOP(5)
+      add_wave "-noupdate -color orange -label RX_EOP5"  $PATH/RX_EOP(5)
+
+      add_wave "-noupdate -color white -label TX_SOP0"  $PATH/TX_SOP(0)
+      add_wave "-noupdate -color yellow -label TX_EOP0"  $PATH/TX_EOP(0)
+      add_wave "-noupdate -color white -label TX_SOP1"  $PATH/TX_SOP(1)
+      add_wave "-noupdate -color yellow -label TX_EOP1"  $PATH/TX_EOP(1)
+      add_wave "-noupdate -color white -label TX_SOP2"  $PATH/TX_SOP(2)
+      add_wave "-noupdate -color yellow -label TX_EOP2"  $PATH/TX_EOP(2)
+      add_wave "-noupdate -color green -label TX_SOP3"  $PATH/TX_SOP(3)
+      add_wave "-noupdate -color orange -label TX_EOP3"  $PATH/TX_EOP(3)
+      add_wave "-noupdate -color green -label TX_SOP4"  $PATH/TX_SOP(4)
+      add_wave "-noupdate -color orange -label TX_EOP4"  $PATH/TX_EOP(4)
+      add_wave "-noupdate -color green -label TX_SOP5"  $PATH/TX_SOP(5)
+      add_wave "-noupdate -color orange -label TX_EOP5"  $PATH/TX_EOP(5)
+}

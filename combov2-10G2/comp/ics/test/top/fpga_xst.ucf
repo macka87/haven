@@ -1,0 +1,12 @@
+NET "CLKF"	PERIOD = 125MHz HIGH 50%;
+
+# Aurora RocketIO
+
+INST *IB_AURORA*lane_0_phase_align_i*ENA_CALIGN_REC AREA_GROUP="PHASE_ALIGN_0_GRP";
+AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X122Y0:SLICE_X123Y1;
+                                                                                                     
+INST *IB_AURORA*lane_1_phase_align_i*ENA_CALIGN_REC AREA_GROUP="PHASE_ALIGN_1_GRP";
+AREA_GROUP "PHASE_ALIGN_1_GRP" RANGE=SLICE_X110Y0:SLICE_X111Y1;
+                                                                                                     
+INST *IB_AURORA*lane_0_mgt_i LOC=GT_X7Y0;
+INST *IB_AURORA*lane_1_mgt_i LOC=GT_X6Y0;

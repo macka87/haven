@@ -1,0 +1,102 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Vaclav Bartos <xbarto11@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 8657 2009-06-04 10:57:57Z washek $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+proc ib_transformer {NAME PATH} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/CLK
+   add wave -divider "  UP RX"
+      add_wave "-noupdate -hex -label DATA"       $PATH/UP_IN_DATA
+      add_wave "-noupdate -hex -label SOF_N"      $PATH/UP_IN_SOF_N
+      add_wave "-noupdate -hex -label EOF_N"      $PATH/UP_IN_EOF_N
+      add_wave "-noupdate -hex -label SRC_RDY_N"  $PATH/UP_IN_SRC_RDY_N
+      add_wave "-noupdate -hex -label DST_RDY_N"  $PATH/UP_IN_DST_RDY_N
+   add wave -divider "  DOWN RX"
+      add_wave "-noupdate -hex -label DATA"       $PATH/DOWN_IN_DATA
+      add_wave "-noupdate -hex -label SOF_N"      $PATH/DOWN_IN_SOF_N
+      add_wave "-noupdate -hex -label EOF_N"      $PATH/DOWN_IN_EOF_N
+      add_wave "-noupdate -hex -label SRC_RDY_N"  $PATH/DOWN_IN_SRC_RDY_N
+      add_wave "-noupdate -hex -label DST_RDY_N"  $PATH/DOWN_IN_DST_RDY_N
+   add wave -divider "  UP TX"
+      add_wave "-noupdate -hex -label DATA"       $PATH/UP_OUT_DATA
+      add_wave "-noupdate -hex -label SOF_N"      $PATH/UP_OUT_SOF_N
+      add_wave "-noupdate -hex -label EOF_N"      $PATH/UP_OUT_EOF_N
+      add_wave "-noupdate -hex -label SRC_RDY_N"  $PATH/UP_OUT_SRC_RDY_N
+      add_wave "-noupdate -hex -label DST_RDY_N"  $PATH/UP_OUT_DST_RDY_N
+   add wave -divider "  DOWN TX"
+      add_wave "-noupdate -hex -label DATA"       $PATH/DOWN_OUT_DATA
+      add_wave "-noupdate -hex -label SOF_N"      $PATH/DOWN_OUT_SOF_N
+      add_wave "-noupdate -hex -label EOF_N"      $PATH/DOWN_OUT_EOF_N
+      add_wave "-noupdate -hex -label SRC_RDY_N"  $PATH/DOWN_OUT_SRC_RDY_N
+      add_wave "-noupdate -hex -label DST_RDY_N"  $PATH/DOWN_OUT_DST_RDY_N
+}
+
+proc down {NAME PATH} {
+    add wave -divider "$NAME"
+    add wave -divider "  DATA MX"
+      add_wave "-noupdate -hex -label reg_data"       $PATH/reg_data
+      add_wave "-noupdate -hex -label cnt_parts"      $PATH/cnt_parts
+      add_wave "-noupdate -hex -label pipe_data"      $PATH/pipe_data
+    add wave -divider "  UNPACKER"
+      add_wave "-noupdate -hex -label len_align_we"    $PATH/len_align_we
+      add_wave "-noupdate -hex -label addr_align_we"   $PATH/addr_align_we
+      add_wave "-noupdate -hex -label payload_flag_we" $PATH/payload_flag_we
+      add_wave "-noupdate -hex -label first_part_sel"  $PATH/first_part_sel
+      add_wave "-noupdate -hex -label last_part_sel"   $PATH/last_part_sel
+      add_wave "-noupdate -hex -label payload_flag"    $PATH/payload_flag
+    add wave -divider "  PARTS COUNTER"
+      add_wave "-noupdate -hex -label cnt_parts_rst"   $PATH/cnt_parts_rst
+      add_wave "-noupdate -hex -label cnt_parts_ce"    $PATH/cnt_parts_ce
+      add_wave "-noupdate -hex -label cnt_parts_we"    $PATH/cnt_parts_we
+      add_wave "-noupdate -hex -label first_part_sel"  $PATH/first_part_sel
+      add_wave "-noupdate -hex -label cnt_parts"       $PATH/cnt_parts
+}
+
+proc down_fsm {NAME PATH} {
+    add wave -divider "$NAME"
+    add wave -divider "  DATA MX"
+      add_wave "-noupdate -hex -label present_state"   $PATH/present_state
+      add_wave "-noupdate -hex -label next_state"      $PATH/next_state
+    add wave -divider "  INPUT CTRL"
+      add_wave "-noupdate -hex -label CNT_PARTS"       $PATH/CNT_PARTS
+      add_wave "-noupdate -hex -label LAST_PART_SEL"   $PATH/LAST_PART_SEL
+      add_wave "-noupdate -hex -label PAYLOAD_FLAG"    $PATH/PAYLOAD_FLAG
+      add_wave "-noupdate -hex -label HEADER_LAST"     $PATH/HEADER_LAST
+    add wave -divider "  OUTPUT CTRL"
+      add_wave "-noupdate -hex -label CNT_PARTS_RST"   $PATH/CNT_PARTS
+      add_wave "-noupdate -hex -label CNT_PARTS_CE"    $PATH/LAST_PART_SEL
+      add_wave "-noupdate -hex -label CNT_PARTS_WE"    $PATH/PAYLOAD_FLAG
+}

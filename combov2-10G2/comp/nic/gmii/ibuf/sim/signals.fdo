@@ -1,0 +1,319 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author(s): Jan Pazdera <pazdera@liberouter.org>
+#            Libor Polcak <polcak_l@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 5050 2008-08-19 15:39:25Z polcak_l $
+
+
+#####################################################################
+# Common signals 
+#####################################################################
+proc ibuf_gmii {  } {
+    add wave -divider "GMII"
+
+    add_wave "-noupdate -hex -label reset          " sim:/testbench/reset
+    add_wave "-noupdate -hex -label rxclk          " sim:/testbench/rxclk
+    add_wave "-noupdate -hex -label rxd            " sim:/testbench/rxd  
+    add_wave "-noupdate -hex -label rxdv           " sim:/testbench/rxdv
+    add_wave "-noupdate -hex -label rxer           " sim:/testbench/rxer
+    add_wave "-noupdate -hex -label rdclk          " sim:/testbench/rdclk
+}
+
+proc ibuf_rx_ifc {  } {
+    global IBUF_RX
+    add wave -divider "RX"
+
+    add_wave "-noupdate -hex -label RESET      " $IBUF_RX/RESET
+
+    add_wave "-noupdate -hex -label RXCLK      " $IBUF_RX/RXCLK
+    add_wave "-noupdate -hex -label RXDV       " $IBUF_RX/RXDV
+    add_wave "-noupdate -hex -label RXER       " $IBUF_RX/RXER
+    add_wave "-noupdate -hex -label RXD        " $IBUF_RX/RXD
+
+    add_wave "-noupdate -hex -label LINK_STATUS" $IBUF_RX/LINK_STATUS
+    add_wave "-noupdate -hex -label DUPLEX_MODE" $IBUF_RX/DUPLEX_MODE
+    add_wave "-noupdate -hex -label SPEED      " $IBUF_RX/SPEED
+    add_wave "-noupdate -hex -label SGMII      " $IBUF_RX/SGMII
+    add_wave "-noupdate -hex -label DO         " $IBUF_RX/DO
+    add_wave "-noupdate -hex -label DO_DV      " $IBUF_RX/DO_DV
+    add_wave "-noupdate -hex -label STAT       " $IBUF_RX/STAT
+    add_wave "-noupdate -hex -label STAT_DV    " $IBUF_RX/STAT_DV
+    add_wave "-noupdate -hex -label SOP        " $IBUF_RX/SOP
+    add_wave "-noupdate -hex -label EOP      	 " $IBUF_RX/EOP
+}
+
+proc ibuf_rx_signals {  } {
+    global IBUF_RX
+    add wave -divider "RX signals"
+
+    add_wave "-noupdate -hex -label pream      " $IBUF_RX/pream
+    add_wave "-noupdate -hex -label sfd        " $IBUF_RX/sfd
+
+    add_wave "-noupdate -hex -label cnt_pream    " $IBUF_RX/cnt_pream
+    add_wave "-noupdate -hex -label cnt_pream_ce " $IBUF_RX/cnt_pream_ce
+    add_wave "-noupdate -hex -label cnt_pream_ovf" $IBUF_RX/cnt_pream_ovf
+
+    add_wave "-noupdate -hex -label init         " $IBUF_RX/init
+    add_wave "-noupdate -hex -label err_flag     " $IBUF_RX/err_flag
+
+    add_wave "-noupdate -hex -label crc_dv       " $IBUF_RX/crc_dv
+    add_wave "-noupdate -hex -label crc_eop      " $IBUF_RX/crc_eop
+    add_wave "-noupdate -hex -label crc_res_rdy  " $IBUF_RX/crc_res_rdy
+    add_wave "-noupdate -hex -label reg_crc_rdy  " $IBUF_RX/reg_crc_rdy
+    add_wave "-noupdate -hex -label reg_crc_dv   " $IBUF_RX/reg_crc_dv
+    add_wave "-noupdate -hex -label reg_crc_dv_i " $IBUF_RX/reg_crc_dv_i
+    add_wave "-noupdate -hex -label bad_crc      " $IBUF_RX/bad_crc
+    add_wave "-noupdate -hex -label reg_bad_crc  " $IBUF_RX/reg_bad_crc
+    add_wave "-noupdate -hex -label crc          " $IBUF_RX/crc
+    add_wave "-noupdate -hex -label fcs          " $IBUF_RX/fcs
+
+    add_wave "-noupdate -hex -label reg_rx_data1 " $IBUF_RX/reg_rx_data1
+    add_wave "-noupdate -hex -label reg_rx_data2 " $IBUF_RX/reg_rx_data2
+    add_wave "-noupdate -hex -label reg_rx_data3 " $IBUF_RX/reg_rx_data3
+    add_wave "-noupdate -hex -label reg_rx_data4 " $IBUF_RX/reg_rx_data4
+    add_wave "-noupdate -hex -label reg_rx_data5 " $IBUF_RX/reg_rx_data5
+    add_wave "-noupdate -hex -label reg_rx_er1   " $IBUF_RX/reg_rx_er1
+    add_wave "-noupdate -hex -label reg_rx_er2   " $IBUF_RX/reg_rx_er2
+    add_wave "-noupdate -hex -label reg_rx_er3   " $IBUF_RX/reg_rx_er3
+    add_wave "-noupdate -hex -label reg_rx_er4   " $IBUF_RX/reg_rx_er4
+    add_wave "-noupdate -hex -label fsm_rx_er    " $IBUF_RX/fsm_rx_er
+    add_wave "-noupdate -hex -label reg_rx_dv1   " $IBUF_RX/reg_rx_dv1
+    add_wave "-noupdate -hex -label reg_rx_dv2   " $IBUF_RX/reg_rx_dv2
+    add_wave "-noupdate -hex -label reg_rx_dv3   " $IBUF_RX/reg_rx_dv3
+    add_wave "-noupdate -hex -label reg_rx_dv4   " $IBUF_RX/reg_rx_dv4
+    add_wave "-noupdate -hex -label reg_fcs1     " $IBUF_RX/reg_fcs1
+    add_wave "-noupdate -hex -label reg_fcs2     " $IBUF_RX/reg_fcs2
+    add_wave "-noupdate -hex -label reg_fcs3     " $IBUF_RX/reg_fcs3
+    add_wave "-noupdate -hex -label reg_fcs4     " $IBUF_RX/reg_fcs4
+    add_wave "-noupdate -hex -label reg_fcs_we   " $IBUF_RX/reg_fcs_we
+
+    add_wave "-noupdate -hex -label reg_rxd_i    " $IBUF_RX/reg_rxd_i
+    add_wave "-noupdate -hex -label reg_rxdv_i   " $IBUF_RX/reg_rxdv_i
+    add_wave "-noupdate -hex -label reg_rxer_i   " $IBUF_RX/reg_rxer_i
+
+    add_wave "-noupdate -hex -label pld_end      " $IBUF_RX/pld_end
+    add_wave "-noupdate -hex -label crc_end      " $IBUF_RX/crc_end
+
+
+    add_wave "-noupdate -hex -label reg_rxdv_pipe     " $IBUF_RX/reg_rxdv_pipe
+    add_wave "-noupdate -hex -label cnt_frame_len     " $IBUF_RX/cnt_frame_len
+    add_wave "-noupdate -hex -label cnt_frame_len_load" $IBUF_RX/cnt_frame_len_load
+    add_wave "-noupdate -hex -label cnt_frame_len_ce  " $IBUF_RX/cnt_frame_len_ce
+
+    add_wave "-noupdate -hex -label sgmii_dv          " $IBUF_RX/sgmii_dv
+    add_wave "-noupdate -hex -label cnt_sgmii         " $IBUF_RX/cnt_sgmii
+    add_wave "-noupdate -hex -label cnt_sgmii_load    " $IBUF_RX/cnt_sgmii_load
+    add_wave "-noupdate -hex -label cnt_sgmii_ce      " $IBUF_RX/cnt_sgmii_ce
+    add_wave "-noupdate -hex -label cnt_sgmii_ovf     " $IBUF_RX/cnt_sgmii_ovf
+    add_wave "-noupdate -hex -label cnt_sgmii_ovf_10  " $IBUF_RX/cnt_sgmii_ovf_10
+    add_wave "-noupdate -hex -label cnt_sgmii_ovf_100 " $IBUF_RX/cnt_sgmii_ovf_100
+
+    add wave -divider "Shift registers"
+    add_wave "-noupdate -bin -label shreg_do_dv " $IBUF_RX/shreg_do_dv
+    add_wave "-noupdate -hex -label shreg_data_DIN " $IBUF_RX/sh_reg_data/DIN
+    add_wave "-noupdate -hex -label shreg_sop_DIN " $IBUF_RX/sh_reg_sop/DIN
+    add_wave "-noupdate -hex -label shreg_eop_DIN " $IBUF_RX/sh_reg_eop/DIN
+    add_wave "-noupdate -hex -label shreg_data_DOUT " $IBUF_RX/sh_reg_data/DOUT
+    add_wave "-noupdate -hex -label shreg_sop_DOUT " $IBUF_RX/sh_reg_sop/DOUT
+    add_wave "-noupdate -hex -label shreg_eop_DOUT " $IBUF_RX/sh_reg_eop/DOUT
+
+
+    add wave -divider "RX_FSM"
+    add_wave "-noupdate -hex -label CLK               " $IBUF_RX/RX_FSM_U/CLK
+    add_wave "-noupdate -hex -label RESET             " $IBUF_RX/RX_FSM_U/RESET
+    add_wave "-noupdate -hex -label EN                " $IBUF_RX/RX_FSM_U/EN
+    add_wave "-noupdate -hex -label RXDV              " $IBUF_RX/RX_FSM_U/RXDV
+    add_wave "-noupdate -hex -label RXER              " $IBUF_RX/RX_FSM_U/RXER
+    add_wave "-noupdate -hex -label PREAM             " $IBUF_RX/RX_FSM_U/PREAM
+    add_wave "-noupdate -hex -label PREAM_OVF         " $IBUF_RX/RX_FSM_U/PREAM_OVF
+    add_wave "-noupdate -hex -label SFD               " $IBUF_RX/RX_FSM_U/SFD
+    add_wave "-noupdate -hex -label PLD_END           " $IBUF_RX/RX_FSM_U/PLD_END
+    add_wave "-noupdate -hex -label CRC_END           " $IBUF_RX/RX_FSM_U/CRC_END
+    add_wave "-noupdate -hex -label PREAM_CE          " $IBUF_RX/RX_FSM_U/PREAM_CE
+    add_wave "-noupdate -hex -label DO_DV             " $IBUF_RX/RX_FSM_U/DO_DV
+    add_wave "-noupdate -hex -label CRC_DV            " $IBUF_RX/RX_FSM_U/CRC_DV
+    add_wave "-noupdate -hex -label CRC_EOP           " $IBUF_RX/RX_FSM_U/CRC_EOP
+    add_wave "-noupdate -hex -label ERR_FLAG          " $IBUF_RX/RX_FSM_U/ERR_FLAG
+    add_wave "-noupdate -hex -label INIT              " $IBUF_RX/RX_FSM_U/INIT
+    add_wave "-noupdate -hex -label SOP               " $IBUF_RX/RX_FSM_U/SOP
+    add_wave "-noupdate -hex -label EOP               " $IBUF_RX/RX_FSM_U/EOP
+    add_wave "-noupdate -hex -label REG_CRC_WE        " $IBUF_RX/RX_FSM_U/REG_CRC_WE
+    add_wave "-noupdate -hex -label present_state     " $IBUF_RX/RX_FSM_U/present_state
+    add_wave "-noupdate -hex -label next_state        " $IBUF_RX/RX_FSM_U/next_state
+}
+
+proc ibuf_framelink {  } {
+    global TOPLEVEL_PATH
+    add wave -divider "FrameLink"
+
+    add_wave "-noupdate -hex -label rdclk          " $TOPLEVEL_PATH/rdclk
+    add_wave "-noupdate -hex -label data           " $TOPLEVEL_PATH/data
+    add_wave "-noupdate -hex -label drem           " $TOPLEVEL_PATH/drem
+    add_wave "-noupdate -hex -label src_rdy_n      " $TOPLEVEL_PATH/src_rdy_n
+    add_wave "-noupdate -hex -label sof_n          " $TOPLEVEL_PATH/sof_n
+    add_wave "-noupdate -hex -label sop_n          " $TOPLEVEL_PATH/sop_n
+    add_wave "-noupdate -hex -label eof_n          " $TOPLEVEL_PATH/eof_n
+    add_wave "-noupdate -hex -label eop_n          " $TOPLEVEL_PATH/eop_n
+    add_wave "-noupdate -hex -label dst_rdy_n      " $TOPLEVEL_PATH/dst_rdy_n
+}
+
+proc fl_sim {  } {
+    global FLSIM_PATH
+    add wave -divider "FL Sim"
+
+    add_wave "-noupdate -hex -label clk            " $FLSIM_PATH/fl_clk
+    add_wave "-noupdate -hex -label data           " $FLSIM_PATH/rx_data
+    add_wave "-noupdate -hex -label rem            " $FLSIM_PATH/rx_rem
+    add_wave "-noupdate -hex -label src_rdy_n      " $FLSIM_PATH/rx_src_rdy_n
+    add_wave "-noupdate -hex -label sof_n          " $FLSIM_PATH/rx_sof_n
+    add_wave "-noupdate -hex -label sop_n          " $FLSIM_PATH/rx_sop_n
+    add_wave "-noupdate -hex -label eof_n          " $FLSIM_PATH/rx_eof_n
+    add_wave "-noupdate -hex -label eop_n          " $FLSIM_PATH/rx_eop_n
+    add_wave "-noupdate -hex -label dst_rdy_n      " $FLSIM_PATH/rx_dst_rdy_n
+}
+
+proc ibuf_pacodag {  } {
+	global TOPLEVEL_PATH
+	add wave -divider "PACODAG Interface"
+
+	add_wave "-noupdate -hex -label CTRL_CLK      " $TOPLEVEL_PATH/CTRL_CLK
+	add_wave "-noupdate -hex -label CTRL_DI       " $TOPLEVEL_PATH/CTRL_DI
+	add_wave "-noupdate -hex -label CTRL_REM      " $TOPLEVEL_PATH/CTRL_REM
+	add_wave "-noupdate -hex -label CTRL_SRC_RDY_N" $TOPLEVEL_PATH/CTRL_SRC_RDY_N
+	add_wave "-noupdate -hex -label CTRL_SOP_N    " $TOPLEVEL_PATH/CTRL_SOP_N
+	add_wave "-noupdate -hex -label CTRL_EOP_N    " $TOPLEVEL_PATH/CTRL_EOP_N
+	add_wave "-noupdate -hex -label CTRL_DST_RDY_N" $TOPLEVEL_PATH/CTRL_DST_RDY_N
+	add_wave "-noupdate -hex -label CTRL_RDY      " $TOPLEVEL_PATH/CTRL_RDY
+	add_wave "-noupdate -hex -label SOP           " $TOPLEVEL_PATH/SOP
+	add_wave "-noupdate -hex -label STAT          " $TOPLEVEL_PATH/STAT
+	add_wave "-noupdate -hex -label STAT_DV       " $TOPLEVEL_PATH/STAT_DV
+}
+
+proc gmii_buf_ifc { PATH } {
+	add wave -divider "Original Buf part"
+	add_wave "-noupdate -hex -label RESET   " $PATH/RESET
+
+	add wave -divider "ibuf_gmii_rx interface"
+	add_wave "-noupdate -hex -label WRCLK       " $PATH/WRCLK
+	add_wave "-noupdate -hex -label DI          " $PATH/DI
+	add_wave "-noupdate -hex -label DI_DV       " $PATH/DI_DV
+	add_wave "-noupdate -hex -label RX_STAT     " $PATH/RX_STAT
+	add_wave "-noupdate -hex -label SOP         " $PATH/SOP
+	add_wave "-noupdate -hex -label EOP         " $PATH/EOP
+	add_wave "-noupdate -hex -label SPEED       " $PATH/SPEED
+
+	add wave -divider "Debug interface"
+	add_wave "-noupdate -hex -label FSM_RX_STATE " $PATH/FSM_RX_STATE
+
+	add wave -divider "PACODAG interface"
+	add_wave "-noupdate -hex -label CTRL_DI        " $PATH/CTRL_DI
+	add_wave "-noupdate -hex -label CTRL_REM       " $PATH/CTRL_REM
+	add_wave "-noupdate -hex -label CTRL_SRC_RDY_N " $PATH/CTRL_SRC_RDY_N
+	add_wave "-noupdate -hex -label CTRL_SOP_N     " $PATH/CTRL_SOP_N
+	add_wave "-noupdate -hex -label CTRL_EOP_N     " $PATH/CTRL_EOP_N
+	add_wave "-noupdate -hex -label CTRL_DST_RDY_N " $PATH/CTRL_DST_RDY_N
+	add_wave "-noupdate -hex -label CTRL_SOP       " $PATH/CTRL_SOP
+	add_wave "-noupdate -hex -label CTRL_RDY       " $PATH/CTRL_RDY
+	add_wave "-noupdate -hex -label CTRL_STAT      " $PATH/CTRL_STAT
+	add_wave "-noupdate -hex -label CTRL_STAT_DV   " $PATH/CTRL_STAT_DV
+
+	add wave -divider "MAC check interface"
+	add_wave "-noupdate -hex -label EN       " $PATH/EN
+	add_wave "-noupdate -hex -label MAC_IN   " $PATH/MAC_IN
+	add_wave "-noupdate -hex -label CHECK    " $PATH/CHECK
+	add_wave "-noupdate -hex -label CHECK_FIN   " $PATH/CHECK_FIN
+	add_wave "-noupdate -hex -label MAC_MATCH   " $PATH/MAC_MATCH
+	add_wave "-noupdate -hex -label MULTICAST   " $PATH/MULTICAST
+	add_wave "-noupdate -hex -label BROADCAST   " $PATH/BROADCAST
+
+	add wave -divider "sampling unit interface"
+	add_wave "-noupdate -hex -label SAU_ACCEPT " $PATH/SAU_ACCEPT
+	add_wave "-noupdate -hex -label SAU_DV     " $PATH/SAU_DV
+
+	add wave -divider "FL interface"
+	add_wave "-noupdate -hex -label RDCLK       " $PATH/RDCLK
+
+	add wave -divider "Payload"
+	add_wave "-noupdate -hex -label TX_DATA        " $PATH/TX_DATA
+	add_wave "-noupdate -hex -label TX_REM         " $PATH/TX_REM
+	add_wave "-noupdate -hex -label TX_SOP_N       " $PATH/TX_SOP_N
+	add_wave "-noupdate -hex -label TX_EOP_N       " $PATH/TX_EOP_N
+	add_wave "-noupdate -hex -label TX_SRC_RDY_N   " $PATH/TX_SRC_RDY_N
+	add_wave "-noupdate -hex -label TX_DST_RDY_N   " $PATH/TX_DST_RDY_N
+
+	add wave -divider "Packet headres/footers"
+	add_wave "-noupdate -hex -label TX_HDATA       " $PATH/TX_HDATA
+	add_wave "-noupdate -hex -label TX_HREM        " $PATH/TX_HREM
+	add_wave "-noupdate -hex -label TX_HSOP_N      " $PATH/TX_HSOP_N
+	add_wave "-noupdate -hex -label TX_HEOP_N      " $PATH/TX_HEOP_N
+	add_wave "-noupdate -hex -label TX_HSRC_RDY_N  " $PATH/TX_HSRC_RDY_N
+	add_wave "-noupdate -hex -label TX_HDST_RDY_N  " $PATH/TX_HDST_RDY_N
+
+	add wave -divider "Address decoder interface"
+	add_wave "-noupdate -hex -label ADC_CLK     " $PATH/ADC_CLK
+	add_wave "-noupdate -hex -label ADC_RD      " $PATH/ADC_RD
+	add_wave "-noupdate -hex -label ADC_WR      " $PATH/ADC_WR
+	add_wave "-noupdate -hex -label ADC_ADDR    " $PATH/ADC_ADDR
+	add_wave "-noupdate -hex -label ADC_DI      " $PATH/ADC_DI
+	add_wave "-noupdate -hex -label ADC_DO      " $PATH/ADC_DO
+	add_wave "-noupdate -hex -label ADC_DRDY    " $PATH/ADC_DRDY
+}
+
+#####################################################################
+# Common signals 
+#####################################################################
+proc ibuf_rx_buf {  } {
+    global IBUF_BUF
+    add wave -divider "RX<->BUF"
+
+    add_wave "-noupdate -hex -label wrclk      " $IBUF_BUF/wrclk
+    add_wave "-noupdate -hex -label di         " $IBUF_BUF/di
+    add_wave "-noupdate -hex -label di_dv      " $IBUF_BUF/di_dv
+    add_wave "-noupdate -hex -label stat       " $IBUF_BUF/stat
+    add_wave "-noupdate -hex -label stat_d     " $IBUF_BUF/stat_dv
+    add_wave "-noupdate -hex -label sop        " $IBUF_BUF/sop
+
+}
+
+proc ibuf_mi32 {  } {
+    global IBUF_PATH
+    add wave -divider "IBUF_MI32"
+
+    add_wave "-noupdate -hex -label MI " $IBUF_PATH/../MI
+    add_wave "-noupdate -hex -label mi_m0 " $IBUF_PATH/../mi_m0
+    add_wave "-noupdate -hex -label mi_m1 " $IBUF_PATH/../mi_m1
+    add_wave "-noupdate -hex -label mi_m2 " $IBUF_PATH/../mi_m2
+    add_wave "-noupdate -hex -label mi_m3 " $IBUF_PATH/../mi_m3
+    add_wave "-noupdate -hex -label mi_s0 " $IBUF_PATH/../mi_s0
+    add_wave "-noupdate -hex -label mi_s1 " $IBUF_PATH/../mi_s1
+    add_wave "-noupdate -hex -label mi_s2 " $IBUF_PATH/../mi_s2
+    add_wave "-noupdate -hex -label mi_s3 " $IBUF_PATH/../mi_s3
+}
+
+

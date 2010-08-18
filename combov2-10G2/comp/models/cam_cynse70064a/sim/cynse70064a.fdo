@@ -1,0 +1,84 @@
+# tcam.fdo: TCAM function simulation file
+# Copyright (C) 2004 CESNET
+# Author: Jiri Belohlavek <belohlavek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+#
+
+vlib work
+
+vlog  -work work ../cynse70064a_vbm.v 
+vlog  -work work ./cynse70064a_test_bench.v 
+# ---------------------------------------------------------------------
+#                           Simulation
+# ---------------------------------------------------------------------
+vsim -t 1ps  -L xilinxcorelib  -lib work CYNSE70064A_tb
+
+# Show windows
+view wave
+# Start waveform with no signal
+delete wave *
+
+# Set TCAM_CTRL basic path
+set TCAM_CTRL_PATH "sim:/CYNSE70064A_tb"
+
+# ------------- Helpfull procedures -----------------------------
+proc tcam_ifc { debug } {
+    global  TCAM_CTRL_PATH
+    radix -hex
+
+ 
+    if { $debug == "ALL" } {
+      add wave -divider "Clock and Reset"
+      add wave -label CLK2X $TCAM_CTRL_PATH/CLK2X
+      add wave -label PHS_L $TCAM_CTRL_PATH/PHS_L
+      add wave -label RST_L $TCAM_CTRL_PATH/RST_L
+      add wave -divider "Controls and data"
+      add wave -label CMDV  $TCAM_CTRL_PATH/CMDV
+      add wave -label CMD   $TCAM_CTRL_PATH/CMD
+      add wave -label DQ    $TCAM_CTRL_PATH/DQ
+      add wave -label ACK   $TCAM_CTRL_PATH/ACK
+      add wave -label EOT   $TCAM_CTRL_PATH/EOT      
+      add wave -label SSV   $TCAM_CTRL_PATH/SSV
+      add wave -label SSF   $TCAM_CTRL_PATH/SSF
+      add wave -divider "SRAM interface"
+      add wave -label SADR $TCAM_CTRL_PATH/SADR
+      add wave -label CE_L $TCAM_CTRL_PATH/CE_L
+      add wave -label WE_L $TCAM_CTRL_PATH/WE_L
+      add wave -label ALE_L $TCAM_CTRL_PATH/ALE_L
+    }
+    
+}
+
+
+# ------------- Calling procedures ------------------------------
+tcam_ifc "ALL"
+#add wave -label cd  $TCAM_CTRL_PATH/cd
+
+# ------------- Run ---------------------------------------------
+run -all
+

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<source>
+   <component>Asynchronous ordinary FIFO</component>
+
+   <authors>
+      <author login="xpriby12">Bronislav Pribyl</author>
+      <author login="martinek">Tomas Martinek</author>
+      <author login="martin.mikusek">Martin Mikusek</author>
+   </authors>
+
+   <features>
+      <item>Asynchronous FIFO operations.</item>
+   </features>
+   
+   <!-- Bugs -->
+   <bugs>
+      <item>Number of items MUST be power of 2.</item>
+      <item>The effective capacity of the FIFO is items-1. There must be one empty item at least all the time.</item>
+      <item><p><b>WARNING!</b></p>
+         <p>
+         Be careful when using this FIFO. This component has been tested in configuration, when
+         input data is being written at 125 Mhz and read is being performed at 250 MHz. The observed latency was 4
+         clock cycles (meaning at 125 MHz) when first data appeared at the read part of the FIFO. In addition, there has
+         been 1 empty clock cycle (again in meaning at 125 Mhz) between points when data has been ready at the FIFO's
+         output. Therefore, FIFO was unable to produce output data every clock cycle (creating pipeline), despite
+         the fact data was previously written as a burst - every clock cycle. Consequently, this leads to necessary
+         FIFO overfull, when there is need for intensive burst data write when number of clock cycles during write
+         request period exceeds FIFO size.
+         </p>
+         <p>
+         However, similar problem occured when write operation were performed at 250 MHZ and read ones at 125 MHz.
+         In this case, data ready signals at the FIFO's output occured every 3 clock cycles (meaning at 125 MHz), thus
+         the target component (that reads from FIFO) could not read any data for 2 clock cycles.
+         </p>
+         <p>
+         Configuration of the FIFOs:
+         <br></br>
+         write at 125 MHz, read at 250 MHz: mem_type: LUT (BRAM tried as well), latency 1, prefetch true, item_width: various,
+         items: various
+         </p>
+         <p>
+         write at 250 MHz, read at 125 MHz: mem_type: LUT, latency 1, prefetch: true, items: 8, item_width: 16
+         </p>
+      </item>
+   </bugs>
+   
+   <!-- What have to be done -->
+   <todo>
+      <item>Test fifo in HW</item>
+   </todo>
+
+
+   <description>
+			Read and Write port signals are clocked by independent Read and Write clocks. In order to operate with independent Read and Write clocks, some asynchronous arbitration logic is needed to determine the status flags. There are primary Read and Write binary address counters, which drive the address inputs to the memory. The binary addresses are converted to Gray-code, and pipelined for a few stages to create several address pointers which are used to generate the Full and Empty flags as quickly as possible.
+   </description>
+   
+   <interface>
+      <generic_map>
+         <generic name="mem_type" type="mem_type" default="LUT">
+		        Type of memory, which will be used for implementation
+         </generic>
+         
+		     <generic name="latency" type="integer" default="1">
+			      Latency of memory
+         </generic>
+         
+		     <generic name="items" type="integer" default="16">
+			      Number of items which could be stored in memory. This number MUST be power of 2!!!
+         </generic>
+         
+         <generic name="item_width" type="integer" default="32">
+		        Data width
+         </generic>
+         
+         <generic name="prefetch" type="boolean" default="false">
+            Whether to use prefetch
+         </generic>
+
+      </generic_map>
+      
+      <port_map>
+                
+         <port name="WR_CLK" dir="in" width="1">
+            Write clock
+         </port>
+         
+         <port name="WR" dir="in" width="1">
+            Write request
+         </port>
+         
+         <port name="DI" dir="in" width="item_width">
+            Data in
+         </port>
+           
+         <port name="RD_CLK" dir="in" width="1">
+            Read clock
+         </port>
+         
+         <port name="RD" dir="in" width="1">
+            Read request
+         </port>
+         
+         <port name="DO" dir="out" width="item_width">
+            Data out
+         </port>
+         
+         <port name="DO_DV" dir="out" width="1">
+            Validity of Data out
+         </port>
+         
+         <port name="EMPTY" dir="out" width="1">
+            Empty flag
+         </port>
+         
+         <port name="FULL" dir="out" width="1">
+            Full flag
+         </port>
+         
+         <port name="STATUS" dir="out" width="log2(items)">
+            Number of items stored in FIFO
+         </port>
+            
+         <port name="RESET" dir="in" width="1">
+            Reset
+         </port> 
+       </port_map>
+       </interface>
+
+       <constant>
+          <const name="FADDR" value="" id=""></const>
+       </constant>
+       
+<body>
+	 <h1>Used components</h1>
+	 <p>
+	    <ref_comp ref="fifo_mem">FIFO memory</ref_comp>
+	 </p>
+
+	 <h1>Schemes</h1>
+   <p>
+      <obr src="./fig/async_ord.fig" mag="1.0">Asynchronous ordinary FIFO architecture</obr>
+   </p>
+</body>
+
+</source>

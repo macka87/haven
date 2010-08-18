@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>FrameLink Shortener</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="kajan">Michal Kajan</author>
+</authors>
+
+
+<!-- Features ?????????????? -->
+<features>
+	<item>
+		Generic parameters let specify: 
+		number of parts in frame, 
+		part of frame that will be processed, 
+		number of bytes kept in given part of frame 
+		data width
+	</item>
+</features>
+
+
+<!-- Bugs -->
+<bugs>
+	<item>
+		Data width must be at least 16 bits due to the problems with
+		REM signal data width.
+	</item>
+</bugs>
+
+
+<!-- Things to do
+
+<todo>
+    <item>Test the component</item>
+</todo>
+
+-->
+
+<!-- Short Block description -->
+<description>
+
+	<!-- THE MOST IMPORTANT PART!!! There should be about 8 rows which
+	     fully describe the component and its main functions -->
+	FrameLink Shortener is a component for cutting certain bytes from given
+        part of frame received from input FrameLink interface. Generic
+        parameters let user specify width of data, part of frame from which
+        data will be cut and number of bytes to be kept in given part
+        of FrameLink frame.
+        Input and output interface of component is made by FrameLink
+        RX and TX interface.
+
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Generic description -->
+	<generic_map>
+		
+		<generic name="DATA_WIDTH" type="integer" default="16">
+			FrameLink data width.
+		</generic>
+
+		<generic name="PART_NUM" type="integer" default="0">
+            Number of Framelink part. Truncation will be applied on this part
+            (header is 0).
+		</generic>
+		
+		<generic name="BYTES_KEPT" type="integer" default="">
+            Number of bytes that will be <b>kept</b> in the part selected by
+            PART_NUM. 0 is not accepted.
+		</generic>
+
+		<generic name="PARTS" type="integer" default="">
+            Number of parts in frame.
+		</generic>
+
+	</generic_map>
+
+	<!-- Port description -->
+	<port_map>
+
+		<divider>Common signals</divider>		
+		<port  name="CLK" dir="in" width="1">
+			Global FPGA clock
+		</port>
+		<port  name="RESET" dir="in" width="1">
+			Global reset
+		</port>
+
+        <divider>
+            RX FrameLink interface
+        </divider>
+        <port name="RX_DATA" dir="in" width="DATA_WIDTH">
+            RX data bus
+        </port>
+        <port name="RX_REM" dir="in" width="log2(DATA_WIDTH/8)">
+            RX data remainder
+        </port>
+        <port name="RX_SOF_N" dir="in" width="1">
+            RX start of frame
+        </port>
+        <port name="RX_EOF_N" dir="in" width="1">
+            RX end of frame
+        </port>
+        <port name="RX_SOP_N" dir="in" width="1">
+            RX start of part
+        </port>
+        <port name="RX_EOP_N" dir="in" width="1">
+            RX end of part
+        </port>
+        <port name="RX_SRC_RDY_N" dir="in" width="1">
+            RX source ready
+        </port>
+        <port name="RX_DST_RDY_N" dir="out" width="1">
+            RX destination ready
+        </port>
+
+        <divider>
+            TX FrameLink interface
+        </divider>
+        <port name="TX_DATA" dir="out" width="DATA_WIDTH">
+            TX data bus
+        </port>
+        <port name="TX_REM" dir="out" width="log2(DATA_WIDTH/8)">
+            TX data remainder
+        </port>
+        <port name="TX_SOF_N" dir="out" width="1">
+            TX start of frame
+        </port>
+        <port name="TX_EOF_N" dir="out" width="1">
+            TX end of frame
+        </port>
+        <port name="TX_SOP_N" dir="out" width="1">
+            TX start of part
+        </port>
+        <port name="TX_EOP_N" dir="out" width="1">
+            TX end of part
+        </port>
+        <port name="TX_SRC_RDY_N" dir="out" width="1">
+            TX source ready
+        </port>
+        <port name="TX_DST_RDY_N" dir="in" width="1">
+            TX destination ready
+        </port>
+	</port_map>
+
+</interface>
+
+
+<!-- HW BODY SECTION **************************************************** -->
+<!-- information for HW designers, structure should be as follow          -->
+<body>
+
+<h1>Component description</h1>
+	<h2>Input</h2>
+ 	<p> 
+		Input of FrameLink Shortener is standard FrameLink protocol.
+		Using given generic parameters it watches some of control
+		signals.
+	</p>
+	<p>
+		Frame can contain given number of parts and in certain part
+		given number of bytes is kept and the rest is marked as invalid
+		using selected value of REM signal and invalid value if SRC_RDY
+		signal. Data flow is not modified all. More information about
+		generating control signals is in section below describing
+		finite state machine.
+	</p>
+
+	<h2>Counters</h2>
+	<p>
+		Component uses 2 counters. First counter is used to count
+		number of parts in incoming frame and second counts number
+		of words in current part of frame. Counting is enabled only
+		when both source and destination component are ready 
+		to communicate (for counter of parts must be RX_EOP signal
+		active as well).
+	</p>
+
+	<h2>Finite State Machine</h2>
+
+	<p>
+		Transitions between state of Finite State Mechine are in
+		the following figure.
+
+		<obr src="./fig/fsm.fig">Control Finite State Machine</obr>
+	</p>
+
+	<p>
+		Finite state machine is heart of the component. It generates
+		following output control signals for destination component:
+		EOP, EOF, SRC_RDY, DST_RDY (for source component) and REM.
+	</p>
+	<p>
+		FSM switches between 3 possible states: <b>processing</b>,
+		<b>idle</b>, <b>transmission</b>. 
+	</p>
+	<p>
+		<b>Processing</b> is default state of the component. Change
+		to another
+		state is possible only when both components are ready and value
+		of counter of parts is equal to the part to be processed.
+		FSM in this state waits for given part and for every part
+		preceding the part that has been specified it just transmits
+		all input signals to the output.
+		With first word of data in part defined to be processed
+		counting of received words of data begins. Value of counted
+		words is every clock cycle checked and if it is equal to the
+		total number of valid words (computed from number of kept
+		bytes) new value of REM signal is generated (value of this
+		signal can be computed from generic parameters and generated
+		value is then compared with value received from input - lower
+		from these values is transmitted to the output). EOP signal
+		at output is set to active value as well. Last operation
+		that is performed when processing such a word of data is
+		checking whether the value of counter of parts is equal to the
+		total number of parts in frame. If this value is equal then
+		valid EOF signal is generated to the output. Note, that there
+		does not exist problem when component has to cut more data
+		that comes from input. As mentioned before, there is a counter
+		of words of data received from input, and when its value is
+		lower than value of maximum number of words regarded as valid,
+		every input signal is transmitted to the output without
+		any change.
+	</p>
+	<p>
+		<b>Possible transitions</b> to another states are:
+		to <b>idle</b> and to <b>transmission state</b>.
+	 	Transition is done only when both
+		components are ready to transfer and currently processed part
+		of frame is part defined to be processed by generic parameter.
+		Then it is checked value of following signals: EOF (if it is
+		valid, transition to the default state is done), EOP (<b>must 
+		be checked secondly</b> and if it is valid, transition to the
+		transmission state is done) and lastly value of counter
+		of words (if it is equal to the number of words regarded as
+		valid value minus one than transition to the idle state
+		is done). <i>It is important to distinguish between these
+		different situations that can happen when receiving frames
+		from input interface.</i>
+	</p>
+	<p>
+		<b>Idle</b> state serves for generating invalid SRC_RDY
+		signal to the
+		destination component - since all valid data has been
+		transmitted but source component has not stopped transmitting
+		data belonging to the current part of frame (from source
+		component point of view, because EOP signal has been
+		transmitted to the destination component after receiving last
+		word regarded as valid). Component receives rest of data
+		regardless on readiness of destination component.
+		<b>Possible transitions</b> to another state are: to
+		<b>trasmission</b> and to <b>processing state</b>
+		(default state). <b>Transition is allowed 
+		only when source component is ready</b> (note that destination
+		component does not have to be ready). If valid EOF signal
+		is received which denotes end of frame, then it changes state
+		to processing (this is default state).
+		If valid EOP signal is detected (must be checked secondly) then
+		the transition to state transmission is done.
+	</p>
+	<p>
+		Transmission state is used to propagate all input signals
+		to the output. It is used in situations when given part
+		of frame has been processed but there more parts specified
+		that follow that given part.
+		<i>There is only one possible transition - to processing state
+		(which is default state) and transition is made only when
+		both source and destination components are ready and when
+		valid EOF signal is detected.</i>
+	</p>
+
+<h1>Frequency and Resources usage</h1>
+
+	<h2>Precision</h2>
+	<p>
+
+        <!--Resources usage and max. frequency by Precision-->
+	
+		<tab sloupce="cc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+				<th> DATA_WIDTH=16, BYTES_KEPT=64,
+				     PARTS=3, PART_NUM=3
+
+				</th>
+				<td>19 (0.14%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+			<tr>
+				<th> DATA_WIDTH=16, BYTES_KEPT=1526,
+				     PARTS=3, PART_NUM=3
+				</th> 
+				<td>14 (0.10%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+			<tr>
+				<th> DATA_WIDTH=128, BYTES_KEPT=64,
+				     PARTS=3, PART_NUM=3
+
+				</th>
+				<td>19 (0.14%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+			<tr>
+				<th> DATA_WIDTH=128, BYTES_KEPT=1526,
+				     PARTS=3, PART_NUM=3
+				</th>
+				<td>14 (0.10%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by Precision</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+
+				<th> DATA_WIDTH=16, BYTES_KEPT=64,
+				     PARTS=3, PART_NUM=3
+
+				</th>
+				<td>330.033 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+
+				<th> DATA_WIDTH=16, BYTES_KEPT=1526,
+				     PARTS=3, PART_NUM=3
+				</th>
+				<td>389.560 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+
+				<th> DATA_WIDTH=128, BYTES_KEPT=64,
+				     PARTS=3, PART_NUM=3
+				</th>
+				<td>330.033 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+
+				<th> DATA_WIDTH=128, BYTES_KEPT=1526,
+				     PARTS=3, PART_NUM=3
+				</th>
+				<td>389.560 MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+	
+	</p> 
+
+	<h2>XST</h2>
+
+	<p>
+
+        <!--Resources usage and max. frequency by XST-->
+	
+		<tab sloupce="cc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+				<th> DATA_WIDTH=16, BYTES_KEPT=64,
+				     PARTS=3, PART_NUM=3
+
+				</th>
+				<td>18 (0.13%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+			<tr>
+				<th> DATA_WIDTH=16, BYTES_KEPT=1526,
+				     PARTS=3, PART_NUM=3
+				</th> 
+				<td>22 (0.16%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+			<tr>
+				<th> DATA_WIDTH=128, BYTES_KEPT=64,
+				     PARTS=3, PART_NUM=3
+
+				</th>
+				<td>15 (0.11%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+			<tr>
+				<th> DATA_WIDTH=128, BYTES_KEPT=1526,
+				     PARTS=3, PART_NUM=3
+				</th>
+				<td>24 (0.18%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by XST</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+
+				<th> DATA_WIDTH=16, BYTES_KEPT=64,
+				     PARTS=3, PART_NUM=3
+
+				</th>
+				<td>258.715 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+
+				<th> DATA_WIDTH=16, BYTES_KEPT=1526,
+				     PARTS=3, PART_NUM=3
+				</th>
+				<td>258.715 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+
+				<th> DATA_WIDTH=128, BYTES_KEPT=64,
+				     PARTS=3, PART_NUM=3
+				</th>
+				<td>256.894 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+
+				<th> DATA_WIDTH=128, BYTES_KEPT=1526,
+				     PARTS=3, PART_NUM=3
+				</th>
+				<td>258.715 MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+	
+  </p> 
+
+
+<h1>Schemes</h1>
+	
+	<p>
+		The block structure of the component is in the following figure.
+		<obr src="./fig/packet_shortener.fig">FrameLink Shortener architecture</obr>
+	</p>
+
+	<p>
+		
+		<!--
+		More detailed figures with their description..
+		<obr src="./fig/fig1.fig">Control block</obr>
+		<obr src="./fig/fig2.fig" mag="0.7">Control FSM</obr>
+		<obr src="./fig/fig3.fig">Data buffer</obr>
+		-->
+	</p>
+
+
+</body>
+
+</source>

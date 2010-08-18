@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<source>
+
+<!-- Page name -->
+<component>CRC modules</component>
+
+
+<!-- Authors worked on -->
+<authors>
+</authors>
+
+
+<!-- Versions list -->
+<versions>
+</versions>
+
+
+<!-- Bugs -->
+<bugs>
+</bugs>
+
+<!-- What have to be done -->
+<todo>
+</todo>
+
+
+<!-- Short Block description -->
+<description>
+
+There are 8-, 16- and 32-bit version of CRC32 modules realizing a table method
+implementation. All these CRC algorithms satisfy Ethernet standard.
+Implementation-specific documentation is included in each subcomponent.
+
+</description>
+
+<!-- COMPONENT INTERFACE ************************************************* -->
+<interface>
+
+	<generic_map>
+	</generic_map>
+
+	<port_map>
+	</port_map>
+
+</interface>
+
+
+<!-- CONSTANT SECTION ************************************************* -->
+
+<constant>
+</constant>
+
+
+<!-- OPERATIONS SECTION ************************************************* -->
+
+<operations>
+</operations>
+
+
+<!-- STRUCTURE ************************************************* -->
+
+<components>
+	<instantion ref="../crc32/doc/spec.xml">
+		CRC32
+	</instantion>
+	<instantion ref="../crc16/doc/spec.xml">
+		CRC16
+	</instantion>
+	<instantion ref="../crc8/doc/spec.xml">
+		CRC8
+	</instantion>
+	<instantion ref="../crc8s/doc/spec.xml">
+		CRC8S
+	</instantion>
+</components>
+
+
+
+<!-- ADDRESS SPACE ************************************************* -->
+<addr_space id ="MAIN" name="Main" main="yes">
+</addr_space>
+
+
+<!-- *********************** Registers description  ********************* -->
+
+
+<!-- BODY ************************************************* -->
+<body>
+</body>
+
+</source>

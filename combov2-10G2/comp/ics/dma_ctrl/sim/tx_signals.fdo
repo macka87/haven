@@ -1,0 +1,240 @@
+# tx_signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Martin Louda <sandin@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: tx_signals.fdo 1346 2008-02-15 15:01:29Z sandin $
+#
+
+# -------------------------------------------------------------------------
+#                      Signals of component
+# -------------------------------------------------------------------------
+
+proc ifc_DMA_CTRL_ARRAY { } {
+    global DMA_CTRL_ARRAY_PATH
+
+    add wave -divider "DMA CTRL ARRAY ifc"
+    add_wave "-noupdate -label rx_interrupt" $DMA_CTRL_ARRAY_PATH/rx_interrupt
+    add_wave "-noupdate -label tx_interrupt" $DMA_CTRL_ARRAY_PATH/tx_interrupt
+    add_wave "-noupdate -hex -label rx_buf_newlen" $DMA_CTRL_ARRAY_PATH/rx_buf_newlen
+    add_wave "-noupdate -label rx_buf_newlen_dv" $DMA_CTRL_ARRAY_PATH/rx_buf_newlen_dv
+    add_wave "-noupdate -label rx_buf_newlen_rdy" $DMA_CTRL_ARRAY_PATH/rx_buf_newlen_rdy
+    add_wave "-noupdate -hex -label rx_buf_rellen" $DMA_CTRL_ARRAY_PATH/rx_buf_rellen
+    add_wave "-noupdate -label rx_buf_rellen_dv" $DMA_CTRL_ARRAY_PATH/rx_buf_rellen_dv
+    add_wave "-noupdate -hex -label tx_buf_newlen" $DMA_CTRL_ARRAY_PATH/tx_buf_newlen
+    add_wave "-noupdate -label tx_buf_newlen_dv" $DMA_CTRL_ARRAY_PATH/tx_buf_newlen_dv
+    add_wave "-noupdate -label tx_buf_newlen_rdy" $DMA_CTRL_ARRAY_PATH/tx_buf_newlen_rdy
+    add_wave "-noupdate -hex -label tx_buf_rellen" $DMA_CTRL_ARRAY_PATH/tx_buf_rellen
+    add_wave "-noupdate -label tx_buf_rellen_dv" $DMA_CTRL_ARRAY_PATH/tx_buf_rellen_dv
+    add_wave "-noupdate -hex -label wr_addr" $DMA_CTRL_ARRAY_PATH/wr_addr
+    add_wave "-noupdate -hex -label wr_data" $DMA_CTRL_ARRAY_PATH/wr_data
+    add_wave "-noupdate -hex -label wr_be" $DMA_CTRL_ARRAY_PATH/wr_be
+    add_wave "-noupdate -label wr_req" $DMA_CTRL_ARRAY_PATH/wr_req
+    add_wave "-noupdate -label wr_rdy" $DMA_CTRL_ARRAY_PATH/wr_rdy
+    add_wave "-noupdate -hex -label rd_addr" $DMA_CTRL_ARRAY_PATH/rd_addr
+    add_wave "-noupdate -hex -label rd_data" $DMA_CTRL_ARRAY_PATH/rd_data
+    add_wave "-noupdate -hex -label rd_be" $DMA_CTRL_ARRAY_PATH/rd_be
+    add_wave "-noupdate -label rd_req" $DMA_CTRL_ARRAY_PATH/rd_req
+    add_wave "-noupdate -label rd_src_rdy" $DMA_CTRL_ARRAY_PATH/rd_src_rdy
+    add_wave "-noupdate -label rd_dst_rdy" $DMA_CTRL_ARRAY_PATH/rd_dst_rdy
+    add_wave "-noupdate -hex -label bm_global_addr" $DMA_CTRL_ARRAY_PATH/bm_global_addr
+    add_wave "-noupdate -hex -label bm_local_addr" $DMA_CTRL_ARRAY_PATH/bm_local_addr
+    add_wave "-noupdate -hex -label bm_length" $DMA_CTRL_ARRAY_PATH/bm_length
+    add_wave "-noupdate -hex -label bm_tag" $DMA_CTRL_ARRAY_PATH/bm_tag
+    add_wave "-noupdate -label bm_trans_type" $DMA_CTRL_ARRAY_PATH/bm_trans_type
+    add_wave "-noupdate -label bm_req" $DMA_CTRL_ARRAY_PATH/bm_req
+    add_wave "-noupdate -label bm_ack" $DMA_CTRL_ARRAY_PATH/bm_ack
+    add_wave "-noupdate -hex -label bm_op_tag" $DMA_CTRL_ARRAY_PATH/bm_op_tag
+    add_wave "-noupdate -label bm_op_done" $DMA_CTRL_ARRAY_PATH/bm_op_done
+}
+
+proc ifc_TX_DMA_CTRL0 { } {
+    global TX_DMA_CTRL0_PATH
+
+    add wave -divider "TX DMA CTRL0 ifc"
+    add_wave "-noupdate -label CLK" $TX_DMA_CTRL0_PATH/clk
+    add_wave "-noupdate -label RESET" $TX_DMA_CTRL0_PATH/reset
+    add_wave "-noupdate -label INTERRUPT" $TX_DMA_CTRL0_PATH/interrupt
+    add_wave "-noupdate -hex -label BUF_NEWLEN" $TX_DMA_CTRL0_PATH/buf_newlen
+    add_wave "-noupdate -label BUF_NEWLEN_DV" $TX_DMA_CTRL0_PATH/buf_newlen_dv
+    add_wave "-noupdate -label BUF_NEWLEN_RDY" $TX_DMA_CTRL0_PATH/buf_newlen_rdy
+    add_wave "-noupdate -hex -label BUF_RELLEN" $TX_DMA_CTRL0_PATH/buf_rellen
+    add_wave "-noupdate -label BUF_RELLEN_DV" $TX_DMA_CTRL0_PATH/buf_rellen_dv
+    add_wave "-noupdate -hex -label WR_ADDR" $TX_DMA_CTRL0_PATH/wr_addr
+    add_wave "-noupdate -hex -label WR_DATA" $TX_DMA_CTRL0_PATH/wr_data
+    add_wave "-noupdate -hex -label WR_BE" $TX_DMA_CTRL0_PATH/wr_be
+    add_wave "-noupdate -label WR_REQ" $TX_DMA_CTRL0_PATH/wr_req
+    add_wave "-noupdate -label WR_RDY" $TX_DMA_CTRL0_PATH/wr_rdy
+    add_wave "-noupdate -hex -label RD_ADDR" $TX_DMA_CTRL0_PATH/rd_addr
+    add_wave "-noupdate -hex -label RD_BE" $TX_DMA_CTRL0_PATH/rd_be
+    add_wave "-noupdate -label RD_REQ" $TX_DMA_CTRL0_PATH/rd_req
+    add_wave "-noupdate -label RD_ARDY" $TX_DMA_CTRL0_PATH/rd_ardy
+    add_wave "-noupdate -hex -label RD_DATA" $TX_DMA_CTRL0_PATH/rd_data
+    add_wave "-noupdate -label RD_SRC_RDY" $TX_DMA_CTRL0_PATH/rd_src_rdy
+    add_wave "-noupdate -label RD_DST_RDY" $TX_DMA_CTRL0_PATH/rd_dst_rdy
+    add_wave "-noupdate -hex -label DMA1_ADDR" $TX_DMA_CTRL0_PATH/dma1_addr
+    add_wave "-noupdate -hex -label DMA1_DOUT" $TX_DMA_CTRL0_PATH/dma1_dout
+    add_wave "-noupdate -label DMA1_REQ" $TX_DMA_CTRL0_PATH/dma1_req
+    add_wave "-noupdate -label DMA1_ACK" $TX_DMA_CTRL0_PATH/dma1_ack
+    add_wave "-noupdate -label DMA1_DONE" $TX_DMA_CTRL0_PATH/dma1_done
+    add_wave "-noupdate -hex -label DMA1_TAG" $TX_DMA_CTRL0_PATH/dma1_tag
+    add_wave "-noupdate -hex -label DMA2_ADDR" $TX_DMA_CTRL0_PATH/dma2_addr
+    add_wave "-noupdate -hex -label DMA2_DOUT" $TX_DMA_CTRL0_PATH/dma2_dout
+    add_wave "-noupdate -label DMA2_REQ" $TX_DMA_CTRL0_PATH/dma2_req
+    add_wave "-noupdate -label DMA2_ACK" $TX_DMA_CTRL0_PATH/dma2_ack
+    add_wave "-noupdate -label DMA2_DONE" $TX_DMA_CTRL0_PATH/dma2_done
+    add_wave "-noupdate -hex -label DMA2_TAG" $TX_DMA_CTRL0_PATH/dma2_tag
+}
+
+proc arch_TX_DMA_CTRL0 { } {
+    global TX_DMA_CTRL0_ARCH_PATH
+
+    add wave -divider "TX DMA CTRL0 internal"
+    add_wave "-noupdate -hex -label control_reg" $TX_DMA_CTRL0_ARCH_PATH/control_reg
+    add_wave "-noupdate -hex -label SwStrPtr" $TX_DMA_CTRL0_ARCH_PATH/sw_str_ptr
+    add_wave "-noupdate -hex -label SwEndPtr" $TX_DMA_CTRL0_ARCH_PATH/sw_end_ptr
+    add_wave "-noupdate -hex -label HwStrPtr" $TX_DMA_CTRL0_ARCH_PATH/hw_str_ptr
+    add_wave "-noupdate -hex -label HwEndPtr" $TX_DMA_CTRL0_ARCH_PATH/hw_end_ptr
+    add_wave "-noupdate -unsigned -label hw_buffer_free_space" $TX_DMA_CTRL0_ARCH_PATH/hw_buffer_free_space
+    add_wave "-noupdate -label hw_buffer_full" $TX_DMA_CTRL0_ARCH_PATH/hw_buffer_full
+}
+
+proc ifc_TX_DMA_CTRL1 { } {
+    global TX_DMA_CTRL1_PATH
+
+    add wave -divider "TX DMA CTRL1 ifc"
+    add_wave "-noupdate -label CLK" $TX_DMA_CTRL1_PATH/clk
+    add_wave "-noupdate -label RESET" $TX_DMA_CTRL1_PATH/reset
+    add_wave "-noupdate -label INTERRUPT" $TX_DMA_CTRL1_PATH/interrupt
+    add_wave "-noupdate -hex -label BUF_NEWLEN" $TX_DMA_CTRL1_PATH/buf_newlen
+    add_wave "-noupdate -label BUF_NEWLEN_DV" $TX_DMA_CTRL1_PATH/buf_newlen_dv
+    add_wave "-noupdate -label BUF_NEWLEN_RDY" $TX_DMA_CTRL1_PATH/buf_newlen_rdy
+    add_wave "-noupdate -hex -label BUF_RELLEN" $TX_DMA_CTRL1_PATH/buf_rellen
+    add_wave "-noupdate -label BUF_RELLEN_DV" $TX_DMA_CTRL1_PATH/buf_rellen_dv
+    add_wave "-noupdate -hex -label WR_ADDR" $TX_DMA_CTRL1_PATH/wr_addr
+    add_wave "-noupdate -hex -label WR_DATA" $TX_DMA_CTRL1_PATH/wr_data
+    add_wave "-noupdate -hex -label WR_BE" $TX_DMA_CTRL1_PATH/wr_be
+    add_wave "-noupdate -label WR_REQ" $TX_DMA_CTRL1_PATH/wr_req
+    add_wave "-noupdate -label WR_RDY" $TX_DMA_CTRL1_PATH/wr_rdy
+    add_wave "-noupdate -hex -label RD_ADDR" $TX_DMA_CTRL1_PATH/rd_addr
+    add_wave "-noupdate -hex -label RD_BE" $TX_DMA_CTRL1_PATH/rd_be
+    add_wave "-noupdate -label RD_REQ" $TX_DMA_CTRL1_PATH/rd_req
+    add_wave "-noupdate -label RD_ARDY" $TX_DMA_CTRL1_PATH/rd_ardy
+    add_wave "-noupdate -hex -label RD_DATA" $TX_DMA_CTRL1_PATH/rd_data
+    add_wave "-noupdate -label RD_SRC_RDY" $TX_DMA_CTRL1_PATH/rd_src_rdy
+    add_wave "-noupdate -label RD_DST_RDY" $TX_DMA_CTRL1_PATH/rd_dst_rdy
+    add_wave "-noupdate -hex -label DMA1_ADDR" $TX_DMA_CTRL1_PATH/dma1_addr
+    add_wave "-noupdate -hex -label DMA1_DOUT" $TX_DMA_CTRL1_PATH/dma1_dout
+    add_wave "-noupdate -label DMA1_REQ" $TX_DMA_CTRL1_PATH/dma1_req
+    add_wave "-noupdate -label DMA1_ACK" $TX_DMA_CTRL1_PATH/dma1_ack
+    add_wave "-noupdate -label DMA1_DONE" $TX_DMA_CTRL1_PATH/dma1_done
+    add_wave "-noupdate -hex -label DMA1_TAG" $TX_DMA_CTRL1_PATH/dma1_tag
+    add_wave "-noupdate -hex -label DMA2_ADDR" $TX_DMA_CTRL1_PATH/dma2_addr
+    add_wave "-noupdate -hex -label DMA2_DOUT" $TX_DMA_CTRL1_PATH/dma2_dout
+    add_wave "-noupdate -label DMA2_REQ" $TX_DMA_CTRL1_PATH/dma2_req
+    add_wave "-noupdate -label DMA2_ACK" $TX_DMA_CTRL1_PATH/dma2_ack
+    add_wave "-noupdate -label DMA2_DONE" $TX_DMA_CTRL1_PATH/dma2_done
+    add_wave "-noupdate -hex -label DMA2_TAG" $TX_DMA_CTRL1_PATH/dma2_tag
+}
+
+proc ifc_TX_DMA_CTRL2 { } {
+    global TX_DMA_CTRL2_PATH
+
+    add wave -divider "TX DMA CTRL2 ifc"
+    add_wave "-noupdate -label CLK" $TX_DMA_CTRL2_PATH/clk
+    add_wave "-noupdate -label RESET" $TX_DMA_CTRL2_PATH/reset
+    add_wave "-noupdate -label INTERRUPT" $TX_DMA_CTRL2_PATH/interrupt
+    add_wave "-noupdate -hex -label BUF_NEWLEN" $TX_DMA_CTRL2_PATH/buf_newlen
+    add_wave "-noupdate -label BUF_NEWLEN_DV" $TX_DMA_CTRL2_PATH/buf_newlen_dv
+    add_wave "-noupdate -label BUF_NEWLEN_RDY" $TX_DMA_CTRL2_PATH/buf_newlen_rdy
+    add_wave "-noupdate -hex -label BUF_RELLEN" $TX_DMA_CTRL2_PATH/buf_rellen
+    add_wave "-noupdate -label BUF_RELLEN_DV" $TX_DMA_CTRL2_PATH/buf_rellen_dv
+    add_wave "-noupdate -hex -label WR_ADDR" $TX_DMA_CTRL2_PATH/wr_addr
+    add_wave "-noupdate -hex -label WR_DATA" $TX_DMA_CTRL2_PATH/wr_data
+    add_wave "-noupdate -hex -label WR_BE" $TX_DMA_CTRL2_PATH/wr_be
+    add_wave "-noupdate -label WR_REQ" $TX_DMA_CTRL2_PATH/wr_req
+    add_wave "-noupdate -label WR_RDY" $TX_DMA_CTRL2_PATH/wr_rdy
+    add_wave "-noupdate -hex -label RD_ADDR" $TX_DMA_CTRL2_PATH/rd_addr
+    add_wave "-noupdate -hex -label RD_BE" $TX_DMA_CTRL2_PATH/rd_be
+    add_wave "-noupdate -label RD_REQ" $TX_DMA_CTRL2_PATH/rd_req
+    add_wave "-noupdate -label RD_ARDY" $TX_DMA_CTRL2_PATH/rd_ardy
+    add_wave "-noupdate -hex -label RD_DATA" $TX_DMA_CTRL2_PATH/rd_data
+    add_wave "-noupdate -label RD_SRC_RDY" $TX_DMA_CTRL2_PATH/rd_src_rdy
+    add_wave "-noupdate -label RD_DST_RDY" $TX_DMA_CTRL2_PATH/rd_dst_rdy
+    add_wave "-noupdate -hex -label DMA1_ADDR" $TX_DMA_CTRL2_PATH/dma1_addr
+    add_wave "-noupdate -hex -label DMA1_DOUT" $TX_DMA_CTRL2_PATH/dma1_dout
+    add_wave "-noupdate -label DMA1_REQ" $TX_DMA_CTRL2_PATH/dma1_req
+    add_wave "-noupdate -label DMA1_ACK" $TX_DMA_CTRL2_PATH/dma1_ack
+    add_wave "-noupdate -label DMA1_DONE" $TX_DMA_CTRL2_PATH/dma1_done
+    add_wave "-noupdate -hex -label DMA1_TAG" $TX_DMA_CTRL2_PATH/dma1_tag
+    add_wave "-noupdate -hex -label DMA2_ADDR" $TX_DMA_CTRL2_PATH/dma2_addr
+    add_wave "-noupdate -hex -label DMA2_DOUT" $TX_DMA_CTRL2_PATH/dma2_dout
+    add_wave "-noupdate -label DMA2_REQ" $TX_DMA_CTRL2_PATH/dma2_req
+    add_wave "-noupdate -label DMA2_ACK" $TX_DMA_CTRL2_PATH/dma2_ack
+    add_wave "-noupdate -label DMA2_DONE" $TX_DMA_CTRL2_PATH/dma2_done
+    add_wave "-noupdate -hex -label DMA2_TAG" $TX_DMA_CTRL2_PATH/dma2_tag
+}
+
+proc ifc_TX_DMA_CTRL3 { } {
+    global TX_DMA_CTRL3_PATH
+
+    add wave -divider "TX DMA CTRL3 ifc"
+    add_wave "-noupdate -label CLK" $TX_DMA_CTRL3_PATH/clk
+    add_wave "-noupdate -label RESET" $TX_DMA_CTRL3_PATH/reset
+    add_wave "-noupdate -label INTERRUPT" $TX_DMA_CTRL3_PATH/interrupt
+    add_wave "-noupdate -hex -label BUF_NEWLEN" $TX_DMA_CTRL3_PATH/buf_newlen
+    add_wave "-noupdate -label BUF_NEWLEN_DV" $TX_DMA_CTRL3_PATH/buf_newlen_dv
+    add_wave "-noupdate -label BUF_NEWLEN_RDY" $TX_DMA_CTRL3_PATH/buf_newlen_rdy
+    add_wave "-noupdate -hex -label BUF_RELLEN" $TX_DMA_CTRL3_PATH/buf_rellen
+    add_wave "-noupdate -label BUF_RELLEN_DV" $TX_DMA_CTRL3_PATH/buf_rellen_dv
+    add_wave "-noupdate -hex -label WR_ADDR" $TX_DMA_CTRL3_PATH/wr_addr
+    add_wave "-noupdate -hex -label WR_DATA" $TX_DMA_CTRL3_PATH/wr_data
+    add_wave "-noupdate -hex -label WR_BE" $TX_DMA_CTRL3_PATH/wr_be
+    add_wave "-noupdate -label WR_REQ" $TX_DMA_CTRL3_PATH/wr_req
+    add_wave "-noupdate -label WR_RDY" $TX_DMA_CTRL3_PATH/wr_rdy
+    add_wave "-noupdate -hex -label RD_ADDR" $TX_DMA_CTRL3_PATH/rd_addr
+    add_wave "-noupdate -hex -label RD_BE" $TX_DMA_CTRL3_PATH/rd_be
+    add_wave "-noupdate -label RD_REQ" $TX_DMA_CTRL3_PATH/rd_req
+    add_wave "-noupdate -label RD_ARDY" $TX_DMA_CTRL3_PATH/rd_ardy
+    add_wave "-noupdate -hex -label RD_DATA" $TX_DMA_CTRL3_PATH/rd_data
+    add_wave "-noupdate -label RD_SRC_RDY" $TX_DMA_CTRL3_PATH/rd_src_rdy
+    add_wave "-noupdate -label RD_DST_RDY" $TX_DMA_CTRL3_PATH/rd_dst_rdy
+    add_wave "-noupdate -hex -label DMA1_ADDR" $TX_DMA_CTRL3_PATH/dma1_addr
+    add_wave "-noupdate -hex -label DMA1_DOUT" $TX_DMA_CTRL3_PATH/dma1_dout
+    add_wave "-noupdate -label DMA1_REQ" $TX_DMA_CTRL3_PATH/dma1_req
+    add_wave "-noupdate -label DMA1_ACK" $TX_DMA_CTRL3_PATH/dma1_ack
+    add_wave "-noupdate -label DMA1_DONE" $TX_DMA_CTRL3_PATH/dma1_done
+    add_wave "-noupdate -hex -label DMA1_TAG" $TX_DMA_CTRL3_PATH/dma1_tag
+    add_wave "-noupdate -hex -label DMA2_ADDR" $TX_DMA_CTRL3_PATH/dma2_addr
+    add_wave "-noupdate -hex -label DMA2_DOUT" $TX_DMA_CTRL3_PATH/dma2_dout
+    add_wave "-noupdate -label DMA2_REQ" $TX_DMA_CTRL3_PATH/dma2_req
+    add_wave "-noupdate -label DMA2_ACK" $TX_DMA_CTRL3_PATH/dma2_ack
+    add_wave "-noupdate -label DMA2_DONE" $TX_DMA_CTRL3_PATH/dma2_done
+    add_wave "-noupdate -hex -label DMA2_TAG" $TX_DMA_CTRL3_PATH/dma2_tag
+}
+
+# -------------------------------------------------------------------------

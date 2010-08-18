@@ -1,0 +1,210 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Martin Kosek <kosek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 10233 2009-08-10 15:32:20Z polcak_l $
+
+   view wave
+   delete wave *
+
+proc blk_FL_SPLITTER { PARAM } {
+   global FL_SPLITTER_PATH
+    
+   if { $PARAM == "IFC_TOP" } {
+      add wave -divider "FL Splitter Top"
+      add_wave "-label clk" $FL_SPLITTER_PATH/clk
+      add_wave "-label reset" $FL_SPLITTER_PATH/reset
+      add_wave "-label rx" $FL_SPLITTER_PATH/rx
+      add_wave "-label tx0" $FL_SPLITTER_PATH/tx0
+      add_wave "-label tx1" $FL_SPLITTER_PATH/tx1
+      add_wave "-label tx2" $FL_SPLITTER_PATH/tx2
+      add_wave "-label tx3" $FL_SPLITTER_PATH/tx3
+
+
+   }
+
+   # Splitter interface
+   if { $PARAM == "IFC" } {
+      add wave -divider "FL Splitter"
+      add_wave "-label clk" $FL_SPLITTER_PATH/clk
+      add_wave "-label reset" $FL_SPLITTER_PATH/reset
+
+      add wave -divider "FLS: Input interface"
+      add_wave "-label rx_sof_n" $FL_SPLITTER_PATH/rx_sof_n
+      add_wave "-label rx_sop_n" $FL_SPLITTER_PATH/rx_sop_n
+      add_wave "-label rx_eop_n" $FL_SPLITTER_PATH/rx_eop_n
+      add_wave "-label rx_eof_n" $FL_SPLITTER_PATH/rx_eof_n
+      add_wave "-label rx_src_rdy_n" $FL_SPLITTER_PATH/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $FL_SPLITTER_PATH/rx_dst_rdy_n
+      add_wave "-label rx_data -hex" $FL_SPLITTER_PATH/rx_data
+      add_wave "-label rx_rem -hex" $FL_SPLITTER_PATH/rx_rem
+
+      add wave -divider "FLS: Output interface"
+      add_wave "-label tx_sof_n" $FL_SPLITTER_PATH/tx_sof_n
+      add_wave "-label tx_sop_n" $FL_SPLITTER_PATH/tx_sop_n
+      add_wave "-label tx_eop_n" $FL_SPLITTER_PATH/tx_eop_n
+      add_wave "-label tx_eof_n" $FL_SPLITTER_PATH/tx_eof_n
+      add_wave "-label tx_src_rdy_n" $FL_SPLITTER_PATH/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n" $FL_SPLITTER_PATH/tx_dst_rdy_n
+      add_wave "-label tx_data -hex" $FL_SPLITTER_PATH/tx_data
+      add_wave "-label tx_rem -hex" $FL_SPLITTER_PATH/tx_rem
+   }
+
+   # Ticket Splitter interface
+   if { $PARAM == "TICKET_IFC" } {
+      add wave -divider "FL Ticket Splitter"
+      add_wave "-label clk" $FL_SPLITTER_PATH/clk
+      add_wave "-label reset" $FL_SPLITTER_PATH/reset
+
+      add wave -divider "FLS: Input interface"
+      add_wave "-label rx_sof_n" $FL_SPLITTER_PATH/rx_sof_n
+      add_wave "-label rx_sop_n" $FL_SPLITTER_PATH/rx_sop_n
+      add_wave "-label rx_eop_n" $FL_SPLITTER_PATH/rx_eop_n
+      add_wave "-label rx_eof_n" $FL_SPLITTER_PATH/rx_eof_n
+      add_wave "-label rx_src_rdy_n" $FL_SPLITTER_PATH/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $FL_SPLITTER_PATH/rx_dst_rdy_n
+      add_wave "-label rx_data -hex" $FL_SPLITTER_PATH/rx_data
+      add_wave "-label rx_rem -hex" $FL_SPLITTER_PATH/rx_rem
+
+      add wave -divider "FLS: Ticket interface"
+      add_wave "-label CTRL_DATA_IN -hex" $FL_SPLITTER_PATH/CTRL_DATA_IN
+      add_wave "-label CTRL_DATA_IN_VLD -hex" $FL_SPLITTER_PATH/CTRL_DATA_IN_VLD
+      add_wave "-label CTRL_DATA_IN_RQ -hex" $FL_SPLITTER_PATH/CTRL_DATA_IN_RQ
+
+      add wave -divider "FLS: Output interface"
+      add_wave "-label tx_sof_n" $FL_SPLITTER_PATH/tx_sof_n
+      add_wave "-label tx_sop_n" $FL_SPLITTER_PATH/tx_sop_n
+      add_wave "-label tx_eop_n" $FL_SPLITTER_PATH/tx_eop_n
+      add_wave "-label tx_eof_n" $FL_SPLITTER_PATH/tx_eof_n
+      add_wave "-label tx_src_rdy_n" $FL_SPLITTER_PATH/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n" $FL_SPLITTER_PATH/tx_dst_rdy_n
+      add_wave "-label tx_data -hex" $FL_SPLITTER_PATH/tx_data
+      add_wave "-label tx_rem -hex" $FL_SPLITTER_PATH/tx_rem
+   }
+
+   # Control Unit
+   if { $PARAM == "CU" } {
+      add wave -divider "FLS: Control Unit interface"
+      add_wave "-label clk" $FL_SPLITTER_PATH/fls_cu_i/clk
+      add_wave "-label reset" $FL_SPLITTER_PATH/fls_cu_i/reset
+      add_wave "-label sof_in_n" $FL_SPLITTER_PATH/fls_cu_i/sof_in_n
+      add_wave "-label sop_in_n" $FL_SPLITTER_PATH/fls_cu_i/sop_in_n
+      add_wave "-label eop_in_n" $FL_SPLITTER_PATH/fls_cu_i/eop_in_n
+      add_wave "-label eof_in_n" $FL_SPLITTER_PATH/fls_cu_i/eof_in_n
+      add_wave "-label src_rdy_in_n" $FL_SPLITTER_PATH/fls_cu_i/src_rdy_in_n
+      add_wave "-label dst_rdy_in_n" $FL_SPLITTER_PATH/fls_cu_i/dst_rdy_in_n
+      add_wave "-label data_in -hex" $FL_SPLITTER_PATH/fls_cu_i/data_in
+      add_wave "-label rem_in -hex" $FL_SPLITTER_PATH/fls_cu_i/rem_in
+      add_wave "-label sof_out_n" $FL_SPLITTER_PATH/fls_cu_i/sof_out_n
+      add_wave "-label sop_out_n" $FL_SPLITTER_PATH/fls_cu_i/sop_out_n
+      add_wave "-label eop_out_n" $FL_SPLITTER_PATH/fls_cu_i/eop_out_n
+      add_wave "-label eof_out_n" $FL_SPLITTER_PATH/fls_cu_i/eof_out_n
+      add_wave "-label src_rdy_out_n" $FL_SPLITTER_PATH/fls_cu_i/src_rdy_out_n
+      add_wave "-label dst_rdy_out_n" $FL_SPLITTER_PATH/fls_cu_i/dst_rdy_out_n
+      add_wave "-label data_out -hex" $FL_SPLITTER_PATH/fls_cu_i/data_out
+      add_wave "-label rem_out -hex" $FL_SPLITTER_PATH/fls_cu_i/rem_out
+      add_wave "-label fifo_status" $FL_SPLITTER_PATH/fls_cu_i/fifo_status
+
+      add wave -divider "FLS: Control Unit internal"
+      add_wave "-label cnt_next" $FL_SPLITTER_PATH/fls_cu_i/cnt_next
+      add_wave "-label mx_max" $FL_SPLITTER_PATH/fls_cu_i/mx_max
+      add_wave "-label reg_next" $FL_SPLITTER_PATH/fls_cu_i/reg_next
+      add_wave "-label reg_ready" $FL_SPLITTER_PATH/fls_cu_i/reg_next
+      add_wave "-label reg_addr" $FL_SPLITTER_PATH/fls_cu_i/reg_addr
+      add_wave "-label reg_valid" $FL_SPLITTER_PATH/fls_cu_i/reg_valid
+
+      add wave -divider "FLS: FSM"
+      add_wave "-label clk" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/clk
+      add_wave "-label clr_ready" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/clr_ready
+      add_wave "-label clr_valid" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/clr_valid
+      add_wave "-label eof" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/eof
+      add_wave "-label next_queue" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/next_queue
+      add_wave "-label present_state" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/present_state
+      add_wave "-label queue_rdy" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/queue_rdy
+      add_wave "-label reset" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/reset
+      add_wave "-label set_valid" $FL_SPLITTER_PATH/fls_cu_i/fls_cu_fsm_i/set_valid
+
+
+   }
+   
+   # FIFO 0
+   if { $PARAM == "FIFO_0" } {
+      add wave -divider "FLS: FIFO 0"
+      add_wave "-label clk" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/clk
+      add_wave "-label reset" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/reset
+      add_wave "-label rx_data -hex" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/rx_data
+      add_wave "-label rx_rem -hex" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/rx_rem
+      add_wave "-label rx_src_rdy_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/rx_dst_rdy_n
+      add_wave "-label rx_sop_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/rx_sop_n
+      add_wave "-label rx_eop_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/rx_eop_n
+      add_wave "-label rx_sof_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/rx_sof_n
+      add_wave "-label rx_eof_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/rx_eof_n
+      add_wave "-label tx_data -hex" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/tx_data
+      add_wave "-label tx_rem -hex" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/tx_rem
+      add_wave "-label tx_src_rdy_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/tx_dst_rdy_n
+      add_wave "-label tx_sop_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/tx_sop_n
+      add_wave "-label tx_eop_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/tx_eop_n
+      add_wave "-label tx_sof_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/tx_sof_n
+      add_wave "-label tx_eof_n" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/tx_eof_n
+      add_wave "-label lstblk" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/lstblk
+      add_wave "-label full" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/full
+      add_wave "-label empty" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/empty
+      add_wave "-label status -hex" $FL_SPLITTER_PATH/gen_fifo__0/fl_fifo_i/status
+   }
+
+   # FIFO 1
+   if { $PARAM == "FIFO_1" } {
+      add wave -divider "FLS: FIFO 1"
+      add_wave "-label clk" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/clk
+      add_wave "-label reset" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/reset
+      add_wave "-label rx_data -hex" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/rx_data
+      add_wave "-label rx_rem -hex" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/rx_rem
+      add_wave "-label rx_src_rdy_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/rx_dst_rdy_n
+      add_wave "-label rx_sop_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/rx_sop_n
+      add_wave "-label rx_eop_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/rx_eop_n
+      add_wave "-label rx_sof_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/rx_sof_n
+      add_wave "-label rx_eof_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/rx_eof_n
+      add_wave "-label tx_data -hex" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/tx_data
+      add_wave "-label tx_rem -hex" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/tx_rem
+      add_wave "-label tx_src_rdy_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/tx_dst_rdy_n
+      add_wave "-label tx_sop_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/tx_sop_n
+      add_wave "-label tx_eop_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/tx_eop_n
+      add_wave "-label tx_sof_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/tx_sof_n
+      add_wave "-label tx_eof_n" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/tx_eof_n
+      add_wave "-label lstblk" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/lstblk
+      add_wave "-label full" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/full
+      add_wave "-label empty" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/empty
+      add_wave "-label status -hex" $FL_SPLITTER_PATH/gen_fifo__1/fl_fifo_i/status
+   }
+
+}
+

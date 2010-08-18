@@ -1,0 +1,169 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Jan Viktorin <xvikto03@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 10413 2009-08-14 15:09:40Z xvikto03 $
+
+   view wave
+   delete wave *
+
+proc blk_SIMPLE_FL_MARKER { SIMPLE_FL_MARKER_BASE PARAM } {
+   if { $PARAM == "TEST" } {
+      add wave -divider "SIMPLE_FL_MARKER"
+      add_wave "-label clk"            $SIMPLE_FL_MARKER_BASE/clk
+      add_wave "-label reset"          $SIMPLE_FL_MARKER_BASE/rst
+      
+      add wave -divider "SIMPLE_FL_MARKER: RX/TX "
+      add_wave "-label rx_src_rdy_n -color yellow"   $SIMPLE_FL_MARKER_BASE/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n -color yellow"   $SIMPLE_FL_MARKER_BASE/rx_dst_rdy_n
+      
+      add_wave "-label tx_src_rdy_n -color yellow"   $SIMPLE_FL_MARKER_BASE/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n -color yellow"   $SIMPLE_FL_MARKER_BASE/tx_dst_rdy_n
+      
+      add_wave "-label was_rx_ready_n -color orange"   $SIMPLE_FL_MARKER_BASE/was_rx_ready_n
+      add_wave "-label was_rx_src_ready_n -color orange"   $SIMPLE_FL_MARKER_BASE/was_rx_src_ready_n
+      add_wave "-label fsm_rx_data -hex -color orange"   $SIMPLE_FL_MARKER_BASE/rx_data
+     
+      add_wave "-label rx_data -hex -color pink"   $SIMPLE_FL_MARKER_BASE/rx_data
+      add_wave "-label tx_data -hex -color white"   $SIMPLE_FL_MARKER_BASE/tx_data
+      
+      add_wave "-label rx_rem -hex -color pink"    $SIMPLE_FL_MARKER_BASE/rx_rem
+      add_wave "-label tx_rem -hex -color white"    $SIMPLE_FL_MARKER_BASE/tx_rem
+      
+      add_wave "-label clk"            $SIMPLE_FL_MARKER_BASE/clk
+     
+      add_wave "-label rx_sof_n -color pink"       $SIMPLE_FL_MARKER_BASE/rx_sof_n
+      add_wave "-label tx_sof_n -color white"       $SIMPLE_FL_MARKER_BASE/tx_sof_n
+      
+      add_wave "-label rx_sop_n -color pink"       $SIMPLE_FL_MARKER_BASE/rx_sop_n
+      add_wave "-label tx_sop_n -color white"       $SIMPLE_FL_MARKER_BASE/tx_sop_n
+      
+      add_wave "-label rx_eop_n -color pink"       $SIMPLE_FL_MARKER_BASE/rx_eop_n
+      add_wave "-label tx_eop_n -color white"       $SIMPLE_FL_MARKER_BASE/tx_eop_n
+      
+      add_wave "-label rx_eof_n -color pink"       $SIMPLE_FL_MARKER_BASE/rx_eof_n
+      add_wave "-label tx_eof_n -color white"       $SIMPLE_FL_MARKER_BASE/tx_eof_n
+   }
+   if { $PARAM == "MON" } {
+      add wave -divider "SIMPLE_FL_MARKER: MONITOR"
+      add_wave "-label rx_src_rdy_n"               /testbench/fl_monitor/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n"               /testbench/fl_monitor/rx_dst_rdy_n
+      add_wave "-label rx_data -hex"               /testbench/fl_monitor/rx_data
+      add_wave "-label rx_rem -hex"               /testbench/fl_monitor/rx_rem
+      add_wave "-label rx_sof_n -color pink"       /testbench/fl_monitor/rx_sof_n
+      add_wave "-label rx_sop_n -color pink"       /testbench/fl_monitor/rx_sop_n
+      add_wave "-label rx_eof_n -color pink"       /testbench/fl_monitor/rx_eof_n
+      add_wave "-label rx_eop_n -color pink"       /testbench/fl_monitor/rx_eop_n
+   }
+
+   # SIMPLE_MARKER interface
+   if { $PARAM == "IFC" } {
+      add wave -divider "SIMPLE_FL_MARKER"
+      add_wave "-label clk"            $SIMPLE_FL_MARKER_BASE/clk
+      add_wave "-label reset"          $SIMPLE_FL_MARKER_BASE/rst
+      add_wave "-label mark -hex"      $SIMPLE_FL_MARKER_BASE/mark
+      add_wave "-label mark_valid"      $SIMPLE_FL_MARKER_BASE/mark_valid
+      add_wave "-label out_data -hex"      $SIMPLE_FL_MARKER_BASE/out_data
+      add_wave "-label reg_out_en -hex"      $SIMPLE_FL_MARKER_BASE/reg_out_en
+
+      add wave -divider "SIMPLE_FL_MARKER: RX interface"
+      add_wave "-label rx_sof_n"       $SIMPLE_FL_MARKER_BASE/rx_sof_n
+      add_wave "-label rx_sop_n"       $SIMPLE_FL_MARKER_BASE/rx_sop_n
+      add_wave "-label rx_eop_n"       $SIMPLE_FL_MARKER_BASE/rx_eop_n
+      add_wave "-label rx_eof_n"       $SIMPLE_FL_MARKER_BASE/rx_eof_n
+      add_wave "-label rx_src_rdy_n -color yellow"   $SIMPLE_FL_MARKER_BASE/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n -color yellow"   $SIMPLE_FL_MARKER_BASE/rx_dst_rdy_n
+      add_wave "-label rx_data -hex"   $SIMPLE_FL_MARKER_BASE/rx_data
+      add_wave "-label rx_rem -hex"    $SIMPLE_FL_MARKER_BASE/rx_rem
+
+      add wave -divider "SIMPLE_FL_MARKER: TX interface"
+      add_wave "-label tx_sof_n"       $SIMPLE_FL_MARKER_BASE/tx_sof_n
+      add_wave "-label tx_sop_n"       $SIMPLE_FL_MARKER_BASE/tx_sop_n
+      add_wave "-label tx_eop_n"       $SIMPLE_FL_MARKER_BASE/tx_eop_n
+      add_wave "-label tx_eof_n"       $SIMPLE_FL_MARKER_BASE/tx_eof_n
+      add_wave "-label tx_src_rdy_n -color yellow"   $SIMPLE_FL_MARKER_BASE/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n -color yellow"   $SIMPLE_FL_MARKER_BASE/tx_dst_rdy_n
+      add_wave "-label tx_data -hex"   $SIMPLE_FL_MARKER_BASE/tx_data
+      add_wave "-label tx_rem -hex"    $SIMPLE_FL_MARKER_BASE/tx_rem
+   }
+
+   # Control unit
+   if { $PARAM == "INFSM" } {
+      add wave -divider "SIMPLE_FL_MARKER: INFSM"
+      add_wave "-label clk"            $SIMPLE_FL_MARKER_BASE/marker_fsm/clk
+      add_wave "-label reset"          $SIMPLE_FL_MARKER_BASE/marker_fsm/rst
+      add_wave "-label owr_mode -color blue"          $SIMPLE_FL_MARKER_BASE/marker_fsm/owr_mode
+      add_wave "-label eop"         $SIMPLE_FL_MARKER_BASE/marker_fsm/rx_eop
+      add_wave "-label sof"         $SIMPLE_FL_MARKER_BASE/marker_fsm/rx_sof
+#      add_wave "-label mark_done"         $SIMPLE_FL_MARKER_BASE/marker_fsm/mark_done
+#      add_wave "-label mark_done_en"         $SIMPLE_FL_MARKER_BASE/marker_fsm/mark_done_en
+      
+      add_wave "-label reg_written"   $SIMPLE_FL_MARKER_BASE/marker_fsm/reg_written
+      add_wave "-label fsm_en"   $SIMPLE_FL_MARKER_BASE/marker_fsm/fsm_en
+      add_wave "-label next_state"   $SIMPLE_FL_MARKER_BASE/marker_fsm/next_state
+      add_wave "-label curr_state"        $SIMPLE_FL_MARKER_BASE/marker_fsm/curr_state
+      add_wave "-label part_cnt -hex"      $SIMPLE_FL_MARKER_BASE/cnt_part
+      add_wave "-label part_cnt_en"      $SIMPLE_FL_MARKER_BASE/cnt_part_ce
+      add_wave "-label part_cnt_rst"      $SIMPLE_FL_MARKER_BASE/cnt_part_clr
+      add_wave "-label data_cnt -hex"       $SIMPLE_FL_MARKER_BASE/cnt_word
+      add_wave "-label data_cnt_en"       $SIMPLE_FL_MARKER_BASE/cnt_word_ce
+      add_wave "-label data_cnt_rst"       $SIMPLE_FL_MARKER_BASE/cnt_word_clr
+      add_wave "-label mark_cnt -hex"       $SIMPLE_FL_MARKER_BASE/marker_fsm/cnt_mark
+      add_wave "-label mark_cnt_en"       $SIMPLE_FL_MARKER_BASE/marker_fsm/cnt_mark_ce
+      add_wave "-label mark_cnt_rst"       $SIMPLE_FL_MARKER_BASE/marker_fsm/cnt_mark_clr
+      add_wave "-label mark_cnt_next -hex"       $SIMPLE_FL_MARKER_BASE/marker_fsm/cnt_mark_next
+      add_wave "-label mark_next"       $SIMPLE_FL_MARKER_BASE/marker_fsm/mark_next
+   }
+
+   if { $PARAM == "OUT" } {
+      add wave -divider "SIMPLE_FL_MARKER: OUT"
+      add_wave "-label next_state -hex"       $SIMPLE_FL_MARKER_BASE/marker_out/next_state
+      add_wave "-label curr_state -hex"       $SIMPLE_FL_MARKER_BASE/marker_out/curr_state
+      add_wave "-label rx_src_rdy -hex"       $SIMPLE_FL_MARKER_BASE/marker_out/rx_src_rdy
+      add_wave "-label tx_src_rdy -hex"       $SIMPLE_FL_MARKER_BASE/marker_out/tx_src_rdy
+      add_wave "-label tx_dst_rdy -hex"       $SIMPLE_FL_MARKER_BASE/marker_out/tx_dst_rdy
+   }
+
+   if { $PARAM == "ACT" } {
+      add wave -divider "SIMPLE_FL_MARKER: ACT"
+      add_wave "-label clk"            $SIMPLE_FL_MARKER_BASE/act_machine/clk
+      add_wave "-label reset"          $SIMPLE_FL_MARKER_BASE/act_machine/rst
+      add_wave "-label owr_begin"          $SIMPLE_FL_MARKER_BASE/act_machine/owr_begin
+      add_wave "-label owr_middle"          $SIMPLE_FL_MARKER_BASE/act_machine/owr_middle
+      add_wave "-label owr_end"          $SIMPLE_FL_MARKER_BASE/act_machine/owr_end
+      add_wave "-label mark -hex"          $SIMPLE_FL_MARKER_BASE/act_machine/mark
+      add_wave "-label mark_pos"          $SIMPLE_FL_MARKER_BASE/act_machine/mark_pos
+      add_wave "-label rx_data -hex"          $SIMPLE_FL_MARKER_BASE/act_machine/rx_data
+      add_wave "-label rx_rem -hex"          $SIMPLE_FL_MARKER_BASE/act_machine/rx_rem
+      add_wave "-label tx_data -hex"          $SIMPLE_FL_MARKER_BASE/act_machine/tx_data
+      add_wave "-label tx_rem -hex"          $SIMPLE_FL_MARKER_BASE/act_machine/tx_rem
+      add_wave "-label mark_data -hex"          $SIMPLE_FL_MARKER_BASE/act_machine/mark_data
+      add_wave "-label data -hex"          $SIMPLE_FL_MARKER_BASE/act_machine/data
+      add_wave "-label owr_mode -bin"          $SIMPLE_FL_MARKER_BASE/act_machine/owr_mode
+   }
+}

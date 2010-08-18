@@ -1,0 +1,74 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Viktor Pus <pus@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 14 2007-07-31 06:44:05Z kosek $
+
+   exec make
+   view wave
+   delete wave *
+
+   add_wave "-noupdate -hex -label CLK" /testbench/CLK
+   add_wave "-noupdate -hex -label RESET"       /testbench/RESET
+   
+   add wave -divider "SUB Interface"
+   add_wave "-noupdate -hex -label ADDR_SUB" /testbench/ADDR_SUB
+   add_wave "-noupdate -hex -label VALUE_SUB" /testbench/VALUE_SUB
+   add_wave "-noupdate -hex -label OUT_SUB" /testbench/OUT_SUB
+   add_wave "-noupdate -hex -label VLD_SUB" /testbench/VLD_SUB
+   
+   add wave -divider "ADD Interface"
+   add_wave "-noupdate -hex -label ADDR_ADD" /testbench/ADDR_ADD
+   add_wave "-noupdate -hex -label VALUE_ADD" /testbench/VALUE_ADD
+   add_wave "-noupdate -hex -label VLD_ADD" /testbench/VLD_ADD
+   add_wave "-noupdate -hex -label FULL_ADD" /testbench/FULL_ADD
+   
+   add wave -divider "READ Interface"
+   add_wave "-noupdate -hex -label VALUE_RD" /testbench/VALUE_RD
+   add_wave "-noupdate -hex -label ADDR_RD" /testbench/ADDR_RD
+   add_wave "-noupdate -hex -label MASK" /testbench/MASK
+   add_wave "-noupdate -hex -label PEND_REQ" /testbench/PEND_REQ
+
+   add wave -divider "Internal signals"
+   add_wave "-noupdate -hex -label sel" /testbench/uut/sel
+   add_wave "-noupdate -hex -label reg_sel" /testbench/uut/reg_sel
+   add_wave "-noupdate -hex -label en" /testbench/uut/en
+   add_wave "-noupdate -hex -label reg_en" /testbench/uut/reg_en
+   add_wave "-noupdate -hex -label dmux_out" /testbench/uut/dmux_out
+   add_wave "-noupdate -hex -label amux_out" /testbench/uut/amux_out
+   add_wave "-noupdate -hex -label mem_doa" /testbench/uut/mem_doa
+   add_wave "-noupdate -hex -label mem_di" /testbench/uut/mem_di
+   add_wave "-noupdate -hex -label reg_data" /testbench/uut/reg_data
+   add_wave "-noupdate -hex -label reg_addr" /testbench/uut/reg_addr
+   add_wave "-noupdate -hex -label fifo_do" /testbench/uut/fifo_do
+   add_wave "-noupdate -hex -label fifo_empty" /testbench/uut/fifo_empty
+   add_wave "-noupdate -hex -label sig_mask_bits" /testbench/uut/sig_mask_bits
+   add_wave "-noupdate -hex -label sig_mask_set" /testbench/uut/sig_mask_set
+
+   restart -f 
+   run 3 us

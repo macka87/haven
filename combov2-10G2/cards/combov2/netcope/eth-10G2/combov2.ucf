@@ -1,0 +1,911 @@
+# combov2.ucf: UCF for Netcope at COMBOv2 (Virtex5)
+# Copyright (C) 2008  CESNET
+# Authors: Viktor Pus <pus@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: combov2.ucf 14901 2010-08-06 09:24:05Z pus $
+#
+
+#------------------------------------
+# PCI Express x8
+#------------------------------------
+  # Data-Tx
+  NET	"PET_P<0>"  LOC = "F2";
+  NET	"PET_N<0>"  LOC = "G2";
+  NET	"PET_P<1>"  LOC = "L2";
+  NET	"PET_N<1>"  LOC = "K2";
+  NET	"PET_P<2>"  LOC = "M2";
+  NET	"PET_N<2>"  LOC = "N2";
+  NET	"PET_P<3>"  LOC = "U2";
+  NET	"PET_N<3>"  LOC = "T2";
+  NET	"PET_P<4>"  LOC = "V2";
+  NET	"PET_N<4>"  LOC = "W2";
+  NET	"PET_P<5>"  LOC = "AC2";
+  NET	"PET_N<5>"  LOC = "AB2";
+  NET	"PET_P<6>"  LOC = "AD2";
+  NET	"PET_N<6>"  LOC = "AE2";
+  NET	"PET_P<7>"  LOC = "AJ2";
+  NET	"PET_N<7>"  LOC = "AH2";
+  # Data-Rx
+  NET	"PER_P<0>"	LOC = "G1";
+  NET	"PER_N<0>"	LOC = "H1";
+  NET	"PER_P<1>"	LOC = "K1";
+  NET	"PER_N<1>"	LOC = "J1";
+  NET	"PER_P<2>"	LOC = "N1";
+  NET	"PER_N<2>"	LOC = "P1";
+  NET	"PER_P<3>"	LOC = "T1";
+  NET	"PER_N<3>"	LOC = "R1";
+  NET	"PER_P<4>"	LOC = "W1";
+  NET	"PER_N<4>"	LOC = "Y1";
+  NET	"PER_P<5>"	LOC = "AB1";
+  NET	"PER_N<5>"	LOC = "AA1";
+  NET	"PER_P<6>"	LOC = "AE1";
+  NET	"PER_N<6>"	LOC = "AF1";
+  NET	"PER_P<7>"	LOC = "AH1";
+  NET	"PER_N<7>"	LOC = "AG1";
+  # Clk
+  NET	"PCLK250_P"	LOC =	"H4";
+  NET	"PCLK250_N"	LOC =	"H3";
+
+#------------------------------------
+# OSC (U3)
+#------------------------------------
+  NET	"PCLK0_P"	LOC =	"D8" | IOSTANDARD = "LVDS_25";
+  NET	"PCLK0_N"	LOC =	"C8" | IOSTANDARD = "LVDS_25";
+
+#------------------------------------
+# OSC (U4)
+#------------------------------------
+  NET	"PCLK1_P"	LOC =	"AL7" | IOSTANDARD = "LVDS_25";
+  NET	"PCLK1_N"	LOC =	"AM7" | IOSTANDARD = "LVDS_25";
+
+#------------------------------------
+# IFC1
+#------------------------------------
+  # GTP-Tx
+  NET	"GT1T_P<0>"	LOC =	"B10";
+  NET	"GT1T_N<0>"	LOC =	"B9";
+  NET	"GT1T_P<1>"	LOC =	"B5";
+  NET	"GT1T_N<1>"	LOC =	"B6";
+  NET	"GT1T_P<2>"	LOC =	"B4";
+  NET	"GT1T_N<2>"	LOC =	"B3";
+  NET	"GT1T_P<3>"	LOC =	"E2";
+  NET	"GT1T_N<3>"	LOC =	"D2";
+  # GTP-RX
+  NET	"GT1R_P<0>"	LOC =	"A9";
+  NET	"GT1R_N<0>"	LOC =	"A8";
+  NET	"GT1R_P<1>"	LOC =	"A6";
+  NET	"GT1R_N<1>"	LOC =	"A7";
+  NET	"GT1R_P<2>"	LOC =	"A3";
+  NET	"GT1R_N<2>"	LOC =	"A2";
+  NET	"GT1R_P<3>"	LOC =	"D1";
+  NET	"GT1R_N<3>"	LOC =	"C1";
+  # LVDS-Clk
+  NET	"IF1_0RCLK_N"	LOC =	"C13";
+  NET	"IF1_0RCLK_P"	LOC =	"B13";
+  NET	"IF1_1RCLK_N"	LOC =	"R8";
+  NET	"IF1_1RCLK_P"	LOC =	"R7";
+  NET	"IF1_0GCLK_N"	LOC =	"H15";
+  NET	"IF1_0GCLK_P"	LOC =	"H14";
+  NET	"IF1_1GCLK_N"	LOC =	"J21";
+  NET	"IF1_1GCLK_P"	LOC =	"J20";
+  # LVDS-Data
+  NET	"IF1_0D_N<0>"	LOC =	"N9";
+  NET	"IF1_0D_N<1>"	LOC =	"L9";
+  NET	"IF1_0D_N<2>"	LOC =	"J11";
+  NET	"IF1_0D_N<3>"	LOC =	"K9";
+  NET	"IF1_0D_N<4>"	LOC =	"G12";
+  NET	"IF1_0D_N<5>"	LOC =	"H9";
+  NET	"IF1_0D_N<6>"	LOC =	"G13";
+  NET	"IF1_0D_N<7>"	LOC =	"E11";
+  NET	"IF1_0D_N<8>"	LOC =	"E13";
+  NET	"IF1_0D_N<9>"	LOC =	"D10";
+  NET	"IF1_0D_N<10>"	LOC =	"B12";
+  NET	"IF1_0D_N<11>"	LOC =	"C12";
+  NET	"IF1_0D_N<12>"	LOC =	"J9";
+  NET	"IF1_0D_N<13>"	LOC =	"L8";
+  NET	"IF1_0D_N<14>"	LOC =	"H8";
+  NET	"IF1_0D_N<15>"	LOC =	"G10";
+  NET	"IF1_0D_N<16>"	LOC =	"E8";
+  NET	"IF1_0D_N<17>"	LOC =	"F8";
+
+  NET	"IF1_0D_P<0>"	LOC =	"N10";
+  NET	"IF1_0D_P<1>"	LOC =	"M10";
+  NET	"IF1_0D_P<2>"	LOC =	"K11";
+  NET	"IF1_0D_P<3>"	LOC =	"K8";
+  NET	"IF1_0D_P<4>"	LOC =	"G11";
+  NET	"IF1_0D_P<5>"	LOC =	"H10";
+  NET	"IF1_0D_P<6>"	LOC =	"F13";
+  NET	"IF1_0D_P<7>"	LOC =	"F11";
+  NET	"IF1_0D_P<8>"	LOC =	"E12";
+  NET	"IF1_0D_P<9>"	LOC =	"D11";
+  NET	"IF1_0D_P<10>"	LOC =	"A13";
+  NET	"IF1_0D_P<11>"	LOC =	"D12";
+  NET	"IF1_0D_P<12>"	LOC =	"J10";
+  NET	"IF1_0D_P<13>"	LOC =	"M8";
+  NET	"IF1_0D_P<14>"	LOC =	"G8";
+  NET	"IF1_0D_P<15>"	LOC =	"F10";
+  NET	"IF1_0D_P<16>"	LOC =	"E9";
+  NET	"IF1_0D_P<17>"	LOC =	"F9";
+
+  NET	"IF1_1D_N<0>"	LOC =	"K6";
+  NET	"IF1_1D_N<1>"	LOC =	"J7";
+  NET	"IF1_1D_N<2>"	LOC =	"G7";
+  NET	"IF1_1D_N<3>"	LOC =	"E7";
+  NET	"IF1_1D_N<4>"	LOC =	"G5";
+  NET	"IF1_1D_N<5>"	LOC =	"F6";
+  NET	"IF1_1D_N<6>"	LOC =	"L5";
+  NET	"IF1_1D_N<7>"	LOC =	"J5";
+  NET	"IF1_1D_N<8>"	LOC =	"P10";
+  NET	"IF1_1D_N<9>"	LOC =	"L6";
+  NET	"IF1_1D_N<10>"	LOC =	"M5";
+  NET	"IF1_1D_N<11>"	LOC =	"N7";
+  NET	"IF1_1D_N<12>"	LOC =	"P5";
+  NET	"IF1_1D_N<13>"	LOC =	"T11";
+  NET	"IF1_1D_N<14>"	LOC =	"P6";
+  NET	"IF1_1D_N<15>"	LOC =	"U10";
+  NET	"IF1_1D_N<16>"	LOC =	"U7";
+  NET	"IF1_1D_N<17>"	LOC =	"T6";
+
+  NET	"IF1_1D_P<0>"	LOC =	"K7";
+  NET	"IF1_1D_P<1>"	LOC =	"H7";
+  NET	"IF1_1D_P<2>"	LOC =	"G6";
+  NET	"IF1_1D_P<3>"	LOC =	"E6";
+  NET	"IF1_1D_P<4>"	LOC =	"H5";
+  NET	"IF1_1D_P<5>"	LOC =	"F5";
+  NET	"IF1_1D_P<6>"	LOC =	"L4";
+  NET	"IF1_1D_P<7>"	LOC =	"J6";
+  NET	"IF1_1D_P<8>"	LOC =	"R11";
+  NET	"IF1_1D_P<9>"	LOC =	"M7";
+  NET	"IF1_1D_P<10>"	LOC =	"M6";
+  NET	"IF1_1D_P<11>"	LOC =	"N8";
+  NET	"IF1_1D_P<12>"	LOC =	"N5";
+  NET	"IF1_1D_P<13>"	LOC =	"T10";
+  NET	"IF1_1D_P<14>"	LOC =	"P7";
+  NET	"IF1_1D_P<15>"	LOC =	"T9";
+  NET	"IF1_1D_P<16>"	LOC =	"T8";
+  NET	"IF1_1D_P<17>"	LOC =	"R6";
+
+#------------------------------------
+# IFC2
+#------------------------------------
+  # GTP-Tx
+  NET	"GT2T_P<0>"	LOC =	"AK2";
+  NET	"GT2T_N<0>"	LOC =	"AL2";
+  NET	"GT2T_P<1>"	LOC =	"AN4";
+  NET	"GT2T_N<1>"	LOC =	"AN3";
+  NET	"GT2T_P<2>"	LOC =	"AN5";
+  NET	"GT2T_N<2>"	LOC =	"AN6";
+  NET	"GT2T_P<3>"	LOC =	"AN10";
+  NET	"GT2T_N<3>"	LOC =	"AN9";
+  # GTP-Rx
+  NET	"GT2R_P<0>"	LOC =	"AL1";
+  NET	"GT2R_N<0>"	LOC =	"AM1";
+  NET	"GT2R_P<1>"	LOC =	"AP3";
+  NET	"GT2R_N<1>"	LOC =	"AP2";
+  NET	"GT2R_P<2>"	LOC =	"AP6";
+  NET	"GT2R_N<2>"	LOC =	"AP7";
+  NET	"GT2R_P<3>"	LOC =	"AP9";
+  NET	"GT2R_N<3>"	LOC =	"AP8";
+  # LVDS-Clk
+  NET	"IF2_0RCLK_N"	LOC =	"A25";
+  NET	"IF2_0RCLK_P"	LOC =	"B26";
+  NET	"IF2_1RCLK_N"	LOC =	"E16";
+  NET	"IF2_1RCLK_P"	LOC =	"E17";
+  NET	"IF2_0GCLK_N"	LOC =	"H13";
+  NET	"IF2_0GCLK_P"	LOC =	"J14";
+  NET	"IF2_1GCLK_N"	LOC =	"H20";
+  NET	"IF2_1GCLK_P"	LOC =	"H19";
+  # LVDS-Data
+  NET	"IF2_0D_N<0>"	LOC =	"A26";
+  NET	"IF2_0D_N<1>"	LOC =	"D25";
+  NET	"IF2_0D_N<2>"	LOC =	"D27";
+  NET	"IF2_0D_N<3>"	LOC =	"C25";
+  NET	"IF2_0D_N<4>"	LOC =	"D30";
+  NET	"IF2_0D_N<5>"	LOC =	"C27";
+  NET	"IF2_0D_N<6>"	LOC =	"A31";
+  NET	"IF2_0D_N<7>"	LOC =	"D29";
+  NET	"IF2_0D_N<8>"	LOC =	"B30";
+  NET	"IF2_0D_N<9>"	LOC =	"A28";
+  NET	"IF2_0D_N<10>"	LOC =	"A24";
+  NET	"IF2_0D_N<11>"	LOC =	"B23";
+  NET	"IF2_0D_N<12>"	LOC =	"A21";
+  NET	"IF2_0D_N<13>"	LOC =	"B22";
+  NET	"IF2_0D_N<14>"	LOC =	"A20";
+  NET	"IF2_0D_N<15>"	LOC =	"B20";
+  NET	"IF2_0D_N<16>"	LOC =	"A18";
+  NET	"IF2_0D_N<17>"	LOC =	"C18";
+  NET	"IF2_0D_P<0>"	LOC =	"B27";
+  NET	"IF2_0D_P<1>"	LOC =	"C24";
+  NET	"IF2_0D_P<2>"	LOC =	"C28";
+  NET	"IF2_0D_P<3>"	LOC =	"B25";
+  NET	"IF2_0D_P<4>"	LOC =	"D31";
+  NET	"IF2_0D_P<5>"	LOC =	"D26";
+  NET	"IF2_0D_P<6>"	LOC =	"B31";
+  NET	"IF2_0D_P<7>"	LOC =	"C30";
+  NET	"IF2_0D_P<8>"	LOC =	"A30";
+  NET	"IF2_0D_P<9>"	LOC =	"A29";
+  NET	"IF2_0D_P<10>"	LOC =	"A23";
+  NET	"IF2_0D_P<11>"	LOC =	"C23";
+  NET	"IF2_0D_P<12>"	LOC =	"B21";
+  NET	"IF2_0D_P<13>"	LOC =	"C22";
+  NET	"IF2_0D_P<14>"	LOC =	"A19";
+  NET	"IF2_0D_P<15>"	LOC =	"C20";
+  NET	"IF2_0D_P<16>"	LOC =	"B18";
+  NET	"IF2_0D_P<17>"	LOC =	"C19";
+
+  NET	"IF2_1D_N<0>"	LOC =	"E24";
+  NET	"IF2_1D_N<1>"	LOC =	"F23";
+  NET	"IF2_1D_N<2>"	LOC =	"E23";
+  NET	"IF2_1D_N<3>"	LOC =	"D22";
+  NET	"IF2_1D_N<4>"	LOC =	"G21";
+  NET	"IF2_1D_N<5>"	LOC =	"D20";
+  NET	"IF2_1D_N<6>"	LOC =	"F20";
+  NET	"IF2_1D_N<7>"	LOC =	"D17";
+  NET	"IF2_1D_N<8>"	LOC =	"F19";
+  NET	"IF2_1D_N<9>"	LOC =	"A16";
+  NET	"IF2_1D_N<10>"	LOC =	"F16";
+  NET	"IF2_1D_N<11>"	LOC =	"G18";
+  NET	"IF2_1D_N<12>"	LOC =	"E14";
+  NET	"IF2_1D_N<13>"	LOC =	"F15";
+  NET	"IF2_1D_N<14>"	LOC =	"D15";
+  NET	"IF2_1D_N<15>"	LOC =	"B15";
+  NET	"IF2_1D_N<16>"	LOC =	"C15";
+  NET	"IF2_1D_N<17>"	LOC =	"A14";
+  NET	"IF2_1D_P<0>"	LOC =	"F24";
+  NET	"IF2_1D_P<1>"	LOC =	"E22";
+  NET	"IF2_1D_P<2>"	LOC =	"D24";
+  NET	"IF2_1D_P<3>"	LOC =	"D21";
+  NET	"IF2_1D_P<4>"	LOC =	"F21";
+  NET	"IF2_1D_P<5>"	LOC =	"E21";
+  NET	"IF2_1D_P<6>"	LOC =	"G20";
+  NET	"IF2_1D_P<7>"	LOC =	"C17";
+  NET	"IF2_1D_P<8>"	LOC =	"E19";
+  NET	"IF2_1D_P<9>"	LOC =	"B17";
+  NET	"IF2_1D_P<10>"	LOC =	"G17";
+  NET	"IF2_1D_P<11>"	LOC =	"F18";
+  NET	"IF2_1D_P<12>"	LOC =	"D14";
+  NET	"IF2_1D_P<13>"	LOC =	"F14";
+  NET	"IF2_1D_P<14>"	LOC =	"D16";
+  NET	"IF2_1D_P<15>"	LOC =	"B16";
+  NET	"IF2_1D_P<16>"	LOC =	"C14";
+  NET	"IF2_1D_P<17>"	LOC =	"A15";
+
+
+#------------------------------------
+# Oscilator (U8)
+#------------------------------------
+  NET	"XCLK2_P"	LOC = "L19" | IOSTANDARD = "LVDS_25";
+  NET	"XCLK2_N"	LOC = "K19" | IOSTANDARD = "LVDS_25";
+
+#------------------------------------
+# Oscilator (U7)
+#------------------------------------
+  NET	"XCLK1_P"	LOC = "J16" | IOSTANDARD = "LVDS_25";
+  NET	"XCLK1_N"	LOC = "J17" | IOSTANDARD = "LVDS_25";
+
+#------------------------------------
+# Oscilator (U6)
+#------------------------------------
+  NET	"XCLK0_P"	LOC = "K18" | IOSTANDARD = "LVDS_25";
+  NET	"XCLK0_N"	LOC = "J19" | IOSTANDARD = "LVDS_25";
+
+#------------------------------------
+# Oscilator (U2)
+#------------------------------------
+  NET	"GCLK100_P"	LOC = "H17" | IOSTANDARD = "LVDS_25";
+  NET	"GCLK100_N"	LOC = "H18" | IOSTANDARD = "LVDS_25";
+  NET	"GCLK250_P"	LOC = "K17" | IOSTANDARD = "LVDS_25";
+  NET	"GCLK250_N"	LOC = "L18" | IOSTANDARD = "LVDS_25";
+
+#------------------------------------
+# Oscilator (U7 & U6)
+#------------------------------------
+  NET	"MCLK0_P"	LOC = "E4" | IOSTANDARD = "LVDS_25";
+  NET	"MCLK0_N"	LOC = "D4" | IOSTANDARD = "LVDS_25";
+  NET	"MCLK1_P"	LOC = "AL5" | IOSTANDARD = "LVDS_25";
+  NET	"MCLK1_N"	LOC = "AL4" | IOSTANDARD = "LVDS_25";
+
+#------------------------------------
+# QDR-II (U10)
+#------------------------------------
+  # Adress
+  NET	"S0A<0>"	LOC = "AF5" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<1>"	LOC = "AE6" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<2>"	LOC = "AD4" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<3>"	LOC = "AA6" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<4>"	LOC = "W11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<5>"	LOC = "W10" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<6>"	LOC = "AE7" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<7>"	LOC = "AD5" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<8>"	LOC = "Y7" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<9>"	LOC = "Y6" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<10>"	LOC = "AG5" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<11>"	LOC = "AD6" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<12>"	LOC = "Y11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<13>"	LOC = "AF6" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<14>"	LOC = "W6" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<15>"	LOC = "AH7" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<16>"	LOC = "W7" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<17>"	LOC = "AJ7" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<18>"	LOC = "W9" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<19>"	LOC = "V7" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0A<20>"	LOC = "Y8" | IOSTANDARD = "HSTL_I_18";
+  # Data Input
+  NET	"S0D<0>"	LOC = "AD11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<1>"	LOC = "AK11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<2>"	LOC = "AJ11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<3>"	LOC = "AK8" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<4>"	LOC = "AK9" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<5>"	LOC = "AF9" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<6>"	LOC = "AJ9" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<7>"	LOC = "AJ10" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<8>"	LOC = "AF11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<9>"	LOC = "AH9" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<10>"	LOC = "AH10" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<11>"	LOC = "AG8" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<12>"	LOC = "AH8" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<13>"	LOC = "AG10" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<14>"	LOC = "AG11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<15>"	LOC = "AC4" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<16>"	LOC = "AC5" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0D<17>"	LOC = "AC7" | IOSTANDARD = "HSTL_I_18";
+  # Data Output
+  NET	"S0Q<0>"	LOC = "AN14" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<1>"	LOC = "AP14" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<2>"	LOC = "AB10" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<3>"	LOC = "AA10" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<4>"	LOC = "AN13" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<5>"	LOC = "AM13" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<6>"	LOC = "AA8" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<7>"	LOC = "AA9" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<8>"	LOC = "AP12" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<9>"	LOC = "AC8" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<10>"	LOC = "AB8" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<11>"	LOC = "AM12" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<12>"	LOC = "AM11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<13>"	LOC = "AC10" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<14>"	LOC = "AC9" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<15>"	LOC = "AL10" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<16>"	LOC = "AD9" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0Q<17>"	LOC = "AD10" | IOSTANDARD = "HSTL_I_18";
+  # Control
+  NET	"S0BWS_N<0>"	LOC = "AE11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0BWS_N<1>"	LOC = "AD7" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0CQ_P"	LOC = "AL11" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0CQ_N"	LOC = "AE8" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0K_P"		LOC = "AB6" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0K_N"		LOC = "AB7" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0C_P"		LOC = "AA5" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0C_N"		LOC = "AB5" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0WPS_N"	LOC = "AJ6" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0RPS_N"	LOC = "V8" | IOSTANDARD = "HSTL_I_18";
+  NET	"S0DOFF_N"	LOC = "U8" | IOSTANDARD = "HSTL_I_18";
+
+#------------------------------------
+# QDR-II (U11)
+#------------------------------------
+  # Adress
+  NET	"S1A<0>"	LOC = "AK23" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<1>"	LOC = "AK22" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<2>"	LOC = "AK21" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<3>"	LOC = "AJ19" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<4>"	LOC = "AJ16" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<5>"	LOC = "AJ15" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<6>"	LOC = "AL20" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<7>"	LOC = "AL21" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<8>"	LOC = "AK16" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<9>"	LOC = "AL16" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<10>"	LOC = "AL19" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<11>"	LOC = "AJ20" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<12>"	LOC = "AL14" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<13>"	LOC = "AK19" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<14>"	LOC = "AM15" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<15>"	LOC = "AK18" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<16>"	LOC = "AL15" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<17>"	LOC = "AJ21" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<18>"	LOC = "AJ14" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<19>"	LOC = "AK14" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1A<20>"	LOC = "AK24" | IOSTANDARD = "HSTL_I_18";
+  # Data Input
+  NET	"S1D<0>"	LOC = "AP25" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<1>"	LOC = "AL25" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<2>"	LOC = "AL24" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<3>"	LOC = "AM21" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<4>"	LOC = "AM20" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<5>"	LOC = "AN23" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<6>"	LOC = "AN20" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<7>"	LOC = "AP20" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<8>"	LOC = "AN22" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<9>"	LOC = "AN18" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<10>"	LOC = "AM18" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<11>"	LOC = "AP22" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<12>"	LOC = "AP21" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<13>"	LOC = "AN19" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<14>"	LOC = "AP19" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<15>"	LOC = "AH24" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<16>"	LOC = "AJ24" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1D<17>"	LOC = "AL13" | IOSTANDARD = "HSTL_I_18";
+  # Data Output
+  NET	"S1Q<0>"	LOC = "AL29" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<1>"	LOC = "AL30" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<2>"	LOC = "AM31" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<3>"	LOC = "AL31" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<4>"	LOC = "AN30" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<5>"	LOC = "AM30" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<6>"	LOC = "AP30" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<7>"	LOC = "AP31" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<8>"	LOC = "AM27" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<9>"	LOC = "AP29" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<10>"	LOC = "AN29" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<11>"	LOC = "AP27" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<12>"	LOC = "AN27" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<13>"	LOC = "AN28" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<14>"	LOC = "AM28" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<15>"	LOC = "AM25" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<16>"	LOC = "AL26" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1Q<17>"	LOC = "AP26" | IOSTANDARD = "HSTL_I_18";
+  # Control
+  NET	"S1BWS_N<0>"	LOC = "AM22" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1BWS_N<1>"	LOC = "AK13" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1CQ_P"	LOC = "AN25" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1CQ_N"	LOC = "AM26" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1K_P"		LOC = "AK12" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1K_N"		LOC = "AJ12" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1C_P"		LOC = "AH23" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1C_N"		LOC = "AJ22" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1WPS_N"	LOC = "AM16" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1RPS_N"	LOC = "AP16" | IOSTANDARD = "HSTL_I_18";
+  NET	"S1DOFF_N"	LOC = "AP17" | IOSTANDARD = "HSTL_I_18";
+
+#------------------------------------
+# Led
+#------------------------------------
+  NET	"FQLED<0>"	LOC = "AH5" | IOSTANDARD = "LVCMOS18";
+  NET	"FQLED<1>"	LOC = "AG6" | IOSTANDARD = "LVCMOS18";
+  NET	"FQLED<2>"	LOC = "AK7" | IOSTANDARD = "LVCMOS18";
+  NET	"FQLED<3>"	LOC = "AK6" | IOSTANDARD = "LVCMOS18";
+
+#------------------------------------
+# Serial
+#------------------------------------
+  NET	"FQTXD"		LOC = "V10" | IOSTANDARD = "LVCMOS18";
+  NET	"FQRXD"		LOC = "V9" | IOSTANDARD = "LVCMOS18";
+
+#------------------------------------
+# LSC1
+#------------------------------------
+  # LVDS - Data
+  NET	"LSC1_D_N<0>"	LOC =	"W25" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<1>"	LOC =	"V24" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<2>"	LOC =	"V27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<3>"	LOC =	"W26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<4>"	LOC =	"V29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<5>"	LOC =	"W27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<6>"	LOC =	"Y29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<7>"	LOC =	"W30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<8>"	LOC =	"AA31" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<9>"	LOC =	"Y31" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<10>"	LOC =	"AC30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<11>"	LOC =	"AA30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<12>"	LOC =	"AD29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<13>"	LOC =	"AC29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<14>"	LOC =	"AK31" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<15>"	LOC =	"AF30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<16>"	LOC =	"AH30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_N<17>"	LOC =	"AG31" | IOSTANDARD = "BLVDS_25";
+
+  NET	"LSC1_D_P<0>"	LOC =	"V25" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<1>"	LOC =	"W24" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<2>"	LOC =	"V28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<3>"	LOC =	"Y26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<4>"	LOC =	"W29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<5>"	LOC =	"Y27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<6>"	LOC =	"Y28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<7>"	LOC =	"V30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<8>"	LOC =	"AB31" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<9>"	LOC =	"W31" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<10>"	LOC =	"AB30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<11>"	LOC =	"AA29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<12>"	LOC =	"AE29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<13>"	LOC =	"AD30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<14>"	LOC =	"AJ31" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<15>"	LOC =	"AF29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<16>"	LOC =	"AJ30" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC1_D_P<17>"	LOC =	"AF31" | IOSTANDARD = "BLVDS_25";
+
+#------------------------------------
+# LSC2
+#------------------------------------
+  # LVDS - Data
+  NET	"LSC2_D_N<0>"	LOC =	"AA28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<1>"	LOC =	"AF28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<2>"	LOC =	"AC27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<3>"	LOC =	"AH28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<4>"	LOC =	"AD27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<5>"	LOC =	"AK27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<6>"	LOC =	"AF26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<7>"	LOC =	"AJ26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<8>"	LOC =	"AJ29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<9>"	LOC =	"AE26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<10>"	LOC =	"AJ27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<11>"	LOC =	"AC24" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<12>"	LOC =	"AG26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<13>"	LOC =	"AA26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<14>"	LOC =	"AD25" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<15>"	LOC =	"AA24" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<16>"	LOC =	"AB26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_N<17>"	LOC =	"AG25" | IOSTANDARD = "BLVDS_25";
+
+  NET	"LSC2_D_P<0>"	LOC =	"AB28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<1>"	LOC =	"AE28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<2>"	LOC =	"AB27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<3>"	LOC =	"AG28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<4>"	LOC =	"AC28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<5>"	LOC =	"AK28" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<6>"	LOC =	"AF25" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<7>"	LOC =	"AH27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<8>"	LOC =	"AK29" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<9>"	LOC =	"AE27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<10>"	LOC =	"AK26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<11>"	LOC =	"AC25" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<12>"	LOC =	"AG27" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<13>"	LOC =	"AA25" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<14>"	LOC =	"AD26" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<15>"	LOC =	"Y24" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<16>"	LOC =	"AB25" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC2_D_P<17>"	LOC =	"AF24" | IOSTANDARD = "BLVDS_25";
+
+#------------------------------------
+# LCS4
+#------------------------------------
+  # LVDS - Data
+  NET	"LSC4_D_N<0>"	LOC =	"AE24" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<1>"	LOC =	"AH22" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<2>"	LOC =	"AG20" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<3>"	LOC =	"AH19" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<4>"	LOC =	"AF19" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<5>"	LOC =	"AE18" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<6>"	LOC =	"AG17" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<7>"	LOC =	"AG16" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<8>"	LOC =	"AG15" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<9>"	LOC =	"AH13" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_N<10>"	LOC =	"AG13" | IOSTANDARD = "BLVDS_25";
+
+  NET	"LSC4_D_P<0>"	LOC =	"AD24" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<1>"	LOC =	"AG22" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<2>"	LOC =	"AG21" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<3>"	LOC =	"AH20" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<4>"	LOC =	"AG18" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<5>"	LOC =	"AF18" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<6>"	LOC =	"AH18" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<7>"	LOC =	"AH17" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<8>"	LOC =	"AH15" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<9>"	LOC =	"AH14" | IOSTANDARD = "BLVDS_25";
+  NET	"LSC4_D_P<10>"	LOC =	"AH12" | IOSTANDARD = "BLVDS_25";
+
+#------------------------------------
+# SYS
+#------------------------------------
+  NET	"FSYS_D<0>"	LOC =	"L34" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<1>"	LOC =	"K34" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<2>"	LOC =	"K33" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<3>"	LOC =	"K32" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<4>"	LOC =	"P32" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<5>"	LOC =	"N32" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<6>"	LOC =	"T33" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<7>"	LOC =	"R34" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<8>"	LOC =	"R33" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<9>"	LOC =	"R32" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<10>"	LOC =	"U33" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<11>"	LOC =	"T34" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<12>"	LOC =	"U32" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<13>"	LOC =	"U31" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<14>"	LOC =	"T25" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<15>"	LOC =	"AP32" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<16>"	LOC =	"N24" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<17>"	LOC =	"P24" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<18>"	LOC =	"P25" | IOSTANDARD = "SSTL18_II";
+  NET	"FSYS_D<19>"	LOC =	"N25" | IOSTANDARD = "SSTL18_II";
+
+#------------------------------------
+# SDRAM-DDRII (U12a)
+#------------------------------------
+  # Adress
+  NET	"DA<0>"	LOC =	"H28" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<1>"	LOC =	"H27" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<2>"	LOC =	"G27" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<3>"	LOC =	"F26" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<4>"	LOC =	"F25" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<5>"	LOC =	"H24" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<6>"	LOC =	"H25" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<7>"	LOC =	"G26" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<8>"	LOC =	"G25" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<9>"	LOC =	"J27" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<10>"	LOC =	"M26" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<11>"	LOC =	"M25" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<12>"	LOC =	"J25" | IOSTANDARD = "SSTL18_II";
+  NET	"DA<13>"	LOC =	"J24" | IOSTANDARD = "SSTL18_II";
+  # Data
+  NET	"DDQ<0>"	LOC =	"C33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<1>"	LOC =	"B32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<2>"	LOC =	"B33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<3>"	LOC =	"A33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<4>"	LOC =	"C34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<5>"	LOC =	"D32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<6>"	LOC =	"D34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<7>"	LOC =	"G32" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQ<8>"	LOC =	"H30" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<9>"	LOC =	"G31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<10>"	LOC =	"J30" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<11>"	LOC =	"J31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<12>"	LOC =	"M30" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<13>"	LOC =	"T31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<14>"	LOC =	"R31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<15>"	LOC =	"U30" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQ<16>"	LOC =	"E29" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<17>"	LOC =	"F29" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<18>"	LOC =	"E31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<19>"	LOC =	"F30" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<20>"	LOC =	"F31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<21>"	LOC =	"G30" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<22>"	LOC =	"J29" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<23>"	LOC =	"L29" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQ<24>"	LOC =	"E34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<25>"	LOC =	"F34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<26>"	LOC =	"F33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<27>"	LOC =	"E33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<28>"	LOC =	"E32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<29>"	LOC =	"L33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<30>"	LOC =	"M32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<31>"	LOC =	"P34" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQ<32>"	LOC =	"T28" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<33>"	LOC =	"T29" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<34>"	LOC =	"U28" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<35>"	LOC =	"U26" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<36>"	LOC =	"R27" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<37>"	LOC =	"U27" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<38>"	LOC =	"T26" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<39>"	LOC =	"U25" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQ<40>"	LOC =	"V34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<41>"	LOC =	"V33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<42>"	LOC =	"Y32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<43>"	LOC =	"AA34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<44>"	LOC =	"W34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<45>"	LOC =	"V32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<46>"	LOC =	"Y34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<47>"	LOC =	"AA33" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQ<48>"	LOC =	"AB33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<49>"	LOC =	"AC34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<50>"	LOC =	"AK34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<51>"	LOC =	"AK33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<52>"	LOC =	"AB32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<53>"	LOC =	"AD34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<54>"	LOC =	"AC32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<55>"	LOC =	"AG32" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQ<56>"	LOC =	"AL33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<57>"	LOC =	"AK32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<58>"	LOC =	"AM32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<59>"	LOC =	"AN34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<60>"	LOC =	"AJ32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<61>"	LOC =	"AL34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<62>"	LOC =	"AN33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQ<63>"	LOC =	"AN32" | IOSTANDARD = "SSTL18_II";
+  # Mask
+  NET	"DDM<0>"	LOC =	"C32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDM<1>"	LOC =	"L30" | IOSTANDARD = "SSTL18_II";
+  NET	"DDM<2>"	LOC =	"H29" | IOSTANDARD = "SSTL18_II";
+  NET	"DDM<3>"	LOC =	"G33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDM<4>"	LOC =	"R26" | IOSTANDARD = "SSTL18_II";
+  NET	"DDM<5>"	LOC =	"Y33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDM<6>"	LOC =	"AC33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDM<7>"	LOC =	"AM33" | IOSTANDARD = "SSTL18_II";
+  # Control
+  NET	"DBA<0>"	LOC =	"F28" | IOSTANDARD = "SSTL18_II";
+  NET	"DBA<1>"	LOC =	"E28" | IOSTANDARD = "SSTL18_II";
+  NET	"DBA<2>"	LOC =	"G28" | IOSTANDARD = "SSTL18_II";
+  NET	"DCS_N<0>"	LOC =	"L28" | IOSTANDARD = "SSTL18_II";
+  NET	"DCS_N<1>" 	LOC =	"N28" | IOSTANDARD = "SSTL18_II";
+  NET	"DRAS_N" 	LOC =	"E26" | IOSTANDARD = "SSTL18_II";
+  NET	"DCAS_N" 	LOC =	"E27" | IOSTANDARD = "SSTL18_II";
+  NET	"DWE_N" 	LOC =	"K28" | IOSTANDARD = "SSTL18_II";
+  NET	"DCK0_P"	LOC =	"K24" | IOSTANDARD = "SSTL18_II";
+  NET	"DCK0_N"	LOC =	"L24" | IOSTANDARD = "SSTL18_II";
+  NET	"DCK1_P" 	LOC =	"L25" | IOSTANDARD = "SSTL18_II";
+  NET	"DCK1_N"	LOC =	"L26" | IOSTANDARD = "SSTL18_II";
+  NET	"DCKE<0>"	LOC =	"M28" |IOSTANDARD = "SSTL18_II";
+  NET "DCKE<1>" LOC = P26 | IOSTANDARD = "SSTL18_II";
+  NET	"DDODT<0>"	LOC =	"K27" | IOSTANDARD = "SSTL18_II";
+  NET	"DDODT<1>"	LOC =	"P27" |IOSTANDARD = "SSTL18_II";
+  NET	"DSDA"	LOC =	"AD32" | IOSTANDARD = "SSTL18_II";
+  NET	"DSCL"	LOC =	"AE32" | IOSTANDARD = "SSTL18_II";
+  NET	"DSA<0>"	LOC =	"M31" | IOSTANDARD = "SSTL18_II";
+  NET	"DSA<1>"	LOC =	"N30" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQS_N<0>"	LOC =	"H33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_N<1>"	LOC =	"L31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_N<2>"	LOC =	"P29" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_N<3>"	LOC =	"J34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_N<4>"	LOC =	"P30" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_N<5>"	LOC =	"AE33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_N<6>"	LOC =	"AE34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_N<7>"	LOC =	"AJ34" | IOSTANDARD = "SSTL18_II";
+
+  NET	"DDQS_P<0>"	LOC =	"J32" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_P<1>"	LOC =	"K31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_P<2>"	LOC =	"N29" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_P<3>"	LOC =	"H34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_P<4>"	LOC =	"P31" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_P<5>"	LOC =	"AF33" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_P<6>"	LOC =	"AF34" | IOSTANDARD = "SSTL18_II";
+  NET	"DDQS_P<7>"	LOC =	"AH34" | IOSTANDARD = "SSTL18_II";
+#------------------------------------
+# Spartan3E (U16)
+#------------------------------------
+  NET	"XD<0>"	LOC =	"AD19" | IOSTANDARD = "LVCMOS25";
+  NET	"XD<1>"	LOC =	"AE19" | IOSTANDARD = "LVCMOS25";
+  NET	"XD<2>"	LOC =	"AE17" | IOSTANDARD = "LVCMOS25";
+  NET	"XD<3>"	LOC =	"AF16" | IOSTANDARD = "LVCMOS25";
+  NET	"XD<4>"	LOC =	"AD20" | IOSTANDARD = "LVCMOS25";
+  NET	"XD<5>"	LOC =	"AE21" | IOSTANDARD = "LVCMOS25";
+  NET	"XD<6>"	LOC =	"AE16" | IOSTANDARD = "LVCMOS25";
+  NET	"XD<7>"	LOC =	"AF15" | IOSTANDARD = "LVCMOS25";
+
+  NET	"XHSH<0>"	LOC =	"AF21" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<1>"	LOC =	"AF20" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<2>"	LOC =	"AF14" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<3>"	LOC =	"AE14" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<4>"	LOC =	"AE23" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<5>"	LOC =	"AE22" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<6>"	LOC =	"AG12" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<7>"	LOC =	"AF13" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<8>"	LOC =	"AG23" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<9>"	LOC =	"AF23" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<10>"	LOC =	"AE12" | IOSTANDARD = "LVCMOS25";
+  NET	"XHSH<11>"	LOC =	"AE13" | IOSTANDARD = "LVCMOS25";
+
+
+#############################################################################
+# IOSTANDARD settings
+#############################################################################
+NET "IF1*" IOSTANDARD = "LVCMOS25";
+NET "IF2*" IOSTANDARD = "LVCMOS25";
+
+
+#############################################################################
+# Timing constraints
+#############################################################################
+
+NET "PCLK250_P"   TIG ;
+NET "PCLK250_N"   TIG ;
+
+NET "*sys_clk" PERIOD = 4ns; # PCIe REFCLK IBUFDS output
+
+# This is unnecessary - tools are able to derive this from sys_clk above
+#NET "*bridge_clk" PERIOD = 8ns;
+
+NET "*XAUI_CORE0*txoutclk*" TNM_NET="clk156_top_a";
+TIMESPEC "TS_clk156_top_a" = PERIOD "clk156_top_a" 156.25 MHz;
+
+NET "*XAUI_CORE1*txoutclk*" TNM_NET="clk156_top_b";
+TIMESPEC "TS_clk156_top_b" = PERIOD "clk156_top_b" 156.25 MHz;
+
+NET "*ep/pcie_ep0/pcie_blk/SIO/.pcie_gt_wrapper_i/gt_refclk_out[0]" TNM_NET = "MGTCLK" ;
+TIMESPEC "TS_MGTCLK"  = PERIOD "MGTCLK" 250.00 MHz HIGH 50 % ;
+
+NET "PCLK0_P" TIG;
+NET "PCLK0_N" TIG;
+NET "PCLK1_P" TIG;
+NET "PCLK1_N" TIG;
+
+# This constraint should be derived automatically from XCLK2
+#NET "ics_clk" PERIOD = 8ns;
+
+INST "*regiob*" IOB = TRUE;
+
+NET "XHSH(8)" CLOCK_DEDICATED_ROUTE = FALSE;
+
+INST "*regiob_tx_sop" INIT = S;
+INST "*regiob_tx_eop" INIT = S;
+INST "*regiob_tx_src_rdy" INIT = S;
+
+NET "XHSH(8)" PERIOD = 8ns HIGH 50%;
+NET "XHSH(10)" TIG;
+
+NET "PCI_SYSTEM*IB_SP_RX*RXCLK*" MAXDELAY = 3ns;
+
+# These constraints led in huge amount of unconstrained paths reported by 
+# timing analysis tool.
+#NET "XCLK2_P" PERIOD = 8 ns HIGH 50%;
+#NET "XCLK2_N" PERIOD = 8 ns HIGH 50%;
+# These are similar to those above.
+NET "XCLK2_P" TIG;
+NET "XCLK2_N" TIG;
+NET "xclk2_125" PERIOD = 8ns HIGH 50%;
+
+# Ingore reset path - these signal will be used to drive double registers
+# in different clock domains.
+NET pcie_core_trn_rst TIG;
+NET reset TIG;
+
+# Ignore false paths in Interrupt ASFIFO:
+## RAM is driven by ics_clk, but output is connected to FF in trn_clk domain
+## This path is false, because RAM Read Address is in trn_clk domain and
+## RAM reading is asynchronous.
+# Precision gives name BRIDGE_CLK to trn_clk when synthesizing cv2_pci,
+# so this makes Precision-synthetized cv2_pci module incompatible with NetCOPE.
+NET "*trn_clk" TNM = "TNM_TRN_CLK";
+#NET "*pcie_core_trn_clk" TNM = "TNM_TRN_CLK";
+NET "*clk_ics" TNM = "TNM_ICS_CLK";
+TIMESPEC TSig_intr_asfifo_i2b = FROM "TNM_ICS_CLK" TO "TNM_TRN_CLK" TIG;
+TIMESPEC TSig_intr_asfifo_b2i = FROM "TNM_TRN_CLK" TO "TNM_ICS_CLK" TIG;
+
+# Ignore false paths on ebp_wrapper configuration interface
+# Read is from ics_clk and write (on startup) in from trn_clk domain 
+#NET "*pci_system/ebp_wrapper/cfg_dcommand_*" TIG;
+#NET "*pci_system/ebp_wrapper/cfg_bus_number_*" TIG;
+#NET "*pci_system/ebp_wrapper/cfg_device_number_*" TIG;
+NET "*trn_lnk_up_n_reg*" TIG;
+
+#------------------------------------------------------------------------------
+# Following constraints are necessary for tsu_cv2 unit. They replace corresponding
+# constraints in ../../chips/combov2_u0.ucf
+#------------------------------------
+# LSC3
+#------------------------------------
+#n 
+  # LVDS - Data
+  NET   "LSC3_D_N<0>"   LOC =   "H22" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_N<1>"   LOC =   "H23" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_N<2>"   LOC =   "K21" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_N<3>"   LOC =   "K22" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_N<4>"   LOC =   "L16" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_N<5>"   LOC =   "L20" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_N<6>"   LOC =   "K12" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_N<7>"   LOC =   "K14" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_N<8>"   LOC =   "H12" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_N<9>"   LOC =   "J15" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_N<10>"  LOC =   "AG30" | IOSTANDARD = "BLVDS_25";
+
+  NET   "LSC3_D_P<0>"   LOC =   "G22" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_P<1>"   LOC =   "G23" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_P<2>"   LOC =   "J22" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_P<3>"   LOC =   "K23" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_P<4>"   LOC =   "L15" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_P<5>"   LOC =   "L21" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_P<6>"   LOC =   "K13" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_P<7>"   LOC =   "L14" | IOSTANDARD = "LVCMOS25";
+  NET   "LSC3_D_P<8>"   LOC =   "J12" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_P<9>"   LOC =   "K16" | IOSTANDARD = "BLVDS_25";
+  NET   "LSC3_D_P<10>"  LOC =   "AH29" | IOSTANDARD = "BLVDS_25";

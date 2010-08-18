@@ -1,0 +1,55 @@
+# combov2_xst.ucf: UCF for Netcope at COMBOv2, synthesis with XST
+# Copyright (C) 2008  CESNET
+# Authors: Viktor Pus <pus@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: combov2_xst.ucf 12049 2009-11-19 07:34:45Z pus $
+#
+## Lock reclock registers on the Spartan3 interface
+INST *PCI_SYSTEM*rx_sof8_i RLOC = X0Y0;
+INST *PCI_SYSTEM*rx_eof8_i RLOC = X0Y1;
+INST *PCI_SYSTEM*rx_src_rdy8_i RLOC = X0Y1;
+INST *PCI_SYSTEM*rx_data8_i_0 RLOC = X0Y2;
+INST *PCI_SYSTEM*rx_data8_i_1 RLOC = X0Y2;
+INST *PCI_SYSTEM*rx_data8_i_2 RLOC = X0Y2;
+INST *PCI_SYSTEM*rx_data8_i_3 RLOC = X0Y2;
+INST *PCI_SYSTEM*rx_data8_i_4 RLOC = X0Y3;
+INST *PCI_SYSTEM*rx_data8_i_5 RLOC = X0Y3;
+INST *PCI_SYSTEM*rx_data8_i_6 RLOC = X0Y3;
+INST *PCI_SYSTEM*rx_data8_i_7 RLOC = X0Y3;
+
+INST *PCI_SYSTEM*rx_sof8 RLOC = X1Y0;
+INST *PCI_SYSTEM*rx_eof8 RLOC = X1Y1;
+INST *PCI_SYSTEM*rx_src_rdy8 RLOC = X1Y1;
+INST *PCI_SYSTEM*rx_data8_0 RLOC = X1Y2;
+INST *PCI_SYSTEM*rx_data8_1 RLOC = X1Y2;
+INST *PCI_SYSTEM*rx_data8_2 RLOC = X1Y2;
+INST *PCI_SYSTEM*rx_data8_3 RLOC = X1Y2;
+INST *PCI_SYSTEM*rx_data8_4 RLOC = X1Y3;
+INST *PCI_SYSTEM*rx_data8_5 RLOC = X1Y3;
+INST *PCI_SYSTEM*rx_data8_6 RLOC = X1Y3;
+INST *PCI_SYSTEM*rx_data8_7 RLOC = X1Y3;

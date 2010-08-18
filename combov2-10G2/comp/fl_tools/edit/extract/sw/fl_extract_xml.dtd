@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!-- DTD for FL_EXTRACT core generator -->
+
+<!ELEMENT fl_extract (fields)>
+<!ATTLIST fl_extract 
+   fl_width (8|16|32|64|128) "32"
+   fl_pipeline (true|false) "false"
+   packet_counter_width CDATA "4"
+   part_counter_width CDATA "16"
+>
+<!ELEMENT fields (field+)>
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field
+   packet_no CDATA #REQUIRED
+   offset    CDATA #REQUIRED
+   size      CDATA #REQUIRED
+>

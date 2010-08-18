@@ -1,0 +1,35 @@
+vlib work
+vcom -explicit -93 ../crc32_16b_fsm.vhd
+vcom -explicit -93 ../crc32_16b.vhd
+vcom -explicit -93 ../crc32_16b_tab.vhd
+vcom -explicit -93 ../crc32_8b_tab.vhd
+vcom -explicit -93 tb_crc32_16b.vhd
+vsim -t 1ps  -L xilinxcorelib  -lib work tb_crc32
+
+view wave
+
+add wave -divider "CRC Interface"
+add wave -noupdate -label reset /tb_crc32/reset
+add wave -noupdate -label clk /tb_crc32/clk
+add wave -noupdate -label di -hex /tb_crc32/di
+add wave -noupdate -label di_dv /tb_crc32/di_dv
+add wave -noupdate -label di_mask /tb_crc32/di_mask
+add wave -noupdate -label eop /tb_crc32/eop
+add wave -noupdate -label rdy /tb_crc32/rdy
+add wave -noupdate -label crc -hex /tb_crc32/crc
+add wave -noupdate -label do_dv /tb_crc32/do_dv
+
+add wave -divider "CRC FSM"
+add wave -noupdate -label clk /tb_crc32/crc32_instance/fsm_crc32_instance/clk
+add wave -noupdate -label di_dv /tb_crc32/crc32_instance/fsm_crc32_instance/di_dv
+add wave -noupdate -label eop /tb_crc32/crc32_instance/fsm_crc32_instance/eop
+add wave -noupdate -label di_ctl /tb_crc32/crc32_instance/fsm_crc32_instance/di_ctl
+add wave -noupdate -label tval_ctl /tb_crc32/crc32_instance/fsm_crc32_instance/tval_ctl
+add wave -noupdate -label do_dv /tb_crc32/crc32_instance/fsm_crc32_instance/do_dv
+add wave -noupdate -label dv_ctl /tb_crc32/crc32_instance/fsm_crc32_instance/dv_ctl
+add wave -noupdate -label mask /tb_crc32/crc32_instance/fsm_crc32_instance/mask
+add wave -noupdate -label fsm_dv /tb_crc32/crc32_instance/fsm_crc32_instance/fsm_dv
+add wave -noupdate -label curr_state /tb_crc32/crc32_instance/fsm_crc32_instance/curr_state
+
+restart -f
+run 600 ns

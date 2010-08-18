@@ -1,0 +1,151 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author: Libor Polcak <polcak_l@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 225 2007-08-21 22:14:37Z polcak_l $
+
+   view wave
+   delete wave *
+
+proc blk_comp { TB COMP } {
+   add wave -divider "FL COMPOSER"
+   add_wave "-noupdate -hex -label clk" $TB/clk
+   add_wave "-noupdate -hex -label reset" $TB/reset
+      
+   add wave -divider "Common signals"
+   add_wave "-noupdate -label CLK -hex" $COMP/CLK
+   add_wave "-noupdate -label RESET -hex" $COMP/RESET
+
+   add wave -divider "Input interface"
+   add_wave "-noupdate -label CLK -hex" $COMP/CLK
+   add_wave "-noupdate -label RESET -hex" $COMP/RESET
+
+   add wave -divider "INPUT"
+   add wave -divider "Payload"
+   add_wave "-noupdate -label RX_REM -hex" $COMP/RX_REM
+   add_wave "-noupdate -label RX_SOP_N -hex" $COMP/RX_SOP_N
+   add_wave "-noupdate -label RX_EOP_N -hex" $COMP/RX_EOP_N
+   add_wave "-noupdate -label RX_SRC_RDY_N -hex" $COMP/RX_SRC_RDY_N
+   add_wave "-noupdate -label RX_DST_RDY_N -hex" $COMP/RX_DST_RDY_N
+
+   add wave -divider "Packet headers/footers"
+   add_wave "-noupdate -label RX_HDATA -hex" $COMP/RX_HDATA
+   add_wave "-noupdate -label RX_HREM -hex" $COMP/RX_HREM
+   add_wave "-noupdate -label RX_HSOP_N -hex" $COMP/RX_HSOP_N
+   add_wave "-noupdate -label RX_HEOP_N -hex" $COMP/RX_HEOP_N
+   add_wave "-noupdate -label RX_HSRC_RDY_N -hex" $COMP/RX_HSRC_RDY_N
+   add_wave "-noupdate -label RX_HDST_RDY_N -hex" $COMP/RX_HDST_RDY_N
+
+
+   add wave -divider "Output FrameLink"
+   add_wave "-noupdate -label TX_DATA -hex" $COMP/TX_DATA
+   add_wave "-noupdate -label TX_REM -hex" $COMP/TX_REM
+   add_wave "-noupdate -label TX_SOF_N -hex" $COMP/TX_SOF_N
+   add_wave "-noupdate -label TX_SOP_N -hex" $COMP/TX_SOP_N
+   add_wave "-noupdate -label TX_EOP_N -hex" $COMP/TX_EOP_N
+   add_wave "-noupdate -label TX_EOF_N -hex" $COMP/TX_EOF_N
+   add_wave "-noupdate -label TX_SRC_RDY_N -hex" $COMP/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N -hex" $COMP/TX_DST_RDY_N
+
+   add wave -divider "Multiplexers"
+   add_wave "-noupdate -label mx_data -hex" $COMP/mx_data
+   add_wave "-noupdate -label mx_rem -hex" $COMP/mx_rem
+   add_wave "-noupdate -label mx_sop_n -hex" $COMP/mx_sop_n
+   add_wave "-noupdate -label mx_eop_n -hex" $COMP/mx_eop_n
+   add_wave "-noupdate -label mx_src_rdy_n -hex" $COMP/mx_src_rdy_n
+
+   add wave -divider "Composed FrameLink"
+   add_wave "-noupdate -label fl_composed_data -hex" $COMP/fl_composed_data
+   add_wave "-noupdate -label fl_composed_rem -hex" $COMP/fl_composed_rem
+   add_wave "-noupdate -label fl_composed_sof_n -hex" $COMP/fl_composed_sof_n
+   add_wave "-noupdate -label fl_composed_sop_n -hex" $COMP/fl_composed_sop_n
+   add_wave "-noupdate -label fl_composed_eop_n -hex" $COMP/fl_composed_eop_n
+   add_wave "-noupdate -label fl_composed_eof_n -hex" $COMP/fl_composed_eof_n
+   add_wave "-noupdate -label fl_composed_src_rdy_n -hex" $COMP/fl_composed_src_rdy_n
+   add_wave "-noupdate -label fl_composed_dst_rdy_n -hex" $COMP/fl_composed_dst_rdy_n
+
+   add wave -divider "FSM signals"
+   add_wave "-noupdate -label fsm_eop_n -hex" $COMP/fsm_eop_n
+   add_wave "-noupdate -label fsm_heop_n -hex" $COMP/fsm_heop_n
+   add_wave "-noupdate -label fsm_sof_n -hex" $COMP/fsm_sof_n
+   add_wave "-noupdate -label fsm_eof_n -hex" $COMP/fsm_eof_n
+   add_wave "-noupdate -label fifo_sel -hex" $COMP/fifo_sel
+
+   add wave -divider "FSM states"
+   add_wave "-noupdate -label curr_state -hex" $COMP/fsm_hpf_gen/fsm_hpfi/curr_state
+   add_wave "-noupdate -label next_state -hex" $COMP/fsm_hpf_gen/fsm_hpfi/next_state
+   add_wave "-noupdate -label curr_state -hex" $COMP/fsm_hp_gen/fsm_hpi/curr_state
+   add_wave "-noupdate -label next_state -hex" $COMP/fsm_hp_gen/fsm_hpi/next_state
+   add_wave "-noupdate -label curr_state -hex" $COMP/fsm_pf_gen/fsm_pfi/curr_state
+   add_wave "-noupdate -label next_state -hex" $COMP/fsm_pf_gen/fsm_pfi/next_state
+
+
+   add wave -divider "FL Relay signals"
+   add_wave "-noupdate -label flrel_data_rx -hex" $COMP/flrel_gen/flreli/rx_data
+   add_wave "-noupdate -label flrel_rem_rx -hex" $COMP/flrel_gen/flreli/rx_drem
+   add_wave "-noupdate -label flrel_sof_rx_n -hex" $COMP/flrel_gen/flreli/rx_sof_n
+   add_wave "-noupdate -label flrel_sop_rx_n -hex" $COMP/flrel_gen/flreli/rx_sop_n
+   add_wave "-noupdate -label flrel_eop_rx_n -hex" $COMP/flrel_gen/flreli/rx_eop_n
+   add_wave "-noupdate -label flrel_eof_rx_n -hex" $COMP/flrel_gen/flreli/rx_eof_n
+   add_wave "-noupdate -label flrel_src_rdy_rx_n -hex" $COMP/flrel_gen/flreli/rx_src_rdy_n
+   add_wave "-noupdate -label flrel_dst_rdy_rx_n -hex" $COMP/flrel_gen/flreli/rx_dst_rdy_n
+
+   add_wave "-noupdate -label flrel_data_tx -hex" $COMP/flrel_gen/flreli/tx_data
+   add_wave "-noupdate -label flrel_rem_tx -hex" $COMP/flrel_gen/flreli/tx_drem
+   add_wave "-noupdate -label flrel_sof_tx_n -hex" $COMP/flrel_gen/flreli/tx_sof_n
+   add_wave "-noupdate -label flrel_sop_tx_n -hex" $COMP/flrel_gen/flreli/tx_sop_n
+   add_wave "-noupdate -label flrel_eop_tx_n -hex" $COMP/flrel_gen/flreli/tx_eop_n
+   add_wave "-noupdate -label flrel_eof_tx_n -hex" $COMP/flrel_gen/flreli/tx_eof_n
+   add_wave "-noupdate -label flrel_src_rdy_tx_n -hex" $COMP/flrel_gen/flreli/tx_src_rdy_n
+   add_wave "-noupdate -label flrel_dst_rdy_tx_n -hex" $COMP/flrel_gen/flreli/tx_dst_rdy_n
+
+
+	 add wave -divider "FL Sim TX"
+   add_wave "-noupdate -hex -label clk" $TB/fl_sim_tx/fl_clk
+   add_wave "-noupdate -hex -label reset" $TB/fl_sim_tx/fl_reset
+   add_wave "-noupdate -hex -label rx_data -hex" $TB/fl_sim_tx/tx_data
+   add_wave "-noupdate -hex -label rx_rem -hex" $TB/fl_sim_tx/tx_rem
+   add_wave "-noupdate -hex -label rx_sof_n" $TB/fl_sim_tx/tx_sof_n
+   add_wave "-noupdate -hex -label rx_sop_n" $TB/fl_sim_tx/tx_sop_n
+   add_wave "-noupdate -hex -label rx_eop_n" $TB/fl_sim_tx/tx_eop_n
+   add_wave "-noupdate -hex -label rx_eof_n" $TB/fl_sim_tx/tx_eof_n
+   add_wave "-noupdate -hex -label rx_src_rdy_n" $TB/fl_sim_tx/tx_src_rdy_n
+   add_wave "-noupdate -hex -label rx_dst_rdy_n" $TB/fl_sim_tx/tx_dst_rdy_n
+
+	 add wave -divider "FL Sim RX"
+   add_wave "-noupdate -hex -label clk" $TB/fl_sim_rx/fl_clk
+   add_wave "-noupdate -hex -label reset" $TB/fl_sim_rx/fl_reset
+   add_wave "-noupdate -hex -label rx_data -hex" $TB/fl_sim_rx/rx_data
+   add_wave "-noupdate -hex -label rx_rem -hex" $TB/fl_sim_rx/rx_rem
+   add_wave "-noupdate -hex -label rx_sof_n" $TB/fl_sim_rx/rx_sof_n
+   add_wave "-noupdate -hex -label rx_sop_n" $TB/fl_sim_rx/rx_sop_n
+   add_wave "-noupdate -hex -label rx_eop_n" $TB/fl_sim_rx/rx_eop_n
+   add_wave "-noupdate -hex -label rx_eof_n" $TB/fl_sim_rx/rx_eof_n
+   add_wave "-noupdate -hex -label rx_src_rdy_n" $TB/fl_sim_rx/rx_src_rdy_n
+   add_wave "-noupdate -hex -label rx_dst_rdy_n" $TB/fl_sim_rx/rx_dst_rdy_n
+}

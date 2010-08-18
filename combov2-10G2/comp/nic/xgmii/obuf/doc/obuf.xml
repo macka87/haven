@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>Output buffer for XGMII interface</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="polcak_l">Libor Polcak</author>
+       <author login="solanka">Lukas Solanka</author>
+       <author login="xmatou06">Jiri Matousek</author>
+</authors>
+
+
+<!-- Features -->
+<features>
+	<item>Source MAC Address replacement</item>
+	<item>Padding added to short frames</item>
+	<item>Frame check sum added at the end of the frame</item>
+</features>
+
+<!-- Bugs -->
+<!-- Things to do -->
+
+<todo>
+   <item>HW tests</item>
+   <item>Len/type item checking (must be consistent with real packet length)</item>
+</todo>
+
+<!-- Short Block description -->
+<description>
+   Input packets come from FrameLink interface and according to
+   their footer content are processed. Packets are transmitted
+   as Ethernet frames through standard XGMII interface (32-bits, 156.25MHz)
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+   <!-- Generic description -->
+   <generic_map>
+
+      <generic name="CTRL_CMD" type="boolean" default="true">
+         Frames contain control part
+      </generic>
+      <generic name="FL_WIDTH_RX" type="integer" default="64">
+         FrameLink width
+      </generic>
+      <generic name="DFIFO_SIZE" type="integer" default="1024">
+         Number of items in Data FIFO (FL_WIDTH_RX + control signals wide).
+         !!!!!!!!!!! Must be 2^n, n>=2 !!!!!!!!!!!!!!!!!!!!!!
+      </generic>
+      <generic name="HFIFO_SIZE" type="integer" default="256">
+         HFIFO item count (1-bit wide)
+      </generic>
+      <generic name="HFIFO_MEMTYPE" type="mem_type" default="LUT">
+         Type of memory used by HFIFO
+      </generic>
+
+		</generic_map>
+
+   <!-- Port description -->
+   <port_map>
+
+      <divider>Common signals</divider>
+      <port  name="RESET" dir="in" width="1">
+         Global reset
+      </port>
+
+      <divider>XGMII interface</divider>
+      <port name="XGMII_TXCLK" dir="out" width="1">
+         XGMII Transmit Clock
+      </port>
+      <port name="XGMII_TXD" dir="out" width="32">
+         XGMII Transmit Data
+      </port>
+      <port name="XGMII_TXC" dir="out" width="4">
+         XGMII Transmit Control
+      </port>
+      <port name="TX_CLK_REF" dir="in" width="1">
+         Reference Transmit Clock provided by user (156.25MHz)
+      </port>
+
+      <divider>FrameLink interface</divider>
+      <port name="RX_SOF_N" dir="in" width="1">
+         Signals the start of the incoming frame (Active-low, asserted for a single user clock cycle)
+      </port>
+      <port name="RX_SOP_N" dir="in" width="1">
+         Signals the start of the incoming frame (the frame's sub-block) (Active-low, asserted for a single user clock cycle)
+      </port>
+      <port name="RX_EOP_N" dir="in" width="1">
+         Signals the end of the incoming frame (the frame's sub-block) (Active-low, asserted for a single user clock cycle)
+      </port>
+      <port name="RX_EOF_N" dir="in" width="1">
+         Signals the end of the incoming frame (Active-low, asserted for a single user clock cycle)
+      </port>
+      <port name="RX_SRC_RDY_N" dir="in" width="1">
+         Asserted (low) when FrameLink signals from the source are valid
+      </port>
+      <port name="RX_DST_RDY_N" dir="out" width="1">
+         Asserted (low) during clock edges when signals from the source will be accepted (if SRC_RDY_N is also asserted)
+      </port>
+      <port name="RX_DATA" dir="in" width="FL_WIDTH_RX">
+         Incoming data (Ascending bit order)
+      </port>
+      <port name="RX_REM" dir="in" width="log2(FL_WIDTH_RX/8)">
+         Specifies the number of valid bytes in the last data beat; valid only when EOP_N is asserted
+      </port>
+      <port name="FL_CLK" dir="in" width="1">
+         Clock for FrameLink interface.
+      </port>
+
+      <divider>Status interface</divider>
+      <port name="OUTGOING_PCKT" dir="out" width="1">
+         Active in '1' when a packet is being transmitted.
+      </port>
+
+      <divider>MI32 interface</divider>
+      <port name="MI" dir="inout" width="32">
+         Standard MI32 interface
+      </port>
+      <port name="MI_CLK" dir="in" width="1">
+         Clock for MI32 interface
+      </port>
+
+   </port_map>
+
+</interface>
+
+
+<!-- ADDRESS SPACE SECTION ********************************************** -->
+
+<addr_space id ="OBUF" name="OBUF Address space" main="yes" size="0x100">
+	<instantion ref_comp="xgmii_obuf_buf" offset="0x000000">
+		Buf Address Space
+	</instantion>
+</addr_space>
+
+
+
+<!-- SW BODY SECTION **************************************************** -->
+
+<sw_body>
+
+	<p>
+		You should read <ref_comp ref="xgmii_obuf_buf">Buf</ref_comp>
+		documentation for more information.
+	</p>
+
+
+</sw_body>
+
+<!-- HW BODY SECTION **************************************************** -->
+<body>
+
+<h1>XGMII OBUF info</h1>
+
+	<h2> General info </h2>
+	<p>
+		XGMII OBUF consists of several components shown below. It was designed not only as
+		modular as possible, but also with used resources in mind.
+	</p>
+	<p>
+		Because the component has to be synthesizable in XST and XST can not guarantee that
+		CRC module can work on 156.25 MHz it has to be instanced as black box. This suppose
+		that this module will be added manualy.
+	</p>
+
+
+	<h2> Components </h2>
+	<p>
+		<obr src="./fig/block_structure.fig">XGMII OBUF architecture</obr>
+	</p>
+	<p>
+		List of components
+		<ul>
+			<li><ref_comp ref="xgmii_obuf_fl">FL</ref_comp></li>
+			<li><ref_comp ref="xgmii_obuf_buf">Buf</ref_comp></li>
+			<li><ref_comp ref="xgmii_obuf_process">Process</ref_comp></li>
+			<li><ref_comp ref="xgmii_obuf_xgmii_enc">XGMII_ENC</ref_comp></li>
+			<li>SDR2DDR (made by Xilinx, converts 64-bit SDR flow into 32-bit DDR)</li>
+		</ul>
+	</p>
+
+
+    <h2>Input FrameLink protocol stream</h2>
+    <p>
+        There are two variants depending on generic parameter CTRL_CMD.
+    </p>
+    <p>
+        Input stream wihtout Footer means, the frame should be transmitted
+        without any other restrictions. However, input stream with Footer
+        can add addition information controlling packet transmitting. For instance,
+        it could contain information whether the paket should be transmitted
+        or not (because error can occure while external component are sending
+        packet to OBUF component).
+    </p>
+
+    <h3>Without control part</h3>
+    <p>
+        (SOP)(FRAME_DATA)(EOP)
+    </p>
+
+    <h3>With footer</h3>
+    <p>
+        (SOP)(FRAME_DATA)(EOP)(SOP)(FOOTER DATA)(EOP)
+    </p>
+
+    <p>
+        Footer data structure is as follows:
+
+        <ol>
+            <li>bit0 : Frame Valid - frame is corrupted and will be discarded when Frame Valid bit is deasserted</li>
+            <li>bit1 : Replace Source MAC - frame source MAC address will be replaced by that stored in MAC address register when
+                Replace Source MAC bit is asserted</li>
+        </ol>
+    </p>
+
+
+    <h2>Output XGMII protocol</h2>
+    <p>This protocol is specified in standard IEEE 802.3.</p>
+
+
+<h1>Frequency and Resources usage</h1>
+<p>
+   <tab sloupce="cccccccc">
+   <tr>
+      <th>FPGA</th>
+      <th>Architecture</th>
+      <th>Tool</th>
+      <th>Generic settings</th>
+      <th>Slices</th>
+      <th>Max. Frequency - TX_CLK_REF</th>
+   </tr>
+      <tr>
+         <td>xc2vp30</td>
+         <td>FULL</td>
+         <td>precision</td>
+         <td>CTRL_CMD=true FL_WIDTH_RX=64 DFIFO_SIZE=1023 HFIFO_SIZE=256 HFIFO_MEMTYPE=LUT </td>
+         <td>928</td>
+         <td>x</td>
+      </tr>
+      <tr>
+         <td>xc2vp30</td>
+         <td>FULL</td>
+         <td>precision</td>
+         <td>CTRL_CMD=false FL_WIDTH_RX=64 DFIFO_SIZE=1023 HFIFO_SIZE=256 HFIFO_MEMTYPE=LUT </td>
+         <td>926</td>
+         <td>x</td>
+      </tr>
+      <tr>
+         <td>xc2vp30</td>
+         <td>FULL</td>
+         <td>precision</td>
+         <td>CTRL_CMD=true FL_WIDTH_RX=128 DFIFO_SIZE=1023 HFIFO_SIZE=256 HFIFO_MEMTYPE=LUT </td>
+         <td>1070</td>
+         <td>x</td>
+      </tr>
+      <tr>
+         <td>xc2vp30</td>
+         <td>FULL</td>
+         <td>precision</td>
+         <td>CTRL_CMD=false FL_WIDTH_RX=128 DFIFO_SIZE=1023 HFIFO_SIZE=256 HFIFO_MEMTYPE=LUT </td>
+         <td>1068</td>
+         <td>x</td>
+      </tr>
+      <tr>
+         <td>xc2vp30</td>
+         <td>FULL</td>
+         <td>xst</td>
+         <td>CTRL_CMD=true FL_WIDTH_RX=64 DFIFO_SIZE=1023 HFIFO_SIZE=256 HFIFO_MEMTYPE=LUT </td>
+         <td>946</td>
+         <td>188.173</td>
+      </tr>
+      <tr>
+         <td>xc2vp30</td>
+         <td>FULL</td>
+         <td>xst</td>
+         <td>CTRL_CMD=false FL_WIDTH_RX=64 DFIFO_SIZE=1023 HFIFO_SIZE=256 HFIFO_MEMTYPE=LUT </td>
+         <td>944</td>
+         <td>188.173</td>
+      </tr>
+      <tr>
+         <td>xc2vp30</td>
+         <td>FULL</td>
+         <td>xst</td>
+         <td>CTRL_CMD=true FL_WIDTH_RX=128 DFIFO_SIZE=1023 HFIFO_SIZE=256 HFIFO_MEMTYPE=LUT </td>
+         <td>1095</td>
+         <td>188.173</td>
+      </tr>
+      <tr>
+         <td>xc2vp30</td>
+         <td>FULL</td>
+         <td>xst</td>
+         <td>CTRL_CMD=false FL_WIDTH_RX=128 DFIFO_SIZE=1023 HFIFO_SIZE=256 HFIFO_MEMTYPE=LUT </td>
+         <td>1094</td>
+         <td>188.173</td>
+      </tr>
+<nazev>Chip utilization and maximal frequency.</nazev>
+</tab>
+</p>
+
+</body>
+
+</source>

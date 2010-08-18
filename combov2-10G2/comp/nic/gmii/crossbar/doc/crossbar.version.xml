@@ -1,0 +1,12 @@
+<versions>
+
+	<version id="HEAD" name="actual version">
+		<item>generated from HEAD cvs</item>
+	</version>
+
+	<version id="CROSSBAR_01_00" name="01_00">
+		<item>Initial version of GMII crossbar</item>
+		<item>Functional in behavioral simulation</item>
+	</version>
+
+</versions>

@@ -1,0 +1,60 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2009 CESNET
+# Author(s): Jan Stourac <xstour03@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+
+view wave
+delete wave *
+
+# -------------------------------------------------------------------------
+#                       Waveform Definition 
+# -------------------------------------------------------------------------
+
+proc blk_ASYNC { PARAM } {
+   global ASYNC_PATH
+
+add wave -divider "ASYNC"
+# User signals
+add wave -divider "Input interface"
+add_wave "-noupdate -label IN_CLK"                 $ASYNC_PATH/IN_CLK
+add_wave "-noupdate -label RQST -hex"              $ASYNC_PATH/RQST
+add_wave "-noupdate -label RDY"                    $ASYNC_PATH/RDY
+add wave -divider "Output interface"
+add_wave "-noupdate -label OUT_CLK"                $ASYNC_PATH/OUT_CLK
+add_wave "-noupdate -label OUT_RQST"               $ASYNC_PATH/OUT_RQST
+add wave -divider "Internals - OUT_CLK domain"
+add_wave "-noupdate -label served"	  $ASYNC_PATH/served
+add_wave "-noupdate -label rqst_pipe"     $ASYNC_PATH/rqst_pipe    
+add_wave "-noupdate -label rqst_pipe_reg" $ASYNC_PATH/rqst_pipe_reg
+add_wave "-noupdate -label out_reg_we"    $ASYNC_PATH/out_reg_we
+add_wave "-noupdate -label out_reg_we_delay" $ASYNC_PATH/out_reg_we_delay
+add wave -divider "Internals - IN_CLK domain"
+add_wave "-noupdate -label rdy_pipe"      $ASYNC_PATH/rdy_pipe     
+add_wave "-noupdate -label rdy_pipe0_reg" $ASYNC_PATH/rdy_pipe0_reg
+add_wave "-noupdate -label rdy_pipe1_reg" $ASYNC_PATH/rdy_pipe1_reg
+}

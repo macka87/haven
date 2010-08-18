@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<source>
+<!-- Page name -->
+<project>Common components</project>
+
+<!-- Features -->
+<features>
+   <item>Extensive set of common components for various situations</item>
+   	<item>Generic components - easily customizable to your project</item>
+	<item>All new components should work on 100MHz frequency in hardware</item>
+</features>
+
+<!-- Short project description -->
+<description>
+	<p>
+      Overview of common components. See HW section	for a list of available components.
+	</p>
+</description>
+
+<!-- *********************** Body  *********************** -->
+
+<body>
+   <h2>Design elements</h2>
+   <p>
+      <ul>
+         <li><ref_comp ref="dec1fn" tag_id="HEAD">Generic decoder</ref_comp></li>
+         <li><ref_comp ref="enc" tag_id="HEAD">Generic encoder</ref_comp></li>
+         <li><ref_comp ref="demux" tag_id="HEAD">Generic demultiplexer</ref_comp></li>
+         <li><ref_comp ref="mux" tag_id="HEAD">Generic multiplexer</ref_comp></li>
+      </ul>
+   </p>
+
+   <h2>FPGA elements</h2>
+   <p>
+      <ul>
+         <li><ref_comp ref="sp_distmem" tag_id="HEAD">Single port SelectRAM</ref_comp></li>
+         <li><ref_comp ref="sp_bmem" tag_id="HEAD">Single port BlockRAM</ref_comp></li>
+         <li><ref_comp ref="dp_distmem" tag_id="HEAD">Dual port SelectRAM</ref_comp></li>
+         <li><ref_comp ref="dp_bmem" tag_id="HEAD">Dual port BlockRAM</ref_comp></li>
+         <li><ref_comp ref="dp_bmem_be" tag_id="HEAD">Dual port BlockRAM with Byte Enable feature</ref_comp></li>
+      </ul>
+   </p>
+
+   <h2>Data storage</h2>
+   <p>
+      <ul>
+         <li><ref_comp ref="cache_bram" tag_id="HEAD">Cache</ref_comp> - generic cache composed of BlockRAM memories</li>
+         <li><ref_comp ref="cam" tag_id="HEAD">CAM</ref_comp> - generic on-chip Content-Addressable memory</li>
+         <li><ref_comp ref="dp_regflags" tag_id="HEAD">Dual port flag registers</ref_comp></li>
+         <li><ref_comp ref="sh_fifo" tag_id="HEAD">sh_fifo</ref_comp> - FIFO built from shift registers</li>
+         <li><ref_comp ref="sh_reg" tag_id="HEAD">sh_reg</ref_comp> - Shift register based on SRL16 component</li>
+         <li><ref_comp ref="sh_reg_res" tag_id="HEAD">sh_reg_res</ref_comp> - Shift register with reset to zeros</li>
+         <li><ref_comp ref="sh_reg_resload" tag_id="HEAD">sh_reg_resload</ref_comp> - Shift register with reset to init value</li>
+         <li><ref_comp ref="fifo_sync_ord" tag_id="HEAD">Synchronous ordinary FIFO unit</ref_comp></li>
+         <li><ref_comp ref="fifo_sync_block">Synchronous block FIFO unit</ref_comp></li>
+         <li><ref_comp ref="fifo" tag_id="NETFLOW_00_01">Old version of FIFO unit</ref_comp></li>
+         <li><ref_comp ref="nfifo2fifo">Receive buffer - N FIFOs to FIFO</ref_comp></li>
+         <li><ref_comp ref="nfifo2mem">Receive buffer - N FIFOs to memory</ref_comp></li>
+         <li><ref_comp ref="fifo2nfifo">Transmit buffer - FIFO to N FIFOs</ref_comp></li>
+         <li><ref_comp ref="mem2nfifo">Transmit buffer - memory to N FIFOs</ref_comp></li>
+      </ul>
+   </p>
+
+   <h2>Data manipulations</h2>
+   <p>
+      <ul>
+         <li><ref_comp ref="AD2SD" tag_id="HEAD">AD2SD</ref_comp> - Resamples incoming data to demanded clock</li>
+         <li><ref_comp ref="ddr_mx" tag_id="HEAD">DDR_MX</ref_comp> - performs conversions between 2 SDR streams and one DDR stream</li>
+         <li><ref_comp ref="fod" tag_id="HEAD">First one detector</ref_comp> - detects first 'one' in std_logic_vector</li>
+         <li><ref_comp ref="sorting_unit" tag_id="HEAD">Simple sorting unit</ref_comp></li>
+         <li><ref_comp ref="mi_splitter" tag_id="HEAD">MI Splitter</ref_comp> - Unit for connecting generic number of MI interfaces together</li>
+      </ul>
+   </p>
+
+   <h2>Miscellaneous</h2>
+   <p>
+      <ul>
+         <li><ref_comp ref="cnt" tag_id="HEAD">cnt</ref_comp> - fast counter</li>
+         <li><ref_comp ref="cnt_dist" tag_id="HEAD">cnt_dist</ref_comp> - array of counters in distributed memory</li>
+         <li><ref_comp ref="id" tag_id="HEAD">ID component</ref_comp></li>
+         <li><ref_comp ref="id_mi32" tag_id="HEAD">ID_MI32 component</ref_comp></li>
+         <li><ref_comp ref="pipe" tag_id="HEAD">PIPE</ref_comp> - registr component including feedback</li>
+      </ul>
+   </p>
+</body>
+
+</source>

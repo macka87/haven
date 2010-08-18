@@ -1,0 +1,624 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author: Libor Polcak <polcak_l@liberouter.org>
+#         Jiri Matousek <xmatou06@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 6133 2008-10-28 09:49:59Z xmatou06 $
+
+   view wave
+   delete wave *
+
+proc IBUF_EMAC_INTERFACE { TB BASE } {
+
+   add wave -divider "TB signals"
+   add_wave "-noupdate -hex -label reset"             $TB/reset
+
+   add wave -divider ""
+
+   add wave -divider "EMAC IBUF interface"
+
+   add wave -divider "RX interface"
+   add_wave "-noupdate -hex -label RXCLK"             $BASE/RXCLK
+   add_wave "-noupdate -hex -label RXCE"              $BASE/RXCE
+   add_wave "-noupdate -hex -label RXD"               $BASE/RXD
+   add_wave "-noupdate -hex -label RXDV"              $BASE/RXDV
+   add_wave "-noupdate -hex -label RXGOODFRAME"       $BASE/RXGOODFRAME
+   add_wave "-noupdate -hex -label RXBADFRAME"        $BASE/RXBADFRAME
+   add_wave "-noupdate -hex -label RXSTATS"           $BASE/RXSTATS
+   add_wave "-noupdate -hex -label RXSTATSVLD"        $BASE/RXSTATSVLD
+
+   add wave -divider "PACODAG interface"
+   add_wave "-noupdate -hex -label CTRL_DI"           $BASE/CTRL_DI
+   add_wave "-noupdate -hex -label CTRL_REM"          $BASE/CTRL_REM
+   add_wave "-noupdate -hex -label CTRL_SRC_RDY_N"    $BASE/CTRL_SRC_RDY_N
+   add_wave "-noupdate -hex -label CTRL_SOP_N"        $BASE/CTRL_SOP_N
+   add_wave "-noupdate -hex -label CTRL_EOP_N"        $BASE/CTRL_EOP_N
+   add_wave "-noupdate -hex -label CTRL_DST_RDY_N"    $BASE/CTRL_DST_RDY_N
+   add_wave "-noupdate -hex -label CTRL_RDY"          $BASE/CTRL_RDY
+
+   add wave -divider "Status interface"
+   add_wave "-noupdate -hex -label SOP"               $BASE/SOP
+   add_wave "-noupdate -hex -label STAT"              $BASE/STAT
+   add_wave "-noupdate -hex -label STAT_DV"           $BASE/STAT_DV
+
+   add wave -divider "Sampling unit interface"
+   add_wave "-noupdate -hex -label SAU_ACCEPT"        $BASE/SAU_ACCEPT
+   add_wave "-noupdate -hex -label SAU_DV"            $BASE/SAU_DV
+
+   add wave -divider "FrameLink interface"
+   add_wave "-noupdate -hex -label RDCLK"             $BASE/RDCLK
+   add_wave "-noupdate -hex -label DATA"              $BASE/DATA
+   add_wave "-noupdate -hex -label DREM"              $BASE/DREM
+   add_wave "-noupdate -hex -label SRC_RDY_N"         $BASE/SRC_RDY_N
+   add_wave "-noupdate -hex -label SOF_N"             $BASE/SOF_N
+   add_wave "-noupdate -hex -label SOP_N"             $BASE/SOP_N
+   add_wave "-noupdate -hex -label EOF_N"             $BASE/EOF_N
+   add_wave "-noupdate -hex -label EOP_N"             $BASE/EOP_N
+   add_wave "-noupdate -hex -label DST_RDY_N"         $BASE/DST_RDY_N
+
+   add wave -divider "Address decoder interface"
+   add_wave "-noupdate -hex -label ADC_CLK"           $BASE/ADC_CLK
+   add_wave "-noupdate -hex -label ADC_RD"            $BASE/ADC_RD
+   add_wave "-noupdate -hex -label ADC_WR"            $BASE/ADC_WR
+   add_wave "-noupdate -hex -label ADC_ADDR"          $BASE/ADC_ADDR
+   add_wave "-noupdate -hex -label ADC_DI"            $BASE/ADC_DI
+   add_wave "-noupdate -hex -label ADC_DO"            $BASE/ADC_DO
+   add_wave "-noupdate -hex -label ADC_DRDY"          $BASE/ADC_DRDY
+}
+
+
+proc rx_part { COMP } {
+   
+   add wave -divider "RX"
+   add_wave "-noupdate -hex -label CLK"               $COMP/RXi/CLK
+   add_wave "-noupdate -hex -label RESET"             $COMP/RXi/RESET
+   add_wave "-noupdate -hex -label CE"                $COMP/RXi/CE
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label DI"                $COMP/RXi/DI
+   add_wave "-noupdate -hex -label DI_DV"             $COMP/RXi/DI_DV
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label GOOD_FRAME"        $COMP/RXi/GOOD_FRAME
+   add_wave "-noupdate -hex -label BAD_FRAME"         $COMP/RXi/BAD_FRAME
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label RX_STAT"           $COMP/RXi/RX_STAT
+   add_wave "-noupdate -hex -label RX_STAT_VLD"       $COMP/RXi/RX_STAT_VLD
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label DO"                $COMP/RXi/DO
+   add_wave "-noupdate -hex -label DO_DV"             $COMP/RXi/DO_DV
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label SOP"               $COMP/RXi/SOP
+   add_wave "-noupdate -hex -label EOP"               $COMP/RXi/EOP
+   add_wave "-noupdate -hex -label FRAME_SENT"        $COMP/RXi/FRAME_SENT
+   add_wave "-noupdate -hex -label FRAME_ERR"         $COMP/RXi/FRAME_ERR
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label TX_STAT"           $COMP/RXi/TX_STAT
+   add_wave "-noupdate -hex -label TX_STAT_VLD"       $COMP/RXi/TX_STAT_VLD
+   add_wave "-noupdate -hex -label CRC_ERROR"         $COMP/RXi/CRC_ERROR
+   add_wave "-noupdate -hex -label CRC_ERROR_VLD"     $COMP/RXi/CRC_ERROR_VLD
+}
+
+
+proc rx_part_signals { COMP } {
+
+   add wave -divider "RX signals"
+   add_wave "-noupdate -hex -label reg1_data"         $COMP/RXi/reg1_data
+   add_wave "-noupdate -hex -label reg1_data_vld"     $COMP/RXi/reg1_data_vld
+   add_wave "-noupdate -hex -label reg1_frame_sent"   $COMP/RXi/reg1_frame_sent
+   add_wave "-noupdate -hex -label reg1_frame_err"    $COMP/RXi/reg1_frame_err
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg2_data"         $COMP/RXi/reg2_data
+   add_wave "-noupdate -hex -label reg2_data_vld"     $COMP/RXi/reg2_data_vld
+   add_wave "-noupdate -hex -label reg2_frame_sent"   $COMP/RXi/reg2_frame_sent
+   add_wave "-noupdate -hex -label reg2_frame_err"    $COMP/RXi/reg2_frame_err
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg3_data"         $COMP/RXi/reg3_data
+   add_wave "-noupdate -hex -label reg3_data_vld"     $COMP/RXi/reg3_data_vld
+   add_wave "-noupdate -hex -label reg3_frame_sent"   $COMP/RXi/reg3_frame_sent
+   add_wave "-noupdate -hex -label reg3_frame_err"    $COMP/RXi/reg3_frame_err
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg4_data"         $COMP/RXi/reg4_data
+   add_wave "-noupdate -hex -label reg4_data_vld"     $COMP/RXi/reg4_data_vld
+   add_wave "-noupdate -hex -label reg4_frame_sent"   $COMP/RXi/reg4_frame_sent
+   add_wave "-noupdate -hex -label reg4_frame_err"    $COMP/RXi/reg4_frame_err
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg5_data"         $COMP/RXi/reg5_data
+   add_wave "-noupdate -hex -label reg5_data_vld"     $COMP/RXi/reg5_data_vld
+   add_wave "-noupdate -hex -label reg5_frame_sent"   $COMP/RXi/reg5_frame_sent
+   add_wave "-noupdate -hex -label reg5_frame_err"    $COMP/RXi/reg5_frame_err
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg6_sop"          $COMP/RXi/reg6_sop
+   add_wave "-noupdate -hex -label reg6_data"         $COMP/RXi/reg6_data
+   add_wave "-noupdate -hex -label reg6_data_vld"     $COMP/RXi/reg6_data_vld
+   add_wave "-noupdate -hex -label reg6_frame_sent"   $COMP/RXi/reg6_frame_sent
+   add_wave "-noupdate -hex -label reg6_frame_err"    $COMP/RXi/reg6_frame_err
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_stat_vector"   $COMP/RXi/reg_stat_vector
+   add_wave "-noupdate -hex -label reg_stat_vld"      $COMP/RXi/reg_stat_vld
+   add_wave "-noupdate -hex -label cnt_stat_part"     $COMP/RXi/cnt_stat_part
+}
+
+
+proc buf_part { COMP } {
+
+   add wave -divider "BUF"
+   add_wave "-noupdate -hex -label RESET"             $COMP/BUFi/RESET
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label WRCLK"             $COMP/BUFi/WRCLK
+   add_wave "-noupdate -hex -label DI"                $COMP/BUFi/DI
+   add_wave "-noupdate -hex -label DI_DV"             $COMP/BUFi/DI_DV
+   add_wave "-noupdate -hex -label SOP"               $COMP/BUFi/SOP
+   add_wave "-noupdate -hex -label EOP"               $COMP/BUFi/EOP
+   add_wave "-noupdate -hex -label FRAME_ERR"         $COMP/BUFi/FRAME_ERR
+   add_wave "-noupdate -hex -label RX_STAT"           $COMP/BUFi/RX_STAT
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label FSM_RX_STATE"      $COMP/BUFi/FSM_RX_STATE
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label CTRL_DI"           $COMP/BUFi/CTRL_DI
+   add_wave "-noupdate -hex -label CTRL_REM"          $COMP/BUFi/CTRL_REM
+   add_wave "-noupdate -hex -label CTRL_SRC_RDY_N"    $COMP/BUFi/CTRL_SRC_RDY_N
+   add_wave "-noupdate -hex -label CTRL_SOP_N"        $COMP/BUFi/CTRL_SOP_N
+   add_wave "-noupdate -hex -label CTRL_EOP_N"        $COMP/BUFi/CTRL_EOP_N
+   add_wave "-noupdate -hex -label CTRL_DST_RDY_N"    $COMP/BUFi/CTRL_DST_RDY_N
+   add_wave "-noupdate -hex -label CTRL_SOP"          $COMP/BUFi/CTRL_SOP
+   add_wave "-noupdate -hex -label CTRL_RDY"          $COMP/BUFi/CTRL_RDY
+   add_wave "-noupdate -hex -label CTRL_STAT"         $COMP/BUFi/CTRL_STAT
+   add_wave "-noupdate -hex -label CTRL_STAT_DV"      $COMP/BUFi/CTRL_STAT_DV
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label EN"                $COMP/BUFi/EN
+   add_wave "-noupdate -hex -label MAC_IN"            $COMP/BUFi/MAC_IN
+   add_wave "-noupdate -hex -label CHECK"             $COMP/BUFi/CHECK
+   add_wave "-noupdate -hex -label CHECK_FIN"         $COMP/BUFi/CHECK_FIN
+   add_wave "-noupdate -hex -label MAC_MATCH"         $COMP/BUFi/MAC_MATCH
+   add_wave "-noupdate -hex -label MULTICAST"         $COMP/BUFi/MULTICAST
+   add_wave "-noupdate -hex -label BROADCAST"         $COMP/BUFi/BROADCAST
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label SAU_ACCEPT"        $COMP/BUFi/SAU_ACCEPT
+   add_wave "-noupdate -hex -label SAU_DV"            $COMP/BUFi/SAU_DV
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label RDCLK" $COMP/BUFi/RDCLK
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label TX_DATA"           $COMP/BUFi/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM"            $COMP/BUFi/TX_REM
+   add_wave "-noupdate -hex -label TX_SOP_N"          $COMP/BUFi/TX_SOP_N
+   add_wave "-noupdate -hex -label TX_EOP_N"          $COMP/BUFi/TX_EOP_N
+   add_wave "-noupdate -hex -label TX_SRC_RDY_N"      $COMP/BUFi/TX_SRC_RDY_N
+   add_wave "-noupdate -hex -label TX_DST_RDY_N"      $COMP/BUFi/TX_DST_RDY_N
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label TX_HDATA"          $COMP/BUFi/TX_HDATA
+   add_wave "-noupdate -hex -label TX_HREM"           $COMP/BUFi/TX_HREM
+   add_wave "-noupdate -hex -label TX_HSOP_N"         $COMP/BUFi/TX_HSOP_N
+   add_wave "-noupdate -hex -label TX_HEOP_N"         $COMP/BUFi/TX_HEOP_N
+   add_wave "-noupdate -hex -label TX_HSRC_RDY_N"     $COMP/BUFi/TX_HSRC_RDY_N
+   add_wave "-noupdate -hex -label TX_HDST_RDY_N"     $COMP/BUFi/TX_HDST_RDY_N
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label ADC_CLK"           $COMP/BUFi/ADC_CLK
+   add_wave "-noupdate -hex -label ADC_RD"            $COMP/BUFi/ADC_RD
+   add_wave "-noupdate -hex -label ADC_WR"            $COMP/BUFi/ADC_WR
+   add_wave "-noupdate -hex -label ADC_ADDR"          $COMP/BUFi/ADC_ADDR
+   add_wave "-noupdate -hex -label ADC_DI"            $COMP/BUFi/ADC_DI
+   add_wave "-noupdate -hex -label ADC_DO"            $COMP/BUFi/ADC_DO
+   add_wave "-noupdate -hex -label ADC_DRDY"          $COMP/BUFi/ADC_DRDY
+}
+
+
+proc buf_part_signals { COMP } {
+
+   add wave -divider "BUF signals"
+   add_wave "-noupdate -hex -label ADC_DO_i"          	$COMP/BUFi/ADC_DO_i
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label cnt_packets"       	$COMP/BUFi/cnt_packets
+   add_wave "-noupdate -hex -label cnt_recv"          	$COMP/BUFi/cnt_recv
+   add_wave "-noupdate -hex -label cnt_recverr"       	$COMP/BUFi/cnt_recverr
+   add_wave "-noupdate -hex -label cnt_bufovferr"     	$COMP/BUFi/cnt_bufovferr
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label strobe_counters_c" 	$COMP/BUFi/strobe_counters_c
+   add_wave "-noupdate -hex -label reset_counters_c"  	$COMP/BUFi/reset_counters_c
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label cs_cnt_packets_l"  	$COMP/BUFi/cs_cnt_packets_l
+   add_wave "-noupdate -hex -label cs_cnt_recv_l"     	$COMP/BUFi/cs_cnt_recv_l
+   add_wave "-noupdate -hex -label cs_cnt_recverr_l"  	$COMP/BUFi/cs_cnt_recverr_l
+   add_wave "-noupdate -hex -label cs_cnt_bufovferr_l" 	$COMP/BUFi/cs_cnt_bufovferr_l
+   add_wave "-noupdate -hex -label cs_cnt_packets_h"  	$COMP/BUFi/cs_cnt_packets_h
+   add_wave "-noupdate -hex -label cs_cnt_recv_h"     	$COMP/BUFi/cs_cnt_recv_h
+   add_wave "-noupdate -hex -label cs_cnt_recverr_h"  	$COMP/BUFi/cs_cnt_recverr_h
+   add_wave "-noupdate -hex -label cs_cnt_bufovferr_h" 	$COMP/BUFi/cs_cnt_bufovferr_h
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label cs_reg_enable"     	$COMP/BUFi/cs_reg_enable
+   add_wave "-noupdate -hex -label cs_reg_errmask"    	$COMP/BUFi/cs_reg_errmask
+   add_wave "-noupdate -hex -label cs_reg_ibuf_status" 	$COMP/BUFi/cs_reg_ibuf_status
+   add_wave "-noupdate -hex -label cs_reg_ibuf_ctrl"  	$COMP/BUFi/cs_reg_ibuf_ctrl
+   add_wave "-noupdate -hex -label cs_reg_min_len"    	$COMP/BUFi/cs_reg_min_len
+   add_wave "-noupdate -hex -label cs_reg_mtu"        	$COMP/BUFi/cs_reg_mtu
+   add_wave "-noupdate -hex -label cs_reg_mac_check"  	$COMP/BUFi/cs_reg_mac_check
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_sau_acc"       	$COMP/BUFi/reg_sau_acc
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_cnt_packets"   	$COMP/BUFi/reg_cnt_packets
+   add_wave "-noupdate -hex -label reg_cnt_recv"      	$COMP/BUFi/reg_cnt_recv
+   add_wave "-noupdate -hex -label reg_cnt_recverr"   	$COMP/BUFi/reg_cnt_recverr
+   add_wave "-noupdate -hex -label reg_cnt_bufovferr" 	$COMP/BUFi/reg_cnt_bufovferr
+   add_wave "-noupdate -hex -label reg_cnts_ce"       	$COMP/BUFi/reg_cnts_ce
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_enable"        	$COMP/BUFi/reg_enable
+   add_wave "-noupdate -hex -label reg_errmask"       	$COMP/BUFi/reg_errmask
+   add_wave "-noupdate -hex -label reg_ibuf_status"   	$COMP/BUFi/reg_ibuf_status
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_min_len"       	$COMP/BUFi/reg_min_len
+   add_wave "-noupdate -hex -label reg_min_len_we"    	$COMP/BUFi/reg_min_len_we
+   add_wave "-noupdate -hex -label len_below_min"     	$COMP/BUFi/len_below_min
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_mtu"           	$COMP/BUFi/reg_mtu
+   add_wave "-noupdate -hex -label reg_mtu_we"        	$COMP/BUFi/reg_mtu_we
+   add_wave "-noupdate -hex -label len_over_mtu"      	$COMP/BUFi/len_over_mtu
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label cnt_pld_len"       	$COMP/BUFi/cnt_pld_len
+   add_wave "-noupdate -hex -label cnt_pld_len_load"  	$COMP/BUFi/cnt_pld_len_load
+   add_wave "-noupdate -hex -label cnt_pld_len_ce"    	$COMP/BUFi/cnt_pld_len_ce
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label frame_len_stat"    	$COMP/BUFi/frame_len_stat
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label mac_check_failed"  	$COMP/BUFi/mac_check_failed
+   add_wave "-noupdate -hex -label reg_mac_check"     	$COMP/BUFi/reg_mac_check
+   add_wave "-noupdate -hex -label reg_mac"           	$COMP/BUFi/reg_mac
+   add_wave "-noupdate -hex -label reg_mac_vld"       	$COMP/BUFi/reg_mac_vld
+   add_wave "-noupdate -hex -label reg_mac_valid"     	$COMP/BUFi/reg_mac_valid
+   add_wave "-noupdate -hex -label reg_check"         	$COMP/BUFi/reg_check
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label buf2mi"            	$COMP/BUFi/buf2mi
+   add_wave "-noupdate -hex -label mi2buf"            	$COMP/BUFi/mi2buf
+   add_wave "-noupdate -hex -label core_stat_in"      	$COMP/BUFi/core_stat_in
+}
+
+
+proc buf_core_part { BUF } {
+
+   add wave -divider "BUF_CORE"
+   add_wave "-noupdate -hex -label CLK"          	$BUF/buf_corei/CLK
+   add_wave "-noupdate -hex -label RESET"        	$BUF/buf_corei/RESET
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label RX_DATA"        $BUF/buf_corei/RX_DATA
+   add_wave "-noupdate -hex -label RX_DV"          $BUF/buf_corei/RX_DV
+   add_wave "-noupdate -hex -label RX_SOP"         $BUF/buf_corei/RX_SOP
+   add_wave "-noupdate -hex -label RX_EOP"         $BUF/buf_corei/RX_EOP
+   add_wave "-noupdate -hex -label RX_EOP_POS"     $BUF/buf_corei/RX_EOP_POS
+   add_wave "-noupdate -hex -label RX_ERR"         $BUF/buf_corei/RX_ERR
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label RX_STAT"        $BUF/buf_corei/RX_STAT
+   add_wave "-noupdate -hex -label FL_CLK"         $BUF/buf_corei/FL_CLK
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label TX_DATA"        $BUF/buf_corei/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM"         $BUF/buf_corei/TX_REM
+   add_wave "-noupdate -hex -label TX_SOP_N"       $BUF/buf_corei/TX_SOP_N
+   add_wave "-noupdate -hex -label TX_EOP_N"       $BUF/buf_corei/TX_EOP_N
+   add_wave "-noupdate -hex -label TX_SRC_RDY_N"   $BUF/buf_corei/TX_SRC_RDY_N
+   add_wave "-noupdate -hex -label TX_DST_RDY_N"   $BUF/buf_corei/TX_DST_RDY_N
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label TX_HDATA"       $BUF/buf_corei/TX_HDATA
+   add_wave "-noupdate -hex -label TX_HREM"        $BUF/buf_corei/TX_HREM
+   add_wave "-noupdate -hex -label TX_HSOP_N"      $BUF/buf_corei/TX_HSOP_N
+   add_wave "-noupdate -hex -label TX_HEOP_N"      $BUF/buf_corei/TX_HEOP_N
+   add_wave "-noupdate -hex -label TX_HSRC_RDY_N"  $BUF/buf_corei/TX_HSRC_RDY_N
+   add_wave "-noupdate -hex -label TX_HDST_RDY_N"  $BUF/buf_corei/TX_HDST_RDY_N
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label MI2BUF"         $BUF/buf_corei/MI2BUF
+   add_wave "-noupdate -hex -label BUF2MI"         $BUF/buf_corei/BUF2MI
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label CTRL_DATA"      $BUF/buf_corei/CTRL_DATA
+   add_wave "-noupdate -hex -label CTRL_REM"       $BUF/buf_corei/CTRL_REM
+   add_wave "-noupdate -hex -label CTRL_SRC_RDY_N" $BUF/buf_corei/CTRL_SRC_RDY_N
+   add_wave "-noupdate -hex -label CTRL_SOP_N"     $BUF/buf_corei/CTRL_SOP_N
+   add_wave "-noupdate -hex -label CTRL_EOP_N"     $BUF/buf_corei/CTRL_EOP_N
+   add_wave "-noupdate -hex -label CTRL_DST_RDY_N" $BUF/buf_corei/CTRL_DST_RDY_N
+   add_wave "-noupdate -hex -label CTRL_SOP"       $BUF/buf_corei/CTRL_SOP
+   add_wave "-noupdate -hex -label CTRL_RDY"       $BUF/buf_corei/CTRL_RDY
+   add_wave "-noupdate -hex -label CTRL_STAT"      $BUF/buf_corei/CTRL_STAT
+   add_wave "-noupdate -hex -label CTRL_STAT_DV"   $BUF/buf_corei/CTRL_STAT_DV
+}
+
+
+proc buf_core_part_signals { BUF } {
+
+   add wave -divider "BUF_CORE signals"
+   add wave -divider "Input data registers"
+   add_wave "-noupdate -hex -label reg_data_pipe"  			$BUF/buf_corei/reg_data_pipe
+   add_wave "-noupdate -hex -label reg_dv_pipe"    			$BUF/buf_corei/reg_dv_pipe
+   add_wave "-noupdate -hex -label reg_sop_pipe"   			$BUF/buf_corei/reg_sop_pipe
+   add_wave "-noupdate -hex -label reg_eop_pipe"   			$BUF/buf_corei/reg_eop_pipe
+   add_wave "-noupdate -hex -label reg_eop_pos_pipe" 			$BUF/buf_corei/reg_eop_pos_pipe
+   add_wave "-noupdate -hex -label reg_frame_err_stat" 		$BUF/buf_corei/reg_frame_err_stat
+   add_wave "-noupdate -hex -label reg_stats"      			$BUF/buf_corei/reg_stats
+   
+   add wave -divider "FL Transformer input"
+   add_wave "-noupdate -hex -label fltra_data_rx"  			$BUF/buf_corei/fltra_data_rx
+   add_wave "-noupdate -hex -label fltra_sop_rx_n" 			$BUF/buf_corei/fltra_sop_rx_n
+   add_wave "-noupdate -hex -label fltra_eop_rx_n" 			$BUF/buf_corei/fltra_eop_rx_n
+   add_wave "-noupdate -hex -label fltra_sof_rx_n" 			$BUF/buf_corei/fltra_sof_rx_n
+   add_wave "-noupdate -hex -label fltra_eof_rx_n" 			$BUF/buf_corei/fltra_eof_rx_n
+   add_wave "-noupdate -hex -label fltra_rem_rx"   			$BUF/buf_corei/fltra_rem_rx
+   add_wave "-noupdate -hex -label fltra_src_rdy_rx_n" 		$BUF/buf_corei/fltra_src_rdy_rx_n
+   add_wave "-noupdate -hex -label fltra_dst_rdy_rx_n" 		$BUF/buf_corei/fltra_dst_rdy_rx_n
+   
+   add wave -divider "FL Transformer output"
+   add_wave "-noupdate -hex -label fltra_data_tx"  			$BUF/buf_corei/fltra_data_tx
+   add_wave "-noupdate -hex -label fltra_sop_tx_n" 			$BUF/buf_corei/fltra_sop_tx_n
+   add_wave "-noupdate -hex -label fltra_eop_tx_n" 			$BUF/buf_corei/fltra_eop_tx_n
+   add_wave "-noupdate -hex -label fltra_rem_tx"   			$BUF/buf_corei/fltra_rem_tx
+   add_wave "-noupdate -hex -label fltra_src_rdy_tx_n" 		$BUF/buf_corei/fltra_src_rdy_tx_n
+   add_wave "-noupdate -hex -label fltra_dst_rdy_tx_n" 		$BUF/buf_corei/fltra_dst_rdy_tx_n
+
+   add wave -divider "Registers between FL Transformer and FSM"
+   add_wave "-noupdate -hex -label reg_fsm_data_rx"      	$BUF/buf_corei/reg_fsm_data_rx
+   add_wave "-noupdate -hex -label reg_fsm_rem_rx"       	$BUF/buf_corei/reg_fsm_rem_rx
+   add_wave "-noupdate -hex -label reg_fsm_sop_rx_n"     	$BUF/buf_corei/reg_fsm_sop_rx_n
+   add_wave "-noupdate -hex -label reg_fsm_eop_rx_n_in"  	$BUF/buf_corei/reg_fsm_eop_rx_n_in
+   add_wave "-noupdate -hex -label reg_fsm_eop_rx_n"     	$BUF/buf_corei/reg_fsm_eop_rx_n
+   add_wave "-noupdate -hex -label reg_fsm_discard_rx"   	$BUF/buf_corei/reg_fsm_discard_rx
+   add_wave "-noupdate -hex -label reg_fsm_rx_active"    	$BUF/buf_corei/reg_fsm_rx_active
+   add_wave "-noupdate -hex -label reg_stats_tra"        	$BUF/buf_corei/reg_stats_tra
+   add_wave "-noupdate -hex -label reg_frame_err_stat_tra"  $BUF/buf_corei/reg_frame_err_stat_tra
+
+   add wave -divider "FSM part incoming signals"
+   add_wave "-noupdate -hex -label fsm_data_rx"    			$BUF/buf_corei/fsm_data_rx
+   add_wave "-noupdate -hex -label fsm_sop_rx_n"   			$BUF/buf_corei/fsm_sop_rx_n
+   add_wave "-noupdate -hex -label fsm_eop_rx_n"   			$BUF/buf_corei/fsm_eop_rx_n
+   add_wave "-noupdate -hex -label fsm_rem_rx"     			$BUF/buf_corei/fsm_rem_rx
+   add_wave "-noupdate -hex -label fsm_discard_rx" 			$BUF/buf_corei/fsm_discard_rx
+   add_wave "-noupdate -hex -label fsm_active"     			$BUF/buf_corei/fsm_active
+   add_wave "-noupdate -hex -label fsm_dfifo_full" 			$BUF/buf_corei/fsm_dfifo_full
+
+   add wave -divider "FSM part outgoing signals"
+   add_wave "-noupdate -hex -label fsm_dfifo_wr"   			$BUF/buf_corei/fsm_dfifo_wr
+   add_wave "-noupdate -hex -label fsm_pacodag_ovf" 			$BUF/buf_corei/fsm_pacodag_ovf
+   add_wave "-noupdate -hex -label fsm_dfifo_ovf"  			$BUF/buf_corei/fsm_dfifo_ovf
+
+   add wave -divider "Data FIFO signals"
+   add_wave "-noupdate -hex -label dfifo_data_in"  			$BUF/buf_corei/dfifo_data_in
+   add_wave "-noupdate -hex -label dfifo_data_out" 			$BUF/buf_corei/dfifo_data_out
+   add_wave "-noupdate -hex -label dfifo_full"     			$BUF/buf_corei/dfifo_full
+   add_wave "-noupdate -hex -label dfifo_empty"    			$BUF/buf_corei/dfifo_empty
+   add_wave "-noupdate -hex -label dfifo_release"  			$BUF/buf_corei/dfifo_release
+   add_wave "-noupdate -hex -label dfifo_mark"     			$BUF/buf_corei/dfifo_mark
+   add_wave "-noupdate -hex -label dfifo_wr"       			$BUF/buf_corei/dfifo_wr
+   add_wave "-noupdate -hex -label dfifo_rd"       			$BUF/buf_corei/dfifo_rd
+   add_wave "-noupdate -hex -label dfifo_data_vld" 			$BUF/buf_corei/dfifo_data_vld
+   
+   add wave -divider "Header/Footer FIFO signals"
+   add_wave "-noupdate -hex -label hfifo_data_in"  			$BUF/buf_corei/hfifo_data_in
+   add_wave "-noupdate -hex -label hfifo_data_out" 			$BUF/buf_corei/hfifo_data_out
+   add_wave "-noupdate -hex -label hfifo_full"     			$BUF/buf_corei/hfifo_full
+   add_wave "-noupdate -hex -label hfifo_empty"    			$BUF/buf_corei/hfifo_empty
+   add_wave "-noupdate -hex -label hfifo_wr"       			$BUF/buf_corei/hfifo_wr
+   add_wave "-noupdate -hex -label hfifo_rd"       			$BUF/buf_corei/hfifo_rd
+   add_wave "-noupdate -hex -label hfifo_data_vld" 			$BUF/buf_corei/hfifo_data_vld
+}
+
+   
+proc mac_check_part { COMP } {
+
+   add wave -divider "MAC_CHECK"
+   add_wave "-noupdate -hex -label RESET"           $COMP/MAC_CHECKi/RESET
+   add_wave "-noupdate -hex -label CLK"             $COMP/MAC_CHECKi/CLK
+   add_wave "-noupdate -hex -label EN"              $COMP/MAC_CHECKi/EN
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label MAC_IN"          $COMP/MAC_CHECKi/MAC_IN
+   add_wave "-noupdate -hex -label CHECK"           $COMP/MAC_CHECKi/CHECK
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label CHECK_FIN"       $COMP/MAC_CHECKi/CHECK_FIN
+   add_wave "-noupdate -hex -label MAC_MATCH"       $COMP/MAC_CHECKi/MAC_MATCH
+   add_wave "-noupdate -hex -label MULTICAST"       $COMP/MAC_CHECKi/MULTICAST
+   add_wave "-noupdate -hex -label BROADCAST"       $COMP/MAC_CHECKi/BROADCAST
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label ADC_CLK"         $COMP/MAC_CHECKi/ADC_CLK
+   add_wave "-noupdate -hex -label ADC_RD"          $COMP/MAC_CHECKi/ADC_RD
+   add_wave "-noupdate -hex -label ADC_WR"          $COMP/MAC_CHECKi/ADC_WR
+   add_wave "-noupdate -hex -label ADC_ADDR"        $COMP/MAC_CHECKi/ADC_ADDR
+   add_wave "-noupdate -hex -label ADC_DI"          $COMP/MAC_CHECKi/ADC_DI
+   add_wave "-noupdate -hex -label ADC_DO"          $COMP/MAC_CHECKi/ADC_DO
+   add_wave "-noupdate -hex -label ADC_DRDY"        $COMP/MAC_CHECKi/ADC_DRDY
+}
+
+
+proc mac_check_part_signals { COMP } {
+
+   add wave -divider "MAC_CHECK signals"
+   add_wave "-noupdate -hex -label reg_adc_addr"  			$COMP/MAC_CHECKi/reg_adc_addr
+   add_wave "-noupdate -hex -label reg_adc_drdy"  			$COMP/MAC_CHECKi/reg_adc_drdy
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_check_set" 			$COMP/MAC_CHECKi/reg_check_set
+   add_wave "-noupdate -hex -label reg_check_rst" 			$COMP/MAC_CHECKi/reg_check_rst
+   add_wave "-noupdate -hex -label reg_check"     			$COMP/MAC_CHECKi/reg_check
+   
+   add wave -divider ""
+   add_wave "-noupdate -hex -label macmem_addr"   			$COMP/MAC_CHECKi/macmem_addr
+   add_wave "-noupdate -hex -label cnt_macmem_addr"      $COMP/MAC_CHECKi/cnt_macmem_addr
+   add_wave "-noupdate -hex -label cmp_cnt_macmem_addr"  $COMP/MAC_CHECKi/cmp_cnt_macmem_addr
+   add_wave "-noupdate -hex -label reg_macmem_item_we"   $COMP/MAC_CHECKi/reg_macmem_item_we
+   add_wave "-noupdate -hex -label reg_macmem_item"      $COMP/MAC_CHECKi/reg_macmem_item
+   add_wave "-noupdate -hex -label macmem_di"     			$COMP/MAC_CHECKi/macmem_di
+   add_wave "-noupdate -hex -label macmem_wr"     			$COMP/MAC_CHECKi/macmem_wr
+   add_wave "-noupdate -hex -label macmem_do"     			$COMP/MAC_CHECKi/macmem_do
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_mac_match_set"    $COMP/MAC_CHECKi/reg_mac_match_set
+   add_wave "-noupdate -hex -label reg_mac_match_rst"    $COMP/MAC_CHECKi/reg_mac_match_rst
+   add_wave "-noupdate -hex -label reg_mac_match" 			$COMP/MAC_CHECKi/reg_mac_match
+   add_wave "-noupdate -hex -label cmp_mac_match" 			$COMP/MAC_CHECKi/cmp_mac_match
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_broadcast_set"    $COMP/MAC_CHECKi/reg_broadcast_set
+   add_wave "-noupdate -hex -label reg_broadcast_rst"    $COMP/MAC_CHECKi/reg_broadcast_rst
+   add_wave "-noupdate -hex -label reg_broadcast" 			$COMP/MAC_CHECKi/reg_broadcast
+   add_wave "-noupdate -hex -label cmp_broadcast" 			$COMP/MAC_CHECKi/cmp_broadcast
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label reg_multicast_set"    $COMP/MAC_CHECKi/reg_multicast_set
+   add_wave "-noupdate -hex -label reg_multicast_rst"    $COMP/MAC_CHECKi/reg_multicast_rst
+   add_wave "-noupdate -hex -label reg_multicast" 			$COMP/MAC_CHECKi/reg_multicast
+   add_wave "-noupdate -hex -label cmp_multicast" 			$COMP/MAC_CHECKi/cmp_multicast
+}
+
+
+proc fl_part { COMP } {
+
+   add wave -divider "FL"
+   add_wave "-noupdate -hex -label CLK"               $COMP/FLi/CLK
+   add_wave "-noupdate -hex -label RESET"             $COMP/FLi/RESET
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label RX_DATA"           $COMP/FLi/RX_DATA
+   add_wave "-noupdate -hex -label RX_REM"            $COMP/FLi/RX_REM
+   add_wave "-noupdate -hex -label RX_SOP_N"          $COMP/FLi/RX_SOP_N
+   add_wave "-noupdate -hex -label RX_EOP_N"          $COMP/FLi/RX_EOP_N
+   add_wave "-noupdate -hex -label RX_SRC_RDY_N"      $COMP/FLi/RX_SRC_RDY_N
+   add_wave "-noupdate -hex -label RX_DST_RDY_N"      $COMP/FLi/RX_DST_RDY_N
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label RX_HDATA"          $COMP/FLi/RX_HDATA
+   add_wave "-noupdate -hex -label RX_HREM"           $COMP/FLi/RX_HREM
+   add_wave "-noupdate -hex -label RX_HSOP_N"         $COMP/FLi/RX_HSOP_N
+   add_wave "-noupdate -hex -label RX_HEOP_N"         $COMP/FLi/RX_HEOP_N
+   add_wave "-noupdate -hex -label RX_HSRC_RDY_N"     $COMP/FLi/RX_HSRC_RDY_N
+   add_wave "-noupdate -hex -label RX_HDST_RDY_N"     $COMP/FLi/RX_HDST_RDY_N
+
+   add wave -divider ""
+   add_wave "-noupdate -hex -label TX_DATA"           $COMP/FLi/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM"            $COMP/FLi/TX_REM
+   add_wave "-noupdate -hex -label TX_SOF_N"          $COMP/FLi/TX_SOF_N
+   add_wave "-noupdate -hex -label TX_SOP_N"          $COMP/FLi/TX_SOP_N
+   add_wave "-noupdate -hex -label TX_EOP_N"          $COMP/FLi/TX_EOP_N
+   add_wave "-noupdate -hex -label TX_EOF_N"          $COMP/FLi/TX_EOF_N
+   add_wave "-noupdate -hex -label TX_SRC_RDY_N"      $COMP/FLi/TX_SRC_RDY_N
+   add_wave "-noupdate -hex -label TX_DST_RDY_N"      $COMP/FLi/TX_DST_RDY_N
+}
+
+
+proc fl_part_signals { COMP } {
+
+   add wave -divider "FL signals"
+   add wave -divider "Multiplexers"
+   add_wave "-noupdate -hex -label mx_data"           		$COMP/FLi/mx_data
+   add_wave "-noupdate -hex -label mx_rem"            		$COMP/FLi/mx_rem
+   add_wave "-noupdate -hex -label mx_sop_n"          		$COMP/FLi/mx_sop_n
+   add_wave "-noupdate -hex -label mx_eop_n"          		$COMP/FLi/mx_eop_n
+   add_wave "-noupdate -hex -label mx_src_rdy_n"      		$COMP/FLi/mx_src_rdy_n
+   
+   add wave -divider "Composed FrameLink"
+   add_wave "-noupdate -hex -label fl_composed_data"        $COMP/FLi/fl_composed_data
+   add_wave "-noupdate -hex -label fl_composed_rem"         $COMP/FLi/fl_composed_rem
+   add_wave "-noupdate -hex -label fl_composed_sof_n"       $COMP/FLi/fl_composed_sof_n
+   add_wave "-noupdate -hex -label fl_composed_sop_n"       $COMP/FLi/fl_composed_sop_n
+   add_wave "-noupdate -hex -label fl_composed_eop_n"       $COMP/FLi/fl_composed_eop_n
+   add_wave "-noupdate -hex -label fl_composed_eof_n"       $COMP/FLi/fl_composed_eof_n
+   add_wave "-noupdate -hex -label fl_composed_src_rdy_n"   $COMP/FLi/fl_composed_src_rdy_n
+   add_wave "-noupdate -hex -label fl_composed_dst_rdy_n"   $COMP/FLi/fl_composed_dst_rdy_n
+   
+   add wave -divider "FSM signals"
+   add_wave "-noupdate -hex -label fsm_eop_n"         		$COMP/FLi/fsm_eop_n
+   add_wave "-noupdate -hex -label fsm_heop_n"        		$COMP/FLi/fsm_heop_n
+   add_wave "-noupdate -hex -label fsm_sof_n"         		$COMP/FLi/fsm_sof_n
+   add_wave "-noupdate -hex -label fsm_eof_n"         		$COMP/FLi/fsm_eof_n
+   add_wave "-noupdate -hex -label fifo_sel"          		$COMP/FLi/fifo_sel
+}
+
+
+proc testbench { TB } {
+
+   add wave -divider "TESTBENCH"
+   add wave -divider "EMAC Sim"
+   add_wave "-noupdate -hex -label RESET"          $TB/emac_simi/RESET
+   add_wave "-noupdate -hex -label GMII_CLK"       $TB/emac_simi/GMII_CLK
+   add_wave "-noupdate -hex -label RXDI"           $TB/emac_simi/RXDI
+   add_wave "-noupdate -hex -label RXDV"           $TB/emac_simi/RXDV
+   add_wave "-noupdate -hex -label RXERR"          $TB/emac_simi/RXERR
+   add_wave "-noupdate -hex -label EMAC_CLK"       $TB/emac_simi/EMAC_CLK
+   add_wave "-noupdate -hex -label EMAC_CE"        $TB/emac_simi/EMAC_CE
+   add_wave "-noupdate -hex -label EMAC_DO"        $TB/emac_simi/EMAC_DO
+   add_wave "-noupdate -hex -label EMAC_DV"        $TB/emac_simi/EMAC_DV
+   add_wave "-noupdate -hex -label EMAC_GOODFRAME" $TB/emac_simi/EMAC_GOODFRAME
+   add_wave "-noupdate -hex -label EMAC_BADFRAME"  $TB/emac_simi/EMAC_BADFRAME
+}
+
+
+proc fl_out { TB } {
+
+	add wave -divider "FL Sim RX"
+   add_wave "-noupdate -hex -label clk"             $TB/fl_sim_rx/fl_clk
+   add_wave "-noupdate -hex -label reset"           $TB/fl_sim_rx/fl_reset
+   add_wave "-noupdate -hex -label rx_data -hex"    $TB/fl_sim_rx/rx_data
+   add_wave "-noupdate -hex -label rx_rem -hex"     $TB/fl_sim_rx/rx_rem
+   add_wave "-noupdate -hex -label rx_sof_n"        $TB/fl_sim_rx/rx_sof_n
+   add_wave "-noupdate -hex -label rx_sop_n"        $TB/fl_sim_rx/rx_sop_n
+   add_wave "-noupdate -hex -label rx_eop_n"        $TB/fl_sim_rx/rx_eop_n
+   add_wave "-noupdate -hex -label rx_eof_n"        $TB/fl_sim_rx/rx_eof_n
+   add_wave "-noupdate -hex -label rx_src_rdy_n"    $TB/fl_sim_rx/rx_src_rdy_n
+   add_wave "-noupdate -hex -label rx_dst_rdy_n"    $TB/fl_sim_rx/rx_dst_rdy_n
+}

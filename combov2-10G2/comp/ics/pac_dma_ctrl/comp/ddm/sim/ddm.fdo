@@ -1,0 +1,86 @@
+# ddm.fdo: Top level functional simulation file
+# Copyright (C) 2009 CESNET
+# Author: Petr Kastovsky <kastovsky@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+#
+#
+
+set FIRMWARE_BASE   	"../../../../../.."
+set COMP_BASE       	"$FIRMWARE_BASE/comp"
+set ICS_BASE       	"$COMP_BASE/ics"
+set DDM_BASE       	"$ICS_BASE/pac_dma_ctrl/comp/ddm"
+set LB_BASE  		"$ICS_BASE/local_bus"
+set IB_BASE 		"$ICS_BASE/internal_bus"
+# lb root
+set LB_ROOT_BASE  	"$LB_BASE/comp/lb_root"
+# lb endpoint
+set LB_ENDPOINT_BASE  	"$LB_BASE/comp/lb_endpoint"
+# ib endpoint
+set IB_ENDPOINT_BASE 	"$IB_BASE/comp/ib_endpoint"
+# ib switch
+set IB_SWITCH_BASE 	"$IB_BASE/comp/ib_switch"
+# ib bfm
+set IB_SIM_BASE 	"$IB_BASE/comp/ib_sim"
+
+
+set DDM		   "FULL"
+set LB_ROOT	   "FULL"
+set LB_ENDPOINT	   "FULL"
+set IB_ENDPOINT	   "FULL"
+set IB_SWITCH  	   "FULL"
+set IB_SIM  	   "FULL"
+
+set TOP_LEVEL       "$DDM_BASE/sim/ddm_tb.vhd"
+set TB_FILE         "$DDM_BASE/sim/ddm_tb.vhd"
+set SIG_FILE        "$DDM_BASE/sim/ddm_sig.fdo"
+
+set PACKAGES        "$COMP_BASE/base/pkg/math_pack.vhd"
+set PACKAGES        "$PACKAGES $IB_BASE/pkg/ib_pkg.vhd"
+set PACKAGES        "$PACKAGES $LB_BASE/pkg/lb_pkg.vhd"
+# Modules definition
+set COMPONENTS [list \
+		[list "DDM" 		$DDM_BASE 		$DDM]\
+		[list "LB_ROOT" 	$LB_ROOT_BASE        	$LB_ROOT]\
+		[list "LB_ENDPOINT" 	$LB_ENDPOINT_BASE 	$LB_ENDPOINT]\
+		[list "IB_ENDPOINT" 	$IB_ENDPOINT_BASE 	$IB_ENDPOINT]\
+		[list "IB_SWITCH" 	$IB_SWITCH_BASE 	$IB_SWITCH]\
+		[list "IB_SIM" 		$IB_SIM_BASE 		$IB_SIM]\
+		 ]
+
+set CODE_COVERAGE "true"
+
+# Global include file for compilation
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# File with signals
+source $SIG_FILE
+

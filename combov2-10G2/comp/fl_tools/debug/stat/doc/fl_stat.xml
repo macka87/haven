@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+
+<component>FrameLink statistical unit</component>
+<authors>
+   <author login="xstour03">Jan Stourac</author>
+</authors>
+
+<features>
+   <item>Generic number of watched FrameLink interfaces.</item>
+</features>
+
+<description>
+   <p>
+      This unit was designed for statistics purpose. Using it we can simply investigate
+      which unit on bus (FrameLink or Internal bus) is not ready for sending/receiving
+      enough time.
+   </p>
+</description>
+
+<interface>
+   <generic_map>
+      <generic name="IFCS" type="integer" default="1">
+         Number of watched interfaces. At least one and max 255
+      </generic>
+   </generic_map>
+   <port_map>
+      <divider>Common Interface</divider>
+      <port name="CLK" dir="in" width="1">
+         Clock
+      </port>
+      <port name="RESET" dir="in" width="1">
+         Reset
+      </port>
+
+      <divider>MI32 interface</divider>
+      <port name="MI32" dir="inout" width="32">
+         MI32
+      </port>
+
+      <divider>Outputs of watched devices</divider>
+      <port name="SRC_RDY_N" dir="in" width="1">
+         Source ready
+      </port>
+      <port name="DST_RDY_N" dir="in" width="1">
+         Destination ready
+      </port>
+   </port_map>
+</interface>
+
+<body>
+   <h1>FrameLink stat implementation</h1>
+   <p>
+      FL stat unit is composed of one state register, one clock cycle counter and 3*IFCS
+      counters - every interface has three own counters: source ready counter - counts
+      only when src is ready and dst is not, destination ready counter - counts only when
+      dst is ready and src is not, and both ready counter - counts only when both src and
+      dst are ready.
+   </p>
+
+   <h1>Frequency and Resources usage</h1>
+
+   <h2>XST:</h2>
+   <p>
+      Maximum frequency: 230 MHz, number of slices: 54.
+   </p>
+
+   <h2>Precision:</h2>
+   <p>
+      Maximum frequency: 286 MHz, number of slices: 56.
+   </p>
+
+</body>
+</source>

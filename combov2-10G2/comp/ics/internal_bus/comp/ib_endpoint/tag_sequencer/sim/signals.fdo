@@ -1,0 +1,75 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2010 CESNET
+# Author: Viktor Pus <pus@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 14177 2010-06-24 14:25:35Z pus $
+#
+
+view wave
+delete wave *
+
+add_wave "-noupdate -label CLK" /testbench/CLK
+add_wave "-noupdate -label RESET" /testbench/RESET
+add_wave "-noupdate -hex -label FULL"          /testbench/uut/full
+add_wave "-noupdate -hex -label EMPTY"         /testbench/uut/empty
+
+add wave -divider "UP direction"
+add_wave "-noupdate -hex -label usr_tag" /testbench/usr_tag
+add_wave "-noupdate -hex -label usr_req" /testbench/usr_req
+add_wave "-noupdate -hex -label usr_ack" /testbench/usr_ack
+add_wave "-noupdate -hex -label usr_trans_type" /testbench/usr_trans_type
+add_wave "-noupdate -hex -label ep_tag" /testbench/ep_tag
+add_wave "-noupdate -hex -label ep_req" /testbench/ep_req
+add_wave "-noupdate -hex -label ep_ack" /testbench/ep_ack
+add_wave "-noupdate -hex -label ep_trans_type" /testbench/ep_trans_type
+
+add wave -divider "DOWN direction"
+add_wave "-noupdate -hex -label ep_op_tag" /testbench/ep_op_tag
+add_wave "-noupdate -hex -label ep_op_done" /testbench/ep_op_done
+add_wave "-noupdate -hex -label usr_op_tag" /testbench/usr_op_tag
+add_wave "-noupdate -hex -label usr_op_done" /testbench/usr_op_done
+
+add wave -divider "Internal signals"
+add_wave "-noupdate -hex -label start_ptr"     /testbench/uut/start_ptr
+add_wave "-noupdate -hex -label end_ptr"       /testbench/uut/end_ptr
+add_wave "-noupdate -hex -label start_ptr_en"  /testbench/uut/start_ptr_en
+add_wave "-noupdate -hex -label end_ptr_en"    /testbench/uut/end_ptr_en
+                                                             
+add_wave "-noupdate -hex -label reg_ep_op_done" /testbench/uut/reg_ep_op_done
+add_wave "-noupdate -hex -label reg_ep_op_tag" /testbench/uut/reg_ep_op_tag
+
+add_wave "-noupdate -hex -label fifo_do" /testbench/uut/fifo_do
+add_wave "-noupdate -hex -label fifo_read" /testbench/uut/fifo_read
+add_wave "-noupdate -hex -label fifo_empty" /testbench/uut/fifo_empty
+                                                             
+add_wave "-noupdate -hex -label tag_dob"       /testbench/uut/tag_dob
+
+add_wave "-noupdate -hex -label pend_we"       /testbench/uut/pend_we
+add_wave "-noupdate -hex -label pend_di"       /testbench/uut/pend_di
+add_wave "-noupdate -hex -label pend_addra"    /testbench/uut/pend_addra
+add_wave "-noupdate -hex -label pend_dob"      /testbench/uut/pend_dob

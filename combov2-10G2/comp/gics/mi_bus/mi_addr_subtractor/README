@@ -1,0 +1,27 @@
+                              ====================
+                               MI_ADDR_SUBTRACTOR
+                              ====================
+
+Abstract:
+~~~~~~~~~
+It subtracts given value from address on MI interface. Other signals are not
+affected.
+
+It's useful when we need to convert address on MI to local address space of
+connected component (strats at zero) and it cannot be done simply by truncating
+some higher bits.
+ 
+Author:
+~~~~~~~
+Vaclav Bartos <washek@liberouter.org>
+
+
+Documentation:
+~~~~~~~~~~~~~~
+None
+
+
+Verification:
+~~~~~~~~~~~~~
+Not verified
+

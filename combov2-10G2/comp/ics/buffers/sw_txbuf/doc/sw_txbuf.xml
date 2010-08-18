@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+
+<component>SW_TXBUF</component>
+
+<authors>
+   <author login="kosek">Martin Kosek</author>
+</authors>
+
+<features>
+   <item>Generic Internal Bus Input width</item>
+   <item>Generic FrameLink data output width</item>
+   <item>Sizable size of Packet Memory</item>
+   <item>Ability to send ACK packets over Control Bus</item>
+   <item>Ability to receive new packet info from both Buses (Internal
+      and Control)</item>
+   <item>Debug access to internal memories supported</item>
+</features>
+
+<description>
+   <p>
+      SW_TXBUF is used as a buffer, where software stores packets for 
+      later transmision to other hardware components like OBUF.
+      This component is connected to fast Internal Bus in order to provide
+      as high throughtput as possible.
+   </p>
+</description>
+
+<interface>
+   <generic_map>
+      <generic name="DATA_WIDTH" type="integer" default="">
+         Internal Bus data width.
+      </generic>
+      <generic name="OUTPUT_WIDTH" type="integer" default="">
+         Output width. Has to be less or equal to DATA_WIDTH and 
+         (DATA_WIDTH/OUTPUT_WIDTH) should be a power of 2 (1, 2, 4, ...).
+      </generic>
+      <generic name="BMEM_ITEMS" type="integer" default="">
+         Number of items in main packet memory composed from BlockRAMs.
+      </generic>
+      <generic name="CTRL_MEM_ITEMS" type="integer" default="16">
+         Number of items in Control memory used for storing records of
+         packets in Main packet memory.
+      </generic>
+      <generic name="CONTROL_DATA_LENGTH" type="integer" default="">
+         Control Data (header) length in bytes. Control data will be sent 
+         before packet payload. When set to 0 value, no control data are sent.
+      </generic>
+   </generic_map>
+   <port_map>
+
+      <divider>Common Interface</divider>
+      <port name="CLK" dir="in" width="1">
+         Clock input
+      </port>
+      <port name="RESET" dir="in" width="1">
+         Reset input
+      </port>
+      
+      <divider>Internal Bus interface</divider>
+      <port name="WR" dir="inout" width="1">
+         IB Write Interface
+      </port>
+
+      <port name="RD" dir="inout" width="1">
+         IB Read Interface
+      </port>
+
+      <divider>Data output interface</divider>
+      <port name="TX" dir="inout" width="1">
+         FrameLink output interface
+      </port>
+
+      <divider>Control Bus interface</divider>
+      <port name="UPS_FL" dir="inout" width="1">
+         Upstream Interface
+      </port>
+
+      <port name="DNS_FL" dir="inout" width="1">
+         Downstream Interface
+      </port>
+   </port_map>
+</interface>
+
+<operations>
+   <init>
+      <it ref="enable_ack">Enable/Disable REG_ACK register if you want SW_TXBUF to 
+         send/don't send ACK packets over Control Bus</it>
+   </init>
+     
+   <op name="Send packet" id="send_packet">
+   <p>
+      When software needs to send a packet it has to fill the packet data into 
+      Packet Memory and then write an record about the packet into Control 
+      Memory. This can be done via FIFO access to Control Memory or a Control 
+      Bus packet.
+      </p>
+   <p>
+      When control data should be sent too, CONTROL_DATA_LENGTH generic needs
+      to be set to the Control data size (in bytes). Control data then should be 
+      written to Packet memory before the packet data itself.
+   </p>
+   <p>
+      However keep in mind, that packet data should be stored in the next memory
+      row of Packet memory! Packet data cannot be un-aligned.
+   </p>
+   </op>
+
+   <op name="Enable ACK register" id="enable_ack">
+   <p>
+      With this register you can turn on or off sending ACK packet over Control Bus.
+      If set to '1' SW_TXBUF will send acknowledge packet whenever packet has been
+      sent.
+   </p>
+   </op>
+
+</operations>
+
+<addr_space id ="sw_txbuf_mem_section" name="Memory Section">
+   <reg name="Main packet memory" id="sw_txbuf_bmem" offset="0x0" access="RW" words="generic">
+      <bit_vect bits="generic">
+      <description_above>
+         <p>
+            Main Packet memory. Filled and maintained from software. When software
+            needs to send a packet it has to fill the packet data into this memory
+            and then write an record about the packet into Control Memory.
+         </p>
+         <p>
+            When control data should be sent too, CONTROL_DATA_LENGTH generic needs
+            to be set to the Control data size (in bytes). Control data then should be 
+            written to Packet memory before the packet data itself.
+         </p>
+      </description_above>
+      <format>
+         <bit from="0" to="generic" name="data" access="RW">Packet or Control data
+         </bit>
+      </format>
+      </bit_vect>
+   </reg>
+
+   <reg name="Control memory" id="sw_txbuf_ctrl_mem" offset="0x100000" access="R" words="generic">
+      <bit_vect bits="generic">
+      <description_above>
+         <p>
+            Records about packets written to Packet memory are stored here. 
+            This read interface is mainly for debugging as records are written
+            by another interface (FIFO access).
+         </p>
+      </description_above>
+      <format>
+         <bit from="0" to="19" name="Offset" access="R">Offset in Packet memory where
+            Control or Packet data are stored
+         </bit>
+         <bit from="20" to="31" name="Length" access="R">Packet data length (Control data 
+            length is set in a CONTROL_DATA_LENGTH generic)
+         </bit>
+      </format>
+      </bit_vect>
+   </reg>
+</addr_space>
+
+<addr_space id ="sw_txbuf_ctrl_section" name="Control Section">
+   <reg name="FIFO write access to Control Memory" id="sw_txbuf_ctrl_fifo" offset="0x0" access="W" words="generic">
+      <bit_vect bits="32">
+      <description_above>
+         FIFO write interface to Control Memory.
+      </description_above>
+      <format>
+         <bit from="0" to="19" name="Offset" access="W">Offset in Packet memory where
+            Control or Packet data are stored
+         </bit>
+         <bit from="20" to="31" name="Length" access="W">Packet payload length (Control data 
+            length is set in a CONTROL_DATA_LENGTH generic)
+         </bit>
+      </format>
+      </bit_vect>
+   </reg>
+
+   <reg name="ACK enable register" id="sw_txbuf_reg_ack" offset="0x8" access="RW" words="1">
+      <bit_vect bits="1">
+      <description_above>
+         Set this register to '1' if ACK packet should be sent via Control Bus. 
+         By default this register is set to '1' (ack enabled).
+      </description_above>
+      <format>
+         <bit from="0" to="0" name="Enable_ack" access="RW">ACK enable flag</bit>
+      </format>
+      </bit_vect>
+   </reg>
+
+   <reg name="Status register" id="sw_txbuf_status" offset="0x10" access="R" words="1">
+      <bit_vect bits="32">
+      <description_above>
+         SW_TXBUF status register for debug purposes.
+      </description_above>
+      <format>
+         <bit from="0" to="0" name="TX_SRC_RDY_N" access="R">
+            Transmit interface - source ready (negative logic)
+         </bit>
+         <bit from="1" to="1" name="TX_DST_RDY_N" access="R">
+            Transmit interface - destination ready (negative logic)
+         </bit>
+         <bit from="2" to="2" name="CONTROL_MEMORY_EMPTY" access="R">
+            Control memory empty
+         </bit>
+         <bit from="3" to="3" name="CONTROL_MEMORY_FULL" access="R">
+            Control memory full
+         </bit>
+         <bit from="4" to="4" name="CTRL_WRITE" access="R">
+            DMA Controller is ready to write packet record
+         </bit>
+         <bit from="5" to="5" name="CTRL_READY" access="R">
+            Packet record FIFO is ready
+         </bit>
+         <bit from="6" to="6" name="CTRL_READY" access="R">
+            Packet sent flag
+         </bit>
+         <bit from="7" to="7" name="CTRL_ACK" access="R">
+            Packet sent flag acked
+         </bit>
+         <bit from="15" to="8" name="CONTROL_MEMORY_STATUS" access="R">
+            Number of free items in control memory
+         </bit>
+         <bit from="31" to="16" name="RESERVED" access="R">
+            Reserved
+         </bit>
+      </format>
+      </bit_vect>
+   </reg>
+
+</addr_space>
+
+<addr_space id="sw_txbuf_addr_space" name="SW_TXBUF address space" main="yes" size="0x200000">
+   <instantion ref="sw_txbuf_mem_section" offset="0x000000">
+      Memory Section
+   </instantion>
+
+   <instantion ref="sw_txbuf_ctrl_section" offset="0x101000">
+      Control Section
+   </instantion>
+
+</addr_space>
+
+<sw_body>
+   <h1>Data structure in memory</h1>
+   <p>
+      Data stored in memory must follow a simple structure, which depends on
+      SW_TXBUF generics (CONTROL_DATA_LENGTH actually). SW_TXBUF decides by
+      using this generic what data in memory should be sent as packet control
+      data (packet header) and what is the actual payload.
+   </p>
+   <p>
+      In the following image is a figure of possible packet storing. The
+      packets don't have to be stored in this way (one after another) - this
+      is just a suggestion. However the structure of packet payload and its 
+      control data is compulsory - they need to be stored in a way shown in 
+      the figure.
+   </p>
+   <p>
+      <obr src="./fig/packet_storage.fig">Packets stored in memory</obr>
+   </p>
+   <p>
+      On the figure are 2 packets stored in Packet memory. CONTROL_DATA_LENGTH
+      generic is set to 6 bytes. OFFSET and LENGTH are packet information which
+      will be stored in packet Control Memory record.
+   </p>
+</sw_body>
+
+<body>
+   <h1>Data storing</h1>
+   <p>
+      Data stored in memory must follow a simple structure, which depends on
+      SW_TXBUF generics (CONTROL_DATA_LENGTH actually). This structure is 
+      figured and descripted in SW section page of this documentation.
+   </p>
+
+   <h1>Frequency and Resources usage</h1>
+   <p>
+      <tab sloupce="cccc">
+         <tr>
+            <th>Generic settings</th>
+            <th>Slices (% of C6X slices)</th>
+            <th>BlockRams (+ % of C6X BRAMs)</th>
+            <th>Max. HW frequency</th>
+         </tr>
+         <tr>
+            <th>64b input, 16b output, 1024 Packet Memory items, 32 Control Memory items</th> 
+            <td>306 (1.3%)</td>
+            <td>8 (3.4%)</td>
+            <td>100 MHz</td>
+         </tr>
+         <tr>
+            <th>Unit of 4 SW_TXBUFs (configuration same as above)</th> 
+            <td>1144 (4.8%)</td>
+            <td>32 (13.8%)</td>
+            <td>100 MHz</td>
+         </tr>
+      <nazev>Chip utilization &amp; max design frequency</nazev>
+      </tab>
+   </p>
+
+   <h1>Schemes</h1>
+   <p>
+      The block structure of the component is in the following figures. It's 
+      composed of Packet Memory for data storing, Control Memory for packets 
+      info storing, Internal Bus related logic (+ ADCs) and Control Unit
+      which control data sending and transformation into FrameLink protocol
+      with requested width.
+   </p>
+   <p>
+      <obr src="./fig/sw_txbuf.fig">SW_TXBUF architecture</obr>
+      <obr src="./fig/swt_cu.fig">Control Unit</obr>
+      <obr src="./fig/swt_cu_fsm.fig">Control Unit FSM</obr>
+   </p>
+</body>
+
+</source>

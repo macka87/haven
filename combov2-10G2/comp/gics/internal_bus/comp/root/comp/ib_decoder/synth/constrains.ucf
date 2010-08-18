@@ -1,0 +1,67 @@
+# constrains.ucf: Constrains UCF for FPGA XC5VLX110-FF1153-2.
+# Copyright (C) 2009 CESNET
+# Authors: Pavol Korcek <korcek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: constrains.ucf 8045 2009-04-04 20:35:53Z korcek $
+#
+
+CONFIG PART = xc5vlx110-ff1153-2;
+
+# CLOCK
+NET  "TRN_CLK"               	PERIOD=250 MHz HIGH 50%;
+
+# Component Inputs
+NET "RX_DATA(*)"		TNM = "COMPONENT_IN_GRP"; 
+NET "RX_SOP_N"          	TNM = "COMPONENT_IN_GRP";         
+NET "RX_EOP_N"			TNM = "COMPONENT_IN_GRP";
+NET "RX_SRC_RDY_N"		TNM = "COMPONENT_IN_GRP";
+NET "GEN_DST_RDY_N"		TNM = "COMPONENT_IN_GRP";
+NET "LCB_TAG(*)"		TNM = "COMPONENT_IN_GRP";
+NET "LCB_REQ_ID(*)"		TNM = "COMPONENT_IN_GRP";
+NET "GCB_WR_ALLOW"		TNM = "COMPONENT_IN_GRP";
+NET "GCB_RTAG(*)"		TNM = "COMPONENT_IN_GRP";			
+
+# Component Outputs
+NET "GEN_DATA(*)"     		TNM = "COMPONENT_OUT_GRP";        
+NET "GEN_SOP_N"  		TNM = "COMPONENT_OUT_GRP";             
+NET "GEN_EOP_N"      		TNM = "COMPONENT_OUT_GRP";         
+NET "GEN_SRC_RDY_N"    		TNM = "COMPONENT_OUT_GRP";       
+NET "GEN_DW4"      		TNM = "COMPONENT_OUT_GRP";           
+NET "GEN_DW4_VLD"   		TNM = "COMPONENT_OUT_GRP";          
+NET "LCB_RD"     		TNM = "COMPONENT_OUT_GRP";             
+NET "LCB_RTAG(*)"      		TNM = "COMPONENT_OUT_GRP";       
+NET "GCB_LOCAL_ADDR(*)"   	TNM = "COMPONENT_OUT_GRP";    
+NET "GCB_LOCAL_TAG(*)"   	TNM = "COMPONENT_OUT_GRP";     
+NET "GCB_WR"			TNM = "COMPONENT_OUT_GRP"; 	     
+
+
+# Output Constrain (data to clock relation)
+TIMEGRP "COMPONENT_OUT_GRP"   OFFSET = OUT 2 ns AFTER  "TRN_CLK";
+
+# Input Constrain (data to clock relation)
+TIMEGRP "COMPONENT_IN_GRP"    OFFSET = IN  3 ns VALID 4 ns BEFORE "TRN_CLK";

@@ -1,0 +1,88 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Martin Kosek <kosek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 62 2007-08-02 10:20:36Z kosek $
+
+   view wave
+   delete wave *
+
+proc blk_CAM { } {
+   global CAM_PATH
+   
+   add wave -divider "CAM"
+   add_wave "-label reset -color yellow" $CAM_PATH/reset
+   add_wave "-label clk -color yellow" $CAM_PATH/clk
+   add wave -divider "Control signals"
+   add_wave "-label write_en" $CAM_PATH/write_en
+   add_wave "-label match_en" $CAM_PATH/match_en
+   add_wave "-label match_rst" $CAM_PATH/match_rst
+   add wave -divider "Input data"
+   add_wave "-label addr" $CAM_PATH/addr
+   add_wave "-label data_in" $CAM_PATH/data_in
+   add_wave "-label mask_in" $CAM_PATH/mask_in
+   add wave -divider "Output data"
+   add_wave "-label match_bus" $CAM_PATH/match_bus
+   add_wave "-label match_bus_vld" $CAM_PATH/match_bus_vld
+}
+
+proc blk_CAM_lb_bridge { } {
+   global CAM_LB_BRIDGE_PATH
+   
+   add wave -divider "CAM - LB_BRIDGE"
+   add wave -divider "Generics"
+   add wave -label cam_row_count $CAM_LB_BRIDGE_PATH/cam_row_count
+   add wave -label cam_row_width $CAM_LB_BRIDGE_PATH/cam_row_width
+   add wave -label lb_addr_width $CAM_LB_BRIDGE_PATH/lb_addr_width
+   
+   add wave -divider "Input registers"
+   add_wave "-label reg_cmd" $CAM_LB_BRIDGE_PATH/reg_cmd
+   add_wave "-label reg_cmd_we" $CAM_LB_BRIDGE_PATH/reg_cmd_we
+   add_wave "-label reg_status" $CAM_LB_BRIDGE_PATH/reg_status
+   add_wave "-label reg_mask_in" $CAM_LB_BRIDGE_PATH/reg_mask_in
+   add_wave "-label reg_mask_in_we" $CAM_LB_BRIDGE_PATH/reg_mask_in_we
+   add_wave "-label reg_data_in" $CAM_LB_BRIDGE_PATH/reg_data_in
+   add_wave "-label reg_data_in_we" $CAM_LB_BRIDGE_PATH/reg_data_in_we
+   add_wave "-label reg_addr" $CAM_LB_BRIDGE_PATH/reg_addr
+   add_wave "-label reg_addr_we" $CAM_LB_BRIDGE_PATH/reg_addr_we
+   add_wave "-label tcam" $CAM_LB_BRIDGE_PATH/tcam
+   
+   add wave -divider "Localbus ifc"
+   add_wave "-label ADC_ADDR" $CAM_LB_BRIDGE_PATH/ADC_ADDR
+   add_wave "-label EN" $CAM_LB_BRIDGE_PATH/EN
+   add_wave "-label ADC_WR" $CAM_LB_BRIDGE_PATH/ADC_WR
+   add_wave "-label ADC_DI" $CAM_LB_BRIDGE_PATH/ADC_DI
+   add_wave "-label ADC_DO" $CAM_LB_BRIDGE_PATH/ADC_DO
+   add_wave "-label ADC_DRDY" $CAM_LB_BRIDGE_PATH/ADC_DRDY
+   
+   add wave -divider "Misc"
+   add_wave "-label mux_lbaddr" $CAM_LB_BRIDGE_PATH/mux_lbaddr
+   
+   
+}
+

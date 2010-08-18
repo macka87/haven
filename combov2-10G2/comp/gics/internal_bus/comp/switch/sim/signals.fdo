@@ -1,0 +1,325 @@
+#
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author(s): Tomas Malek <tomalek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 1433 2008-02-20 14:11:07Z tomalek $
+#
+
+# -------------------------------------------------------------------
+#                     INTERNAL BUS SWITCH signals
+# -------------------------------------------------------------------
+
+proc ib_switch {NAME PATH port0_in port1_in port2_in port0_out port1_out port2_out} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/CLK
+ 
+   add wave -divider "PORTS"
+   if { $port0_in == "TRUE" } { 
+      add_wave "-noupdate -hex -label PORT0_DOWN_DATA     "     $PATH/PORT0_DOWN_DATA     
+      add_wave "-noupdate -hex -label PORT0_DOWN_SOF_N    "     $PATH/PORT0_DOWN_SOF_N    
+      add_wave "-noupdate -hex -label PORT0_DOWN_EOF_N    "     $PATH/PORT0_DOWN_EOF_N    
+      add_wave "-noupdate -hex -label PORT0_DOWN_SRC_RDY_N"     $PATH/PORT0_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT0_DOWN_DST_RDY_N"     $PATH/PORT0_DOWN_DST_RDY_N      
+   }
+   if { $port0_out == "TRUE" } { 
+      add_wave "-noupdate -hex -label PORT0_UP_DATA     "       $PATH/PORT0_UP_DATA     
+      add_wave "-noupdate -hex -label PORT0_UP_SOF_N    "       $PATH/PORT0_UP_SOF_N    
+      add_wave "-noupdate -hex -label PORT0_UP_EOF_N    "       $PATH/PORT0_UP_EOF_N    
+      add_wave "-noupdate -hex -label PORT0_UP_SRC_RDY_N"       $PATH/PORT0_UP_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT0_UP_DST_RDY_N"       $PATH/PORT0_UP_DST_RDY_N      
+   }   
+   if { $port1_in == "TRUE" } { 
+      add_wave "-noupdate -hex -label PORT1_UP_DATA     "       $PATH/PORT1_UP_DATA     
+      add_wave "-noupdate -hex -label PORT1_UP_SOF_N    "       $PATH/PORT1_UP_SOF_N    
+      add_wave "-noupdate -hex -label PORT1_UP_EOF_N    "       $PATH/PORT1_UP_EOF_N    
+      add_wave "-noupdate -hex -label PORT1_UP_SRC_RDY_N"       $PATH/PORT1_UP_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT1_UP_DST_RDY_N"       $PATH/PORT1_UP_DST_RDY_N
+   }   
+   if { $port1_out == "TRUE" } { 
+      add_wave "-noupdate -hex -label PORT1_DOWN_DATA     "     $PATH/PORT1_DOWN_DATA     
+      add_wave "-noupdate -hex -label PORT1_DOWN_SOF_N    "     $PATH/PORT1_DOWN_SOF_N    
+      add_wave "-noupdate -hex -label PORT1_DOWN_EOF_N    "     $PATH/PORT1_DOWN_EOF_N    
+      add_wave "-noupdate -hex -label PORT1_DOWN_SRC_RDY_N"     $PATH/PORT1_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT1_DOWN_DST_RDY_N"     $PATH/PORT1_DOWN_DST_RDY_N      
+   }   
+   if { $port2_in == "TRUE" } { 
+      add_wave "-noupdate -hex -label PORT2_UP_DATA     "       $PATH/PORT2_UP_DATA     
+      add_wave "-noupdate -hex -label PORT2_UP_SOF_N    "       $PATH/PORT2_UP_SOF_N    
+      add_wave "-noupdate -hex -label PORT2_UP_EOF_N    "       $PATH/PORT2_UP_EOF_N    
+      add_wave "-noupdate -hex -label PORT2_UP_SRC_RDY_N"       $PATH/PORT2_UP_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT2_UP_DST_RDY_N"       $PATH/PORT2_UP_DST_RDY_N      
+      
+   }
+   if { $port2_out == "TRUE" } { 
+      add_wave "-noupdate -hex -label PORT2_DOWN_DATA     "     $PATH/PORT2_DOWN_DATA     
+      add_wave "-noupdate -hex -label PORT2_DOWN_SOF_N    "     $PATH/PORT2_DOWN_SOF_N    
+      add_wave "-noupdate -hex -label PORT2_DOWN_EOF_N    "     $PATH/PORT2_DOWN_EOF_N    
+      add_wave "-noupdate -hex -label PORT2_DOWN_SRC_RDY_N"     $PATH/PORT2_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT2_DOWN_DST_RDY_N"     $PATH/PORT2_DOWN_DST_RDY_N      
+   }      
+}
+
+proc ib_switch_input {NAME PATH port0 port1 port2} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/CLK
+    
+   if { $port0 == "TRUE" } { 
+     add wave -divider "INPUT0"
+      add_wave "-noupdate -hex -label present_state"     $PATH/U_ib_switch_input_port0/U_ib_switch_fetch_marker/present_state
+      add_wave "-noupdate -hex -label next_state"        $PATH/U_ib_switch_input_port0/U_ib_switch_fetch_marker/next_state      
+      
+      add_wave "-noupdate -hex -label OUT_REQ_WE"        $PATH/U_ib_switch_input_port0/OUT_REQ_WE
+      add_wave "-noupdate -hex -label pause_transfer"    $PATH/U_ib_switch_input_port0/pause_transfer
+      add_wave "-noupdate -hex -label addr_next"         $PATH/U_ib_switch_input_port0/addr_next
+      add_wave "-noupdate -hex -label addr_mx"           $PATH/U_ib_switch_input_port0/addr_mx
+      add_wave "-noupdate -hex -label addr_we"           $PATH/U_ib_switch_input_port0/addr_we
+      add_wave "-noupdate -hex -label addrpart_we"       $PATH/U_ib_switch_input_port0/addrpart_we
+      add_wave "-noupdate -hex -label type_lg_we    "    $PATH/U_ib_switch_input_port0/type_lg_we      
+
+      add_wave "-noupdate -hex -label hit_switch_base"   $PATH/U_ib_switch_input_port2/hit_switch_base
+      add_wave "-noupdate -hex -label hit_switch_high"   $PATH/U_ib_switch_input_port2/hit_switch_high
+      add_wave "-noupdate -hex -label hit_down1_base"    $PATH/U_ib_switch_input_port2/hit_down1_base
+      add_wave "-noupdate -hex -label hit_down1_high"    $PATH/U_ib_switch_input_port2/hit_down1_high
+      add_wave "-noupdate -hex -label hit_down2_base"    $PATH/U_ib_switch_input_port2/hit_down2_base
+      add_wave "-noupdate -hex -label hit_down2_high "   $PATH/U_ib_switch_input_port2/hit_down2_high                 
+      add_wave "-noupdate -hex -label type_lg        "   $PATH/U_ib_switch_input_port2/type_lg               
+   }
+   if { $port1 == "TRUE" } { 
+     add wave -divider "INPUT1"
+      add_wave "-noupdate -hex -label present_state"     $PATH/U_ib_switch_input_port1/U_ib_switch_fetch_marker/present_state
+      add_wave "-noupdate -hex -label next_state"        $PATH/U_ib_switch_input_port1/U_ib_switch_fetch_marker/next_state   
+      
+      add_wave "-noupdate -hex -label OUT_REQ_WE"        $PATH/U_ib_switch_input_port1/OUT_REQ_WE
+      add_wave "-noupdate -hex -label pause_transfer"    $PATH/U_ib_switch_input_port1/pause_transfer
+      add_wave "-noupdate -hex -label addr_next"         $PATH/U_ib_switch_input_port1/addr_next
+      add_wave "-noupdate -hex -label addr_mx"           $PATH/U_ib_switch_input_port1/addr_mx
+      add_wave "-noupdate -hex -label addr_we"           $PATH/U_ib_switch_input_port1/addr_we
+      add_wave "-noupdate -hex -label addrpart_we"       $PATH/U_ib_switch_input_port1/addrpart_we
+      add_wave "-noupdate -hex -label type_lg_we    "    $PATH/U_ib_switch_input_port1/type_lg_we      
+
+      add_wave "-noupdate -hex -label hit_switch_base"   $PATH/U_ib_switch_input_port2/hit_switch_base
+      add_wave "-noupdate -hex -label hit_switch_high"   $PATH/U_ib_switch_input_port2/hit_switch_high
+      add_wave "-noupdate -hex -label hit_down1_base"    $PATH/U_ib_switch_input_port2/hit_down1_base
+      add_wave "-noupdate -hex -label hit_down1_high"    $PATH/U_ib_switch_input_port2/hit_down1_high
+      add_wave "-noupdate -hex -label hit_down2_base"    $PATH/U_ib_switch_input_port2/hit_down2_base
+      add_wave "-noupdate -hex -label hit_down2_high "   $PATH/U_ib_switch_input_port2/hit_down2_high                 
+      add_wave "-noupdate -hex -label type_lg        "   $PATH/U_ib_switch_input_port2/type_lg               
+   }   
+   if { $port2 == "TRUE" } { 
+     add wave -divider "INPUT2"
+      add_wave "-noupdate -hex -label present_state"     $PATH/U_ib_switch_input_port2/U_ib_switch_fetch_marker/present_state
+      add_wave "-noupdate -hex -label next_state"        $PATH/U_ib_switch_input_port2/U_ib_switch_fetch_marker/next_state   
+      
+      add_wave "-noupdate -hex -label OUT_REQ_WE"        $PATH/U_ib_switch_input_port2/OUT_REQ_WE
+      add_wave "-noupdate -hex -label pause_transfer"    $PATH/U_ib_switch_input_port2/pause_transfer
+      add_wave "-noupdate -hex -label addr_next"         $PATH/U_ib_switch_input_port2/addr_next
+      add_wave "-noupdate -hex -label addr_mx"           $PATH/U_ib_switch_input_port2/addr_mx
+      add_wave "-noupdate -hex -label addr_we"           $PATH/U_ib_switch_input_port2/addr_we
+      add_wave "-noupdate -hex -label addrpart_we"       $PATH/U_ib_switch_input_port2/addrpart_we
+      add_wave "-noupdate -hex -label type_lg_we    "    $PATH/U_ib_switch_input_port2/type_lg_we         
+
+      add_wave "-noupdate -hex -label hit_switch_base"   $PATH/U_ib_switch_input_port2/hit_switch_base
+      add_wave "-noupdate -hex -label hit_switch_high"   $PATH/U_ib_switch_input_port2/hit_switch_high
+      add_wave "-noupdate -hex -label hit_down1_base"    $PATH/U_ib_switch_input_port2/hit_down1_base
+      add_wave "-noupdate -hex -label hit_down1_high"    $PATH/U_ib_switch_input_port2/hit_down1_high
+      add_wave "-noupdate -hex -label hit_down2_base"    $PATH/U_ib_switch_input_port2/hit_down2_base
+      add_wave "-noupdate -hex -label hit_down2_high "   $PATH/U_ib_switch_input_port2/hit_down2_high                 
+      add_wave "-noupdate -hex -label type_lg        "   $PATH/U_ib_switch_input_port2/type_lg           
+      
+   }        
+}
+
+proc ib_switch_buffer {NAME PATH port0_in port1_in port2_in port0_out port1_out port2_out} {
+   add wave -divider "$NAME"
+   if { $port0_in == "TRUE" } { 
+      add_wave "-noupdate -hex -label buf_in0_data "     $PATH/buf_in0_data 
+      add_wave "-noupdate -hex -label buf_in0_sof_n"     $PATH/buf_in0_sof_n
+      add_wave "-noupdate -hex -label buf_in0_eof_n"     $PATH/buf_in0_eof_n
+      add_wave "-noupdate -hex -label buf_in0_wr   "     $PATH/buf_in0_wr   
+      add_wave "-noupdate -hex -label buf_in0_full "     $PATH/buf_in0_full 
+      add_wave "-noupdate -hex -label buf_in0_req_vec"   $PATH/buf_in0_req_vec
+      add_wave "-noupdate -hex -label buf_in0_req_we "   $PATH/buf_in0_req_we       
+   }
+   if { $port0_out == "TRUE" } { 
+      add wave -divider "_----------_"     
+      add_wave "-noupdate -hex -label buf_out0_data"       $PATH/buf_out0_data
+      add_wave "-noupdate -hex -label buf_out0_data_vld"   $PATH/buf_out0_data_vld
+      add_wave "-noupdate -hex -label buf_out0_sof_n"      $PATH/buf_out0_sof_n
+      add_wave "-noupdate -hex -label buf_out0_eof_n"      $PATH/buf_out0_eof_n
+      add_wave "-noupdate -hex -label buf_out0_rd_vec"     $PATH/buf_out0_rd_vec
+      add_wave "-noupdate -hex -label buf_out0_req_vec"    $PATH/buf_out0_req_vec
+      add_wave "-noupdate -hex -label buf_out0_ack_vec "   $PATH/buf_out0_ack_vec      
+   }   
+   if { $port1_in == "TRUE" } { 
+      add wave -divider "_----------_"        
+      add_wave "-noupdate -hex -label buf_in1_data "     $PATH/buf_in1_data 
+      add_wave "-noupdate -hex -label buf_in1_sof_n"     $PATH/buf_in1_sof_n
+      add_wave "-noupdate -hex -label buf_in1_eof_n"     $PATH/buf_in1_eof_n
+      add_wave "-noupdate -hex -label buf_in1_wr   "     $PATH/buf_in1_wr   
+      add_wave "-noupdate -hex -label buf_in1_full "     $PATH/buf_in1_full 
+      add_wave "-noupdate -hex -label buf_in1_req_vec"   $PATH/buf_in1_req_vec
+      add_wave "-noupdate -hex -label buf_in1_req_we "   $PATH/buf_in1_req_we     
+   }   
+   if { $port1_out == "TRUE" } { 
+      add wave -divider "_----------_"        
+      add_wave "-noupdate -hex -label buf_out1_data"       $PATH/buf_out1_data
+      add_wave "-noupdate -hex -label buf_out1_data_vld"   $PATH/buf_out1_data_vld
+      add_wave "-noupdate -hex -label buf_out1_sof_n"      $PATH/buf_out1_sof_n
+      add_wave "-noupdate -hex -label buf_out1_eof_n"      $PATH/buf_out1_eof_n
+      add_wave "-noupdate -hex -label buf_out1_rd_vec"     $PATH/buf_out1_rd_vec
+      add_wave "-noupdate -hex -label buf_out1_req_vec"    $PATH/buf_out1_req_vec
+      add_wave "-noupdate -hex -label buf_out1_ack_vec "   $PATH/buf_out1_ack_vec    
+   }   
+   if { $port2_in == "TRUE" } { 
+      add wave -divider "_----------_"        
+      add_wave "-noupdate -hex -label buf_in2_data "     $PATH/buf_in2_data 
+      add_wave "-noupdate -hex -label buf_in2_sof_n"     $PATH/buf_in2_sof_n
+      add_wave "-noupdate -hex -label buf_in2_eof_n"     $PATH/buf_in2_eof_n
+      add_wave "-noupdate -hex -label buf_in2_wr   "     $PATH/buf_in2_wr   
+      add_wave "-noupdate -hex -label buf_in2_full "     $PATH/buf_in2_full 
+      add_wave "-noupdate -hex -label buf_in2_req_vec"   $PATH/buf_in2_req_vec
+      add_wave "-noupdate -hex -label buf_in2_req_we "   $PATH/buf_in2_req_we    
+   }
+   if { $port2_out == "TRUE" } { 
+      add wave -divider "_----------_"        
+      add_wave "-noupdate -hex -label buf_out2_data"       $PATH/buf_out2_data
+      add_wave "-noupdate -hex -label buf_out2_data_vld"   $PATH/buf_out2_data_vld
+      add_wave "-noupdate -hex -label buf_out2_sof_n"      $PATH/buf_out2_sof_n
+      add_wave "-noupdate -hex -label buf_out2_eof_n"      $PATH/buf_out2_eof_n
+      add_wave "-noupdate -hex -label buf_out2_rd_vec"     $PATH/buf_out2_rd_vec
+      add_wave "-noupdate -hex -label buf_out2_req_vec"    $PATH/buf_out2_req_vec
+      add_wave "-noupdate -hex -label buf_out2_ack_vec "   $PATH/buf_out2_ack_vec       }      
+}
+
+proc ib_switch_output {NAME PATH n} {
+   add wave -divider "$NAME"
+
+      add_wave "-noupdate -hex -label present_state " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/present_state
+      add_wave "-noupdate -hex -label next_state    " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/next_state      
+      add_wave "-noupdate -hex -label ack_sel       " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/ack_sel      
+      add_wave "-noupdate -hex -label rd0           " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/rd0      
+      add_wave "-noupdate -hex -label rd1           " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/rd1
+      add_wave "-noupdate -hex -label rd2           " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/rd2
+      add_wave "-noupdate -hex -label ack0          " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/ack0      
+      add_wave "-noupdate -hex -label ack1          " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/ack1
+      add_wave "-noupdate -hex -label ack2          " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/ack2      
+      add_wave "-noupdate -hex -label drop_ack     " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/drop_ack
+      add_wave "-noupdate -hex -label data_vld_mux  " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/data_vld_mux
+      add_wave "-noupdate -hex -label sof_n_mux     " $PATH/U_ib_switch_output_port${n}/U_ib_switch_output_fsm/sof_n_mux      
+}
+
+proc ib_switch_slave_output {NAME PATH} {
+   add wave -divider "$NAME"
+
+      add_wave "-noupdate -hex -label present_state    "     $PATH/U_ib_switch_output_fsm/present_state
+      add_wave "-noupdate -hex -label next_state       "     $PATH/U_ib_switch_output_fsm/next_state      
+
+#      add_wave "-noupdate -hex -label OUT_SOF_N       "     $PATH/U_ib_switch_output_fsm/OUT_SOF_N
+#      add_wave "-noupdate -hex -label ack_sel         "     $PATH/U_ib_switch_output_fsm/ack_sel      
+#      add_wave "-noupdate -hex -label rd1         "     $PATH/U_ib_switch_output_fsm/rd1      
+#      add_wave "-noupdate -hex -label rd2         "     $PATH/U_ib_switch_output_fsm/rd2      
+      
+#      add_wave "-noupdate -hex -label fsm_out_sof_n       "     $PATH/fsm_out_sof_n      
+#      add_wave "-noupdate -hex -label port_OUT_SOF_N       "     $PATH/OUT_SOF_N      
+#      add_wave "-noupdate -hex -label OUT_DST_RDY_N       "     $PATH/OUT_DST_RDY_N
+#      add_wave "-noupdate -hex -label pipe_flag       "     $PATH/pipe_flag
+      
+
+   add wave -divider "PORT1"
+      add_wave "-noupdate -hex -label IN1_DATA    "     $PATH/IN1_DATA    
+      add_wave "-noupdate -hex -label IN1_DATA_VLD"     $PATH/IN1_DATA_VLD
+      add_wave "-noupdate -hex -label IN1_SOF_N   "     $PATH/IN1_SOF_N   
+      add_wave "-noupdate -hex -label IN1_EOF_N   "     $PATH/IN1_EOF_N   
+      add_wave "-noupdate -hex -label IN1_RD      "     $PATH/IN1_RD      
+      add_wave "-noupdate -hex -label IN1_REQ"          $PATH/IN1_REQ
+      add_wave "-noupdate -hex -label IN1_ACK      "    $PATH/IN1_ACK      
+
+   add wave -divider "PORT2"
+      add_wave "-noupdate -hex -label IN2_DATA    "     $PATH/IN2_DATA    
+      add_wave "-noupdate -hex -label IN2_DATA_VLD"     $PATH/IN2_DATA_VLD
+      add_wave "-noupdate -hex -label IN2_SOF_N   "     $PATH/IN2_SOF_N   
+      add_wave "-noupdate -hex -label IN2_EOF_N   "     $PATH/IN2_EOF_N   
+      add_wave "-noupdate -hex -label IN2_RD      "     $PATH/IN2_RD      
+      add_wave "-noupdate -hex -label IN2_REQ"          $PATH/IN2_REQ
+      add_wave "-noupdate -hex -label IN2_ACK      "    $PATH/IN2_ACK           
+    
+}
+
+proc ib_switch_slave_down {NAME PATH} {
+   add wave -divider "_------------_"
+   add wave -divider "$NAME"
+   add wave -divider "_------------_"   
+      add_wave "-noupdate -color yellow -label RESET" $PATH/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/CLK
+ 
+   add wave -divider "INPUT PORT"
+      add_wave "-noupdate -hex -label PORT0_DOWN_DATA     "     $PATH/PORT0_DOWN_DATA     
+      add_wave "-noupdate -hex -label PORT0_DOWN_SOF_N    "     $PATH/PORT0_DOWN_SOF_N    
+      add_wave "-noupdate -hex -label PORT0_DOWN_EOF_N    "     $PATH/PORT0_DOWN_EOF_N    
+      add_wave "-noupdate -hex -label PORT0_DOWN_SRC_RDY_N"     $PATH/PORT0_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT0_DOWN_DST_RDY_N"     $PATH/PORT0_DOWN_DST_RDY_N      
+ 
+   add wave -divider "OUTPUT PORTS" 
+      add_wave "-noupdate -hex -label PORT1_DOWN_DATA     "     $PATH/PORT1_DOWN_DATA     
+      add_wave "-noupdate -hex -label PORT1_DOWN_SOF_N    "     $PATH/PORT1_DOWN_SOF_N    
+      add_wave "-noupdate -hex -label PORT1_DOWN_EOF_N    "     $PATH/PORT1_DOWN_EOF_N    
+      add_wave "-noupdate -hex -label PORT1_DOWN_SRC_RDY_N"     $PATH/PORT1_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT1_DOWN_DST_RDY_N"     $PATH/PORT1_DOWN_DST_RDY_N      
+      
+      add_wave "-noupdate -hex -label PORT2_DOWN_DATA     "     $PATH/PORT2_DOWN_DATA     
+      add_wave "-noupdate -hex -label PORT2_DOWN_SOF_N    "     $PATH/PORT2_DOWN_SOF_N    
+      add_wave "-noupdate -hex -label PORT2_DOWN_EOF_N    "     $PATH/PORT2_DOWN_EOF_N    
+      add_wave "-noupdate -hex -label PORT2_DOWN_SRC_RDY_N"     $PATH/PORT2_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT2_DOWN_DST_RDY_N"     $PATH/PORT2_DOWN_DST_RDY_N      
+}
+
+proc ib_pipe {NAME PATH} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/CLK
+      add_wave "-noupdate -label present_state"       $PATH/present_state
+      add_wave "-noupdate -label next_state"          $PATH/next_state
+   add wave -divider "_---------_"
+      add_wave "-noupdate -hex -label IN_DATA     "     $PATH/IN_DATA     
+      add_wave "-noupdate -hex -label IN_SOF_N    "     $PATH/IN_SOF_N    
+      add_wave "-noupdate -hex -label IN_EOF_N    "     $PATH/IN_EOF_N    
+      add_wave "-noupdate -hex -label IN_SRC_RDY_N"     $PATH/IN_SRC_RDY_N
+      add_wave "-noupdate -hex -label IN_DST_RDY_N"     $PATH/IN_DST_RDY_N
+   add wave -divider "_---------_"
+      add_wave "-noupdate -hex -label OUT_DATA     "    $PATH/OUT_DATA     
+      add_wave "-noupdate -hex -label OUT_SOF_N    "    $PATH/OUT_SOF_N    
+      add_wave "-noupdate -hex -label OUT_EOF_N    "    $PATH/OUT_EOF_N    
+      add_wave "-noupdate -hex -label OUT_SRC_RDY_N"    $PATH/OUT_SRC_RDY_N
+      add_wave "-noupdate -hex -label OUT_DST_RDY_N"    $PATH/OUT_DST_RDY_N      
+}
+
+
+

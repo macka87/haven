@@ -1,0 +1,182 @@
+<source>
+
+    <component>
+        FrameLink First Insert Component
+    </component>
+
+    <authors>
+        <author login="xkosar02">
+            Vlastimil Kosar
+        </author>
+    </authors>
+
+    <features>
+        <item>
+            Inserts one word long part to start of the frame.
+        </item>
+        <item>
+            Support generic data width.
+        </item>
+    </features>
+
+    <description>
+        This component inserts one word long part to the start of the FrameLink frame. Generic FrameLink data width is supported. 
+    </description>
+
+    <interface>
+
+        <generic_map>
+	    <generic name="DATA_WIDTH" type="integer" default="32">
+		    FrameLink interface data bus width.
+            </generic>
+        </generic_map>
+
+        <port_map>
+	    <port name="CLK" dir="in" width="1">
+		Clock input.
+            </port>
+            <port name="RESET" dir="in" width="1">
+                Global reset.
+            </port>
+            
+            <port name="DATA" dir="in" width="DATA_WIDTH">
+                Word to insert.
+            </port>
+            <port name="DREM" dir="in" width="DATA_WIDTH">
+               Rem of the inserted part.
+            </port>
+	    
+	    <divider>
+	  	    RX FrameLink interface
+	    </divider>
+	    <port name="RX_DATA" dir="in" width="DATA_WIDTH">
+		    RX data bus.
+	    </port>
+	    <port name="RX_REM" dir="in" width="log2(DATA_WIDTH/8)">
+		    RX data remainder.
+	    </port>
+	    <port name="RX_SRC_RDY_N" dir="in" width="1">
+		    RX source ready.
+	    </port>
+	    <port name="RX_DST_RDY_N" dir="out" width="1">
+		    RX destination ready.
+            </port>
+	    <port name="RX_SOP_N" dir="in" width="1">
+		    RX start of packet (segment).
+	    </port>
+	    <port name="RX_EOP_N" dir="in" width="1">
+		    RX end of packet (segment).
+	    </port>
+	    <port name="RX_SOF_N" dir="in" width="1">
+		    RX start of frame.
+	    </port>
+	    <port name="RX_EOF_N" dir="in" width="1">
+		    RX end of frame.
+	    </port>
+	    
+            <divider>
+                TX FrameLink interface
+            </divider>
+	    <port name="TX_DATA" dir="out" width="DATA_WIDTH">
+                TX data bus.
+            </port>
+	    <port name="TX_REM" dir="out" width="log2(DATA_WIDTH/8)">
+                TX data remainder.
+            </port>
+            <port name="TX_SRC_RDY" dir="out" width="1">
+		    TX source ready.
+	    </port>
+            <port name="TX_DST_RDY" dir="in" width="1">
+		    TX destination ready.
+            </port>
+            <port name="TX_SOP" dir="out" width="1">
+		    TX start of packet (segment).
+	    </port>
+            <port name="TX_EOP" dir="out" width="1">
+		    TX end of packet (segment).
+            </port>
+            <port name="TX_SOF" dir="out" width="1">
+                TX start of frame.
+            </port>
+            <port name="TX_EOF" dir="out" width="1">
+                TX end of frame.
+            </port>
+        </port_map>
+
+    </interface>
+
+    <body>
+
+        <h1>FrameLink First word insert Component</h1>
+        <p>
+           This component inserts one word long part to the start of the FrameLink frame. Generic data
+           width is supported. Width of the inserted word is same as FrameLink data width but REM signal
+           is supported, too..
+        </p>
+        <p>
+           Don't believe rest of this page beacause it is outdated and may be corrected soon.
+        </p>
+	<h2>Frequency and Resources usage (outdated)</h2>
+	<p>
+		<tab sloupce="cccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices XST (% of C6X slices)</th>
+			</tr>
+			<tr>
+				<th>DATA_WIDTH=64</th> 
+				<td>44</td>
+			</tr>
+		
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="cccc">
+			<tr>
+				<th>Generic settings</th>
+                                <th>Max.frequency by XST</th>
+			</tr>
+			<tr>
+				<th>DATA_WIDTH=64</th> 
+				<td>564 MHz</td>
+			</tr>
+			
+		<nazev>Maximal frequency (outdated)</nazev>
+		</tab> 
+	
+         All values was measured after synthesis before PaR.
+       </p> 
+       <h2> Verification  (outdated)</h2>
+       <p>
+         This component was verified in SystemVerilog verification. In verification was used 5000 FL frames with 3 parts (each part has 1 to 1528 bytes) and 5000 FL frames with 1 part (part has 1 to 8 byte inside). Verification was performed for 64 bit data width.
+	 
+	 <tab sloupce="cccc">
+	    <tr>
+	       <th>Coverage type</th>
+	       <th>Coverage (%)</th>
+	    </tr>
+	    <tr>
+	       <th>FL commands coverage RX</th>
+	       <th>99</th>
+	    </tr>
+	    <tr>
+	       <th>FL command coverage TX</th>
+	       <th>98</th>
+	    </tr>
+	    <tr>
+	       <th>Statement code coverage</th>
+	       <th>100</th>
+	    </tr>
+	    <tr>
+	       <th>Branch code coverage</th>
+	       <th>90.9</th>
+	    </tr>
+	    <tr>
+	       <th>Condition code coverage</th>
+	       <th>93.3</th>
+	    </tr>
+	    <nazev> Verification coverage</nazev>
+	 </tab>
+       </p>
+    </body>
+</source>

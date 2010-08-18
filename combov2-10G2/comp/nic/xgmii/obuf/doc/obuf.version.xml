@@ -1,0 +1,8 @@
+<versions>
+	
+	<version id="HEAD" name="actual version">
+		<item>Generated from HEAD cvs</item>
+		<item>Design phase.</item>
+	</version>
+
+</versions>

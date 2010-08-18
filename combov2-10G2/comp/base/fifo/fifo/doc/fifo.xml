@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+
+<!-- Page name -->
+<component>Generic FIFO</component>
+
+<!-- Authors worked on -->
+<authors>
+  <author login="pecenka">Tomas Pecenka</author>
+  <author login="martinek">Tomas Martinek</author>
+  <author login="pus">Viktor Pus</author>
+</authors>
+
+
+<bugs>
+</bugs>
+
+<todo>
+</todo>
+
+<!-- Short Block description -->
+<description>
+Generic FIFO with synchronous write and read. Resizeable width (in steps by
+1 bit) and variable number of items.  Distributed RAM is used for
+FIFO implementation. This Fifo component allows detection of a "Last
+Free Block" (via generic parameter BLOCK_SIZE). Exact number of free items
+is at the STATUS port.
+</description>
+
+<!-- Component interface description -->
+<interface>
+<generic_map>
+   <generic name="ITEMS" type="integer" default="">
+      Number of items in FIFO
+   </generic>
+   <generic name="BLOCK_SIZE" type="integer" default="0">
+      Size of block used for computing of LSTBLK signal
+   </generic>
+   <generic name="DISTMEM_TYPE" type="integer" default="36">
+      Distributed RAM type, only 16, 32, 64 bits
+   </generic>
+   <generic name="DATA_WIDTH" type="integer" default="">
+      Width of data stored in FIFO
+   </generic>
+</generic_map>
+
+<port_map>
+   <port name="DATA_IN" dir="in" width="DATA_WIDTH">
+      Data input
+   </port>
+
+   <port name="WRITE_REQ" dir="in" width="1">
+      Write request
+   </port>
+
+   <port name="DATA_OUT" dir="out" width="DATA_WIDTH">
+      Data output
+   </port>
+
+   <port name="READ_REQ" dir="in" width="1">
+      Read request
+   </port>
+
+   <port name="EMPTY" dir="out" width="1">
+      FIFO empty flag
+   </port>
+
+   <port name="FULL" dir="out" width="1">
+      FIFO full flag
+   </port>
+
+   <port name="RESET" dir="in" width="1">
+      Global reset port
+   </port>
+
+   <port name="CLK" dir="in" width="1">
+      Global clock port
+   </port>
+
+   <port name="LSTBLK" dir="out" width="1">
+      Last block detection
+   </port>
+   
+   <port name="STATUS" dir="out" width="log2(ITEMS)+1">
+      Number of free items in the FIFO.
+   </port>
+</port_map>
+</interface>
+
+<structure src="./fig/fifo.fig">
+   FIFO Architecture
+</structure>
+
+<body>
+    <h3>Specification</h3>
+<p>
+    Write operation has the standard behavior. DATA_OUT port is all the time
+    set to actual output item in fifo. When fifo is empty, value of DATA_OUT
+    is undefined.
+</p>
+<p>
+    It can be very useful to detect a situation, when last N items are
+    available in the FIFO space. For this reason, the LSTBLK signal is
+    generated. So the LSTBLK signal is asserted, when FIFO contains N or less
+    then N free items.
+</p>
+<p>
+    Signal STATUS detects exact number of free items in the FIFO. It
+    is present only in FIFO_STATUS entity. There are no extra resources to
+    generate STATUS signal.
+    If old FIFO entity is used, no STATUS signal is available.
+</p>
+</body>
+
+</source>

@@ -1,0 +1,45 @@
+##############################################################
+#
+# Xilinx Core Generator version 11.2
+# Date: Fri Sep 18 11:54:18 2009
+#
+##############################################################
+#
+#  This file contains the customisation parameters for a
+#  Xilinx CORE Generator IP GUI. It is strongly recommended
+#  that you do not manually alter this file as it may cause
+#  unexpected and unsupported behavior.
+#
+##############################################################
+#
+# BEGIN Project Options
+SET addpads = False
+SET asysymbol = True
+SET busformat = BusFormatAngleBracketNotRipped
+SET createndf = False
+SET designentry = VHDL
+SET device = xc5vfx100t
+SET devicefamily = virtex5
+SET flowvendor = Other
+SET formalverification = False
+SET foundationsym = False
+SET implementationfiletype = Ngc
+SET package = ff1136
+SET removerpms = False
+SET simulationfiles = Structural
+SET speedgrade = -2
+SET verilogsim = False
+SET vhdlsim = True
+# END Project Options
+# BEGIN Select
+SELECT XAUI family Xilinx,_Inc. 8.2
+# END Select
+# BEGIN Parameters
+CSET 802_3ae_state_machines=false
+CSET component_name=xaui_v8_2
+CSET mdio_management=true
+CSET use_tx_elastic_buffer=false
+CSET xgmii_interface=Internal
+# END Parameters
+GENERATE
+# CRC: 56ed5e4d

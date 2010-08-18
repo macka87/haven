@@ -1,0 +1,146 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Pavol Korcek <korcek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 8180 2009-04-16 10:42:53Z kastovsky $
+
+proc blk_DESC_MANAGER { PARAM } {
+   global DESC_MANAGER_PATH
+   set BASE "$DESC_MANAGER_PATH"
+  
+   # interface
+   if { $PARAM == "IFC" } {
+      	add wave -divider "Memory write interface"
+	add_wave "-noupdate -hex -label WR_ADDR"	$BASE/WR_ADDR
+	add_wave "-noupdate -hex -label WR_DATA"	$BASE/WR_DATA
+	add_wave "-noupdate -hex -label WR_BE"		$BASE/WR_BE
+	add_wave "-noupdate -hex -label WR_REQ"		$BASE/WR_REQ
+	add_wave "-noupdate -hex -label WR_RDY"		$BASE/WR_RDY
+
+	add wave -divider "BM interface"
+	add_wave "-noupdate -hex -label BM_GLOBAL_ADDR"	$BASE/BM_GLOBAL_ADDR
+	add_wave "-noupdate -hex -label BM_LOCAL_ADDR"	$BASE/BM_LOCAL_ADDR
+	add_wave "-noupdate -hex -label BM_LENGTH"	$BASE/BM_LENGTH
+	add_wave "-noupdate -hex -label BM_TAG"		$BASE/BM_TAG
+	add_wave "-noupdate -hex -label BM_TRANS_TYPE"	$BASE/BM_TRANS_TYPE
+	add_wave "-noupdate -hex -label BM_REQ"		$BASE/BM_REQ
+	add_wave "-noupdate -hex -label BM_ACK"		$BASE/BM_ACK
+	add_wave "-noupdate -hex -label BM_OP_TAG"	$BASE/BM_OP_TAG
+	add_wave "-noupdate -hex -label BM_OP_DONE"	$BASE/BM_OP_DONE
+
+	add wave -divider "DESC Fifo interface"
+	add_wave "-noupdate -hex -label DF_DATA"	$BASE/DF_DATA
+	add_wave "-noupdate -hex -label DF_ADDR"	$BASE/DF_ADDR
+	add_wave "-noupdate -hex -label DF_WRITE"	$BASE/DF_WRITE
+	add_wave "-noupdate -hex -label DF_FULL"	$BASE/DF_FULL
+	add_wave "-noupdate -hex -label DF_STATUS"	$BASE/DF_STATUS
+
+	add wave -divider "DMA Ctrls interface"
+	add_wave "-noupdate -hex -label ENABLE"		$BASE/ENABLE
+   }
+
+   if { $PARAM == "IFC_DMA" } {
+      	add wave -divider "Memory write interface"
+	add_wave "-noupdate -hex -label WR_ADDR"	$BASE/WR_ADDR
+	add_wave "-noupdate -hex -label WR_DATA"	$BASE/WR_DATA
+	add_wave "-noupdate -hex -label WR_BE"		$BASE/WR_BE
+	add_wave "-noupdate -hex -label WR_REQ"		$BASE/WR_REQ
+	add_wave "-noupdate -hex -label WR_RDY"		$BASE/WR_RDY
+
+      	add wave -divider "DMA memory interface"
+	add_wave "-noupdate -hex -label dma_addr"       $BASE/dma_addr
+        add_wave "-noupdate -hex -label dma_dout"       $BASE/dma_dout
+        add_wave "-noupdate -label dma_req"             $BASE/dma_req
+        add_wave "-noupdate -label dma_ack"             $BASE/dma_ack
+        add_wave "-noupdate -label dma_done"            $BASE/dma_done
+        add_wave "-noupdate -hex -label dma_tag"        $BASE/dma_tag
+
+	add wave -divider "DMA Ctrls interface"
+	add_wave "-noupdate -hex -label DATA_OUT"	$BASE/DATA_OUT
+	add_wave "-noupdate -hex -label EMPTY"		$BASE/EMPTY
+	add_wave "-noupdate -hex -label READ"		$BASE/READ
+	add_wave "-noupdate -hex -label ENABLE"		$BASE/ENABLE
+   }
+
+   # Miscelaneous signals
+   if { $PARAM == "MISC" } {
+    
+       	add wave -divider "Misc"
+	add_wave "-noupdate -label INIT_SEL"		$BASE/INIT_SEL
+#	add_wave "-noupdate -label INIT_ADDR"		$BASE/INIT_ADDR  
+      	add wave -divider "WE Logic FSM"
+	add_wave "-noupdate -label PRESENT_STATE"	$BASE/DESC_WE_LOGIC/PRESENT_STATE
+#	add_wave "-noupdate -label NEXT_STATE"		$BASE/DESC_WE_LOGIC/NEXT_STATE
+	add wave -divider "Input"
+	add_wave "-noupdate -hex -label ENABLE"		$BASE/FSM_ENABLE_INPUT
+	add_wave "-noupdate -hex -label DESC_TYPE"	$BASE/DESC_WE_LOGIC/DESC_TYPE
+	add_wave "-noupdate -hex -label COUNT"		$BASE/DESC_WE_LOGIC/COUNT
+	add wave -divider "Output"
+	add_wave "-noupdate -hex -label FLAG_CLEAR"	$BASE/FSM_FLAG_CLR
+	add_wave "-noupdate -hex -label FIFO_WE"	$BASE/FSM_FIFO_WE
+	add_wave "-noupdate -hex -label REG_ARRAY_WE"	$BASE/FSM_REG_ARRAY_WE
+	add_wave "-noupdate -hex -label STORE_ADDR"	$BASE/FSM_STORE_ADDR
+
+      	add wave -divider "Reg_Array (type 1)"
+	add wave -divider "Write"
+	add_wave "-noupdate -hex -label WE"		$BASE/REG_ARRAY_WE
+	add_wave "-noupdate -hex -label BE"		$BASE/REG_ARRAY_BE
+	add_wave "-noupdate -hex -label ADDR"		$BASE/REG_ARRAY_ADDR
+	add_wave "-noupdate -hex -label WDATA"		$BASE/REG_ARRAY_WDATA
+	add_wave "-noupdate -hex -label RDATA"		$BASE/REG_ARRAY_RDATA
+	add wave -divider "Read"
+	add_wave "-noupdate -hex -label ADDR"		$BASE/REG_ARRAY_RADDR_OUT
+	add_wave "-noupdate -hex -label DATA"		$BASE/REG_ARRAY_RDATA_OUT
+
+      	add wave -divider "Fifo2NFifo (type 0)"
+	add wave -divider "Write"
+	add_wave "-noupdate -hex -label WR_DATA"	$BASE/WR_DATA
+	add_wave "-noupdate -hex -label CHANNEL_ADDR"	$BASE/CHANNEL_ADDR
+	add_wave "-noupdate -hex -label FSM_FIFO_WE"	$BASE/FSM_FIFO_WE
+
+      	add wave -divider "Next Desc Flags"
+	add_wave "-noupdate -hex -label FLAG_GET"	$BASE/FLAG_GET
+	add_wave "-noupdate -hex -label GET_ADDR"	$BASE/GET_ADDR
+	add_wave "-noupdate -hex -label FLAG_SET"	$BASE/FLAG_SET
+	add_wave "-noupdate -hex -label SET_ADDR"	$BASE/SET_ADDR
+	add_wave "-noupdate -hex -label FLAG_CLR"	$BASE/FSM_FLAG_CLR
+	add_wave "-noupdate -hex -label CLR_ADDR"	$BASE/CLR_ADDR
+      	
+	add wave -divider "Get Next FSM"
+	add_wave "-noupdate -label PRESENT_STATE"	$BASE/DESC_GET_NEXT/PRESENT_STATE
+	add_wave "-noupdate -hex -label ENABLE"		$BASE/DESC_GET_NEXT/ENABLE
+	add_wave "-noupdate -hex -label FIFO_STATUS"	$BASE/FIFO_STATUS
+	add_wave "-noupdate -hex -label FLAG_GET"	$BASE/FLAG_GET
+	add_wave "-noupdate -hex -label BM_ACK"		$BASE/BM_ACK
+	add_wave "-noupdate -hex -label NEXT_ADDR"	$BASE/NEXT_ADDR
+	add_wave "-noupdate -hex -label BM_REQ"		$BASE/BM_REQ
+	add_wave "-noupdate -hex -label FLAG_SET"	$BASE/FLAG_SET
+	
+   }
+}
+

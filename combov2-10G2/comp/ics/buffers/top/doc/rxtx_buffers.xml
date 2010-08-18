@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="ISO-8859-2"?>
+<source>
+
+<component>RXTX Buffers</component>
+
+<authors>
+   <author login="kosek">Martin Košek</author>
+</authors>
+
+<features>
+   <item>Generic number of network interfaces</item>
+   <item>Only one Internal Bus Endpoint requiered</item>
+   <item>Resource-saving architecture</item>
+</features>
+
+<description>
+   <p>
+      This top level contains all components necessary IP cores for 
+      processing of incoming/outcoming packets. Cover is written in generic 
+      way, so that it can be used for various number of network interfaces. 
+      Top level base components are:
+   </p>
+   <p>
+      <ul>
+         <li>N x RX Buffer</li>
+         <li>N x TX Buffer</li>
+         <li>N x RX DMA Controller</li>
+         <li>N x TX DMA Controller</li>
+      </ul>
+   </p>
+</description>
+
+<interface>
+   <generic_map>
+      <generic name="NET_IFC_COUNT" type="integer" default="4">
+         Number of input/output network interfaces.
+      </generic>
+      <generic name="RXBUF constants" type="various" default="">
+         See RXBUF documentation for detailed generics.
+      </generic>
+      <generic name="TXBUF constants" type="various" default="">
+         See TXBUF documentation for detailed generics.
+      </generic>
+      <generic name="RX DMA Controller constants" type="various" default="">
+         See RX DMA Controller documentation for detailed generics.
+      </generic>
+      <generic name="TX DMA Controller constants" type="various" default="">
+         See TX DMA Controller documentation for detailed generics.
+      </generic>
+   </generic_map>
+
+   <port_map>
+
+      <divider>Common Interface</divider>
+      <port name="CLK" dir="in" width="1">
+         Clock input
+      </port>
+      <port name="RESET" dir="in" width="1">
+         Reset input
+      </port>
+      <port name="INTERRUPT" dir="out" width="1">
+         Interrupt
+      </port>
+      
+      <divider>Internal Bus interface</divider>
+      <port name="WR" dir="inout" width="1">
+         IB Write Interface
+      </port>
+
+      <port name="RD" dir="inout" width="1">
+         IB Read Interface
+      </port>
+
+      <port name="BM" dir="inout" width="1">
+         Bus Master Interface
+      </port>
+
+      <divider>Data input interface</divider>
+      <port name="RX0" dir="inout" width="1">
+         FrameLink input interface
+      </port>
+      <port name="RX1" dir="inout" width="1">
+         FrameLink input interface
+      </port>
+      <port name="RXn" dir="inout" width="1">
+         FrameLink input interface
+      </port>
+      
+      <divider>Data output interface</divider>
+      <port name="TX0" dir="inout" width="1">
+         FrameLink output interface
+      </port>
+      <port name="TX1" dir="inout" width="1">
+         FrameLink output interface
+      </port>
+      <port name="TXn" dir="inout" width="1">
+         FrameLink output interface
+      </port>
+   </port_map>
+   
+</interface>
+
+<addr_space id="rxtxbuffers_addr_space" name="Main address space" main="yes" size="0x0400000">
+   <instantion ref_comp="sw_rxbuf" offset="0x0000000">RXBUF 0</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0010000">RXBUF 1</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0020000">RXBUF 2</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0030000">RXBUF 3</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0040000">RXBUF 4</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0050000">RXBUF 5</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0060000">RXBUF 6</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0070000">RXBUF 7</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0080000">RXBUF 8</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x0090000">RXBUF 9</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x00A0000">RXBUF 10</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x00B0000">RXBUF 11</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x00C0000">RXBUF 12</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x00D0000">RXBUF 13</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x00E0000">RXBUF 14</instantion>
+   <instantion ref_comp="sw_rxbuf" offset="0x00F0000">RXBUF 15</instantion>
+
+   <instantion ref_comp="sw_txbuf" offset="0x0100000">TXBUF 0</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0110000">TXBUF 1</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0120000">TXBUF 2</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0130000">TXBUF 3</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0140000">TXBUF 4</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0150000">TXBUF 5</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0160000">TXBUF 6</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0170000">TXBUF 7</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0180000">TXBUF 8</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x0190000">TXBUF 9</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x01A0000">TXBUF 10</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x01B0000">TXBUF 11</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x01C0000">TXBUF 12</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x01D0000">TXBUF 13</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x01E0000">TXBUF 14</instantion>
+   <instantion ref_comp="sw_txbuf" offset="0x01F0000">TXBUF 15</instantion>
+
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0200000">RX DMA Controller 0</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0210000">RX DMA Controller 1</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0220000">RX DMA Controller 2</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0230000">RX DMA Controller 3</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0240000">RX DMA Controller 4</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0250000">RX DMA Controller 5</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0260000">RX DMA Controller 6</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0270000">RX DMA Controller 7</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0280000">RX DMA Controller 8</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x0290000">RX DMA Controller 9</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x02A0000">RX DMA Controller 10</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x02B0000">RX DMA Controller 11</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x02C0000">RX DMA Controller 12</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x02D0000">RX DMA Controller 13</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x02E0000">RX DMA Controller 14</instantion>
+   <instantion ref_comp="rx_dma_ctrl" offset="0x02F0000">RX DMA Controller 15</instantion>
+
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0300000">TX DMA Controller 0</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0310000">TX DMA Controller 1</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0320000">TX DMA Controller 2</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0330000">TX DMA Controller 3</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0340000">TX DMA Controller 4</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0350000">TX DMA Controller 5</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0360000">TX DMA Controller 6</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0370000">TX DMA Controller 7</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0380000">TX DMA Controller 8</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x0390000">TX DMA Controller 9</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x03A0000">TX DMA Controller 10</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x03B0000">TX DMA Controller 11</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x03C0000">TX DMA Controller 12</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x03D0000">TX DMA Controller 13</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x03E0000">TX DMA Controller 14</instantion>
+   <instantion ref_comp="tx_dma_ctrl" offset="0x03F0000">TX DMA Controller 15</instantion>
+</addr_space>
+
+<sw_body>
+    <h1>Address space</h1>
+   <p>
+      Adresses of all components are on fixed position as maximal address space
+      of each components has been declared and also maximal number of 
+      input/output network interfaces has been set to 16. This should be 
+      sufficient number even for future hardware cards.
+   </p>
+   <p>
+      Therefore each component can be easily addressed on different cards
+      with different demands on each component (RXBUF, TXBUF, DMA Controller)
+      and even for different numbers of network interfaces.
+   </p>
+   
+   <h2>Address space structure</h2>
+   <p>
+      <obr src="./fig/rxtx_address.fig">Address space structure + example</obr>
+   </p>
+</sw_body>
+
+<body>
+   <h1>General information</h1>
+   <p>
+      This component/cover has been created to simplify architecture of NetCOPE
+      top levels on various hardware cards. It has generic interface with user 
+      numberof input/output network interfaces, so that in can be used on 
+      different cards.
+   </p>
+
+   <p>
+      Component architecture and layout has been resource optimized, so that it
+      occupies as low FPGA resources as possible.
+   </p>
+   
+   <h1>Architecture</h1>
+   <p>
+      Top level architecture of design cover contains other covers for generic 
+      number of RXBUFs, TXBUFs and DMA Controllers:
+   </p>
+   <p>
+      <obr src="./fig/rxtx_buffers.fig">Top level architecture</obr>
+   </p>
+
+   <p>
+      DMA Controller cover is quite complicated as very wide Bus Master 
+      interfaces needs to be multiplexed for all DMA Controllers. In current
+      implementation Bus Master request information are read from 128b memory
+      and converted to FrameLink packet by DMA2FL component. All DMA requests
+      are then binded to one wide FrameLink bus and converted to final BM
+      request to IB Endpoint:
+   </p>
+   <p>
+      <obr src="./fig/dma_array.fig">DMA Controllers Array architecture</obr>
+   </p>
+
+</body>
+</source>

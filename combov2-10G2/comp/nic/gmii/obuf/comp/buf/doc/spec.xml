@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<source>
+
+<!-- Page name -->
+<component>Output buffer for gmii interface - buffer part</component>
+
+
+<!-- Authors worked on -->
+<authors>
+   <author login="xmikus03">Martin Mikusek</author>
+</authors>
+
+
+<!-- Versions list -->
+<versions>
+</versions>
+
+
+<!-- Bugs -->
+<bugs>
+</bugs>
+
+<!-- What have to be done -->
+<todo>
+</todo>
+
+
+<!-- Short Block description -->
+<description>
+   Used for buffering of output packets before transmission. Converts
+   data from more data paths on input to one data path on output. If control
+   part is present on command protocol, sends only packets tagged as valid.
+</description>
+
+<!-- COMPONENT INTERFACE ************************************************* -->
+<interface>
+
+   <generic_map>
+      <generic name="ADDR_BASE" type="integer">
+	 Address space base address
+      </generic>
+
+      <generic name="ADDR_WIDTH" type="integer">
+	 Address space width
+      </generic>
+
+      <generic name="DATA_PATHS" type="integer">
+	 Data paths number
+      </generic>
+
+      <generic name="DFIFO_SIZE" type="integer">
+	 Data FIFO size (in items)
+      </generic>
+
+      <generic name="SFIFO_SIZE" type="integer">
+	 Maximal number of packets
+      </generic>
+
+      <generic name="CTRL_CMD" type="boolean">
+	 Input command protocol contains control part
+      </generic>
+
+   </generic_map>
+
+   <port_map>
+      <port name="RESET" dir="in" width="1">
+	 Global reset port.
+      </port>
+
+      <port name="WR_CLK" dir="in" width="1">
+	 Write clock.
+      </port>
+
+      <port name="DFIFO_DI" dir="in" width="DATA_PATHS*9">
+	 DFIFO input data
+      </port>
+
+      <port name="DFIFO_WR" dir="in" width="1">
+	 DFIFO write request
+      </port>
+
+      <port name="DFIFO_FULL" dir="out" width="1">
+	 DFIFO full flag
+      </port>
+
+      <port name="SFIFO_DI" dir="in" width="DATA_PATHS*9">
+	SFIFO input data
+      </port>
+
+      <port name="SFIFO_WR" dir="in" width="1">
+	 SFIFO write request
+      </port>
+
+      <port name="SFIFO_FULL" dir="out" width="1">
+	 SFIFO full flag
+      </port>
+
+      <port name="TX_CLK" dir="in" width="1">
+	 GMII transmit clock
+      </port>
+
+      <port name="TX_DO" dir="out" width="1">
+	 Output data to TX part
+      </port>
+
+      <port name="TX_DV" dir="out" width="1">
+	 TX data valid
+      </port>
+
+      <port name="TX_ER" dir="out" width="1">
+	 TX error
+      </port>
+
+      <port name="TX_BUSY" dir="in" width="1">
+	 TX part busy flag
+      </port>
+
+
+      <port name="ADC_RD" dir="in" width="1">
+	 Address decoder read request
+      </port>
+
+      <port name="ADC_WR" dir="in" width="1">
+	 Address decoder write request
+      </port>
+
+      <port name="ADC_ADDR" dir="in" width="ADDR_WIDTH">
+	 Address decoder address
+      </port>
+
+      <port name="ADC_DI" dir="in" width="32">
+	 Address decoder input data
+      </port>
+
+      <port name="ADC_DO" dir="out" width="32">
+	 Address decoder output data
+      </port>
+
+      <port name="ADC_DRDY" dir="out" width="1">
+	 Address decoder data ready
+      </port>
+      
+   </port_map>
+
+</interface>
+
+
+<!-- CONSTANT SECTION ************************************************* -->
+
+<constant>
+</constant>
+
+
+<!-- OPERATIONS SECTION ************************************************* -->
+
+<operations>
+</operations>
+
+
+<!-- STRUCTURE ************************************************* -->
+<structure src="./fig/buf.fig">
+</structure>
+
+<schemes>
+   <obr src="fig/buf_fsm.fig">Fsm for more data paths</obr>
+   <obr src="fig/buf_fsm.fig">Fsm for one data path</obr>
+</schemes>
+
+
+<!-- ADDRESS SPACE ************************************************* -->
+<addr_space id ="MAIN" name="Main" main="yes">
+</addr_space>
+
+
+<!-- *********************** Registers description  ********************* -->
+
+
+<!-- BODY ************************************************* -->
+<body>
+</body>
+
+</source>

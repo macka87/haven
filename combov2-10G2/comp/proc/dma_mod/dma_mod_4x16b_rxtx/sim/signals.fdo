@@ -1,0 +1,140 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Martin Kosek <kosek@liberouter.org>
+#         Lukas Solanka <solanka@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 11822 2009-10-30 14:58:53Z pus $
+
+proc ifc_DMA_MODULE_4x16 { BASE } {
+   add wave -divider "DMA Module - 4x16"
+
+   add_wave "-label CLK -color magenta" $BASE/clk
+   add_wave "-label RESET             " $BASE/reset
+   add_wave "-label USER_CLK          " $BASE/user_clk
+   add_wave "-label USER_RESET        " $BASE/user_reset
+   add_wave "-label RX_INTERRUPT      " $BASE/RX_INTERRUPT
+   add_wave "-label TX_INTERRUPT      " $BASE/TX_INTERRUPT
+
+   add wave -divider "IB"
+   add_wave "-label IB_UP_DATA -hex   " $BASE/IB_UP_DATA
+   add_wave "-label IB_UP_SOP_N       " $BASE/IB_UP_SOP_N
+   add_wave "-label IB_UP_EOP_N       " $BASE/IB_UP_EOP_N
+   add_wave "-label IB_UP_SRC_RDY_N   " $BASE/IB_UP_SRC_RDY_N
+   add_wave "-label IB_UP_DST_RDY_N   " $BASE/IB_UP_DST_RDY_N
+   add_wave "-label IB_DOWN_DATA -hex " $BASE/IB_UP_DATA
+   add_wave "-label IB_DOWN_SOP_N     " $BASE/IB_DOWN_SOP_N
+   add_wave "-label IB_DOWN_EOP_N     " $BASE/IB_DOWN_EOP_N
+   add_wave "-label IB_DOWN_SRC_RDY_N " $BASE/IB_DOWN_SRC_RDY_N
+   add_wave "-label IB_DOWN_DST_RDY_N " $BASE/IB_DOWN_DST_RDY_N
+
+   add wave -divider "LB"
+   add_wave "-label LB_DWR -hex       " $BASE/LB_DWR
+   add_wave "-label LB_BE -uns        " $BASE/LB_BE
+   add_wave "-label LB_ADS_N          " $BASE/LB_ADS_N
+   add_wave "-label LB_RD_N           " $BASE/LB_RD_N
+   add_wave "-label LB_WR_N           " $BASE/LB_WR_N
+   add_wave "-label LB_DRD -hex       " $BASE/LB_DRD
+   add_wave "-label LB_RDY_N          " $BASE/LB_RDY_N
+   add_wave "-label LB_ERR_N          " $BASE/LB_ERR_N
+   add_wave "-label LB_ABORT_N        " $BASE/LB_ABORT_N
+
+   add wave -divider "Input interface"
+   add_wave "-label rx0_data -hex     " $BASE/rx0_data
+   add_wave "-label rx0_drem -uns     " $BASE/rx0_drem
+   add_wave "-label rx0_sof_n         " $BASE/rx0_sof_n
+   add_wave "-label rx0_eof_n         " $BASE/rx0_eof_n
+   add_wave "-label rx0_sop_n         " $BASE/rx0_sop_n
+   add_wave "-label rx0_eop_n         " $BASE/rx0_eop_n
+   add_wave "-label rx0_src_rdy_n     " $BASE/rx0_src_rdy_n
+   add_wave "-label rx0_dst_rdy_n     " $BASE/rx0_dst_rdy_n
+
+   add_wave "-label rx1_data -hex     " $BASE/rx1_data
+   add_wave "-label rx1_drem -uns     " $BASE/rx1_drem
+   add_wave "-label rx1_sof_n         " $BASE/rx1_sof_n
+   add_wave "-label rx1_eof_n         " $BASE/rx1_eof_n
+   add_wave "-label rx1_sop_n         " $BASE/rx1_sop_n
+   add_wave "-label rx1_eop_n         " $BASE/rx1_eop_n
+   add_wave "-label rx1_src_rdy_n     " $BASE/rx1_src_rdy_n
+   add_wave "-label rx1_dst_rdy_n     " $BASE/rx1_dst_rdy_n
+
+   add_wave "-label rx2_data -hex     " $BASE/rx2_data
+   add_wave "-label rx2_drem -uns     " $BASE/rx2_drem
+   add_wave "-label rx2_sof_n         " $BASE/rx2_sof_n
+   add_wave "-label rx2_eof_n         " $BASE/rx2_eof_n
+   add_wave "-label rx2_sop_n         " $BASE/rx2_sop_n
+   add_wave "-label rx2_eop_n         " $BASE/rx2_eop_n
+   add_wave "-label rx2_src_rdy_n     " $BASE/rx2_src_rdy_n
+   add_wave "-label rx2_dst_rdy_n     " $BASE/rx2_dst_rdy_n
+
+   add_wave "-label rx3_data -hex     " $BASE/rx3_data
+   add_wave "-label rx3_drem -uns     " $BASE/rx3_drem
+   add_wave "-label rx3_sof_n         " $BASE/rx3_sof_n
+   add_wave "-label rx3_eof_n         " $BASE/rx3_eof_n
+   add_wave "-label rx3_sop_n         " $BASE/rx3_sop_n
+   add_wave "-label rx3_eop_n         " $BASE/rx3_eop_n
+   add_wave "-label rx3_src_rdy_n     " $BASE/rx3_src_rdy_n
+   add_wave "-label rx3_dst_rdy_n     " $BASE/rx3_dst_rdy_n
+
+
+   add wave -divider "Output interface"
+   add_wave "-label tx0_data -hex     " $BASE/tx0_data
+   add_wave "-label tx0_drem -uns     " $BASE/tx0_drem
+   add_wave "-label tx0_sof_n         " $BASE/tx0_sof_n
+   add_wave "-label tx0_eof_n         " $BASE/tx0_eof_n
+   add_wave "-label tx0_sop_n         " $BASE/tx0_sop_n
+   add_wave "-label tx0_eop_n         " $BASE/tx0_eop_n
+   add_wave "-label tx0_src_rdy_n     " $BASE/tx0_src_rdy_n
+   add_wave "-label tx0_dst_rdy_n     " $BASE/tx0_dst_rdy_n
+
+   add_wave "-label tx1_data -hex     " $BASE/tx1_data
+   add_wave "-label tx1_drem -uns     " $BASE/tx1_drem
+   add_wave "-label tx1_sof_n         " $BASE/tx1_sof_n
+   add_wave "-label tx1_eof_n         " $BASE/tx1_eof_n
+   add_wave "-label tx1_sop_n         " $BASE/tx1_sop_n
+   add_wave "-label tx1_eop_n         " $BASE/tx1_eop_n
+   add_wave "-label tx1_src_rdy_n     " $BASE/tx1_src_rdy_n
+   add_wave "-label tx1_dst_rdy_n     " $BASE/tx1_dst_rdy_n
+
+   add_wave "-label tx2_data -hex     " $BASE/tx2_data
+   add_wave "-label tx2_drem -uns     " $BASE/tx2_drem
+   add_wave "-label tx2_sof_n         " $BASE/tx2_sof_n
+   add_wave "-label tx2_eof_n         " $BASE/tx2_eof_n
+   add_wave "-label tx2_sop_n         " $BASE/tx2_sop_n
+   add_wave "-label tx2_eop_n         " $BASE/tx2_eop_n
+   add_wave "-label tx2_src_rdy_n     " $BASE/tx2_src_rdy_n
+   add_wave "-label tx2_dst_rdy_n     " $BASE/tx2_dst_rdy_n
+
+   add_wave "-label tx3_data -hex     " $BASE/tx3_data
+   add_wave "-label tx3_drem -uns     " $BASE/tx3_drem
+   add_wave "-label tx3_sof_n         " $BASE/tx3_sof_n
+   add_wave "-label tx3_eof_n         " $BASE/tx3_eof_n
+   add_wave "-label tx3_sop_n         " $BASE/tx3_sop_n
+   add_wave "-label tx3_eop_n         " $BASE/tx3_eop_n
+   add_wave "-label tx3_src_rdy_n     " $BASE/tx3_src_rdy_n
+   add_wave "-label tx3_dst_rdy_n     " $BASE/tx3_dst_rdy_n
+}

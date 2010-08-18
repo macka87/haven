@@ -1,0 +1,13 @@
+<versions>
+
+    <version id="HEAD" name="actual version">
+        <item>
+            Supports FrameLink/CMD data bus width of 8, 16, 32, 64 and
+            128 bits.
+        </item>
+        <item>
+            Optional header and footer data presence.
+        </item>
+	</version>
+
+</versions>

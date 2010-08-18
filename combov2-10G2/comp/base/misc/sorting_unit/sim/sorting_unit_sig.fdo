@@ -1,0 +1,80 @@
+# sortin_unit_sig.fdo : Functional simulation file.
+# Copyright (C) 2003 CESNET
+# Author: Lukas Solanka <solanka@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: sorting_unit_sig.fdo 57 2007-08-01 20:19:03Z kosek $
+#
+
+# Components base directories
+
+# Components paths
+set TB_PATH             "/testbench"
+set UUT_PATH            "/testbench/uut"
+
+# Global file with signals
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label reset /testbench/uut/reset
+add wave -noupdate -label clk /testbench/uut/clk
+
+add wave -divider "Write part"
+add_wave "-noupdate -hex -label rx_id       " $TB_PATH/rx_id       
+add_wave "-noupdate -hex -label rx_data     " $TB_PATH/rx_data     
+add_wave "-noupdate -hex -label rx_src_rdy_n" $TB_PATH/rx_src_rdy_n
+add_wave "-noupdate -hex -label rx_dst_rdy_n" $TB_PATH/rx_dst_rdy_n
+
+add wave -divider "Read part"
+add_wave "-noupdate -hex -label tx_id       " $TB_PATH/tx_id       
+add_wave "-noupdate -hex -label tx_data     " $TB_PATH/tx_data     
+add_wave "-noupdate -hex -label tx_src_rdy_n" $TB_PATH/tx_src_rdy_n
+add_wave "-noupdate -hex -label tx_dst_rdy_n" $TB_PATH/tx_dst_rdy_n
+
+add wave -divider "Internal signals"
+add_wave "-noupdate -hex -label write_addr    " $UUT_PATH/write_addr
+add_wave "-noupdate -hex -label read_addr     " $UUT_PATH/read_addr
+add_wave "-noupdate -hex -label rx_write_allow" $UUT_PATH/rx_write_allow
+add_wave "-noupdate -hex -label tx_write_allow" $UUT_PATH/tx_write_allow
+add_wave "-noupdate -hex -label rx_real_valid " $UUT_PATH/rx_real_valid
+add_wave "-noupdate -hex -label tx_real_valid " $UUT_PATH/tx_real_valid
+
+add wave -divider "Other signals"
+add_wave "-noupdate -hex -label cnt_init      " $UUT_PATH/cnt_init
+add_wave "-noupdate -hex -label reg_init_done " $UUT_PATH/reg_init_done
+
+
+#add_wave "-noupdate -hex -label " $_PATH/
+#add_wave "-noupdate -hex -label " $_PATH/
+#add_wave "-noupdate -hex -label " $_PATH/
+#add_wave "-noupdate -hex -label " $_PATH/
+
+
+restart -f
+run 2 us

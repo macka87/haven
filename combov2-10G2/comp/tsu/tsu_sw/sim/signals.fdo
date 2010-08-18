@@ -1,0 +1,71 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2009 CESNET
+# Author(s): Jan Stourac <xstour03 at stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+
+view wave
+delete wave *
+
+# -------------------------------------------------------------------------
+#                       Waveform Definition 
+# -------------------------------------------------------------------------
+
+proc blk_TSU_SW { PARAM } {
+   global TSU_SW_PATH
+
+# User signals
+add wave -divider "MI32 Bus interface"
+add wave -noupdate -label dwr -hex  		 $TSU_SW_PATH/DWR
+add wave -noupdate -label addr -hex		 $TSU_SW_PATH/ADDR
+add wave -noupdate -label rd		  	 $TSU_SW_PATH/RD
+add wave -noupdate -label wr		  	 $TSU_SW_PATH/WR
+add wave -noupdate -label be 			 $TSU_SW_PATH/BE
+add wave -noupdate -label drd -hex		 $TSU_SW_PATH/DRD
+add wave -noupdate -label ardy 			 $TSU_SW_PATH/ARDY
+add wave -noupdate -label drdy 			 $TSU_SW_PATH/DRDY
+
+add wave -divider "Output interface"
+add wave -noupdate -label ts -hex	  	 $TSU_SW_PATH/TS
+add wave -noupdate -label ts_dv 		 $TSU_SW_PATH/TS_DV
+
+add wave -divider "Signals in component"
+add wave -noupdate -label reg_realtime -hex 	 $TSU_SW_PATH/reg_realtime
+add wave -noupdate -label incr_value -hex	 $TSU_SW_PATH/incr_value
+add wave -noupdate -label correlation		 $TSU_SW_PATH/correlation
+add wave -noupdate -label sel_reg_rtr_low	 $TSU_SW_PATH/sel_reg_rtr_low
+add wave -noupdate -label sel_reg_rtr_high	 $TSU_SW_PATH/sel_reg_rtr_high
+add wave -noupdate -label sel_reg_incr_val_low	 $TSU_SW_PATH/sel_reg_incr_val_low
+add wave -noupdate -label sel_reg_incr_val_high	 $TSU_SW_PATH/sel_reg_incr_val_high
+add wave -noupdate -label reg_rtr_low_we	 $TSU_SW_PATH/reg_rtr_low_we
+add wave -noupdate -label reg_rtr_high_we	 $TSU_SW_PATH/reg_rtr_high_we
+add wave -noupdate -label reg_incr_val_low_we	 $TSU_SW_PATH/reg_incr_val_low_we
+add wave -noupdate -label reg_incr_val_high_we	 $TSU_SW_PATH/reg_incr_val_high_we
+add wave -noupdate -label reg_rtr_low_re	 $TSU_SW_PATH/reg_rtr_low_re
+
+}
+

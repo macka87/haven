@@ -1,0 +1,808 @@
+/* tx_dma_ctrl_opt.hcc: Optimized DMA engine controller - TX part
+ * Copyright (C) 2008 CESNET
+ * Author(s): Martin Louda <sandin@liberouter.org>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ * 3. Neither the name of the Company nor the names of its contributors
+ *    may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
+ *
+ * This software is provided ``as is'', and any express or implied
+ * warranties, including, but not limited to, the implied warranties of
+ * merchantability and fitness for a particular purpose are disclaimed.
+ * In no event shall the company or contributors be liable for any
+ * direct, indirect, incidental, special, exemplary, or consequential
+ * damages (including, but not limited to, procurement of substitute
+ * goods or services; loss of use, data, or profits; or business
+ * interruption) however caused and on any theory of liability, whether
+ * in contract, strict liability, or tort (including negligence or
+ * otherwise) arising in any way out of the use of this software, even
+ * if advised of the possibility of such damage.
+ *
+ * $Id: tx_dma_ctrl_opt.hcc 13727 2010-05-12 07:50:30Z pus $
+ *
+ */
+
+#include <stdlib.hch>
+
+#define DEBUG_VARS
+
+
+#if (DMA_DATA_WIDTH !=  1) && \
+    (DMA_DATA_WIDTH !=  2) && \
+    (DMA_DATA_WIDTH !=  4) && \
+    (DMA_DATA_WIDTH !=  8) && \
+    (DMA_DATA_WIDTH != 16) && \
+    (DMA_DATA_WIDTH != 32) && \
+    (DMA_DATA_WIDTH != 64)
+  #error Invalid DMA_DATA_WIDTH!
+#endif
+
+
+/* Constants definition block */
+#define DESC_WIDTH            64    // width of a descriptor [bit]
+#define DMA_REQUEST_SIZE      128   // size of a DMA request [bit]
+// width of a DMA address [bit]
+#define DMA_ADDR_WIDTH        (log2ceil(DMA_REQUEST_SIZE/DMA_DATA_WIDTH))
+// number of parts of descriptor [bit]
+#define DESC_PARTS            (DESC_WIDTH/DMA_DATA_WIDTH)
+// width of a descriptor part address [bit]
+#define DESC_PARTS_WIDTH      (log2ceil(DMA_REQUEST_SIZE/DMA_DATA_WIDTH))
+
+#define LOCAL_ADDRESS_WIDTH   32    // width of a local address [bit]
+#define IFC_BUF_NEWLEN_WIDTH  16    // width of the buffer newlen interface [bit]
+
+#define SW_PTR_SIZE           32    // size of sw pointer [bit]
+#define HW_PTR_SIZE           16    // size of hw pointer [bit]
+
+#define PAGE_MASK_WIDTH       12    // width of a page address mask [bit]
+
+#define MEM_PAGE_SIZE         (1 << PAGE_MASK_WIDTH)  // size of a memory page [Byte]
+
+// DMA transfer types
+#define TYPE_RAM2FPGA         ((unsigned int 4)0x0)   // RAM => FPGA
+
+// DMA transfer tags
+#define TAG_DATA              0x1   // packet data transfer
+
+#define MI_WIDTH              32    // memory interface width [bit]
+
+// width of RESERVED + TAG fields of DMA request
+#define DMA_TAG_WIDTH         16
+// number of words in DMA request RESERVED + TAG fields
+#define DMA_TAG_WORDS         (DMA_TAG_WIDTH/DMA_DATA_WIDTH)
+// base address of RESERVED + TAG fields LS word of DMA request
+#define DMA_TAG_BA            (16/DMA_DATA_WIDTH)
+
+// base address of GLOBAL ADDRESS field LS word of DMA request
+#define DMA_GLOB_ADDR_BA      (64/DMA_DATA_WIDTH)
+
+// base address of LOCAL ADDRESS field LS word of DMA request
+#define DMA_LOCAL_ADDR_BA     (32/DMA_DATA_WIDTH)
+// number of words in DMA request LOCAL ADDRESS field
+#define DMA_LOCAL_ADDR_WORDS  (32/DMA_DATA_WIDTH)
+
+// width of LENGTH field of DMA request
+#define DMA_LENGTH_WIDTH      12
+
+// width of LENGTH + TRANS_TYPE field of DMA request
+#define DMA_LENGTH_TYPE_WIDTH 16
+// number of words in DMA request LOCAL ADDRESS field
+#define DMA_LENGTH_TYPE_WORDS (DMA_LENGTH_TYPE_WIDTH/DMA_DATA_WIDTH)
+
+// number of words of the DMA request in which the page offset of the global
+// address changes
+#define PAGE_OFFSET_WORDS           ((PAGE_MASK_WIDTH-1)/DMA_DATA_WIDTH+1)
+// index of the least significant bit in the most significant word in the DMA
+// request global address
+#define MS_PAGE_OFFSET_WORD_LSB     ((PAGE_OFFSET_WORDS-1)*DMA_DATA_WIDTH)
+// index of the most significant bit in the most significant word in the DMA
+// request global address (i.e. the word with the address PAGE_OFFSET_WORDS-1
+// in the global address field) that changes
+#define MSB_PAGE_OFFSET_WORD_BIT    ((PAGE_MASK_WIDTH-1)%DMA_DATA_WIDTH)
+// is the page offset aligned to the DMA request word boundary?
+#define IS_PAGE_OFFSET_NOT_ALIGNED  ((MSB_PAGE_OFFSET_WORD_BIT+1)!=DMA_DATA_WIDTH)
+
+// size of the channel FIFO for storage of lengths of received data
+#define RECV_LENGTH_FIFO_LENGTH 4
+
+// ------- Constants for encoding of states of various registers
+// Control and command registers
+#define CONTROL_REG_UNDEF       0x0     // control register UNDEFINED state
+#define CONTROL_REG_START       0x1     // control register START command
+#define CONTROL_REG_PAUSE       0x2     // control register PAUSE command
+#define CONTROL_REG_STOP        0x4     // control register STOP command
+
+// Status register
+#define STATUS_REG_UNDEF        0x0     // status register UNDEFINED state
+#define STATUS_REG_IDLE         0x1     // status register IDLE state
+#define STATUS_REG_RUNNING      0x2     // status register RUNNING state
+#define STATUS_REG_PAUSED       0x4     // status register PAUSED state
+#define STATUS_REG_HW_BUF_FULL  0x8     // status register 'HW buffer is full' state
+
+
+
+// ------- Debug variables ------------------------------------------------
+#ifdef DEBUG_VARS
+       unsigned 8   cnt_dma_ack = 0;
+       unsigned 8   cnt_not_buf_rellen = 0;
+       unsigned 8   cnt_space_available = 0;
+       unsigned 8   cnt_no_space = 0;
+       unsigned 8   cnt_down_descs = 0;
+       unsigned 8   cnt_desc_empty = 0;
+       unsigned 9   debug_status = 0;
+#endif
+
+
+
+// ------- Interface signals ----------------------------------------------
+signal unsigned 2   ifc_interrupt = 0;
+signal unsigned 1   ifc_interrupt0 = 0;
+signal unsigned 1   ifc_interrupt1 = 0;
+signal unsigned 1   ifc_enable = 0;
+
+signal unsigned IFC_BUF_NEWLEN_WIDTH  ifc_buf_newlen = 0;
+signal unsigned 1   ifc_buf_newlen_dv = 0;
+
+signal unsigned 1   ifc_desc_read = 0;
+
+signal unsigned 1   ifc_sw_ardy = 0;
+       unsigned 1   ifc_sw_drdy = 0;
+       unsigned MI_WIDTH  ifc_sw_drd;
+
+signal unsigned DMA_DATA_WIDTH ifc_dma_dout = 0;
+signal unsigned 1 ifc_dma_req = 0;
+
+// ------- Interface ------------------------------------------------------
+// propagation of generic parameter
+interface port_in(unsigned int 32 BUFFER_ADDR)  buffer_addr()
+  with {vhdl_type = "std_logic_vector"};
+interface port_in(unsigned int 16 BUFFER_SIZE)  buffer_size()
+  with {vhdl_type = "std_logic_vector"};
+interface port_in(unsigned int 8  DMA_TAG_ID)   dma_tag_id()
+  with {vhdl_type = "std_logic_vector"};
+
+// common signals
+set clock = external "CLK";
+set reset = external "RESET" with {synchronous=1};
+interface port_out()  interrupt (unsigned int 2 INTERRUPT = ifc_interrupt)
+  with {vhdl_type = "std_logic_vector"};
+interface port_out()  enable (unsigned int 1 ENABLE = ifc_enable)
+  with {vhdl_type = "std_logic"};
+
+
+// transmit buffer interface
+interface port_out() buf_newleni
+  (unsigned int IFC_BUF_NEWLEN_WIDTH BUF_NEWLEN = ifc_buf_newlen)
+  with {vhdl_type = "std_logic_vector"};
+interface port_out()  buf_newlen_dv (unsigned int 1 BUF_NEWLEN_DV = ifc_buf_newlen_dv)
+  with {vhdl_type = "std_logic"};
+interface port_in(unsigned int 1 BUF_NEWLEN_RDY)  buf_newlen_rdy()
+  with {vhdl_type = "std_logic"};
+interface port_in(unsigned int 16 BUF_RELLEN)     buf_rellen()
+  with {vhdl_type = "std_logic_vector"};
+interface port_in(unsigned int 1 BUF_RELLEN_DV)   buf_rellen_dv()
+  with {vhdl_type = "std_logic"};
+  
+// descriptor FIFO interface
+interface port_out()  desc_read (unsigned int 1 DESC_READ = ifc_desc_read)
+  with {vhdl_type = "std_logic"};
+interface port_in(unsigned int (DMA_DATA_WIDTH) DESC_DO)  desc_do()
+  with {vhdl_type = "std_logic_vector"};
+interface port_in(unsigned int 1 DESC_EMPTY)              desc_empty()
+  with {vhdl_type = "std_logic"};
+
+// memory interface
+interface port_in(unsigned int MI_WIDTH SW_DWR)   sw_dwr()
+  with {vhdl_type = "std_logic_vector"};
+interface port_in(unsigned int 32 SW_ADDR)  sw_addr()
+  with {vhdl_type = "std_logic_vector"};
+interface port_in(unsigned int 1 SW_RD)     sw_rd()
+  with {vhdl_type = "std_logic"};
+interface port_in(unsigned int 1 SW_WR)     sw_wr()
+  with {vhdl_type = "std_logic"};
+interface port_out()  sw_drd  (unsigned int MI_WIDTH SW_DRD = ifc_sw_drd)
+  with {vhdl_type = "std_logic_vector"};
+interface port_out()  sw_ardy (unsigned int 1 SW_ARDY = ifc_sw_ardy)
+  with {vhdl_type = "std_logic"};
+interface port_out()  sw_drdy (unsigned int 1 SW_DRDY = ifc_sw_drdy)
+  with {vhdl_type = "std_logic"};
+
+// DMA interface
+interface port_in(unsigned int DMA_ADDR_WIDTH DMA_ADDR) dma_addr()
+  with {vhdl_type = "std_logic_vector"};
+interface port_out()  dma_dout  (unsigned int (DMA_DATA_WIDTH) DMA_DOUT = ifc_dma_dout)
+  with {vhdl_type = "std_logic_vector"};
+interface port_out()  dma_req   (unsigned int 1 DMA_REQ = ifc_dma_req)
+  with {vhdl_type = "std_logic"};
+interface port_in(unsigned int 1 DMA_ACK)   dma_ack()
+  with {vhdl_type = "std_logic"};
+interface port_in(unsigned int 1 DMA_DONE)  dma_done()
+  with {vhdl_type = "std_logic"};
+interface port_in(unsigned int 16 DMA_TAG)  dma_tag()
+  with {vhdl_type = "std_logic_vector"};
+
+#define ifc_buf_newlen_rdy  buf_newlen_rdy.BUF_NEWLEN_RDY
+#define ifc_buf_rellen      buf_rellen.BUF_RELLEN
+#define ifc_buf_rellen_dv   buf_rellen_dv.BUF_RELLEN_DV
+#define ifc_desc_do         desc_do.DESC_DO
+#define ifc_desc_empty      desc_empty.DESC_EMPTY
+#define ifc_sw_dwr          sw_dwr.SW_DWR
+#define ifc_sw_addr         sw_addr.SW_ADDR
+#define ifc_sw_rd           sw_rd.SW_RD
+#define ifc_sw_wr           sw_wr.SW_WR
+#define ifc_dma_addr        dma_addr.DMA_ADDR
+#define ifc_dma_ack         dma_ack.DMA_ACK
+#define ifc_dma_done        dma_done.DMA_DONE
+#define ifc_dma_tag         dma_tag.DMA_TAG
+#define gen_buffer_addr     buffer_addr.BUFFER_ADDR
+#define gen_buffer_size     buffer_size.BUFFER_SIZE
+#define gen_dma_tag_id      dma_tag_id.DMA_TAG_ID
+
+// ------------------------------------------------------------------------
+
+// P2 -> P3 FIFO
+chan unsigned (PAGE_MASK_WIDTH+1) length_fifo
+  with {fifolength = RECV_LENGTH_FIFO_LENGTH};
+
+signal unsigned 1 dma_done_release = 0;
+unsigned (log2ceil(RECV_LENGTH_FIFO_LENGTH) + 1) dma_done_cnt = 0;
+
+// buffer pointers
+unsigned SW_PTR_SIZE sw_str_ptr = 0;
+unsigned SW_PTR_SIZE sw_end_ptr = 0;
+unsigned SW_PTR_SIZE sw_last_end_ptr = 0;
+unsigned HW_PTR_SIZE hw_buffer_mask = 0;
+unsigned HW_PTR_SIZE hw_end_ptr = 0;
+unsigned HW_PTR_SIZE hw_buffer_free_space;
+unsigned HW_PTR_SIZE hw_str_ptr = 0;
+
+// control and status registers
+unsigned 3  control_reg = CONTROL_REG_STOP;
+unsigned 4  status_reg = STATUS_REG_IDLE;
+unsigned 32 interrupt_reg = 0;
+unsigned 32 interrupt_mon = 0;
+unsigned 32 timeout_reg = 10;
+
+// interrupt enable
+unsigned 1 interrupt_reset = 0;
+unsigned 1 interrupt_enable = 0;
+unsigned 1 timeout_enable = 0;
+
+// inter-process communication
+signal unsigned 1 sw_str_ptr_up = 0;
+unsigned SW_PTR_SIZE sw_buffer_mask = 0;
+signal unsigned 1 hw_buffer_full = 0;
+
+/*127              64       32 28 16   4 0
+   #----------------|--------|-|---|---|-#
+   global_addr
+                    local_addr
+                             reserved bits
+                               tag
+                                   length
+                                       trans_type
+*/
+// DMA request mem
+mpram {
+   rom unsigned DMA_DATA_WIDTH R[DMA_REQUEST_SIZE/DMA_DATA_WIDTH];
+   ram unsigned DMA_DATA_WIDTH W[DMA_REQUEST_SIZE/DMA_DATA_WIDTH];
+}
+dma_mem;
+
+unsigned 1 getNextDesc = 0;
+unsigned 1 newDescReady = 0;
+
+/* --------------- descDownload ----------------------------*/
+void main(void) {
+   unsigned DESC_PARTS_WIDTH parts;
+   while (1) {
+      do { delay; } while (getNextDesc == 0); // wait for new descriptor request
+      par {
+         newDescReady = 0;
+         parts = 0;
+         do {
+#ifdef DEBUG_VARS
+            ++cnt_desc_empty;
+#else
+            delay; // no descriptors ready
+#endif
+         } while (ifc_desc_empty == 1);
+      }
+      while (parts < DESC_PARTS) par {
+         ifc_desc_read = 1;
+         dma_mem.W[(DMA_REQUEST_SIZE/DMA_DATA_WIDTH - DESC_PARTS) + parts] = ifc_desc_do;
+         parts++;
+#ifdef DEBUG_VARS
+         ++cnt_down_descs;
+#endif
+      }
+      newDescReady = 1;
+      getNextDesc = 0;
+   }
+}
+// ------- Architcture body -----------------------------------------------
+
+// hw_buffer_free_space update
+void main(void) {
+   while(1) {
+      hw_buffer_free_space = hw_buffer_mask & adju(hw_str_ptr
+                                                   + gen_buffer_size 
+                                                   - hw_end_ptr,
+                                                   width(hw_buffer_free_space));
+   }
+}
+
+// P2 process
+void main(void) {
+
+  unsigned SW_PTR_SIZE data_length;
+  unsigned PAGE_MASK_WIDTH page_offset;
+  unsigned (PAGE_MASK_WIDTH+1) page_free_space;
+  unsigned 1 need_new_desc;
+  unsigned 1 no_space;
+
+  // dma aux registers
+  unsigned LOCAL_ADDRESS_WIDTH mem_l_addr;
+  unsigned PAGE_MASK_WIDTH mem_length;
+
+  while (1) {
+    // after start, the controller must be in the STOP state in order to fill
+    // up the tag part of the DMA request
+    //if (control_reg == CONTROL_REG_STOP) {
+    if (status_reg == STATUS_REG_IDLE) {
+      par {
+        // init
+        sw_last_end_ptr = sw_str_ptr;
+        page_free_space = MEM_PAGE_SIZE;
+        page_offset     = 0;
+        need_new_desc   = 1;
+        getNextDesc     = 1;
+        debug_status    = 1;
+        hw_buffer_mask  = adju((gen_buffer_size << 1)-1, width(hw_buffer_mask));
+          // buffer size multiplied by two, so that FIFO addressing with two
+          // pointers works
+      }
+      
+#if (DMA_DATA_WIDTH >= 1) && (DMA_DATA_WIDTH <= 16)
+      seq (i = 0; i < DMA_TAG_WORDS; ++i) {
+        dma_mem.W[DMA_TAG_BA+i] = (adju(gen_dma_tag_id | TAG_DATA,
+                  DMA_TAG_WIDTH))[DMA_DATA_WIDTH*i+(DMA_DATA_WIDTH-1):DMA_DATA_WIDTH*i];
+      }
+#endif
+#if DMA_DATA_WIDTH == 32
+      dma_mem.W[0]    = adju(gen_dma_tag_id | TAG_DATA,
+                             DMA_TAG_WIDTH) @ 0;
+#endif
+#if DMA_TAG_WIDTH == 64
+      dma_mem.W[0]    = 0 @ adju(gen_dma_tag_id | TAG_DATA,
+                                 DMA_TAG_WIDTH) @ (unsigned int 16)0;
+#endif
+    } else if (status_reg == STATUS_REG_PAUSED) { // pause command
+      delay;
+    } else if (status_reg == STATUS_REG_RUNNING || 
+               status_reg == STATUS_REG_HW_BUF_FULL) {
+      if (sw_end_ptr != sw_last_end_ptr) {
+        // new data arrived
+        while (newDescReady == 0) { delay; } // wait for the descriptor
+        par {
+          data_length = (sw_end_ptr - sw_last_end_ptr) & sw_buffer_mask;
+          debug_status = 2;
+        }
+
+        // Change global address of the DMA request
+        seq (i = 0; i < PAGE_OFFSET_WORDS-1; ++i) {
+          dma_mem.W[DMA_GLOB_ADDR_BA+i] =
+            page_offset[DMA_DATA_WIDTH*i+(DMA_DATA_WIDTH-1):DMA_DATA_WIDTH*i];
+        }
+
+#if IS_PAGE_OFFSET_NOT_ALIGNED
+        // Change the last not full word of the global address of the DMA request
+        dma_mem.W[DMA_GLOB_ADDR_BA+PAGE_OFFSET_WORDS-1] =
+          dma_mem.W[DMA_GLOB_ADDR_BA+PAGE_OFFSET_WORDS-1]
+                   [DMA_DATA_WIDTH-1:MSB_PAGE_OFFSET_WORD_BIT+1] @
+          page_offset[MS_PAGE_OFFSET_WORD_LSB+MSB_PAGE_OFFSET_WORD_BIT:
+                      MS_PAGE_OFFSET_WORD_LSB];
+#else
+        dma_mem.W[DMA_GLOB_ADDR_BA+PAGE_OFFSET_WORDS-1] =
+          page_offset[MS_PAGE_OFFSET_WORD_LSB+MSB_PAGE_OFFSET_WORD_BIT:
+                      MS_PAGE_OFFSET_WORD_LSB];
+#endif
+
+        // check free space in the HW buffer and wait if necessary
+        do {
+          par {
+            hw_buffer_full = 1;
+#ifdef DEBUG_VARS
+            ++cnt_no_space;
+            debug_status = 3;
+#endif
+          }
+        } while (hw_buffer_free_space == 0);
+#ifdef DEBUG_VARS
+        ++cnt_space_available;
+#endif
+
+        // A problem with DMA requests throughput may arise when short frames
+        // are sent -> after a packet is sent and disappears from the TX
+        // buffer, a DMA request is sent for a new packet
+        if (data_length > adju(hw_buffer_free_space, width(data_length))) {
+          // if the data length to be requested is larger than the free space
+          // in the TX buffer
+          par {
+            data_length = adju(hw_buffer_free_space, width(data_length));
+            debug_status = 4;
+          }
+        }
+
+        if (data_length < adju(page_free_space, width(data_length))) {
+          // data fit into actual page - some free space remains
+          par {
+            debug_status = 5;
+            need_new_desc = 0;
+            page_offset += adju(data_length, width(page_offset));
+            page_free_space -= adju(data_length, width(page_free_space));
+            sw_last_end_ptr = (sw_last_end_ptr +
+              adju(data_length, width(sw_last_end_ptr))) & sw_buffer_mask;
+          }
+        } else {
+          // data will split into several pages or fit precisely into
+          // current page end
+          par {
+            debug_status = 6;
+            need_new_desc = 1;
+            newDescReady = 0;
+            page_offset = 0;
+            page_free_space = MEM_PAGE_SIZE;
+            sw_last_end_ptr = sw_buffer_mask & (sw_last_end_ptr +
+                                adju(page_free_space, width(sw_last_end_ptr)));
+            
+            data_length = adju(page_free_space, width(data_length));
+          }
+        }
+
+        // decrement hw buffer free space
+        while (ifc_buf_rellen_dv == 1) {
+          par {
+#ifdef DEBUG_VARS
+            ++cnt_not_buf_rellen;
+#endif
+            hw_buffer_full = 0;
+            debug_status = 7;
+          }
+        }
+        par {
+          hw_buffer_full = 0;
+          debug_status = 8;
+          // send DMA request sw->hw
+          mem_l_addr  = adju(hw_end_ptr, width(mem_l_addr)) + gen_buffer_addr;
+          mem_length  = adju(data_length, width(mem_length));
+        }
+
+#if (DMA_DATA_WIDTH >= 1) && (DMA_DATA_WIDTH <= 32)
+        // Fill in the local address of the DMA request
+        seq (i = 0; i < DMA_LOCAL_ADDR_WORDS ; ++i) {
+          dma_mem.W[DMA_LOCAL_ADDR_BA+i] =
+              mem_l_addr[DMA_DATA_WIDTH*i+(DMA_DATA_WIDTH-1):DMA_DATA_WIDTH*i];
+        }
+#endif
+
+#if (DMA_DATA_WIDTH >= 1) && (DMA_DATA_WIDTH <= 16)
+        // Fill in the length and transaction type fields
+        seq (i = 0; i < DMA_LENGTH_TYPE_WORDS ; ++i) {
+          dma_mem.W[i] = (mem_length @ TYPE_RAM2FPGA)
+                            [DMA_DATA_WIDTH*i+(DMA_DATA_WIDTH-1):DMA_DATA_WIDTH*i];
+        }
+
+#endif
+#if DMA_DATA_WIDTH == 32
+        dma_mem.W[0] = 0 @ adju(gen_dma_tag_id | TAG_DATA, DMA_TAG_WIDTH) @
+                       mem_length @ TYPE_RAM2FPGA;
+#endif
+#if DMA_DATA_WIDTH == 64
+        dma_mem.W[0] = mem_l_addr @ 0 @ adju(gen_dma_tag_id | TAG_DATA,
+                       DMA_TAG_WIDTH) @ mem_length @ TYPE_RAM2FPGA;
+#endif
+
+        ifc_dma_req = 1;                  // request DMA
+
+        while (ifc_dma_ack == 0) { 
+           debug_status = 9;
+        }
+
+        // Increment HwEndPtr and send length information to P3
+        par {
+          getNextDesc = need_new_desc;
+          hw_end_ptr = hw_buffer_mask & 
+                        (hw_end_ptr + adju(data_length, width(hw_end_ptr)));
+          length_fifo ! adju(data_length, width(length_fifo));
+
+#ifdef DEBUG_VARS
+          ++cnt_dma_ack;
+          debug_status = 10;
+#endif
+        }
+      } else { // no new data
+         debug_status = 11;
+      }
+    } else { // status_reg has other value
+       debug_status = 12;
+    }
+  } // while(1)
+}
+
+// Counter of unprocessed ifc_dma_done pulses
+void main(void) 
+{
+   macro expr tag = ((ifc_dma_tag <- 8) == (gen_dma_tag_id | TAG_DATA));
+   while (1) par
+   {
+      if     (ifc_dma_done == 1 && dma_done_release == 0 && tag) dma_done_cnt++;
+      else if(ifc_dma_done == 1 && dma_done_release == 1 && tag) delay;
+      else if                     (dma_done_release == 1)        dma_done_cnt--;
+      else delay;
+   }
+}
+
+// P3 process
+void main(void) {
+
+  unsigned (PAGE_MASK_WIDTH+1) length;
+
+  while(1) {
+    if (dma_done_cnt != 0) {
+      length_fifo ? length;
+      par {
+        // send length info to hw buffer
+        ifc_buf_newlen = adju(length, width(ifc_buf_newlen));
+        ifc_buf_newlen_dv = 1;
+        dma_done_release = 1; // Process one ifc_dma_done pulse
+        // change SwStrPtr
+        sw_str_ptr = (sw_str_ptr + adju(length, width(sw_str_ptr))) & sw_buffer_mask;
+        sw_str_ptr_up = 1;
+        if(interrupt_reset == 1) par {
+           interrupt_reset = 0;
+           interrupt_mon = adju(length, width(interrupt_mon));
+        }
+        else
+           interrupt_mon += adju(length, width(interrupt_mon)); 
+      }
+    } else {
+      delay;
+    }
+  }
+}
+
+void main(void) {
+  while(1) {
+    ifc_interrupt = ifc_interrupt1 @ ifc_interrupt0;
+  }
+}
+// P4 process
+void main(void) {
+  unsigned 32 int_timeout;
+  while(1) {
+/*    int_timeout = 0;
+    while (control_reg == CONTROL_REG_START || control_reg == CONTROL_REG_PAUSE) {
+      while (control_reg == CONTROL_REG_PAUSE) 
+        delay;*/
+    par {
+      if (interrupt_enable == 1 && interrupt_mon >= (interrupt_reg &~3) && interrupt_reset == 0) par {
+        ifc_interrupt0 = 1;
+        timeout_enable = 0;
+        interrupt_enable = 0;
+      } else delay;
+
+      if (sw_str_ptr_up == 1 || interrupt_reset == 1)
+        int_timeout = 0;
+      else if (timeout_enable == 1 && int_timeout >= timeout_reg) par {  // generate interrupt
+        ifc_interrupt1 = 1;
+        interrupt_enable = 0;
+        timeout_enable = 0;
+      } else // if(interrupt_reset == 0) // Count up after first packet is received (after write to IR)
+        int_timeout++;
+    }
+  }
+}
+
+// HwStrPtr update process
+void main(void) {
+  while(1) {
+    if (ifc_buf_rellen_dv == 1) {
+      hw_str_ptr = hw_buffer_mask & (hw_str_ptr + ifc_buf_rellen);
+    } else {
+      delay;
+    }
+  }
+}
+
+// DMA request serving process
+void main(void) {
+  while(1) {
+    par {
+      ifc_dma_dout = dma_mem.R[ifc_dma_addr];
+    }
+  }
+}
+
+/* Status register
+ * Value     Status
+ *     0     Undefined
+ *     1     Idle
+ *     2     Running
+ *     4     Pause
+ *     8     Running/HW buffer full
+ */
+
+// Status register
+void main(void) {
+  while (1) {
+    switch(control_reg) {
+      case CONTROL_REG_UNDEF:
+      case CONTROL_REG_STOP:
+        // not running
+        status_reg = STATUS_REG_IDLE;
+        break;
+      case CONTROL_REG_START:
+        // running
+        if (hw_buffer_full == 1) {
+          status_reg = STATUS_REG_HW_BUF_FULL;
+        } else {
+          status_reg = STATUS_REG_RUNNING;
+        }
+        break;
+      case CONTROL_REG_PAUSE:
+        // paused
+        status_reg = STATUS_REG_PAUSED;
+        break;
+      default:
+        // undefined
+        status_reg = STATUS_REG_UNDEF;
+        break;
+    }
+  }
+}
+
+void main(void) {
+   while (1) {
+      ifc_enable = (status_reg == STATUS_REG_IDLE) ? 0 : 1;
+   }
+}
+
+/* Address space
+ *
+ * Offset  Length   Description
+ *     00       4   Control Register
+ *     04       4   Status Register
+ *     08       4   Start Pointer
+ *     12       4   End Pointer
+ *     16       4   Buffer Size Mask Register
+ *     20       4   Interrupt Register
+ *     24       4   Timeout Register
+ */
+
+// Address decoder
+void main(void) {
+
+  while(1) {
+    par {
+      ifc_sw_ardy = ifc_sw_wr | ifc_sw_rd;
+      ifc_sw_drdy = ifc_sw_rd;
+      if (ifc_sw_wr == 1) {
+        // write part
+        switch(ifc_sw_addr[5:0]) {
+          case 0x00:
+            // write control register (address 0x0)
+            control_reg = ifc_sw_dwr[2:0];
+            break;
+          case 0x08:
+            // write SwStrPtr (address 0x8)
+            sw_str_ptr = ifc_sw_dwr[SW_PTR_SIZE-1:0];
+            break;
+          case 0x0C:
+            // write SwEndPtr (address 0xc)
+            sw_end_ptr = ifc_sw_dwr[SW_PTR_SIZE-1:0];
+            break;
+          case 0x10:
+            // write sw buffer mask (address 0x10)
+            sw_buffer_mask = ifc_sw_dwr[SW_PTR_SIZE-1:0];
+            break;
+          case 0x14: par
+            {
+            // write interrupt register (address 0x14)
+               interrupt_reset = 1;
+               interrupt_reg = ifc_sw_dwr;
+               interrupt_enable = ifc_sw_dwr[1];
+               timeout_enable = ifc_sw_dwr[0];
+            }
+            break;
+          case 0x18:
+            // write timeout register (address 0x18)
+            timeout_reg = ifc_sw_dwr;
+            break;
+          default:
+            delay;
+            break;
+        }
+      } else if (ifc_sw_rd == 1) {
+        // read part
+          switch(ifc_sw_addr[5:0]) {
+            case 0x00:
+              // read control register (address 0x0)
+              ifc_sw_drd = adju(control_reg, width(ifc_sw_drd));
+              break;
+            case 0x04:
+              // read status register (address 0x4)
+              ifc_sw_drd = adju(status_reg, width(ifc_sw_drd));
+              break;
+            case 0x08:
+              // read SwStrPtr (address 0x8)
+              ifc_sw_drd = adju(sw_str_ptr, width(ifc_sw_drd));
+              break;
+            case 0x0C:
+              // read SwEndPtr (address 0xc)
+              ifc_sw_drd = adju(sw_end_ptr, width(ifc_sw_drd));
+              break;
+            case 0x10:
+              // read SwBuffMask (address 0x10)
+              ifc_sw_drd = adju(sw_buffer_mask, width(ifc_sw_drd));
+              break;
+            case 0x14:
+              // read interrupt register (address 0x14)
+              ifc_sw_drd = adju(interrupt_reg, width(ifc_sw_drd));
+              break;
+            case 0x18:
+              // read timeout register (address 0x18)
+              ifc_sw_drd = adju(timeout_reg, width(ifc_sw_drd));
+              break;
+            case 0x1C:
+              // read HwBuffFreeSpace (address 0x1c)
+              ifc_sw_drd = adju(hw_buffer_free_space, width(ifc_sw_drd));
+              break;
+#ifdef DEBUG_VARS
+            case 0x20:
+              ifc_sw_drd = adju(hw_end_ptr @ hw_str_ptr, width(ifc_sw_drd));
+              break;
+            case 0x24:
+               ifc_sw_drd = adju(ifc_desc_do, width(ifc_sw_drd));
+               break;
+            case 0x28:
+               ifc_sw_drd = adju(ifc_desc_empty, width(ifc_sw_drd));
+               break;
+            case 0x2C:
+               ifc_sw_drd = adju(ifc_buf_newlen, width(ifc_sw_drd));
+               break;
+            case 0x30:
+               ifc_sw_drd = adju(ifc_buf_newlen_dv, width(ifc_sw_drd));
+               break;  
+            case 0x34:
+               ifc_sw_drd = adju(ifc_dma_done @ cnt_dma_ack @ 
+                            cnt_not_buf_rellen @ cnt_space_available, width(ifc_sw_drd));
+               break;
+            case 0x38:
+               ifc_sw_drd = adju(cnt_no_space @ cnt_down_descs @ 
+                            cnt_desc_empty, width(ifc_sw_drd));
+               break;
+            case 0x3C:
+               ifc_sw_drd = adju(debug_status, width(ifc_sw_drd));
+               break;
+#endif
+            default:
+               ifc_sw_drd = 0x0;
+               break;
+          }
+        } 
+        else { delay; }
+    }
+  }
+}
+
+// ------------------------------------------------------------------------

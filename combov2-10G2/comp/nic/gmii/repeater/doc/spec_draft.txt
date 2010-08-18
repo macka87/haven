@@ -1,0 +1,66 @@
+GMMI repeater draft specification
+
+Problem definition
+------------------
+The main purpose is to transform packets data stream from one clock domain
+to an another and minimize packet loss caused by different RX and TX
+frequencies.
+Packet data shall be received and immediately send away, TX clock frequency
+is close to RX clock frequency, but not the same (should be both higher or
+lower). A packet is transferred continuously without gaps, a single data word
+per RX/TX each clock cycle. During receiving a packet, there is no way how to
+delay the input stream, during transmitting a packet, no IDLE pattern can be
+inserted into the output stream. Between particular packets, the is a
+inter-packet gap (how long?).
+
+Assume the RX/TX frequency difference will be max N clocks/length of longest
+possible packet. In practice, the value of N can be chosen experimental and it
+can be a generic parameter of the component.
+
+The concept
+-----------
+
+ RX data +------------+ data/cmd +-----------+ data/cmd +------------+ TX data
+ =======>|            |=========>|           |=========>|            |========>
+ RX clk  | RX machine | RX clk   |    FIFO   | TX clk   | TX machine | TX clk
+ ------->|            |--------->|           |--------->|            |-------->
+         +------------+          +-----------+          +------------+
+
+Asynchronous FIFO
+-----------------
+WR port used for RX data, RD port for taking off TX data. Commands can be stored
+into the FIFO, a command bit will be added to data for this purpose. At the end
+of each packet, the EOP command is inserted into the FIFO. When an error occurs
+during receive, the ERROR command is inserted.
+
+We must take into account two possibilities:
+1. RX clock is slower then TX clock
+   Data will be pulled up from the FIFO with higher frequency, the FIFO is
+   emptying during operation. Start of TX operation will be N clock cycles
+   delayed after the first word of packet is written into the FIFO, this will
+   guarantee N words data spare for emptying the FIFO.
+
+2. TX clock is slower then RX clock
+   Data will be pulled up from the FIFO with lower frequency, the FIFO is
+   filling during the receive, during the inter-packet gap is the FIFO emptying.
+   The FIFO size must be at least N*2 to not became full during receiving a
+   single packet. Though, when the inter-packet gap will be less then N, the
+   FIFO can totally fill up (FIFO overflow). This error state cannot be
+   eliminated entirely, the ERROR command must be inserted into the FIFO to
+   mark the packet as corrupted.
+
+Receive machine
+---------------
+The receive machine will write incoming packet data into the FIFO. When the
+FIFO becomes full, it discards the rest of the packet and writes the ERROR
+command into the FIFO. After the end of packet, it inserts the EOP command.
+
+Transmit machine
+----------------
+After receiving first data word of a packet (indicated by changing FIFO_EMPTY
+signal state), the TX machine will wait N TX clock cycles, then it starts to
+pull out data from the FIFO and put them to output. When it receives the ERROR
+command, it asserts TXERR otput signal. Operation finishes with the EOP command.
+When the FIFO is not empty after the EOP command (a new packet is already in
+the FIFO), the machine will wait a minimum amount of time (to ensure correct
+inter-packet gap) and starts the TX operation again.

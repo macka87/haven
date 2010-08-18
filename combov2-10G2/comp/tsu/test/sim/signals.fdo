@@ -1,0 +1,119 @@
+# PFIFO_A simulation procedures
+# Author(s): Jan Pazdera <pazdera@liberouter.org>
+#
+# Description:
+#
+#       This file contain only procedures which can be used for signal
+#       addition. This file can be used in every project. Path to the
+#       PFIFO_A component is specified by $PFIFO_A_PATH variable.
+#       All function names should be given by componet hierarchy.
+
+
+# ------------------------------------------------------------------------
+# -------------------------- Procedures ----------------------------------
+# ------------------------------------------------------------------------
+
+
+
+#####################################################################
+# Common signals 
+#####################################################################
+proc tsu_common {  } {
+    global SFPRO_TOP_PATH
+    add wave -divider "Common"
+    radix -hex
+
+    add wave -label lbclk           $SFPRO_TOP_PATH/lbclk
+    add wave -label reset           $SFPRO_TOP_PATH/reset
+}
+
+#####################################################################
+# Interfaces 
+#####################################################################
+proc ifc_ptm_sfpro { } {
+    add wave -divider "PTM-SFPRO"
+    radix -hex
+
+    add wave -label refclk  sim:/testbench/io(28)
+    add wave -label ts_init sim:/testbench/io(30)
+    add wave -label ts_short sim:/testbench/io(36)
+    add wave -label ts_dv   sim:/testbench/io(31)
+    add wave -label ppfts   sim:/testbench/io(38)
+    add wave -label ts {ts {
+                  sim:/testbench/io(43)
+                  sim:/testbench/io(42)
+                  sim:/testbench/io(41)
+                  sim:/testbench/io(40)
+                  sim:/testbench/io(35)
+                  sim:/testbench/io(34)
+                  sim:/testbench/io(33)
+                  sim:/testbench/io(32)}} 
+}
+
+
+#####################################################################
+# Component signals 
+#####################################################################
+proc blk_plx {  } {
+    global PLX_PATH
+    add wave -divider "PLX"
+    radix -hex
+
+    add wave -label lclkf       $PLX_PATH/lclkf
+    add wave -label lad         $PLX_PATH/lad
+    add wave -label lwr         $PLX_PATH/lwr
+    add wave -label ready       $PLX_PATH/ready
+}
+
+proc blk_plx_ptm {  } {
+    global PLX_PTM_PATH
+    add wave -divider "PLX_PTM"
+    radix -hex
+
+    add wave -label lclkf       $PLX_PTM_PATH/lclkf
+    add wave -label lad         $PLX_PTM_PATH/lad
+    add wave -label lwr         $PLX_PTM_PATH/lwr
+    add wave -label ready       $PLX_PTM_PATH/ready
+}
+
+proc blk_ptm_ters {  } {
+    global PTM_PATH
+    add wave -divider "PTM_TERS"
+    radix -hex
+
+    add wave -label lclkf     $PTM_PATH/lclkf
+    add wave -label clk     $PTM_PATH/clk
+    add wave -label reg_rtr     $PTM_PATH/regasync_rtr
+    add wave -label reg_incr    $PTM_PATH/regasync_incr
+    add wave -label reg_tsr     $PTM_PATH/regasync_tsr
+    add wave -label reg_psr     $PTM_PATH/regasync_psr
+}
+
+proc blk_tsu_add {  } {
+    global TSU_ADD_PATH 
+    add wave -divider "TSU_ADD"
+    radix -hex
+
+    add wave -label ts_dv $TSU_ADD_PATH/ts_dv
+    add wave -label refclk $TSU_ADD_PATH/refclk
+    add wave -label clk_add $TSU_ADD_PATH/clk_add
+    add wave -label ppfts $TSU_ADD_PATH/ppfts
+    add wave -label ts $TSU_ADD_PATH/ts
+    add wave -label ts_add $TSU_ADD_PATH/ts_add
+    add wave -label tsadd_dv $TSU_ADD_PATH/tsadd_dv
+    add wave -label regiob_ts $TSU_ADD_PATH/regiob_ts
+    add wave -label reg_ts $TSU_ADD_PATH/reg_ts
+    add wave -label reg_ts_we $TSU_ADD_PATH/reg_ts_we
+    add wave -label present_state $TSU_ADD_PATH/u_tsadd_fsm/present_state
+    add wave -label tsadd_dv_sync $TSU_ADD_PATH/tsadd_dv_sync
+
+}
+
+proc blk_tsu_test {  } {
+    global TSU_TEST_PATH 
+    add wave -divider "TSU_ADD_TEST"
+    radix -hex
+
+    add wave -label reg_ts $TSU_TEST_PATH/reg_ts
+    add wave -label reg_ts_f $TSU_TEST_PATH/reg_ts_f
+}

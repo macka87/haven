@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+<!-- Component name -->
+<component>Dual Port Register of Flags</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="martinek">Tomas Martinek</author>
+</authors>
+
+
+<!-- Features -->
+<features>
+	<item>Generic number of flags</item>
+	<item>Asynchronous flag SET and RESET</item>
+</features>
+
+<!-- Things to do -->
+<todo>
+    <item>Change generic parameters EXADDR to ITEMS</item>
+</todo>
+
+
+<!-- Short Block description -->
+<description>
+
+   Component realize a set of flag registers, that can be independantly SET
+   and RESET. The component is controlled via two interfaces: the first one
+   SETs appropriate flag register and the second one RESET appropriate flag
+   registers. Both interfaces can operate at different clock frequency. 
+
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Generic description -->
+	<generic_map>
+		
+		<generic name="EXADDR" type="integer" default="n/a">
+			Specifies number of flag registers in 2^EXADDR
+		</generic>
+		
+	</generic_map>
+
+	<!-- Port description -->
+	<port_map>
+
+		<divider>Common signals</divider>		
+		<port  name="RESET" dir="in" width="1">
+			Global reset
+		</port>
+
+		<divider>SET interface</divider> 		
+		<port name="CLK_SET" dir="in" width="1">
+			Clock frequency of SET interface
+		</port>
+		<port name="SET" dir="in" width="1">
+			Control signals that set the flag register. It is used in
+         cooperation with ADDR_SET signal that specifies the number of flag
+         register to be set.
+		</port>
+		<port name="ADDR_SET" dir="in" width="EXADDR">
+		   Specifies the address of flag register that should be set or read
+         back.
+		</port>
+		<port name="DO_SET" dir="out" width="1">
+		   Represets data output of flag register addressed by ADDR_SET signal.
+		</port>
+		
+		<divider>CLEAR interface</divider> 
+		<port name="CLK_CLR" dir="in" width="1">
+			Clock frequency of CLEAR interface
+		</port>
+		<port name="CLR" dir="in" width="1">
+			Control signals that clear the flag register. It is used in
+         cooperation with ADDR_CLR signal that specifies the number of flag
+         register to be cleared.
+		</port>
+		<port name="ADDR_CLR" dir="in" width="EXADDR">
+		   Specifies the address of flag register that should be cleared or
+         read back.
+		</port>
+		<port name="DO_CLR" dir="out" width="1">
+		   Represets data output of flag register addressed by ADDR_CLR signal.
+		</port>
+		<port name="DO_ALL" dir="out" width="2^EXADDR">
+		   Represets data output of all flag registers.
+		</port>
+		
+	</port_map>
+
+</interface>
+
+<!-- HW BODY SECTION **************************************************** -->
+<!-- information for HW designers, structure should be as follow          -->
+<body>
+
+<h1>Component architecture</h1>
+
+	<p> 
+      The set of register flags is implemented using Latch registers in form
+      of R-S register with SET and RESET inputs. Setting of flag register is
+      performed using ADDR_SET signal that address appropriate register and
+      signal SET that is active during one clock period. This set request is
+      transormed into SET control signal of given register using address
+      decoder. Similarly to set operation, the clear operation is performed. 
+	</p>
+
+	<p> 
+      Alternatively, both interfaces can read the content of flag registers
+      using generic multiplexor. Additionally, content of all registers is
+      available at DO_ALL output.
+	</p>
+
+<h1>Frequency and Resources usage</h1>
+
+	<p>
+        <!--Resources usage and max. frequency by Precision-->
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+				<th>ITEMS = 16</th> 
+				<td>61(0%)</td>
+				<td>0(0%)</td>
+			</tr>
+			<tr>
+				<th>ITEMS = 32</th> 
+				<td>113(0%)</td>
+				<td>0(0%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by Precision</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<th>ITEMS = 16</th> 
+				<td>n/a</td>
+				<td>n/a</td>
+			</tr>
+			<tr>
+				<th>ITEMS = 32</th> 
+				<td>n/a</td>
+				<td>n/a</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+  </p> 
+
+
+<h1>Schemes</h1>
+	<p>
+		<obr src="./fig/dp_regflags.fig">Architecture of DP_REGFLAGS component</obr>
+	</p>
+
+</body>
+
+</source>

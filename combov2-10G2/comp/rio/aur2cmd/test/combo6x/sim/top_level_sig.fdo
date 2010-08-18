@@ -1,0 +1,377 @@
+# RIO2CMD simulation procedures
+# Author(s): Jan Pazdera <pazdera@liberouter.org>
+#
+
+
+# ------------------------------------------------------------------------
+# -------------------------- Procedures ----------------------------------
+# ------------------------------------------------------------------------
+
+
+
+#####################################################################
+# Common signals 
+#####################################################################
+proc rio_common {  } {
+    global RIOTEST_PATH
+    add wave -divider "Common"
+    radix -hex
+
+    add wave -label lclkf           sim:/testbench/lclkf
+    add wave -label clkf            sim:/testbench/clkf
+    add wave -label REFCLK          $RIOTEST_PATH/REFCLK
+    add wave -label USRCLK          $RIOTEST_PATH/USRCLK
+    add wave -label USRCLK2         $RIOTEST_PATH/USRCLK2
+    add wave -label CMDCLK          sim:/testbench/uut/clk100
+    add wave -label reset           sim:/testbench/uut/reset
+}
+
+#####################################################################
+# Interfaces 
+#####################################################################
+
+
+#####################################################################
+# Sub-components 
+#####################################################################
+
+proc rio_lb {  } {
+    global RIOTEST_PATH
+    add wave -divider "LB/PLX"
+    radix -hex
+
+    add wave -label lbclk           uut/clk100
+    add wave -label lb_data_out     $RIOTEST_PATH/lb_data_out
+    add wave -label lb_data_in      $RIOTEST_PATH/lb_data_in
+    add wave -label lb_addr         $RIOTEST_PATH/lb_addr
+    add wave -label lb_en           $RIOTEST_PATH/lb_en
+    add wave -label lb_rw           $RIOTEST_PATH/lb_rw
+    add wave -label reg_lb_drdy     $RIOTEST_PATH/reg_lb_drdy
+    add wave -label status-do       sim:/testbench/plx_status.do
+    add wave -label status-dv       sim:/testbench/plx_status.dv
+    add wave -label lad {lad {
+                  sim:/testbench/lad1
+                  sim:/testbench/lad0}}
+#    add wave -label lholda          sim:/testbench/lholda
+#    add wave -label ads             sim:/testbench/ads
+#    add wave -label blast           sim:/testbench/blast
+    add wave -label lwr             sim:/testbench/lwr
+    add wave -label ready           sim:/testbench/ready
+    add wave -label lhold           sim:/testbench/lhold
+#    add wave -label usero           sim:/testbench/usero
+}
+
+proc rio_tx_bram {  } {
+    global RIOTEST_PATH
+    add wave -divider "TX_BRAM"
+    radix -hex
+
+    add wave -label reg_adc_di      $RIOTEST_PATH/reg_adc_di
+    add wave -label reg_adc_di_we   $RIOTEST_PATH/reg_adc_di_we
+    add wave -label reg_adc_cmd    $RIOTEST_PATH/reg_adc_cmd
+    add wave -label reg_adc_cmd_we $RIOTEST_PATH/reg_adc_cmd_we
+    add wave -label txdata_to_lb   $RIOTEST_PATH/txdata_to_lb
+    add wave -label txcmd_to_lb  $RIOTEST_PATH/txcmd_to_lb
+    add wave -label adc_tx_we   $RIOTEST_PATH/adc_tx_we
+    add wave -label cnt_tx_addr     $RIOTEST_PATH/cnt_tx_addr
+    add wave -label data_to_rio     $RIOTEST_PATH/data_to_rio
+    add wave -label cmd_to_rio    $RIOTEST_PATH/cmd_to_rio
+}
+
+proc rio_rx_bram {  } {
+    global RIOTEST_PATH
+    add wave -divider "RX_BRAM"
+    radix -hex
+
+    add wave -label reg_adc_di      $RIOTEST_PATH/reg_adc_di
+    add wave -label reg_adc_di_we   $RIOTEST_PATH/reg_adc_di_we
+    add wave -label reg_adc_cmd    $RIOTEST_PATH/reg_adc_cmd
+    add wave -label reg_adc_cmd_we $RIOTEST_PATH/reg_adc_cmd_we
+    add wave -label rxdata_to_lb  $RIOTEST_PATH/rxdata_to_lb
+    add wave -label rxcmd_to_lb $RIOTEST_PATH/rxcmd_to_lb
+    add wave -label adc_rx_we $RIOTEST_PATH/adc_rx_we
+    add wave -label cnt_rx_addr     $RIOTEST_PATH/cnt_rx_addr
+    add wave -label data_from_rio     $RIOTEST_PATH/data_from_rio
+    add wave -label cmd_from_rio    $RIOTEST_PATH/cmd_from_rio
+    add wave -label dv_from_rio    $RIOTEST_PATH/dv_from_rio
+}
+
+proc rio_ctrl {  } {
+    global RIOTEST_PATH
+    add wave -divider "Control logic"
+    radix -hex
+
+
+    add wave -label reg_tx_active      $RIOTEST_PATH/reg_tx_active
+    add wave -label reg_tx_active_we   $RIOTEST_PATH/reg_tx_active_we
+    add wave -label reg_rx_active      $RIOTEST_PATH/reg_rx_active
+    add wave -label rx_active_set      $RIOTEST_PATH/rx_active_set
+    add wave -label rx_active_rst      $RIOTEST_PATH/rx_active_rst
+    add wave -label reg_status         $RIOTEST_PATH/reg_status
+}
+proc rio_rx {  } {
+    global RIORX_PATH
+    add wave -divider "RIO_RECEIVER"
+    radix -hex
+
+    add wave -label do           $RIORX_PATH/do
+    add wave -label do_cmd       $RIORX_PATH/do_cmd
+    add wave -label do_dv        $RIORX_PATH/do_dv
+    add wave -label rx_d         $RIORX_PATH/rx_d
+    add wave -label rx_rem       $RIORX_PATH/rx_rem
+    add wave -label rx_src_rdy_n $RIORX_PATH/rx_src_rdy_n
+    add wave -label rx_sof_n     $RIORX_PATH/rx_sof_n
+    add wave -label rx_eof_n     $RIORX_PATH/rx_eof_n
+    add wave -label cmd_i        $RIORX_PATH/cmd_i
+}
+
+proc rio_tx {  } {
+    global RIOTX_PATH
+    add wave -divider "RIO_TRANSMITTER"
+    radix -hex
+
+    add wave -label di           $RIOTX_PATH/di
+    add wave -label di_cmd       $RIOTX_PATH/di_cmd
+    add wave -label di_dv        $RIOTX_PATH/di_dv
+    add wave -label tx_d         $RIOTX_PATH/tx_d
+    add wave -label tx_rem       $RIOTX_PATH/tx_rem
+    add wave -label tx_src_rdy_n $RIOTX_PATH/tx_src_rdy_n
+    add wave -label tx_sof_n     $RIOTX_PATH/tx_sof_n
+    add wave -label tx_eof_n     $RIOTX_PATH/tx_eof_n
+    add wave -label tx_dst_rdy_n $RIOTX_PATH/tx_dst_rdy_n
+
+    add wave -label cmd_idle     $RIOTX_PATH/cmd_idle
+    add wave -label cmd_term     $RIOTX_PATH/cmd_term
+    add wave -label tx_sof       $RIOTX_PATH/tx_sof
+    add wave -label tx_eof       $RIOTX_PATH/tx_eof
+    add wave -label rdy          $RIOTX_PATH/rdy
+} 
+
+proc rio_aurfcrx {  } {
+    global AURFCRX_PATH
+    add wave -divider "AURFC_RECEIVER"
+    radix -hex
+
+    add wave -label rxu_d       $AURFCRX_PATH/RXU_D
+    add wave -label rxu_rem         $AURFCRX_PATH/RXU_REM
+    add wave -label rxu_src_rdy_n       $AURFCRX_PATH/RXU_SRC_RDY_N
+    add wave -label rxu_sof_n       $AURFCRX_PATH/RXU_SOP_N
+    add wave -label rxu_eof_n       $AURFCRX_PATH/RXU_EOP_N
+    add wave -label rxu_dst_rdy_n       $AURFCRX_PATH/RXU_DST_RDY_N
+    add wave -label rxa_d       $AURFCRX_PATH/RXA_D
+    add wave -label rxa_rem         $AURFCRX_PATH/RXA_REM
+    add wave -label rxa_src_rdy_n       $AURFCRX_PATH/RXA_SRC_RDY_N
+    add wave -label rxa_sof_n       $AURFCRX_PATH/RXA_SOP_N
+    add wave -label rxa_eof_n       $AURFCRX_PATH/RXA_EOP_N
+
+    add wave -label nfc_req_n       $AURFCRX_PATH/NFC_REQ_N
+    add wave -label nfc_nb      $AURFCRX_PATH/NFC_NB
+    add wave -label nfc_ack_n       $AURFCRX_PATH/NFC_ACK_N
+
+}
+
+proc rio_aurfctx {  } {
+    global AURFCTX_PATH
+    add wave -divider "AURFC_TRANSMITTER"
+    radix -hex
+
+    add wave -label txu_d       $AURFCTX_PATH/TXU_D
+    add wave -label txu_rem         $AURFCTX_PATH/TXU_REM
+    add wave -label txu_src_rdy_n       $AURFCTX_PATH/TXU_SRC_RDY_N
+    add wave -label txu_sof_n       $AURFCTX_PATH/TXU_SOP_N
+    add wave -label txu_eof_n       $AURFCTX_PATH/TXU_EOP_N
+    add wave -label txu_dst_rdy_n       $AURFCTX_PATH/TXU_DST_RDY_N
+
+    add wave -label txa_d       $AURFCTX_PATH/TXA_D
+    add wave -label txa_rem         $AURFCTX_PATH/TXA_REM
+    add wave -label txa_src_rdy_n       $AURFCTX_PATH/TXA_SRC_RDY_N
+    add wave -label txa_sof_n       $AURFCTX_PATH/TXA_SOP_N
+    add wave -label txa_eof_n       $AURFCTX_PATH/TXA_EOP_N
+    add wave -label txa_dst_rdy_n       $AURFCTX_PATH/TXA_DST_RDY_N
+
+} 
+
+proc rio_aurfcgener {  } {
+    global AURFCGENER_PATH
+    add wave -divider "AURFC_SOF_EOF_generator"
+    radix -hex
+
+    add wave -label hdr_i   $AURFCGENER_PATH/hdr_i
+    add wave -label ftr_i   $AURFCGENER_PATH/ftr_i
+    add wave -label hf_st   $AURFCGENER_PATH/hf_st
+
+    add wave -label cnt_pckt    $AURFCGENER_PATH/cnt_pckt
+    add wave -label cnt_pckt_load   $AURFCGENER_PATH/cnt_pckt_load
+    add wave -label cnt_pckt_ce     $AURFCGENER_PATH/cnt_pckt_ce
+
+    add wave -label cnt_ovf     $AURFCGENER_PATH/cnt_ovf
+    add wave -label cnt_zero    $AURFCGENER_PATH/cnt_zero
+
+}
+
+proc rio_aurfc {  } {
+    global AURFC_PATH
+    add wave -divider "AURFC"
+    radix -hex
+
+    add wave -label TX_D            $AURFC_PATH/TX_D 
+    add wave -label TX_REM          $AURFC_PATH/TX_REM 
+    add wave -label TX_SRC_RDY_N    $AURFC_PATH/TX_SRC_RDY_N 
+    add wave -label TX_SOF_N        $AURFC_PATH/TX_SOF_N 
+    add wave -label TX_SOP_N        $AURFC_PATH/TX_SOP_N 
+    add wave -label TX_EOF_N        $AURFC_PATH/TX_EOF_N 
+    add wave -label TX_EOP_N        $AURFC_PATH/TX_EOP_N 
+    add wave -label TX_DST_RDY_N    $AURFC_PATH/TX_DST_RDY_N 
+
+    add wave -label RX_D            $AURFC_PATH/RX_D 
+    add wave -label RX_REM          $AURFC_PATH/RX_REM 
+    add wave -label RX_SRC_RDY_N    $AURFC_PATH/RX_SRC_RDY_N 
+    add wave -label RX_SOF_N        $AURFC_PATH/RX_SOF_N 
+    add wave -label RX_SOP_N        $AURFC_PATH/RX_SOP_N 
+    add wave -label RX_EOF_N        $AURFC_PATH/RX_EOF_N 
+    add wave -label RX_EOP_N        $AURFC_PATH/RX_EOP_N 
+    add wave -label RX_DST_RDY_N    $AURFC_PATH/RX_DST_RDY_N 
+
+    add wave -label HARD_ERROR    $AURFC_PATH/HARD_ERROR 
+    add wave -label SOFT_ERROR    $AURFC_PATH/SOFT_ERROR 
+    add wave -label FRAME_ERROR   $AURFC_PATH/FRAME_ERROR 
+
+    add wave -label TX_STATUS     $AURFC_PATH/TX_STATUS 
+    add wave -label RX_STATUS     $AURFC_PATH/RX_STATUS 
+
+}
+
+proc rio_aurora {  } {
+    global AURORA_PATH
+    add wave -divider "AURORA"
+    radix -hex
+
+#    add wave -label  RX_D     $AURORA_PATH/rx_ll_i/RX_D
+
+    add wave -label  TX_D     $AURORA_PATH/TX_D
+    add wave -label  TX_SRC_RDY_N   $AURORA_PATH/TX_SRC_RDY_N
+    add wave -label  TX_DST_RDY_N   $AURORA_PATH/TX_DST_RDY_N
+    add wave -label  TXP      $AURORA_PATH/TXP
+    add wave -label  TXN      $AURORA_PATH/TXN
+    add wave -label  RXP      $AURORA_PATH/RXP
+    add wave -label  RXN      $AURORA_PATH/RXN
+    add wave -label  CHANNEL_UP      $AURORA_PATH/CHANNEL_UP
+    add wave -label  LANE_UP      $AURORA_PATH/LANE_UP
+    add wave -label  TOP_REF_CLK      $AURORA_PATH/top_ref_clk
+    add wave -label  user_clk      $AURORA_PATH/user_clk
+    add wave -label  user_clk_n_2x      $AURORA_PATH/user_clk_n_2x
+#    add wave -label  rx_rec_clk_i      $AURORA_PATH/rx_rec_clk_i
+}
+
+proc mgt_lane0 {  } {
+    global GT_MODEL0_PATH
+    add wave -divider "MGT_lane0"
+    radix -hex
+
+    add wave -label txdata           $GT_MODEL0_PATH/txdata
+    add wave -label txcharisk        $GT_MODEL0_PATH/txcharisk
+    add wave -label rxdata           $GT_MODEL0_PATH/rxdata
+    add wave -label rxcharisk        $GT_MODEL0_PATH/rxcharisk
+    add wave -label txp              $GT_MODEL0_PATH/txp
+    add wave -label txn              $GT_MODEL0_PATH/txn
+    add wave -label rxp              $GT_MODEL0_PATH/rxp
+    add wave -label rxn              $GT_MODEL0_PATH/rxn
+    add wave -label enchansync       $GT_MODEL0_PATH/enchansync
+    add wave -label rxbufstatus      $GT_MODEL0_PATH/rxbufstatus
+    add wave -label rxchariscomma    $GT_MODEL0_PATH/rxchariscomma
+    add wave -label rxcheckingcrc    $GT_MODEL0_PATH/rxcheckingcrc
+    add wave -label chbonddone       $GT_MODEL0_PATH/chbonddone
+    add wave -label rxclkcorcnt      $GT_MODEL0_PATH/rxclkcorcnt
+    add wave -label rxcommadet       $GT_MODEL0_PATH/rxcommadet
+    add wave -label rxcrcerr         $GT_MODEL0_PATH/rxcrcerr
+    add wave -label rxdisperr        $GT_MODEL0_PATH/rxdisperr
+    add wave -label rxnotintable     $GT_MODEL0_PATH/rxnotintable
+    add wave -label rxrealign        $GT_MODEL0_PATH/rxrealign
+    add wave -label rxrecclk         $GT_MODEL0_PATH/rxrecclk
+    add wave -label rxrundisp        $GT_MODEL0_PATH/rxrundisp
+    add wave -label txbuferr         $GT_MODEL0_PATH/txbuferr
+    add wave -label txkerr           $GT_MODEL0_PATH/txkerr
+}
+
+proc mgt_lane1 {  } {
+    global GT_MODEL1_PATH
+    add wave -divider "MGT_lane1"
+    radix -hex
+
+    add wave -label txdata           $GT_MODEL1_PATH/txdata
+    add wave -label txcharisk        $GT_MODEL1_PATH/txcharisk
+    add wave -label rxdata           $GT_MODEL1_PATH/rxdata
+    add wave -label rxcharisk        $GT_MODEL1_PATH/rxcharisk
+    add wave -label txp              $GT_MODEL1_PATH/txp
+    add wave -label txn              $GT_MODEL1_PATH/txn
+    add wave -label rxp              $GT_MODEL1_PATH/rxp
+    add wave -label rxn              $GT_MODEL1_PATH/rxn
+    add wave -label enchansync       $GT_MODEL1_PATH/enchansync
+    add wave -label rxbufstatus      $GT_MODEL1_PATH/rxbufstatus
+    add wave -label rxchariscomma    $GT_MODEL1_PATH/rxchariscomma
+    add wave -label rxcheckingcrc    $GT_MODEL1_PATH/rxcheckingcrc
+    add wave -label chbonddone       $GT_MODEL1_PATH/chbonddone
+    add wave -label rxclkcorcnt      $GT_MODEL1_PATH/rxclkcorcnt
+    add wave -label rxcommadet       $GT_MODEL1_PATH/rxcommadet
+    add wave -label rxcrcerr         $GT_MODEL1_PATH/rxcrcerr
+    add wave -label rxdisperr        $GT_MODEL1_PATH/rxdisperr
+    add wave -label rxnotintable     $GT_MODEL1_PATH/rxnotintable
+    add wave -label rxrealign        $GT_MODEL1_PATH/rxrealign
+    add wave -label rxrecclk         $GT_MODEL1_PATH/rxrecclk
+    add wave -label rxrundisp        $GT_MODEL1_PATH/rxrundisp
+    add wave -label txbuferr         $GT_MODEL1_PATH/txbuferr
+    add wave -label txkerr           $GT_MODEL1_PATH/txkerr
+}
+
+# Set basic paths
+set TOPLEVEL_PATH "sim:/testbench/uut"
+set RIOTEST_PATH "sim:/testbench/uut/RIO_TEST_U"
+set RIO_PATH "sim:/testbench/uut/RIO_TEST_U/RIO2CMD_U"
+set AURFC_PATH "sim:/testbench/uut/RIO_TEST_U/RIO2CMD_U/aurfc_u"
+set AURORA_PATH "sim:/testbench/uut/RIO_TEST_U/RIO2CMD_U/aurfc_u/rio_aurora_module_u"
+set RIOTX_PATH "$RIO_PATH/transmitter_u"
+set RIORX_PATH "$RIO_PATH/receiver_u" 
+set AURFCTX_PATH "$AURFC_PATH/transmitter_u"
+set AURFCRX_PATH "$AURFC_PATH/receiver_u" 
+set AURFCGENER_PATH "$AURFC_PATH/SOF_EOF_generator_u" 
+set GT_MODEL_PATH   "/testbench/uut/rio_test_u/rio2cmd_u/aurfc_u/rio_aurora_module_u/lane_0_mgt_i/gt_model_u"
+set GT_MODEL0_PATH   "/testbench/uut/rio_test_u/rio2cmd_u/aurfc_u/rio_aurora_module_u/lane_0_mgt_i"
+set GT_MODEL1_PATH   "/testbench/uut/rio_test_u/rio2cmd_u/aurfc_u/rio_aurora_module_u/lane_1_mgt_i/gt_model_u"
+
+source "../../../../../../models/rio/sim/signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+# ------------- Calling procedures ------------------------------
+rio_lb
+rio_common
+rio_tx_bram
+rio_tx
+rio_aurfctx
+rio_rx_bram
+rio_rx
+rio_aurfcrx
+rio_aurfcgener
+rio_aurfc
+rio_aurora
+#mgt_lane0
+#mgt_lane1
+#gtc_ifc
+#gtc_txcode
+#gtc_txbuff
+#gtc_txser
+#gtc_clk
+#gtc_rxdeser
+#gtc_rxbuff
+#gtc_rxdecode
+#gtc_rxcomdet
+rio_common
+rio_ctrl
+
+# ------------- Run ---------------------------------------------
+restart -f
+run 60 us
+
+

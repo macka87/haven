@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+
+<component>CB2BM</component>
+
+<authors>
+   <author login="kosek">Martin Kosek</author>
+</authors>
+
+<features>
+   <item>Efective transformation of Control Bus Bus Master requests 
+      to Internal Bus Endpoint interace</item>
+   <item>Up to 16 unfinished Bus Master requests</item>
+</features>
+
+<description>
+   <p>
+      A simple component that transforms special formated Control Bus packets 
+      into a Bus Master operation request to Internal Bus Endpoint.
+   </p>
+</description>
+
+<interface>
+   <port_map>
+      <divider>Common Interface</divider>
+      <port name="CLK" dir="in" width="1">
+         Clock input
+      </port>
+      <port name="RESET" dir="in" width="1">
+         Reset input
+      </port>
+      
+      <divider>Input CB_ENDPOINT interface</divider>
+      <port name="UPS_FL" dir="out" width="1">
+         Upstream interface
+      </port>
+      <port name="DNS_FL" dir="in" width="1">
+         Downstream interface
+      </port>
+
+      <divider>Bus Master Controller interface</divider>
+      <port name="BM" dir="out" width="1">
+         Internal Bus Endpoint BM interface
+      </port>
+   </port_map>
+</interface>
+
+<operations>
+</operations>
+
+<body>
+   <h1>Restrictions</h1>
+   <p>
+      There is one restriction when using this component. There can be 
+      sent up to 16 Bus Master requests to IB_ENDPOINT without confirmation
+      that request has been completed. That is caused by ACK packet buffer
+      in CB2BM witch can hold max 16 ACK packets.
+   </p>
+   <p>
+      However this limitation shouldn't decrease Bus Master operation 
+      througput as there shouldn't be 16 unfinished Bus Master requests at 
+      once.
+   </p>
+
+   <h1>Frequency and Resources usage</h1>
+	<p>
+		<tab sloupce="cccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+            <th>BlockRams (% of C6X BRAMs)</th>
+            <th>Max. HW frequency</th>
+			</tr>
+			<tr>
+				<th>CB2BM (no generics)</th> 
+				<td>79 (0.3%)</td>
+            <td>0 (0.0%)</td>
+            <td>150 MHz</td>
+			</tr>
+		<nazev>Chip utilization &amp; max design frequency</nazev>
+		</tab> 
+   </p>
+
+   <h1>Schemes</h1>
+   <p>
+      The structure of the component is in the following figure.
+      Data Multiplexing &amp; Control logic controls Bus Master request
+      sending (REQ - ACK) and that there is max 16 unfinished Bus Master
+      requests.
+   </p>
+   <p>
+      ACK Packet Assembly block contains 16 ACK packets FIFO and also
+      creates the ACK packet itself and sends it to CB_ENDPOINT.
+   </p>
+   <p>
+		<obr src="./fig/top-arch.fig">CB2BM architecture</obr>
+	</p>
+
+</body>
+</source>

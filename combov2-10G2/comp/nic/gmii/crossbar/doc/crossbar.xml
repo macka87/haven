@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>Crossbar for GMII interface</component>
+
+
+<!-- Authors -->
+<authors>
+	<author login="xpriby12">Bronislav Pribyl</author>
+</authors>
+
+
+<!-- Features -->
+<features>
+	<item>Generic number of ports, inputs and outputs</item>
+	<item>Real-time reconfiguration</item>
+</features>
+
+
+<!-- Bugs -->
+<!--
+<bugs>
+	<item>Not known bugs</item>
+</bugs>
+-->
+
+
+<!-- Things to do -->
+<!--
+<todo>
+  <item>Resource usage</item>
+</todo>
+-->
+
+
+<!-- Short Block description -->
+<description>
+	The crossbar component implements fully generic crossbar for GMII interface.
+	It allows to connect an input port to (theoretically) unlimited number of output
+	ports. Vice versa, every output port can receive traffic from just one input port.
+	The connection between input and output ports is implemented by multiplexers,
+	which allows real-time reconfiguration of the crossbar. The crossbar has standard
+	MI32 interface.
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Generic description -->
+	<generic_map>
+
+		<generic name="PORTS"   type="natural"  default="4">
+			Number of ports (contain both RX and TX part)
+		</generic>
+		<generic name="INPUTS"  type="natural"  default="4">
+			Number of inputs (contain only RX part)
+		</generic>
+		<generic name="OUTPUTS"  type="natural"  default="4">
+			Number of outputs (contain only TX part)
+		</generic>
+
+	</generic_map>
+
+	<!-- Port description -->
+	<port_map>
+
+		<divider>Common signals</divider>
+		<port name="RESET" dir="in" width="1">
+			Design reset
+		</port>
+
+		<divider>Ports</divider>
+		<port name="P_RXD" dir="in" width="8*PORTS">
+			RX (receive) data
+		</port>
+		<port name="P_RXDV" dir="in" width="PORTS">
+			RX data valid
+		</port>
+		<port name="P_RXER" dir="in" width="PORTS">
+			RX error
+		</port>
+		<port name="P_TXD" dir="out" width="8*PORTS">
+			TX (transmit) data
+		</port>
+		<port name="P_TXEN" dir="out" width="PORTS">
+			TX enable
+		</port>
+		<port name="P_TXER" dir="out" width="PORTS">
+			TX error
+		</port>
+
+		<divider>Inputs</divider>
+		<port name="I_RXD" dir="in" width="8*INPUTS">
+			RX (receive) data
+		</port>
+		<port name="I_RXDV" dir="in" width="INPUTS">
+			RX data valid
+		</port>
+		<port name="I_RXER" dir="in" width="INPUTS">
+			RX error
+		</port>
+
+		<divider>Outputs</divider>
+		<port name="O_TXD" dir="out" width="8*OUTPUTS">
+			TX (transmit) data
+		</port>
+		<port name="O_TXEN" dir="out" width="OUTPUTS">
+			TX enable
+		</port>
+		<port name="O_TXER" dir="out" width="OUTPUTS">
+			TX error
+		</port>
+
+		<divider>Local bus interface</divider>
+		<port name="CLK" dir="in" width="1">
+			Design clock (if connected to local bus, supposed to be local bus clock)
+		</port>
+		<port name="MI32" dir="inout" width="t_mi32">
+			MI32 interface
+		</port>
+
+	</port_map>
+
+</interface>
+
+
+<!-- CONSTANTS SECTION *************************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+
+<constant>
+</constant>
+
+
+<!-- OPERATIONS SECTION ************************************************* -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+
+<operations>
+
+	<op name="Set source for port 0" id="CROSSBAR_SET_PORT_0">
+      To set source Nr. "w" for port 0, write value "w" into register
+      <ref id="REG_PORT_0">Port 0 source</ref>
+			(see naming and numbering conventions in SW Body section).
+  </op>
+  
+  <op name="Set source for port 1" id="CROSSBAR_SET_PORT_1">
+      To set source Nr. "x" for port 1, write value "x" into register
+      <ref id="REG_PORT_1">Port 1 source</ref>
+			(see naming and numbering conventions in SW Body section).
+  </op>
+  
+  <op name="Set source for port 2" id="CROSSBAR_SET_PORT_2">
+      To set source Nr. "y" for port 2, write value "y" into register
+      <ref id="REG_PORT_2">Port 2 source</ref>
+			(see naming and numbering conventions in SW Body section).
+  </op>
+  
+  <op name="Set source for port 3" id="CROSSBAR_SET_PORT_3">
+      To set source Nr. "z" for port 3, write value "z" into register
+      <ref id="REG_PORT_3">Port 3 source</ref>
+			(see naming and numbering conventions in SW Body section).
+  </op>
+  
+  <op name="Set source for ouput 0" id="CROSSBAR_SET_OUTPUT_0">
+      To set source Nr. "a" for output 0, write value "a" into register
+      <ref id="REG_OUTPUT_0">Output 0 source</ref>
+			(see naming and numbering conventions in SW Body section).
+  </op>
+
+  <op name="Set source for output 1" id="CROSSBAR_SET_OUTPUT_1">
+      To set source Nr. "b" for output 1, write value "b" into register
+      <ref id="REG_OUTPUT_1">Output 1 source</ref>
+			(see naming and numbering conventions in SW Body section).
+  </op>
+
+  <op name="Set source for output 2" id="CROSSBAR_SET_OUTPUT_2">
+      To set source Nr. "c" for output 2, write value "c" into register
+      <ref id="REG_OUTPUT_2">Output 2 source</ref>
+			(see naming and numbering conventions in SW Body section).
+  </op>
+
+  <op name="Set source for output 3" id="CROSSBAR_SET_OUTPUT_3">
+      To set source Nr. "d" for output 3, write value "d" into register
+      <ref id="REG_OUTPUT_3">Output 3 source</ref>
+			(see naming and numbering conventions in SW Body section).
+  </op>
+
+</operations>
+
+
+<!-- ADDRESS SPACE SECTION ********************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this sections -->
+
+<addr_space id="CROSSBAR" name="Crossbar address space" main="yes" size="4*(PORTS+OUTPUTS)">
+
+ <reg name="Port 0 source" id="REG_PORT_0" offset="0x00" access="RW" words="1">
+		<bit_vect bits="32">
+		<description_above>
+			It holds number of the source (= port or input), which is mirrored on port 0.
+		</description_above>
+		<format>
+		  <bit from="0" to="2" name="Source number">Number of source</bit>
+			<bit from="3" to="31" name="Not used">Not used</bit>
+		</format>
+		</bit_vect>
+	</reg>
+
+	<reg name="Port 1 source" id="REG_PORT_1" offset="0x04" access="RW" words="1">
+		<bit_vect bits="32">
+		<description_above>
+			It holds number of the source (= port or input), which is mirrored on port 1.
+		</description_above>
+		<format>
+		  <bit from="0" to="2" name="Source number">Number of source</bit>
+			<bit from="3" to="31" name="Not used">Not used</bit>
+		</format>
+		</bit_vect>
+	</reg>
+	
+	<reg name="Port 2 source" id="REG_PORT_2" offset="0x08" access="RW" words="1">
+		<bit_vect bits="32">
+		<description_above>
+			It holds number of the source (= port or input), which is mirrored on port 2.
+		</description_above>
+		<format>
+		  <bit from="0" to="2" name="Source number">Number of source</bit>
+			<bit from="3" to="31" name="Not used">Not used</bit>
+		</format>
+		</bit_vect>
+	</reg>
+	
+	<reg name="Port 3 source" id="REG_PORT_3" offset="0x0C" access="RW" words="1">
+		<bit_vect bits="32">
+		<description_above>
+			It holds number of the source (= port or input), which is mirrored on port 3.
+		</description_above>
+		<format>
+		  <bit from="0" to="2" name="Source number">Number of source</bit>
+			<bit from="3" to="31" name="Not used">Not used</bit>
+		</format>
+		</bit_vect>
+	</reg>
+	
+	<reg name="Output 0 source" id="REG_OUTPUT_0" offset="0x10" access="RW" words="1">
+		<bit_vect bits="32">
+		<description_above>
+			It holds number of the source (= port or input), which is mirrored on output 0.
+		</description_above>
+		<format>
+		  <bit from="0" to="2" name="Source number">Number of source</bit>
+			<bit from="3" to="31" name="Not used">Not used</bit>
+		</format>
+		</bit_vect>
+	</reg>
+
+	<reg name="Output 1 source" id="REG_OUTPUT_1" offset="0x14" access="RW" words="1">
+		<bit_vect bits="32">
+		<description_above>
+			It holds number of the source (= port or input), which is mirrored on output 1.
+		</description_above>
+		<format>
+		  <bit from="0" to="2" name="Source number">Number of source</bit>
+			<bit from="3" to="31" name="Not used">Not used</bit>
+		</format>
+		</bit_vect>
+	</reg>
+
+	<reg name="Output 2 source" id="REG_OUTPUT_2" offset="0x18" access="RW" words="1">
+		<bit_vect bits="32">
+		<description_above>
+			It holds number of the source (= port or input), which is mirrored on output 2.
+		</description_above>
+		<format>
+		  <bit from="0" to="2" name="Source number">Number of source</bit>
+			<bit from="3" to="31" name="Not used">Not used</bit>
+		</format>
+		</bit_vect>
+	</reg>
+
+	<reg name="Output 3 source" id="REG_OUTPUT_3" offset="0x1C" access="RW" words="1">
+		<bit_vect bits="32">
+		<description_above>
+			It holds number of the source (= port or input), which is mirrored on output 3.
+		</description_above>
+		<format>
+		  <bit from="0" to="2" name="Source number">Number of source</bit>
+			<bit from="3" to="31" name="Not used">Not used</bit>
+		</format>
+		</bit_vect>
+	</reg>
+
+</addr_space>
+
+
+<!-- SW BODY SECTION **************************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+
+<sw_body>
+
+	<p>
+		Number of registers and number of their valid bits described in Address Space
+		section is only illustrative and corresponds to generics defaults
+		(PORTS = 4, INPUTS = 4, OUTPUTS = 4).
+	</p>
+
+	<p>
+		Number of registers depends in PORTS and OUTPUTS generics.
+		It is equal to PORTS+OUTPUTS (every port and output has its own register).
+	</p>
+
+	<p>
+		Number of used bits in registers depends on PORTS and INPUTS generics.
+		It is equal to log2(PORTS+INPUTS), which means bits log2(PORTS+INPUTS)-1 downto 0
+		are used.
+	</p>
+	
+	<p>
+		Register's values should be from 0 to PORTS+INPUTS-1. This is because port 0
+		can be assigned by writing value 0 into selected register, port 1 by writing 1,
+		etc., the last port by writing value PORTS-1. First input can be assigned by writing
+		value PORTS, second input by writing PORTS+1, etc., and the last input by writing
+		PORTS+INPUTS-1.
+	</p>
+	
+	
+<h1>Addressing</h1>
+
+	<p>
+		The first PORT (TX part) is controled through register on address 0,
+		next PORT (TX part) through register on address 4, ... , last PORT (TX part) through register on address 4*(PORTS-1),
+		first OUTPUT through register on address 4*PORTS,	... , last OUTPUT through register on address 4*(PORTS+OUTPUTS-1).
+	</p>
+
+	<p>
+		Similarly, if you write to the selected register value 0, it means you want to obtain traffic from the first PORT (RX part).
+		If you use value 1, you obtain second PORT (RX part), ... , if you write value PORTS-1, you get traffic from the last PORT (RX part).
+		Value PORTS means first INPUT, ... , value PORTS+INPUTS-1 means last INPUT.
+	</p>
+
+	<p>
+		The configuration change takes effect as soon as the data is written into the register.
+		Control registers can be read out via MI32 interface as well.
+	</p>
+	
+	
+<h1>Settings</h1>
+
+	<p>
+		If default settins are not suitable, user can reconfigure crossbar using
+		standard operations. Source for every PORT and OUTPUT has to be set.
+		(For default settings please see HW section.)
+	</p>
+
+</sw_body>
+
+
+<!-- HW BODY SECTION **************************************************** -->
+<!-- information for HW designers, structure should be as follow          -->
+<body>
+
+<h1>Crossbar info</h1>
+
+	<p>
+		Terminology:
+		<ul>
+			<li>
+				PORT - GMII interface through which is the card connected to the net
+				(PORTS does have both input (RX) and output (TX) parts),
+			</li>
+			<li>
+				INPUT - GMII interface which connects crossbar with logic on the board (has only RX part),
+			</li>
+			<li>
+				OUTPUT - GMII interface which connects crossbar with logic on the board (has only TX part).
+			</li>
+		</ul>
+	</p>
+
+	<p>
+		The crossbar provides standard MI32 interface, so it can be connected e. g. via local bus endpoint
+		to the local bus. Thereafter it can be configured via the bus, which means every PORT (RX part) and INPUT
+		can be assigned to zero or more PORTS (TX part) or OUTPUTS. Vice versa, every PORT (TX part) and OUTPUT
+		must have assigned exactly one of PORTS (RX part) or INPUTS.
+	</p>
+
+	<p>
+		Every PORT (TX part) and OUTPUT has its own multiplexer, which is controled via register.
+		The register can be configured via MI32 interface.
+	</p>
+	
+	
+<h1>Default settings</h1>
+
+	<p>
+	  After reset, default settings are used. That means, crossbar is in "go through"
+	  mode: Traffic from every PORT (RX part) is routed to appropriate OUTPUT, and
+	  traffic from every INPUT is routed to appropriate PORT (TX part).
+	  <obr src="./fig/crossbar-default.fig" mag="0.5">Crossbar default settings</obr>
+	</p>
+	
+	
+<h1>Used components</h1>
+	<p>
+		<ref_comp ref="GEN_MUX">Generic multiplexer</ref_comp>
+	</p>
+
+
+<h1>Frequency and Resources usage</h1>
+
+	<p>
+
+        <!--Resources usage and max. frequency by Precision-->
+
+  	<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of SFPRO slices)</th>
+				<th>BlockRams (% of SFPRO BRAMs)</th>
+			</tr>
+			<tr>
+				<th>PORTS=4, INPUTS=4, OUTPUTS=4</th>
+        <td>180(0.76%)</td>
+				<td>0(0.00%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab>
+
+  </p>
+  
+  <p>
+		Design delay: 1.463 ns
+	</p>
+
+
+<h1>Schemes</h1>
+
+	<p>
+		The structure of the component is in the following figure.
+		It's composed of MI32 address decoder and array of multiplexers.
+		These multiplexers are controled via registers, which can be loaded
+		via MI32 interface.
+		<obr src="./fig/crossbar.fig" mag="1.0">Crossbar architecture</obr>
+	</p>
+
+
+</body>
+
+</source>

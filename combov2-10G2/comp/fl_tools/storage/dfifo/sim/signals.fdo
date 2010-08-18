@@ -1,0 +1,75 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Jiri Novotnak <xnovot87@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 11028 2009-09-07 12:16:52Z xnovot87 $
+
+
+proc fl_input { BASE ID } {
+   add wave -divider "Write interface"
+   add_wave "-group {Write interface $ID} -noupdate -hex -label RX_DATA"       $BASE/RX_DATA
+   add_wave "-group {Write interface $ID} -noupdate -hex -label RX_REM"        $BASE/RX_REM
+   add_wave "-group {Write interface $ID} -noupdate -hex -label RX_SRC_RDY_N"  $BASE/RX_SRC_RDY_N
+   add_wave "-group {Write interface $ID} -noupdate -hex -label RX_DST_RDY_N"  $BASE/RX_DST_RDY_N
+   add_wave "-group {Write interface $ID} -noupdate -hex -label RX_SOF_N"      $BASE/RX_SOF_N
+   add_wave "-group {Write interface $ID} -noupdate -hex -label RX_SOP_N"      $BASE/RX_SOP_N
+   add_wave "-group {Write interface $ID} -noupdate -hex -label RX_EOP_N"      $BASE/RX_EOP_N
+   add_wave "-group {Write interface $ID} -noupdate -hex -label RX_EOF_N"      $BASE/RX_EOF_N
+   add_wave "-group {Write interface $ID} -noupdate -hex -label DISCARD"       $BASE/DISCARD
+}
+      
+proc fl_output { BASE ID } {
+   add wave -divider "Read interface"
+   add_wave "-group {Read interface $ID} -noupdate -hex -label TX_DATA"       $BASE/TX_DATA
+   add_wave "-group {Read interface $ID} -noupdate -hex -label TX_REM"        $BASE/TX_REM
+   add_wave "-group {Read interface $ID} -noupdate -hex -label TX_SRC_RDY_N"  $BASE/TX_SRC_RDY_N
+   add_wave "-group {Read interface $ID} -noupdate -hex -label TX_DST_RDY_N"  $BASE/TX_DST_RDY_N
+   add_wave "-group {Read interface $ID} -noupdate -hex -label TX_SOF_N"      $BASE/TX_SOF_N
+   add_wave "-group {Read interface $ID} -noupdate -hex -label TX_SOP_N"      $BASE/TX_SOP_N
+   add_wave "-group {Read interface $ID} -noupdate -hex -label TX_EOP_N"      $BASE/TX_EOP_N
+   add_wave "-group {Read interface $ID} -noupdate -hex -label TX_EOF_N"      $BASE/TX_EOF_N
+}
+
+proc fl_internal { BASE ID } {
+   add wave -divider "Internal signals"
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label mem_di"     $BASE/mem_di
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label mem_write_addr"     $BASE/mem_write_addr
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label mem_write_en"     $BASE/mem_write_en
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label mem_read_addr"     $BASE/mem_read_addr
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label mem_dob"     $BASE/mem_dob
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label fl_com_juice"     $BASE/fl_com_juice
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label fl_decom_juice"     $BASE/fl_decom_juice
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label cnt_write_address"     $BASE/cnt_write_address
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label reg_write_address"     $BASE/reg_write_address
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label reg_cnt_state"     $BASE/reg_cnt_state
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label cnt_write_rollback"     $BASE/cnt_write_rollback
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label reg_discard"     $BASE/reg_discard
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label cnt_read_address"     $BASE/cnt_read_address
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label cmp_empty"     $BASE/cmp_empty
+   add_wave "-group {Internal signals $ID} -noupdate -hex -label cmp_full"     $BASE/cmp_full
+}

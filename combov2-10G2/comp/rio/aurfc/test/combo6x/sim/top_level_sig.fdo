@@ -1,0 +1,288 @@
+# PFIFO_A simulation procedures
+# Author(s): Jan Pazdera <pazdera@liberouter.org>
+#
+# Description:
+#
+#       This file contain only procedures which can be used for signal
+#       addition. This file can be used in every project. Path to the
+#       PFIFO_A component is specified by $PFIFO_A_PATH variable.
+#       All function names should be given by componet hierarchy.
+
+
+# ------------------------------------------------------------------------
+# -------------------------- Procedures ----------------------------------
+# ------------------------------------------------------------------------
+
+
+
+#####################################################################
+# Common signals 
+#####################################################################
+proc aurfctest_common {  } {
+    global AURFC_TEST_PATH
+    add wave -divider "Common"
+    radix -hex
+
+    add wave -label REFCLK        $AURFC_TEST_PATH/REFCLK 
+    add wave -label USRCLK        $AURFC_TEST_PATH/USRCLK
+    add wave -label USRCLK2       $AURFC_TEST_PATH/USRCLK2
+    add wave -label CMDCLK        $AURFC_TEST_PATH/CMDCLK
+    add wave -label reset         $AURFC_TEST_PATH/RESET
+}
+
+#####################################################################
+# Interfaces 
+#####################################################################
+
+#####################################################################
+# Sub-components 
+#####################################################################
+
+proc aurfctest_lb {  } {
+    global AURFC_TEST_PATH
+    add wave -divider "LB/ADC"
+    radix -hex
+
+    add wave -label lb_en   $AURFC_TEST_PATH/lb_en
+    add wave -label lb_rw   $AURFC_TEST_PATH/lb_rw
+    add wave -label lb_drdy $AURFC_TEST_PATH/lb_drdy
+    add wave -label lb_addr $AURFC_TEST_PATH/lb_addr
+    add wave -label lb_di   $AURFC_TEST_PATH/lb_di
+    add wave -label lb_do   $AURFC_TEST_PATH/lb_do
+    add wave -label adc_rd  $AURFC_TEST_PATH/adc_rd
+    add wave -label adc_wr  $AURFC_TEST_PATH/adc_wr
+    add wave -label adc_addr    $AURFC_TEST_PATH/adc_addr
+    add wave -label reg_adc_addr    $AURFC_TEST_PATH/reg_adc_addr
+    add wave -label adc_do  $AURFC_TEST_PATH/adc_do
+    add wave -label adc_di  $AURFC_TEST_PATH/adc_di
+    add wave -label adc_drdy    $AURFC_TEST_PATH/adc_drdy
+
+    add wave -divider "PLX"
+    add wave -label lad {lad {
+                  sim:/testbench/lad1
+                  sim:/testbench/lad0}}
+#    add wave -label lholda          sim:/testbench/lholda
+#    add wave -label ads             sim:/testbench/ads
+#    add wave -label blast           sim:/testbench/blast
+    add wave -label lwr             sim:/testbench/lwr
+    add wave -label ready           sim:/testbench/ready
+    add wave -label lhold           sim:/testbench/lhold
+#    add wave -label usero           sim:/testbench/usero
+}
+
+proc aurfctest_adc {  } {
+    global AURFC_TEST_PATH 
+    add wave -divider "ADC"
+    radix -hex
+
+    add wave -label cs_tx_mem   $AURFC_TEST_PATH/cs_tx_mem
+    add wave -label cs_ctrl_mem $AURFC_TEST_PATH/cs_ctrl_mem
+    add wave -label cs_recv_mem $AURFC_TEST_PATH/cs_recv_mem
+    add wave -label cs_corr_mem $AURFC_TEST_PATH/cs_corr_mem
+    add wave -label cs_controls $AURFC_TEST_PATH/cs_controls
+    add wave -label cs_reg_tx_active    $AURFC_TEST_PATH/cs_reg_tx_active
+}
+
+proc aurfctest_data_mux {  } {
+    global AURFC_TEST_PATH 
+    add wave -divider "DATA_MUXes"
+    radix -hex
+
+    add wave -label controls_do $AURFC_TEST_PATH/controls_do
+    add wave -label reg_adc_do_i    $AURFC_TEST_PATH/reg_adc_do_i
+    add wave -label reg_adc_do  $AURFC_TEST_PATH/reg_adc_do
+    add wave -label reg_adc_di  $AURFC_TEST_PATH/reg_adc_di
+    add wave -label reg_adc_drdy_i  $AURFC_TEST_PATH/reg_adc_drdy_i
+    add wave -label reg_adc_drdy    $AURFC_TEST_PATH/reg_adc_drdy
+    add wave -label reg_controls_drdy   $AURFC_TEST_PATH/reg_controls_drdy
+}
+
+proc aurfctest_tx_bram {  } {
+    global AURFC_TEST_PATH 
+    add wave -divider "TX_BRAM"
+    radix -hex
+
+    add wave -label tx_mem_rea      $AURFC_TEST_PATH/tx_mem_rea
+    add wave -label tx_mem_wea      $AURFC_TEST_PATH/tx_mem_wea
+    add wave -label tx_mem_addra    $AURFC_TEST_PATH/adc_addr
+    add wave -label tx_mem_doa      $AURFC_TEST_PATH/tx_mem_doa
+    add wave -label tx_mem_doa_dv   $AURFC_TEST_PATH/tx_mem_doa_dv
+    add wave -label tx_mem_pipe_enb $AURFC_TEST_PATH/tx_mem_pipe_enb
+    add wave -label tx_mem_reb      $AURFC_TEST_PATH/tx_mem_reb
+    add wave -label tx_mem_addrb    $AURFC_TEST_PATH/cnt_tx_addr
+    add wave -label tx_mem_dob_dv   $AURFC_TEST_PATH/tx_mem_dob_dv
+    add wave -label tx_mem_dob      $AURFC_TEST_PATH/tx_mem_dob
+}
+
+proc aurfctest_ctrl_bram {  } {
+    global AURFC_TEST_PATH 
+    add wave -divider "CTRL_BRAM"
+    radix -hex
+
+    add wave -label ctrl_mem_rea    $AURFC_TEST_PATH/ctrl_mem_rea
+    add wave -label ctrl_mem_wea    $AURFC_TEST_PATH/ctrl_mem_wea
+    add wave -label ctrl_mem_addra  $AURFC_TEST_PATH/adc_addr
+    add wave -label ctrl_mem_dia    $AURFC_TEST_PATH/reg_adc_di_z
+    add wave -label ctrl_mem_doa    $AURFC_TEST_PATH/ctrl_mem_doa
+    add wave -label ctrl_mem_doa_dv $AURFC_TEST_PATH/ctrl_mem_doa_dv
+    add wave -label ctrl_mem_pipe_enb   $AURFC_TEST_PATH/ctrl_mem_pipe_enb
+    add wave -label ctrl_mem_reb    $AURFC_TEST_PATH/ctrl_mem_reb
+    add wave -label ctrl_mem_addrb  $AURFC_TEST_PATH/cnt_rx_addr
+    add wave -label ctrl_mem_dob_dv $AURFC_TEST_PATH/ctrl_mem_dob_dv
+    add wave -label ctrl_mem_dob    $AURFC_TEST_PATH/ctrl_mem_dob
+}
+
+proc aurfctest_recv_bram {  } {
+    global AURFC_TEST_PATH 
+    add wave -divider "RECV_BRAM"
+    radix -hex
+
+    add wave -label recv_mem_rea    $AURFC_TEST_PATH/recv_mem_rea
+    add wave -label recv_mem_addra  $AURFC_TEST_PATH/adc_addr
+    add wave -label recv_mem_doa    $AURFC_TEST_PATH/recv_mem_doa
+    add wave -label recv_mem_doa_dv $AURFC_TEST_PATH/recv_mem_doa_dv
+    add wave -label recv_mem_web    $AURFC_TEST_PATH/recv_mem_web
+    add wave -label recv_mem_addrb  $AURFC_TEST_PATH/cnt_err_addr
+    add wave -label recv_mem_dib    $AURFC_TEST_PATH/reg_rx_d
+}
+
+proc aurfctest_corr_bram {  } {
+    global AURFC_TEST_PATH
+    add wave -divider "CORR_BRAM"
+    radix -hex
+
+    add wave -label corr_mem_rea    $AURFC_TEST_PATH/corr_mem_rea
+    add wave -label corr_mem_addra  $AURFC_TEST_PATH/adc_addr
+    add wave -label corr_mem_doa    $AURFC_TEST_PATH/corr_mem_doa
+    add wave -label corr_mem_doa_dv $AURFC_TEST_PATH/corr_mem_doa_dv
+    add wave -label corr_mem_web    $AURFC_TEST_PATH/corr_mem_web
+    add wave -label corr_mem_addrb  $AURFC_TEST_PATH/cnt_err_addr
+    add wave -label corr_mem_dib    $AURFC_TEST_PATH/ctrl_mem_dob
+}
+
+proc aurfctest_ctrl {  } {
+    global AURFC_TEST_PATH
+    add wave -divider "Control logic"
+    radix -hex
+
+    add wave -label reg_tx_active      $AURFC_TEST_PATH/reg_tx_active
+    add wave -label cnt_tx_addr $AURFC_TEST_PATH/cnt_tx_addr
+    add wave -label cnt_rx_addr $AURFC_TEST_PATH/cnt_rx_addr
+    add wave -label cnt_err_addr    $AURFC_TEST_PATH/cnt_err_addr
+    add wave -label reg_rx_d_p1 $AURFC_TEST_PATH/reg_rx_d_p1
+    add wave -label reg_rx_d    $AURFC_TEST_PATH/reg_rx_d
+    add wave -label reg_rx_d_valid_p1   $AURFC_TEST_PATH/reg_rx_d_valid_p1
+    add wave -label reg_rx_d_valid  $AURFC_TEST_PATH/reg_rx_d_valid
+    add wave -label reg_rx_eop_n    $AURFC_TEST_PATH/reg_rx_eop_n
+    add wave -label cmp_bad_data    $AURFC_TEST_PATH/cmp_bad_data
+    add wave -label cmp_bad_data_eop    $AURFC_TEST_PATH/cmp_bad_data_eop
+    add wave -label cmp_bad_data_noeop    $AURFC_TEST_PATH/cmp_bad_data_noeop
+}
+
+proc aurfctest_aurfc {  } {
+    global AURFC_TEST_PATH
+    add wave -divider "AURFC"
+    radix -hex
+
+    add wave -label tx_d    $AURFC_TEST_PATH/tx_d
+    add wave -label tx_rem  $AURFC_TEST_PATH/tx_rem
+    add wave -label tx_src_rdy_n    $AURFC_TEST_PATH/tx_src_rdy_n
+    add wave -label tx_sof_n    $AURFC_TEST_PATH/tx_sof_n
+    add wave -label tx_sop_n    $AURFC_TEST_PATH/tx_sop_n
+    add wave -label tx_eof_n    $AURFC_TEST_PATH/tx_eof_n
+    add wave -label tx_eop_n    $AURFC_TEST_PATH/tx_eop_n
+    add wave -label tx_dst_rdy_n    $AURFC_TEST_PATH/tx_dst_rdy_n
+
+    add wave -label rx_d    $AURFC_TEST_PATH/rx_d
+    add wave -label rx_rem  $AURFC_TEST_PATH/rx_rem
+    add wave -label rx_src_rdy_n    $AURFC_TEST_PATH/rx_src_rdy_n
+    add wave -label rx_sof_n    $AURFC_TEST_PATH/rx_sof_n
+    add wave -label rx_sop_n    $AURFC_TEST_PATH/rx_sop_n
+    add wave -label rx_eof_n    $AURFC_TEST_PATH/rx_eof_n
+    add wave -label rx_eop_n    $AURFC_TEST_PATH/rx_eop_n
+    add wave -label rx_dst_rdy_n    $AURFC_TEST_PATH/rx_dst_rdy_n
+    add wave -label aur_clk    $AURFC_TEST_PATH/aurfc_u/aur_clk
+    add wave -label cnt_cc_gap  $AURFC_TEST_PATH/aurfc_u/cnt_cc_gap
+    add wave -label cnt_cc_gap_ovf  $AURFC_TEST_PATH/aurfc_u/cnt_cc_gap_ovf
+    add wave -label cnt_cc_cycles   $AURFC_TEST_PATH/aurfc_u/cnt_cc_cycles
+    add wave -label cnt_cc_cycles_ovf   $AURFC_TEST_PATH/aurfc_u/cnt_cc_cycles_ovf
+    add wave -label reg_do_cc   $AURFC_TEST_PATH/aurfc_u/reg_do_cc
+    add wave -label channel_up_i   $AURFC_TEST_PATH/aurfc_u/channel_up_i
+    add wave -label d_state   $AURFC_TEST_PATH/aurfc_u/d_state
+    add wave -label d_cnt_xon   $AURFC_TEST_PATH/aurfc_u/d_cnt_xon
+    add wave -label d_cnt_xoff   $AURFC_TEST_PATH/aurfc_u/d_cnt_xoff
+    add wave -label d_rx_full   $AURFC_TEST_PATH/aurfc_u/d_rx_full
+
+}
+
+proc aurfctest_aurfc_receiver {  } {
+    global AURFC_TEST_PATH
+    add wave -divider "AURFC-Receiver"
+    radix -hex
+
+    add wave -label RXU_D   $AURFC_TEST_PATH/aurfc_u/receiver_u/RXU_D
+    add wave -label RXU_REM $AURFC_TEST_PATH/aurfc_u/receiver_u/RXU_REM
+    add wave -label RXU_SRC_RDY_N   $AURFC_TEST_PATH/aurfc_u/receiver_u/RXU_SRC_RDY_N
+    add wave -label RXU_SOP_N   $AURFC_TEST_PATH/aurfc_u/receiver_u/RXU_SOP_N
+    add wave -label RXU_EOP_N   $AURFC_TEST_PATH/aurfc_u/receiver_u/RXU_EOP_N
+    add wave -label RXU_DST_RDY_N   $AURFC_TEST_PATH/aurfc_u/receiver_u/RXU_DST_RDY_N
+    add wave -label data_to_fifo    $AURFC_TEST_PATH/aurfc_u/receiver_u/data_to_fifo
+    add wave -label data_from_fifo  $AURFC_TEST_PATH/aurfc_u/receiver_u/data_from_fifo
+    add wave -label data_from_fifo_dv   $AURFC_TEST_PATH/aurfc_u/receiver_u/data_from_fifo_dv
+    add wave -label fifo_rd $AURFC_TEST_PATH/aurfc_u/receiver_u/fifo_rd
+    add wave -label fifo_wr $AURFC_TEST_PATH/aurfc_u/receiver_u/fifo_wr
+    add wave -label status_i    $AURFC_TEST_PATH/aurfc_u/receiver_u/status_i
+    add wave -label NFC_REQ_N   $AURFC_TEST_PATH/aurfc_u/receiver_u/NFC_REQ_N
+    add wave -label NFC_NB   $AURFC_TEST_PATH/aurfc_u/receiver_u/NFC_NB
+    add wave -label NFC_ACK_N   $AURFC_TEST_PATH/aurfc_u/receiver_u/NFC_ACK_N
+
+}
+
+proc aurfctest_aurora {  } {
+    global AURFC_TEST_PATH
+    add wave -divider "AURORA"
+    radix -hex
+
+    add wave -label TX_D    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/TX_D
+    add wave -label TX_REM  $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/TX_REM
+    add wave -label TX_SRC_RDY_N    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/TX_SRC_RDY_N
+    add wave -label TX_SOF_N    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/TX_SOF_N
+    add wave -label TX_EOF_N    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/TX_EOF_N
+    add wave -label TX_DST_RDY_N    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/TX_DST_RDY_N
+    add wave -label RX_D    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/RX_D
+    add wave -label RX_REM  $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/RX_REM
+    add wave -label RX_SRC_RDY_N    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/RX_SRC_RDY_N
+    add wave -label RX_SOF_N    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/RX_SOF_N
+    add wave -label RX_EOF_N    $AURFC_TEST_PATH/aurfc_u/rio_aurora_module_u/RX_EOF_N
+}
+
+# Set basic paths
+set TOPLEVEL_PATH "sim:/testbench/uut"
+#set AURFC_TEST_PATH "sim:/testbench/uut/lanes1_gen/aurfc_test_u"
+set AURFC_TEST_PATH "sim:/testbench/uut/lanes2_gen/aurfc_test_u"
+
+exec make
+view wave
+delete wave *
+
+# ------------- Calling procedures ------------------------------
+aurfctest_lb
+aurfctest_common
+aurfctest_data_mux
+aurfctest_adc
+aurfctest_aurfc
+aurfctest_aurora
+aurfctest_aurfc_receiver
+aurfctest_common
+aurfctest_tx_bram
+aurfctest_ctrl_bram
+aurfctest_common
+aurfctest_recv_bram
+aurfctest_corr_bram
+aurfctest_ctrl
+
+# ------------- Run ---------------------------------------------
+restart -f
+run 140 us
+
+

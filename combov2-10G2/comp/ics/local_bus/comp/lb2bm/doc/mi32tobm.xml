@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<source>
+   <component>MI32 to Busmaster</component>
+
+   <authors>
+      <author login="xkobie00">Petr Kobiersky</author>
+   </authors>
+
+   <features>
+      <item>Connect busmaster ib_endpoint to MI32 interface</item>
+      <item>Easy generation of busmaster transactions</item> 
+      <item>Busmaster debuging purpouses</item>
+   </features>
+   
+   <description>
+      Component is connected to ib_endpoint busmaster interface. Using
+      local bus, you can easily store busmaster transaction parameters into
+      component registers. After that you can start busmaster transaction.
+      Busmaster operation status can be observed by reading status register.
+   </description>
+   
+   <interface>
+      
+      <port_map>
+         <divider>Common Interface</divider>
+         
+         <port name="CLK" dir="in" width="1">
+           Clock.
+         </port>
+           
+         <port name="RESET" dir="in" width="1">
+           Reset.
+         </port>
+         
+         <divider>MI32 interface</divider>
+         
+         <port name="MI32" dir="inout" width="t_mi32">
+            MI32 interface
+         </port> 
+
+         <divider>Endpoint Busmaster interface</divider>
+
+         <port name="BM" dir="inout" width="t_ibbm_64">
+            Endpoint Busmater interface
+         </port>
+ 
+      </port_map>
+   </interface>
+
+
+
+<operations>
+    <op name="Set busmaster transaction parameters" id="SET_BM_PARAM">
+       initialize following registers by correct busmaster transaction
+       parameters: GLOBAL_ADDR_REG, LOCAL_ADDR_REG, LENGTH_REG, TAG_REG,
+       CONTROL_REG
+    </op>
+
+    <op name="Start busmaster operation" id="START_BM_OPER">
+       Set LSB bit in CONTROL_REG
+    </op>
+
+    <op name="Read busmaster operation status" id="BM_STATUS">
+       After starting BM operation read LSB bit in CONTROL_REG. If transaction
+       was succesfull bit is set to zero
+    </op>
+</operations>
+
+
+<!-- ************************* Address space *********************** -->
+<addr_space id ="MI32TOBM"  name="MI32 to Busmaster Address Space" main="yes">
+
+   <reg id="GLOBAL_ADDR_REG" name="GLOBAL_ADDR_REG" offset="0x0000" access="RW" words="8">
+      <bit_vect bits="64">
+        <description_above>
+           Global address for busmaster transaction. For local busmaster transaction (component communication)
+           is only low 32 bits of address used.
+      </description_above>
+      </bit_vect>
+    </reg>
+ 
+    <reg id="LOCAL_ADDR_REG" name="LOCAL_ADDR_REG" offset="0x0008" access="RW" words="4">
+       <bit_vect bits="32">
+       <description_above>
+          Local address for busmaster transaction.
+       </description_above>
+       </bit_vect>
+     </reg>
+
+     <reg id="LENGTH_REG" name="LENGTH_REG" offset="0x000C" access="RW" words="4">
+       <bit_vect bits="32">
+       <description_above>
+          Length parameter for busmaster transaction.
+       </description_above>
+        <format>
+            <bit from="11" to="0" name="LENGTH">
+               Length
+            </bit>
+            <bit from="31" to="12" name="RESERVED">
+               Reserved
+            </bit>
+        </format>
+       </bit_vect>
+    </reg>
+
+     <reg id="TAG_REG" name="TAG_REG" offset="0x0010" access="RW" words="4">
+       <bit_vect bits="32">
+       <description_above>
+          Transaction Tag.
+       </description_above>
+        <format>
+            <bit from="15" to="0" name="TAG">
+               Tag
+            </bit>
+            <bit from="31" to="16" name="RESERVED">
+               Reserved
+            </bit>
+        </format>
+       </bit_vect>
+     </reg>
+    
+    <reg id="CONTROL_REG"  name="CONTROL_REG" offset="0x0014" access="RW" words="4">
+      <bit_vect bits="32">
+      <description_above>
+        Control register for setting and starting busmaster transaction.
+      </description_above>
+        <format>
+            <bit from="0" to="0" name="START">
+               Start busmaster transaction by writing logical 1. After successfull completition this bit
+               is changed to zero.
+            </bit>
+            <bit from="1" to="2" name="TRANS_TYPE">
+               Direction of busmaster transaction: <br/>
+               00 - Global 2 Local Read  
+               01 - Local 2 Global Write
+               10 - Local 2 Local Read
+               11 - Local 2 Local Write           
+            </bit>
+            <bit from="31" to="3" name="RESERVED">
+               Reserved
+            </bit>
+        </format>
+     </bit_vect>
+    </reg>
+</addr_space>
+
+
+
+<!-- Here is description in standard Satrapa format-->
+<body>
+
+   <h2>Frequency and Resources</h2>
+      <p>
+         <tab sloupce="cccc">
+            <tr>
+            <th>LUTs (% of C6X LUTs)</th>
+      	   <th>Slices (% of C6X Slices)</th>
+            <th>BlockRAMs (% of C6X BRAMs)</th>
+            <th>Max. HW frequency</th>
+         </tr>
+         <tr>
+            <th>159 (0.3%)</th>
+            <th>176 (0.8%)</th>
+            <th>0 (0%)</th>
+            <th>318 Mhz</th>
+         </tr>
+         <nazev>Chip utilization</nazev>
+         </tab>
+      </p>
+   </body>  
+</source>

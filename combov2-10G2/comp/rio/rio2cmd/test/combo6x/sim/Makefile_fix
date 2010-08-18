@@ -1,0 +1,6 @@
+#! /bin/bash
+
+sed 's/program files/program\\ files/g' Makefile >> Makefile.tmp
+
+mv Makefile.tmp Makefile
+

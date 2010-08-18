@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<source>
+   <component>FrameLink Cutter</component>
+
+   <authors>
+      <author login="xpriby12">Bronislav Pribyl</author>
+   </authors>
+
+   <features>
+      <item>Arbitrary number of frame parts accepted.</item>
+      <item>Generic FrameLink width (up to 128 bits).</item>
+      <item>Generic width of extracted data.</item>
+      <item>Extracted data can be optionally removed from the frame.</item>
+   </features>
+   
+   <!-- Bugs -->
+   <bugs>
+      <item>All TX signals except TX_DATA are buggy.</item>
+   </bugs>
+   
+   <!-- What have to be done -->
+   <todo>
+   		<item>Solve TX signals generation problem.</item>
+      <item>Test cutter in HW.</item>
+   </todo>
+
+
+   <description>
+			FrameLink Cutter is able to extract (optionally remove) data from FrameLink frames.
+			It receives frames on RX port, extracts data from chosen position and transmits frames on TX port.
+			Data which has been extracted are sent to special port. Such data can be optionally
+			removed from the output frame.
+   </description>
+   
+   <interface>
+      <generic_map>
+         <generic name="DATA_WIDTH" type="integer" default="32">
+		        Data width of FrameLink frames.
+         </generic>
+         
+		     <generic name="PART" type="integer" default="0">
+			      Number of frame part processed to extraction (0 = first frame part).
+         </generic>
+         
+		     <generic name="OFFSET" type="integer" default="0">
+			      Position of first extracted byte from SOP (0 = first byte).
+         </generic>
+         
+         <generic name="SIZE" type="integer" default="1">
+		        Size of block of extracted data in bytes. Must be greater than 0.
+         </generic>
+         
+         <generic name="MODIFY" type="boolean" default="true">
+            Remove extracted data from TX frame?
+         </generic>
+
+      </generic_map>
+      
+      <port_map>
+                
+         <port name="CLK" dir="in" width="1">
+            Clock.
+         </port>
+         
+         <port name="RESET" dir="in" width="1">
+            Reset.
+         </port>
+         
+         
+         <port name="CUT_DATA" dir="out" width="8 * SIZE">
+            Extracted data.
+         </port>
+           
+         <port name="CUT_VLD" dir="out" width="1">
+            Extracted data valid (one cycle).
+         </port>
+         
+         
+         <port name="RX_DATA" dir="in" width="DATA_WIDTH">
+            Received data.
+         </port>
+         
+         <port name="RX_REM" dir="in" width="log2(DATA_WIDTH / 8)">
+            Remainder for received data.
+         </port>
+         
+         <port name="RX_SRC_RDY_N" dir="in" width="1">
+            Source component of received data is ready to transmit.
+         </port>
+         
+         <port name="RX_DST_RDY_N" dir="out" width="1">
+            Cutter is ready to receive data.
+         </port>
+         
+         <port name="RX_SOP_N" dir="in" width="1">
+            Start of received framepart.
+         </port>
+         
+         <port name="RX_EOP_N" dir="in" width="1">
+            End of received framepart.
+         </port>
+         
+         <port name="RX_SOF_N" dir="in" width="1">
+            Start of received frame.
+         </port>
+         
+         <port name="RX_EOF_N" dir="in" width="1">
+            End of received frame.
+         </port>
+         
+         
+         <port name="TX_DATA" dir="out" width="DATA_WIDTH">
+            Transmitted data.
+         </port>
+         
+         <port name="TX_REM" dir="out" width="log2(DATA_WIDTH / 8)">
+            Remainder for transmitted data.
+         </port>
+         
+         <port name="TX_SRC_RDY_N" dir="out" width="1">
+            Cutter is ready to transmit data.
+         </port>
+         
+         <port name="TX_DST_RDY_N" dir="in" width="1">
+            Target component of transmitted data is ready to receive.
+         </port>
+         
+         <port name="TX_SOP_N" dir="out" width="1">
+            Start of transmitted framepart.
+         </port>
+         
+         <port name="TX_EOP_N" dir="out" width="1">
+            End of transmitted framepart.
+         </port>
+         
+         <port name="TX_SOF_N" dir="out" width="1">
+            Start of transmitted frame.
+         </port>
+         
+         <port name="TX_EOF_N" dir="out" width="1">
+            End of transmitted frame.
+         </port>
+          
+       </port_map>
+       </interface>
+
+       <constant>
+          <const name="Maximum frameparts" id="MAX_PARTS" value="4">
+             Maximal number of frameparts. Determines data width of framepart counters.
+					</const>
+					
+					<const name="Maximum size of framepart" id="MAX_PART_SIZE" value="128 * (DATA_WIDTH / 8)">
+             Maximal size of framepart in bytes. Determines data width of byte counters.
+					</const>
+					
+					<const name="Data width in bytes" id="DATA_BYTES" value="DATA_WIDTH / 8">
+             Width of data bus in bytes.
+					</const>
+					
+					<const name="First word to extracet from" id="START_WORD" value="OFFSET / DATA_BYTES">
+             Serial number of word containing first byte of data to extract.
+					</const>
+					
+					<const name="Last word to extracet from" id="END_WORD" value="(OFFSET + SIZE - 1) / DATA_BYTES">
+             Serial number of word containing last byte of data to extract.
+					</const>
+					
+					<const name="First byte to be extracted" id="START_BYTE" value="OFFSET mod DATA_BYTES">
+             Serial number of first byte in word nr. START_WORD which has to be extracted.
+					</const>
+					
+					<const name="Last byte to be extracted" id="END_BYTE" value="(OFFSET + SIZE - 1) mod DATA_BYTES">
+             Serial number of last byte in word nr. END_WORD which has to be extracted.
+					</const>
+					
+					<const name="RX port wait flag" id="RX_WAIT_NEED" value="((START_BYTE - END_BYTE + DATA_BYTES) mod DATA_BYTES) /= 1 and MODIFY">
+					   Flag telling that 1 dummy clock cycle is needed on RX port to transmit all data through TX port correctly. 
+					</const>
+       </constant>
+       
+<body>
+	 <h1>Used components</h1>
+	 <p>
+	 <ul>
+	    <li><ref_comp ref="cut_data">Cut data</ref_comp></li>
+	    <li><ref_comp ref="fsm_valid">FSM valid</ref_comp></li>
+	    <li><ref_comp ref="fsm_main">FSM main</ref_comp></li>
+	    <li><ref_comp ref="fsm_transmit">FSM transmit</ref_comp></li>
+	    <li><ref_comp ref="reorder">Reorder</ref_comp></li>
+	 </ul>
+	 </p>
+
+	 <h1>Schemes</h1>
+   <p>
+      <obr src="./fig/cutter.fig" mag="1.0">FrameLink cutter architecture</obr>
+   </p>
+</body>
+
+</source>

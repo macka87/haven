@@ -1,0 +1,125 @@
+<source>
+
+<component>AD2SD component</component>
+
+<authors>
+   <author login="pazdera">Jan Pazdera</author>
+</authors>
+
+<features>
+	<item> Resamples incoming async data stream to data stream synchronized by demanded clock. </item>
+</features>
+
+<bugs>
+</bugs>
+
+<todo>
+</todo>
+
+<description>
+
+    This component converts incoming async data stream to another one
+    synchronized by demanded clock. Input async data MUST be driven by
+    SLOWER clock than the demanded sync output data stream! (ASYNC_CLK &lt;
+    SYNC_CLK).
+
+</description>
+
+<interface>
+	<!-- doplnit dividery -->
+	<generic_map>
+        <generic name="DATA_WIDTH" type="integer" default="-">
+            Data width
+        </generic>
+    </generic_map>
+
+<port_map>
+     <port name="RESET" dir="in" width="1">
+         Reset signal
+     </port>
+     <port name="ASYNC_CLK" dir="in" width="1">
+         Async clock signal incoming data are synchronized by.
+     </port>
+     <port name="SYNC_CLK" dir="in" width="1">
+         Sync clock signal outcoming data are synchronized by.
+     </port>
+     <port name="ASYNC_DATA" dir="in" width="DATA_WIDTH">
+          Data synchronized by ASYNC_CLK
+     </port>
+     <port name="SYNC_DATA" dir="out" width="DATA_WIDTH">
+          Outcoming data synchronized by SYNC_CLK
+     </port>
+ </port_map>
+
+</interface>
+
+
+<body>
+<p>
+    This component converts incoming async data stream to another one
+    synchronized by demanded clock. Input async data MUST be driven by
+    SLOWER clock than the demanded sync output data stream! (ASYNC_CLK &lt;
+    SYNC_CLK).
+</p>
+
+<p>
+    <obr src="./fig/ad2sd.fig" mag="0.5">AD2SD component scheme</obr>
+</p>
+
+<h1>Frequency and Resources usage (XST)</h1>
+
+	<p>
+
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+				<th>DATA_WIDTH = 8</th> 
+				<td>10(0%)</td>
+				<td>0(0%)</td>
+			</tr>
+			<tr>
+				<th>DATA_WIDTH = 16</th> 
+				<td>20(0%)</td>
+				<td>0(0%)</td>
+			</tr>
+			<tr>
+				<th>DATA_WIDTH = 32</th> 
+				<td>38(0%)</td>
+				<td>0(0%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by Precision</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<th>DATA_WIDTH = 8</th> 
+				<td>413 MHz</td>
+				<td>50 MHz, 100 MHz</td>
+			</tr>
+			<tr>
+				<th>DATA_WIDTH = 16</th> 
+				<td>394 MHz</td>
+				<td>50 MHz, 100 MHz</td>
+			</tr>
+			<tr>
+				<th>DATA_WIDTH = 32</th> 
+				<td>373 MHz</td>
+				<td>50 MHz, 100 MHz</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+	
+  </p> 
+
+</body>
+
+</source>

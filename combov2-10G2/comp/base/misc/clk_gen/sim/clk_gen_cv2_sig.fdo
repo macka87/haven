@@ -1,0 +1,67 @@
+# agregator_sig.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author: Jan Koritak <jenda@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: clk_gen_cv2_sig.fdo 11154 2009-09-14 12:09:38Z pus $
+#
+
+# Paths
+set TB_PATH "/testbench"
+
+exec make
+view wave
+delete wave *
+
+add wave -divider "Module ports"
+add wave -hex -label "CLK_IN"    /testbench/uut/clk_in
+add wave -hex -label "RESET"     /testbench/uut/reset
+
+add wave -hex -label "CLK62_5_OUT"    /testbench/uut/clk62_5_out
+add wave -hex -label "CLK100_OUT"     /testbench/uut/clk100_out
+add wave -hex -label "CLK125_OUT"     /testbench/uut/clk125_out
+add wave -hex -label "CLK250_OUT"     /testbench/uut/clk250_out
+add wave -hex -label "CLK166_OUT"     /testbench/uut/clk166_out
+add wave -hex -label "CLK200_OUT"     /testbench/uut/clk200_out
+add wave -hex -label "CLK_ICS_OUT"    /testbench/uut/clk_ics_out
+add wave -hex -label "CLK_USER0_OUT"  /testbench/uut/clk_user0_out
+add wave -hex -label "CLK_USER1_OUT"  /testbench/uut/clk_user1_out
+add wave -hex -label "CLK_USER2_OUT"  /testbench/uut/clk_user2_out
+add wave -hex -label "CLK_USER3_OUT"  /testbench/uut/clk_user3_out
+add wave -hex -label "CLK_USER4_OUT"  /testbench/uut/clk_user4_out
+
+add wave -hex -label "LOCK"     /testbench/uut/lock
+
+add wave -divider "Module internals"
+add wave -hex -label "pll0_locked"     /testbench/uut/pll0_locked
+add wave -hex -label "pll1_locked"     /testbench/uut/pll1_locked
+add wave -hex -label "pll1_reset"     /testbench/uut/pll1_reset
+
+restart -f
+run 30 us
+
+wave zoomrange 0ns 400ns

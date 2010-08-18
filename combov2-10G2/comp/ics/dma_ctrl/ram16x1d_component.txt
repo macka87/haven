@@ -1,0 +1,66 @@
+component RAM16X1D
+        generic (
+           INIT : bit_vector := X"0000"
+        );
+        port (
+           D     : in std_logic;
+           WE    : in std_logic;
+           WCLK  : in std_logic;
+           A0    : in std_logic;
+           A1    : in std_logic;
+           A2    : in std_logic;
+           A3    : in std_logic;
+           DPRA0 : in std_logic;
+           DPRA1 : in std_logic;
+           DPRA2 : in std_logic;
+           DPRA3 : in std_logic;
+           SPO   : out std_logic;
+           DPO   : out std_logic
+        );
+end component;
+component RAM32X1D
+        generic (
+           INIT : bit_vector := X"00000000"
+        );
+        port (
+           D     : in std_logic;
+           WE    : in std_logic;
+           WCLK  : in std_logic;
+           A0    : in std_logic;
+           A1    : in std_logic;
+           A2    : in std_logic;
+           A3    : in std_logic;
+           A4    : in std_logic;
+           DPRA0 : in std_logic;
+           DPRA1 : in std_logic;
+           DPRA2 : in std_logic;
+           DPRA3 : in std_logic;
+           DPRA4 : in std_logic;
+           SPO   : out std_logic;
+           DPO   : out std_logic
+        );
+end component;
+component RAM64X1D
+        generic (
+           INIT : bit_vector := X"0000000000000000"
+        );
+        port (
+           D     : in std_logic;
+           WE    : in std_logic;
+           WCLK  : in std_logic;
+           A0    : in std_logic;
+           A1    : in std_logic;
+           A2    : in std_logic;
+           A3    : in std_logic;
+           A4    : in std_logic;
+           A5    : in std_logic;
+           DPRA0 : in std_logic;
+           DPRA1 : in std_logic;
+           DPRA2 : in std_logic;
+           DPRA3 : in std_logic;
+           DPRA4 : in std_logic;
+           DPRA5 : in std_logic;
+           SPO   : out std_logic;
+           DPO   : out std_logic
+        );
+end component;

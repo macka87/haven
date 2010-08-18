@@ -1,0 +1,5 @@
+    <versions>
+        <version id="HEAD" name="ACTUAL_VERSION">
+            <item>Works in hw.</item>
+        </version>
+    </versions>

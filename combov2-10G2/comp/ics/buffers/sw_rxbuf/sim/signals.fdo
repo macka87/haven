@@ -1,0 +1,294 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Martin Kosek <kosek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 4968 2008-08-18 10:09:09Z xlenga00 $
+
+   view wave
+   delete wave *
+
+proc blk_RXBUF { BASE DESC } {
+
+  add wave -divider "SW RX Buffer - $DESC"
+
+   add wave -divider "SW RX Buffer - IFC"
+   add_wave "-noupdate -hex -label clk               " $BASE/clk 
+   add_wave "-noupdate -hex -label reset             " $BASE/reset 
+
+   add wave -divider "SW RX Buffer - RX FrameLink"
+   add_wave "-noupdate -hex -label rx_data           " $BASE/rx_data 
+   add_wave "-noupdate -hex -label rx_sop_n          " $BASE/rx_sop_n 
+   add_wave "-noupdate -hex -label rx_eop_n          " $BASE/rx_eop_n 
+   add_wave "-noupdate -hex -label rx_sof_n          " $BASE/rx_sof_n 
+   add_wave "-noupdate -hex -label rx_eof_n          " $BASE/rx_eof_n 
+   add_wave "-noupdate -hex -label rx_rem            " $BASE/rx_rem 
+   add_wave "-noupdate -hex -label rx_src_rdy_n      " $BASE/rx_src_rdy_n 
+   add_wave "-noupdate -hex -label rx_dst_rdy_n      " $BASE/rx_dst_rdy_n 
+
+   add wave -divider "SW RX Buffer - DMA IFC"
+   add_wave "-noupdate -hex -label rx_newlen         " $BASE/rx_newlen 
+   add_wave "-noupdate -hex -label rx_newlen_dv      " $BASE/rx_newlen_dv 
+   add_wave "-noupdate -hex -label rx_newlen_rdy     " $BASE/rx_newlen_rdy 
+   add_wave "-noupdate -hex -label rx_rellen         " $BASE/rx_rellen 
+   add_wave "-noupdate -hex -label rx_rellen_dv      " $BASE/rx_rellen_dv 
+
+   add wave -divider "SW RX Buffer - IB"
+   add_wave "-noupdate -hex -label rd_addr           " $BASE/rd_addr 
+   add_wave "-noupdate -hex -label rd_be             " $BASE/rd_be 
+   add_wave "-noupdate -hex -label rd_req            " $BASE/rd_req 
+   add_wave "-noupdate -hex -label rd_ardy           " $BASE/rd_ardy 
+   add_wave "-noupdate -hex -label rd_data           " $BASE/rd_data 
+   add_wave "-noupdate -hex -label rd_src_rdy        " $BASE/rd_src_rdy 
+   add_wave "-noupdate -hex -label rd_dst_rdy        " $BASE/rd_dst_rdy 
+}
+
+
+
+proc blk_SW_RXBUF { PARAM } {
+   global SW_RXBUF_PATH
+
+   # auxiliary variable
+   set SWR_BASE $SW_RXBUF_PATH
+   
+   # SW_RXBUF interface
+   if { $PARAM == "IFC" } {
+      add wave -divider "SW_RXBUF"
+      add_wave "-label clk" $SWR_BASE/clk
+      add_wave "-label reset" $SWR_BASE/reset
+   
+      add wave -divider "Internal Bus - RD"
+      add_wave "-label rd_addr -hex" $SWR_BASE/rd_addr
+      add_wave "-label rd_be" $SWR_BASE/rd_be
+      add_wave "-label rd_req" $SWR_BASE/rd_req
+      add_wave "-label rd_ardy" $SWR_BASE/rd_ardy
+      add_wave "-label rd_sof_in" $SWR_BASE/rd_sof_in
+      add_wave "-label rd_eof_in" $SWR_BASE/rd_eof_in
+      add_wave "-label rd_data -hex" $SWR_BASE/rd_data
+      add_wave "-label rd_src_rdy" $SWR_BASE/rd_src_rdy
+      add_wave "-label rd_dst_rdy" $SWR_BASE/rd_dst_rdy
+   
+      add wave -divider "Data Input"
+      add_wave "-label rx_sof_n" $SWR_BASE/rx_sof_n
+      add_wave "-label rx_sop_n" $SWR_BASE/rx_sop_n
+      add_wave "-label rx_eop_n" $SWR_BASE/rx_eop_n
+      add_wave "-label rx_eof_n" $SWR_BASE/rx_eof_n
+      add_wave "-label rx_src_rdy_n" $SWR_BASE/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $SWR_BASE/rx_dst_rdy_n
+      add_wave "-label rx_data -hex" $SWR_BASE/rx_data
+      add_wave "-label rx_rem -hex" $SWR_BASE/rx_rem
+      add_wave "-label rx_skip_header" $SWR_BASE/rx_skip_header
+   
+      add wave -divider "Control Bus"
+      add_wave "-label ctrl_offset -hex" $SWR_BASE/ctrl_offset
+      add_wave "-label ctrl_length -hex" $SWR_BASE/ctrl_length
+      add_wave "-label ctrl_ifc -hex" $SWR_BASE/ctrl_ifc
+      add_wave "-label info_ready" $SWR_BASE/info_ready
+      add_wave "-label ack" $SWR_BASE/ack
+      add_wave "-label free_packet" $SWR_BASE/free_packet
+   }
+
+   # SWR Miscelaneous signals
+   if { $PARAM == "MISC" } {
+      add wave -divider "SWR - Misc"
+      add_wave "-label reg_cb_ctrl_ready" $SWR_BASE/reg_cb_ctrl_ready
+      add_wave "-label reg_cb_ctrl_ready_we" $SWR_BASE/reg_cb_ctrl_ready_we
+      add_wave "-label reg_ctrl_mem -hex" $SWR_BASE/reg_ctrl_mem
+      add_wave "-label reg_ctrl_mem_we" $SWR_BASE/reg_ctrl_mem_we
+      add_wave "-label reg_status" $SWR_BASE/reg_status
+      add_wave "-label reg_ctrl_mem_do -hex" $SWR_BASE/reg_ctrl_mem_do
+      add_wave "-label reg_ctrl_mem_pipe_en" $SWR_BASE/reg_ctrl_mem_pipe_en
+      add_wave "-label reg_ctrl_mem_rd" $SWR_BASE/reg_ctrl_mem_rd
+      add_wave "-label reg_ctrl_mem_dv" $SWR_BASE/reg_ctrl_mem_dv
+      add_wave "-label cb_read_ctrl" $SWR_BASE/cb_read_ctrl
+   }
+
+   # Control Unit
+   if { $PARAM == "CU" } {
+      add wave -divider "SWR - Control Unit"
+      add_wave "-label clk" $SWR_BASE/swr_cu_i/clk
+      add_wave "-label reset" $SWR_BASE/swr_cu_i/reset
+      add_wave "-label rx_sof_n" $SWR_BASE/swr_cu_i/rx_sof_n
+      add_wave "-label rx_sop_n" $SWR_BASE/swr_cu_i/rx_sop_n
+      add_wave "-label rx_eop_n" $SWR_BASE/swr_cu_i/rx_eop_n
+      add_wave "-label rx_eof_n" $SWR_BASE/swr_cu_i/rx_eof_n
+      add_wave "-label rx_src_rdy_n" $SWR_BASE/swr_cu_i/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $SWR_BASE/swr_cu_i/rx_dst_rdy_n
+      add_wave "-label rx_data -hex" $SWR_BASE/swr_cu_i/rx_data
+      add_wave "-label rx_rem -hex" $SWR_BASE/swr_cu_i/rx_rem
+      add_wave "-label rx_skip_header" $SWR_BASE/swr_cu_i/rx_skip_header
+      add_wave "-label bmem_data -hex" $SWR_BASE/swr_cu_i/bmem_data
+      add_wave "-label bmem_addr -hex" $SWR_BASE/swr_cu_i/bmem_addr
+      add_wave "-label bmem_we" $SWR_BASE/swr_cu_i/bmem_we
+      add_wave "-label ctrl_offset -hex" $SWR_BASE/swr_cu_i/ctrl_offset
+      add_wave "-label ctrl_length -hex" $SWR_BASE/swr_cu_i/ctrl_length
+      add_wave "-label ctrl_ifc -hex" $SWR_BASE/swr_cu_i/ctrl_ifc
+      add_wave "-label ctrl_we" $SWR_BASE/swr_cu_i/ctrl_we
+      add_wave "-label ctrl_full" $SWR_BASE/swr_cu_i/ctrl_full
+      add_wave "-label free_packet" $SWR_BASE/swr_cu_i/free_packet
+      add_wave "-label debug_info" $SWR_BASE/swr_cu_i/debug_info
+      
+      add wave -divider "SWR - Control Unit MISC"
+      add_wave "-label cnt_length -hex" $SWR_BASE/swr_cu_i/cnt_length
+      add_wave "-label cnt_length_ce" $SWR_BASE/swr_cu_i/cnt_length_ce
+      add_wave "-label cnt_length_rst" $SWR_BASE/swr_cu_i/cnt_length_rst
+      add_wave "-label reg_drem -hex" $SWR_BASE/swr_cu_i/reg_drem
+      add_wave "-label reg_drem_we" $SWR_BASE/swr_cu_i/reg_drem_we
+      add_wave "-label reg_offset -hex" $SWR_BASE/swr_cu_i/reg_offset
+      add_wave "-label reg_offset_we" $SWR_BASE/swr_cu_i/reg_offset_we
+      add_wave "-label reg_ifc -hex" $SWR_BASE/swr_cu_i/reg_ifc
+      add_wave "-label reg_ifc_we" $SWR_BASE/swr_cu_i/reg_ifc_we
+      add_wave "-label input_eof -color magenta" $SWR_BASE/swr_cu_i/input_eof
+      add_wave "-label dec_payload" $SWR_BASE/swr_cu_i/dec_payload
+      add_wave "-label dec_eopld" $SWR_BASE/swr_cu_i/dec_eopld
+      add_wave "-label trimmer_tx_sof_n" $SWR_BASE/swr_cu_i/trimmer_tx_sof_n
+      add_wave "-label trimmer_tx_sop_n" $SWR_BASE/swr_cu_i/trimmer_tx_sop_n
+      add_wave "-label trimmer_tx_eop_n" $SWR_BASE/swr_cu_i/trimmer_tx_eop_n
+      add_wave "-label trimmer_tx_eof_n" $SWR_BASE/swr_cu_i/trimmer_tx_eof_n
+      add_wave "-label trimmer_tx_src_rdy_n" $SWR_BASE/swr_cu_i/trimmer_tx_src_rdy_n
+      add_wave "-label trimmer_tx_dst_rdy_n" $SWR_BASE/swr_cu_i/trimmer_tx_dst_rdy_n
+      add_wave "-label trimmer_tx_data -hex" $SWR_BASE/swr_cu_i/trimmer_tx_data
+      add_wave "-label trimmer_tx_rem -hex" $SWR_BASE/swr_cu_i/trimmer_tx_rem
+   }
+
+   # BMEM Controller
+   if { $PARAM == "BMEM_CTRL" } {
+      add wave -divider "SWR - BMEM Controller"
+      add_wave "-label clk" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/clk
+      add_wave "-label reset" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/reset
+      add_wave "-label data_in -hex" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/data_in
+      add_wave "-label we" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/we
+      add_wave "-label is_data" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/is_data
+      add_wave "-label eof" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/eof
+      add_wave "-label free_block" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/free_block
+      add_wave "-label full" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/full
+      add_wave "-label ready" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/ready
+      add_wave "-label offset -hex" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/offset
+      add_wave "-label bmem_data -hex" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/bmem_data
+      add_wave "-label bmem_addr -hex" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/bmem_addr
+      add_wave "-label bmem_we" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/bmem_we
+      
+      add wave -divider "SWR - BMEM Controller MISC"
+      add_wave "-label reg_border -hex" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/reg_border
+      add_wave "-label reg_border_we" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/reg_border_we
+      add_wave "-label reg_block_freed" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/reg_block_freed
+      add_wave "-label reg_full" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/reg_full
+      add_wave "-label full_int" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/full_int
+      
+      add wave -divider "SWR - BMEM Controller BFIFO"
+      add_wave "-label data_in -hex" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/blocks_fifo/data_in
+      add_wave "-label write_req" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/blocks_fifo/write_req
+      add_wave "-label full" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/blocks_fifo/full
+      add_wave "-label data_out -hex" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/blocks_fifo/data_out
+      add_wave "-label read_req" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/blocks_fifo/read_req
+      add_wave "-label empty" $SWR_BASE/swr_cu_i/swr_bmem_ctrl_i/blocks_fifo/empty
+   }
+
+   # Main packet memory
+   if { $PARAM == "BMEM" } {
+      add wave -divider "SWR - BMEM"
+      add_wave "-label clk" $SWR_BASE/dp_bmem_i/clka
+      add_wave "-label reset" $SWR_BASE/dp_bmem_i/reset
+      add_wave "-label pipe_ena" $SWR_BASE/dp_bmem_i/pipe_ena
+      add_wave "-label rea" $SWR_BASE/dp_bmem_i/rea
+      add_wave "-label wea" $SWR_BASE/dp_bmem_i/wea
+      add_wave "-label addra -hex" $SWR_BASE/dp_bmem_i/addra
+      add_wave "-label dia -hex" $SWR_BASE/dp_bmem_i/dia
+      add_wave "-label doa_dv" $SWR_BASE/dp_bmem_i/doa_dv
+      add_wave "-label doa -hex" $SWR_BASE/dp_bmem_i/doa
+      add_wave "-label pipe_enb" $SWR_BASE/dp_bmem_i/pipe_enb
+      add_wave "-label reb" $SWR_BASE/dp_bmem_i/reb
+      add_wave "-label web" $SWR_BASE/dp_bmem_i/web
+      add_wave "-label addrb -hex" $SWR_BASE/dp_bmem_i/addrb
+      add_wave "-label dib -hex" $SWR_BASE/dp_bmem_i/dib
+      add_wave "-label dob_dv" $SWR_BASE/dp_bmem_i/dob_dv
+      add_wave "-label dob -hex" $SWR_BASE/dp_bmem_i/dob
+   }
+
+   # Control memory
+   if { $PARAM == "CTRL_MEM" } {
+      add wave -divider "SWR - Control memory"
+      add_wave "-label wclk" $SWR_BASE/dp_distmem_i/wclk
+      add_wave "-label reset" $SWR_BASE/dp_distmem_i/reset
+      add_wave "-label di" $SWR_BASE/dp_distmem_i/di
+      add_wave "-label we" $SWR_BASE/dp_distmem_i/we
+      add_wave "-label addra" $SWR_BASE/dp_distmem_i/addra
+      add_wave "-label doa" $SWR_BASE/dp_distmem_i/doa
+      add_wave "-label addrb" $SWR_BASE/dp_distmem_i/addrb
+      add_wave "-label dob" $SWR_BASE/dp_distmem_i/dob
+      
+      add wave -divider "SWR - Control memory FIFO logic"
+      add_wave "-label waddr" $SWR_BASE/swt_fifo_ctrl_i/waddr
+      add_wave "-label write_req" $SWR_BASE/swt_fifo_ctrl_i/write_req
+      add_wave "-label full" $SWR_BASE/swt_fifo_ctrl_i/full
+      add_wave "-label status" $SWR_BASE/swt_fifo_ctrl_i/status
+      add_wave "-label raddr" $SWR_BASE/swt_fifo_ctrl_i/raddr
+      add_wave "-label read_req" $SWR_BASE/swt_fifo_ctrl_i/read_req
+      add_wave "-label empty" $SWR_BASE/swt_fifo_ctrl_i/empty
+   }
+
+}
+
+proc blk_SWR_CB_MGMT { PARAM } {
+   global SWR_CB_MGMT_PATH
+
+   set BASE "$SWR_CB_MGMT_PATH"
+   
+   if { $PARAM == "IFC" } {
+      add wave -divider "SWR - CB Management"
+      add_wave "-label clk" $BASE/clk
+      add_wave "-label reset" $BASE/reset
+      add_wave "-label ups_data" $BASE/ups_data
+      add_wave "-label ups_sop" $BASE/ups_sop
+      add_wave "-label ups_eop" $BASE/ups_eop
+      add_wave "-label ups_src_rdy" $BASE/ups_src_rdy
+      add_wave "-label ups_dst_rdy" $BASE/ups_dst_rdy
+      add_wave "-label dns_data" $BASE/dns_data
+      add_wave "-label dns_sop" $BASE/dns_sop
+      add_wave "-label dns_eop" $BASE/dns_eop
+      add_wave "-label dns_src_rdy" $BASE/dns_src_rdy
+      add_wave "-label dns_dst_rdy" $BASE/dns_dst_rdy
+      add_wave "-label ctrl_offset -hex" $BASE/ctrl_offset
+      add_wave "-label ctrl_length -hex" $BASE/ctrl_length
+      add_wave "-label info_ready" $BASE/info_ready
+      add_wave "-label ack" $BASE/ack
+      add_wave "-label free_packet" $BASE/free_packet
+   }
+
+   if { $PARAM == "MISC" } {
+      add wave -divider "SWR - CB Mgmt - MISC"
+      add_wave "-label cnt_device" $BASE/cnt_device
+      add_wave "-label cnt_msg" $BASE/cnt_msg
+      add_wave "-label cnt_msg_ce" $BASE/cnt_msg_ce
+      add_wave "-label cnt_msg_max" $BASE/cnt_msg_max
+      add_wave "-label free_packet_i" $BASE/free_packet_i
+      add_wave "-label fifo_full" $BASE/fifo_full
+      add_wave "-label fifo_empty" $BASE/fifo_empty
+      add_wave "-label fifo_rrq" $BASE/fifo_rrq
+      add_wave "-label fifo_wrq" $BASE/fifo_wrq
+   }
+}

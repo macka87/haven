@@ -1,0 +1,248 @@
+proc obuf_fl { i0 i1 i2 i3 } {
+    global OBUF0_PATH
+    global OBUF1_PATH
+    global OBUF2_PATH
+    global OBUF3_PATH
+    add wave -divider "OBUF<->FrameLink"
+    radix -hex
+
+   if { $i0 == "TRUE" } {
+        add wave -divider "OBUF0"
+        add wave -label WRCLK   $OBUF0_PATH/WRCLK
+        add wave -label DATA    $OBUF0_PATH/DATA
+        add wave -label DREM    $OBUF0_PATH/DREM
+        add wave -label SRC_RDY_N   $OBUF0_PATH/SRC_RDY_N
+        add wave -label SOF_N   $OBUF0_PATH/SOF_N
+        add wave -label SOP_N   $OBUF0_PATH/SOP_N
+        add wave -label EOF_N   $OBUF0_PATH/EOF_N
+        add wave -label EOP_N   $OBUF0_PATH/EOP_N
+        add wave -label DST_RDY_N   $OBUF0_PATH/DST_RDY_N
+   }
+   if { $i1 == "TRUE" } {
+        add wave -divider "OBUF1"
+        add wave -label WRCLK   $OBUF1_PATH/WRCLK
+        add wave -label DATA    $OBUF1_PATH/DATA
+        add wave -label DREM    $OBUF1_PATH/DREM
+        add wave -label SRC_RDY_N   $OBUF1_PATH/SRC_RDY_N
+        add wave -label SOF_N   $OBUF1_PATH/SOF_N
+        add wave -label SOP_N   $OBUF1_PATH/SOP_N
+        add wave -label EOF_N   $OBUF1_PATH/EOF_N
+        add wave -label EOP_N   $OBUF1_PATH/EOP_N
+        add wave -label DST_RDY_N   $OBUF1_PATH/DST_RDY_N
+   }
+   if { $i2 == "TRUE" } {
+        add wave -divider "OBUF2"
+        add wave -label WRCLK   $OBUF2_PATH/WRCLK
+        add wave -label DATA    $OBUF2_PATH/DATA
+        add wave -label DREM    $OBUF2_PATH/DREM
+        add wave -label SRC_RDY_N   $OBUF2_PATH/SRC_RDY_N
+        add wave -label SOF_N   $OBUF2_PATH/SOF_N
+        add wave -label SOP_N   $OBUF2_PATH/SOP_N
+        add wave -label EOF_N   $OBUF2_PATH/EOF_N
+        add wave -label EOP_N   $OBUF2_PATH/EOP_N
+        add wave -label DST_RDY_N   $OBUF2_PATH/DST_RDY_N
+   }
+   if { $i3 == "TRUE" } {
+        add wave -divider "OBUF3"
+        add wave -label WRCLK   $OBUF3_PATH/WRCLK
+        add wave -label DATA    $OBUF3_PATH/DATA
+        add wave -label DREM    $OBUF3_PATH/DREM
+        add wave -label SRC_RDY_N   $OBUF3_PATH/SRC_RDY_N
+        add wave -label SOF_N   $OBUF3_PATH/SOF_N
+        add wave -label SOP_N   $OBUF3_PATH/SOP_N
+        add wave -label EOF_N   $OBUF3_PATH/EOF_N
+        add wave -label EOP_N   $OBUF3_PATH/EOP_N
+        add wave -label DST_RDY_N   $OBUF3_PATH/DST_RDY_N
+   }
+}
+
+proc obuf_gmii { i0 i1 i2 i3 } {
+    global OBUF0_PATH
+    global OBUF1_PATH
+    global OBUF2_PATH
+    global OBUF3_PATH
+    add wave -divider "OBUF<->GMII"
+    radix -hex
+
+   if { $i0 == "TRUE" } {
+        add wave -divider "OBUF0"
+        add wave -label REFCLK      $OBUF0_PATH/REFCLK
+        add wave -label TXCLK       $OBUF0_PATH/TXCLK
+        add wave -label TXD     $OBUF0_PATH/TXD
+        add wave -label TXEN        $OBUF0_PATH/TXEN
+        add wave -label TXER        $OBUF0_PATH/TXER
+   }
+   if { $i1 == "TRUE" } {
+        add wave -divider "OBUF1"
+        add wave -label REFCLK      $OBUF1_PATH/REFCLK
+        add wave -label TXCLK       $OBUF1_PATH/TXCLK
+        add wave -label TXD     $OBUF1_PATH/TXD
+        add wave -label TXEN        $OBUF1_PATH/TXEN
+        add wave -label TXER        $OBUF1_PATH/TXER
+   }
+   if { $i2 == "TRUE" } {
+        add wave -divider "OBUF2"
+        add wave -label REFCLK      $OBUF2_PATH/REFCLK
+        add wave -label TXCLK       $OBUF2_PATH/TXCLK
+        add wave -label TXD     $OBUF2_PATH/TXD
+        add wave -label TXEN        $OBUF2_PATH/TXEN
+        add wave -label TXER        $OBUF2_PATH/TXER
+   }
+   if { $i3 == "TRUE" } {
+        add wave -divider "OBUF3"
+        add wave -label REFCLK      $OBUF3_PATH/REFCLK
+        add wave -label TXCLK       $OBUF3_PATH/TXCLK
+        add wave -label TXD     $OBUF3_PATH/TXD
+        add wave -label TXEN        $OBUF3_PATH/TXEN
+        add wave -label TXER        $OBUF3_PATH/TXER
+   }
+}
+
+proc obuf_buf_cnt { } {
+    global OBUF_BUF
+    add wave -divider "Counters"
+    radix -hex
+
+    add wave -label cnt_packets     $OBUF_BUF/cnt_packets
+    add wave -label cnt_sent        $OBUF_BUF/cnt_sent
+    add wave -label cnt_notsent     $OBUF_BUF/cnt_notsent
+    add wave -label reg_cnt_packets     $OBUF_BUF/reg_cnt_packets
+    add wave -label reg_cnt_sent        $OBUF_BUF/reg_cnt_sent
+    add wave -label cnt_sent_ce     $OBUF_BUF/cnt_sent_ce
+    add wave -label reg_cnt_notsent     $OBUF_BUF/reg_cnt_notsent
+    add wave -label cnt_notsent_ce     $OBUF_BUF/cnt_notsent_ce
+    add wave -label reset_counters      $OBUF_BUF/reset_counters
+    add wave -label reg_cnts_ce     $OBUF_BUF/reg_cnts_ce
+}
+
+proc obuf_buf { } {
+    global OBUF_BUF
+    add wave -divider "BUF"
+    radix -hex
+    add wave -label tx_clk        $OBUF_BUF/tx_clk
+    add wave -label dfifo_wr        $OBUF_BUF/dfifo_wr
+    add wave -label dfifo_di        $OBUF_BUF/dfifo_di
+    add wave -label dfifo_full      $OBUF_BUF/dfifo_full
+    add wave -label reg_do          $OBUF_BUF/reg_do       
+    add wave -label dfifo_do        $OBUF_BUF/dfifo_do
+    add wave -label dfifo_do_i      $OBUF_BUF/dfifo_do_i
+    add wave -label dfifo_do_dv     $OBUF_BUF/dfifo_do_dv  
+    add wave -label dfifo_rd        $OBUF_BUF/dfifo_rd     
+   
+    add wave -label sfifo_wr        $OBUF_BUF/sfifo_wr     
+    add wave -label sfifo_full      $OBUF_BUF/sfifo_full     
+    add wave -label sfifo_rd        $OBUF_BUF/sfifo_rd     
+    add wave -label sfifo_do        $OBUF_BUF/sfifo_do     
+    add wave -label sfifo_empty     $OBUF_BUF/sfifo_empty  
+   
+    add wave -label TX_CLK          $OBUF_BUF/TX_CLK
+    add wave -label TX_DO           $OBUF_BUF/TX_DO
+    add wave -label TX_DV           $OBUF_BUF/TX_DV
+    add wave -label TX_ER           $OBUF_BUF/TX_ER
+    add wave -label TX_BUSY         $OBUF_BUF/TX_BUSY
+    add wave -label SGMII_DV_P          $OBUF_BUF/SGMII_DV_P
+
+    add wave -label eop             $OBUF_BUF/eop          
+    add wave -label store           $OBUF_BUF/store
+    add wave -label last_word       $OBUF_BUF/last_word          
+    add wave -label fsm_disable     $OBUF_BUF/fsm_disable
+    add wave -label reg_do          $OBUF_BUF/reg_do
+    
+    add wave -label cnt_mac         $OBUF_BUF/cnt_mac
+    add wave -label cnt_mac_load            $OBUF_BUF/cnt_mac_load
+    add wave -label cnt_mac_ce          $OBUF_BUF/cnt_mac_ce
+    add wave -label reg_replc_mac           $OBUF_BUF/reg_replc_mac
+    add wave -label reg_replc_mac_rst            $OBUF_BUF/reg_replc_mac_rst
+    add wave -label reg_replc_mac_set            $OBUF_BUF/reg_replc_mac_set
+    add wave -label reg_mac         $OBUF_BUF/reg_mac
+    add wave -label reg_mac_we          $OBUF_BUF/reg_mac_we
+    add wave -label tx_do_mx            $OBUF_BUF/tx_do_mx  
+
+    add wave -label reg_enable      $OBUF_BUF/reg_enable
+    add wave -label reg_obuf_status $OBUF_BUF/reg_obuf_status
+    add wave -label reg_speed       $OBUF_BUF/reg_speed
+    add wave -label sgmii_dv        $OBUF_BUF/sgmii_dv
+    add wave -label cnt_sgmii       $OBUF_BUF/cnt_sgmii
+}
+
+proc obuf_buf_fsm { } {
+    global OBUF_BUF_FSM
+    add wave -divider "BUF FSM"
+    radix -hex
+    add wave -label clk        $OBUF_BUF_FSM/clk
+    add wave -label present_state        $OBUF_BUF_FSM/present_state     
+    add wave -label busy        $OBUF_BUF_FSM/busy     
+    add wave -label last_word        $OBUF_BUF_FSM/last_word     
+    add wave -label data_dv        $OBUF_BUF_FSM/data_dv     
+    add wave -label eop        $OBUF_BUF_FSM/eop     
+    add wave -label status_empty        $OBUF_BUF_FSM/status_empty     
+    add wave -label sgmii_dv        $OBUF_BUF_FSM/sgmii_dv
+    add wave -label data_rd        $OBUF_BUF_FSM/data_rd     
+    add wave -label status_rd        $OBUF_BUF_FSM/status_rd     
+    add wave -label store        $OBUF_BUF_FSM/store     
+    add wave -label shift        $OBUF_BUF_FSM/shift     
+}
+
+proc obuf_tx { } {
+    global OBUF_TX
+    add wave -divider "TX"
+    radix -hex
+
+   add wave -label present_state        $OBUF_TX/TX_FSM_U/present_state
+   add wave -label BUSY        $OBUF_TX/BUSY
+   add wave -label SGMII_DV        $OBUF_TX/SGMII_DV
+    add wave -label reg_di      $OBUF_TX/reg_di
+    add wave -label reg_di_dv       $OBUF_TX/reg_di_dv
+    add wave -label crc_di_dv       $OBUF_TX/crc_di_dv
+    add wave -label crc     $OBUF_TX/crc
+    add wave -label crc_lstd        $OBUF_TX/crc_lstd
+    add wave -label cnt_pream        $OBUF_TX/cnt_pream
+    add wave -label cnt_fcs        $OBUF_TX/cnt_fcs
+    add wave -label cnt_ifr        $OBUF_TX/cnt_ifr
+    add wave -label sh_reg_data        $OBUF_TX/sh_reg_data
+    add wave -label sh_reg_er        $OBUF_TX/sh_reg_er
+    add wave -label sh_reg_dv        $OBUF_TX/sh_reg_dv
+
+    add wave -divider "TX FSM"
+    add wave -label CLK      $OBUF_TX/TX_FSM_U/CLK
+    add wave -label RESET      $OBUF_TX/TX_FSM_U/RESET
+
+    add wave -label START      $OBUF_TX/TX_FSM_U/START
+    add wave -label DV      $OBUF_TX/TX_FSM_U/DV
+    add wave -label IFR_OVF      $OBUF_TX/TX_FSM_U/IFR_OVF
+    add wave -label PREAM_OVF      $OBUF_TX/TX_FSM_U/PREAM_OVF
+    add wave -label FCS_OVF      $OBUF_TX/TX_FSM_U/FCS_OVF
+    add wave -label SGMII_DV      $OBUF_TX/TX_FSM_U/SGMII_DV
+
+    add wave -label DO_DV      $OBUF_TX/TX_FSM_U/DO_DV
+    add wave -label IFR      $OBUF_TX/TX_FSM_U/IFR
+    add wave -label SFD      $OBUF_TX/TX_FSM_U/SFD
+    add wave -label PREAM      $OBUF_TX/TX_FSM_U/PREAM
+    add wave -label DATA      $OBUF_TX/TX_FSM_U/DATA
+    add wave -label FCS      $OBUF_TX/TX_FSM_U/FCS
+
+    add wave -label present_state      $OBUF_TX/TX_FSM_U/present_state
+    add wave -label next_state      $OBUF_TX/TX_FSM_U/next_state
+
+
+}
+
+proc obuf_mi32 { } {
+    global OBUF0_PATH
+    add wave -divider "MI32"
+    radix -hex
+
+   add wave -label MI          $OBUF0_PATH/../MI
+   add wave -label ADC_RD      $OBUF0_PATH/ADC_RD
+   add wave -label ADC_WR      $OBUF0_PATH/ADC_WR
+   add wave -label ADC_ADDR    $OBUF0_PATH/ADC_ADDR
+   add wave -label ADC_DI      $OBUF0_PATH/ADC_DI
+   add wave -label ADC_DO      $OBUF0_PATH/ADC_DO
+   add wave -label ADC_DRDY    $OBUF0_PATH/ADC_DRDY
+}
+
+# Set basic paths
+set OBUF_BUF "$OBUF0_PATH/obuf_gmii_buf_u"
+set OBUF_BUF_FSM "$OBUF_BUF/buf_fsm_u"
+set OBUF_TX "$OBUF0_PATH/obuf_gmii_tx_u"
+

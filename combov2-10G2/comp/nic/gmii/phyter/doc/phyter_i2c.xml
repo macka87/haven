@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>Phyter I2C controller</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="sandin">Martin Louda</author>
+</authors>
+
+
+<!-- Short Block description -->
+<description>
+
+    This component provides a way to communicate with four SFP phyters at
+    the same time. Phyters can be accessed simultaneously or communication
+    with some of them can be masked. Communication is handled by software
+    via localbus interface.
+
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Generic description -->
+	<generic_map>
+		
+		<generic name="BASE" type="integer" default="">
+			Localbus base address
+		</generic>
+		
+	</generic_map>
+
+	<!-- Port description -->
+	<port_map>
+
+		<divider>Common signals</divider>		
+		<port  name="CLK" dir="in" width="1">
+			Global FPGA clock
+		</port>
+		<port  name="RESET" dir="in" width="1">
+			Global reset
+		</port>
+
+		<divider>I2C interface</divider> 		
+		<port name="SCL0" dir="inout" width="1">
+			Phyter0 I2C clock
+		</port>
+		<port name="SDA0" dir="inout" width="1">
+			Phyter0 I2C data
+		</port>
+		<port name="SCL1" dir="inout" width="1">
+			Phyter1 I2C clock
+		</port>
+		<port name="SDA1" dir="inout" width="1">
+			Phyter1 I2C data
+		</port>
+		<port name="SCL2" dir="inout" width="1">
+			Phyter2 I2C clock
+		</port>
+		<port name="SDA2" dir="inout" width="1">
+			Phyter2 I2C data
+		</port>
+		<port name="SCL3" dir="inout" width="1">
+			Phyter3 I2C clock
+		</port>
+		<port name="SDA3" dir="inout" width="1">
+			Phyter3 I2C data
+		</port>
+		
+		<divider>Phyter disable signals</divider> 		
+		<port name="PHDISA" dir="out" width="1">
+			Phyter0 disable
+		</port>
+		<port name="PHDISB" dir="out" width="1">
+			Phyter1 disable
+		</port>
+		<port name="PHDISC" dir="out" width="1">
+			Phyter2 disable
+		</port>
+		<port name="PHDISD" dir="out" width="1">
+			Phyter3 disable
+		</port>
+
+        <divider>Localbus interface</divider>
+        <port name="LBCLK" dir="in" width="1">
+            Internal bus clock (up to 100 MHz)
+        </port>
+        <port name="LBFRAME" dir="in" width="1">
+            Frame
+        </port>
+        <port name="LBHOLDA" dir="out" width="1">
+            Hold Ack
+        </port>
+        <port name="LBAD" dir="inout" width="16">
+            Address/Data
+        </port>
+        <port name="LBAS" dir="in" width="1">
+            Adress strobe
+        </port>
+        <port name="LBRW" dir="in" width="1">
+            Direction (low : read)
+        </port>
+        <port name="LBRDY" dir="out" width="1">
+            Ready
+        </port>
+        <port name="LBLAST" dir="in" width="1">
+            Last word in transfer
+        </port>
+
+	</port_map>
+
+</interface>
+
+
+<!-- ADDRESS SPACE SECTION ********************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this sections -->
+
+<!-- main address space -->
+<addr_space id ="PHYTER_I2C" name="Phyter I2C controller" main="yes"
+    size="0x2">
+
+    <reg name="Control/data register" id="PHY_I2C_REG" offset="0x00"
+	access="RW" words="2">
+		<bit_vect bits="32">
+		<description_above>
+            The communication with phyters is done using this register. RD
+            bits store values read from phyter. WR bits are sent to phyter
+            when WRITE bit is active.
+		</description_above>
+		<format>
+            <bit from="0" to="0" name="PHY0_RD_CLK">
+                Phyter0 read clock
+		    </bit>
+            <bit from="1" to="1" name="PHY0_RD_DATA">
+                Phyter0 read data
+		    </bit>
+            <bit from="2" to="2" name="PHY0_WRITE">
+                Phyter0 write strobe
+		    </bit>
+            <bit from="3" to="3" name="PHY0_WR_CLK_Z">
+                Phyter0 write clock Z-buffer (high : third state)
+		    </bit>
+            <bit from="4" to="4" name="PHY0_WR_CLK">
+                Phyter0 write clock
+		    </bit>
+            <bit from="5" to="5" name="PHY0_WR_DATA_Z">
+                Phyter0 write data Z-buffer (high : third state)
+		    </bit>
+            <bit from="6" to="6" name="PHY0_WR_DATA">
+                Phyter0 write data
+		    </bit>
+            <bit from="7" to="7" name="Reserved">
+                Not used
+		    </bit>
+            <bit from="8" to="8" name="PHY1_RD_CLK">
+                Phyter1 read clock
+		    </bit>
+            <bit from="9" to="9" name="PHY1_RD_DATA">
+                Phyter1 read data
+		    </bit>
+            <bit from="10" to="10" name="PHY1_WRITE">
+                Phyter1 write strobe
+		    </bit>
+            <bit from="11" to="11" name="PHY1_WR_CLK_Z">
+                Phyter1 write clock Z-buffer (high : third state)
+		    </bit>
+            <bit from="12" to="12" name="PHY1_WR_CLK">
+                Phyter1 write clock
+		    </bit>
+            <bit from="13" to="13" name="PHY1_WR_DATA_Z">
+                Phyter1 write data Z-buffer (high : third state)
+		    </bit>
+            <bit from="14" to="14" name="PHY1_WR_DATA">
+                Phyter1 write data
+		    </bit>
+            <bit from="15" to="15" name="Reserved">
+                Not used
+		    </bit>
+            <bit from="16" to="16" name="PHY2_RD_CLK">
+                Phyter2 read clock
+		    </bit>
+            <bit from="17" to="17" name="PHY2_RD_DATA">
+                Phyter2 read data
+		    </bit>
+            <bit from="18" to="18" name="PHY2_WRITE">
+                Phyter2 write strobe
+		    </bit>
+            <bit from="19" to="19" name="PHY2_WR_CLK_Z">
+                Phyter2 write clock Z-buffer (high : third state)
+		    </bit>
+            <bit from="20" to="20" name="PHY2_WR_CLK">
+                Phyter2 write clock
+		    </bit>
+            <bit from="21" to="21" name="PHY2_WR_DATA_Z">
+                Phyter2 write data Z-buffer (high : third state)
+		    </bit>
+            <bit from="22" to="22" name="PHY2_WR_DATA">
+                Phyter2 write data
+		    </bit>
+            <bit from="23" to="23" name="Reserved">
+                Not used
+		    </bit>
+            <bit from="24" to="24" name="PHY3_RD_CLK">
+                Phyter3 read clock
+		    </bit>
+            <bit from="25" to="25" name="PHY3_RD_DATA">
+                Phyter3 read data
+		    </bit>
+            <bit from="26" to="26" name="PHY3_WRITE">
+                Phyter3 write strobe
+		    </bit>
+            <bit from="27" to="27" name="PHY3_WR_CLK_Z">
+                Phyter3 write clock Z-buffer (high : third state)
+		    </bit>
+            <bit from="28" to="28" name="PHY3_WR_CLK">
+                Phyter3 write clock
+		    </bit>
+            <bit from="29" to="29" name="PHY3_WR_DATA_Z">
+                Phyter3 write data Z-buffer (high : third state)
+		    </bit>
+            <bit from="30" to="30" name="PHY3_WR_DATA">
+                Phyter3 write data
+		    </bit>
+            <bit from="31" to="31" name="Reserved">
+                Not used
+		    </bit>
+		</format>
+		</bit_vect>
+	</reg>
+
+</addr_space>
+
+
+<!-- SW BODY SECTION **************************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+
+<sw_body>
+
+    <h2>Write operation</h2>
+    <p>
+        Setting PhyterX WRITE bit in Control/data register causes the
+        values on appropriate clock and data bits to be sent to phyter X.
+        So the write operation can be restricted only to selected phyter(s)
+        by keeping other phyter's WRITE bit low.
+	</p>
+
+</sw_body>
+
+
+<!-- HW BODY SECTION **************************************************** -->
+<!-- information for HW designers, structure should be as follow          -->
+<body>
+
+<!--    
+<h1>TC info</h1>
+
+	<p> 
+		features, data flow, usage, input and output protocols,
+		list of subcomponents etc. Use h2-h3, paragraphs, lists, tables,
+		images..
+	</p>
+		
+	<p>
+		You will probably also use ref files and ref comp tags here.
+		Examples of usage:
+		<ul>
+			<li>
+				<ref_file ref="template.version.xml">ref file usage</ref_file>
+			</li>
+			<li>
+				<ref_comp ref="subcomponent_id" tag_id="subcomp_tag">
+					Payload checker - pattern matching
+				</ref_comp>
+			</li>
+		</ul>		
+	</p>
+-->
+
+
+<h1>Frequency and Resources usage</h1>
+
+	<p>
+
+        <!--Resources usage and max. frequency by Precision-->
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Slices (% of C6X slices)</th>
+			</tr>
+			<tr>
+				<td>60(1%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Max.frequency by Precision</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<td>200 MHz</td>
+				<td>100 MHz</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+	
+  </p> 
+
+<!--
+<h1>Schemes</h1>
+	
+	<p>
+		The block structure of the component is in the following figure.
+		It's composed of data buffer, control block ...
+		<obr src="./fig/block_struct.fig">TC architecture</obr>
+	</p>
+
+	<p>
+		More detailed figures with their description..
+		<obr src="./fig/fig1.fig">Control block</obr>
+		<obr src="./fig/fig2.fig" mag="0.7">Control FSM</obr>
+		<obr src="./fig/fig3.fig">Data buffer</obr>
+    </p>
+-->
+
+
+</body>
+
+</source>

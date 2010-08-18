@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+
+<!-- Page name -->
+<component>
+   CAM
+</component>
+
+<!-- Authors worked on -->
+<authors>
+   <author login="kosek">Martin Kosek</author>
+   <author login="polcak_l">Libor Polcak</author>
+</authors>
+
+<features>
+   <item>Generic number of memory rows and their width</item>
+   <item>Designed to achieve high frequencies (over 150MHz) and occupy as small recources as possible</item>
+   <item>Fast data search (1 clock cycle), slower data inserting and reading (16 clocks cycles)</item>
+</features>
+
+<!-- Short Block description -->
+<description>
+   <p>
+      Content Addressable Memory (CAM) allows a fast search for specific data 
+      in a memory. This component is fully generic - you can enter width 
+      (number of bits) of one CAM word by CAM_ROW_WIDTH and number of these words by
+      CAM_ROW_COUNT. You can also read data that has been previously written into the
+			CAM memory.
+	 </p>
+</description>
+
+<!-- COMPONENT INTERFACE ************************************************* -->
+<interface>
+
+   <generic_map>
+      <generic name="CAM_ROW_WIDTH" type="integer" default="">
+         Data row width (should be a multiple of 4).
+      </generic>
+      <generic name="CAM_ROW_COUNT" type="integer" default="">
+         Number of data rows.
+      </generic>
+   </generic_map>
+
+   <port_map>
+      <divider>Common interface</divider>
+      <port name="CLK" dir="in" width="1">
+         Global clock
+      </port>
+      <port name="RESET" dir="in" width="1">
+         Global reset
+      </port>
+      
+			<divider>Data insert/read interface</divider>
+      <port name="ADDR" dir="in" width="log2(CAM_ROW_WIDTH)">
+         Address
+      </port>
+      <port name="CAM_BUSY" dir="out" width="1">
+         Address
+      </port>
+
+			<divider>Data insert interface</divider>
+      <port name="DATA_IN" dir="in" width="CAM_ROW_WIDTH">
+         Data in
+      </port>
+      <port name="WRITE_EN" dir="in" width="1">
+         Write enable
+      </port>
+
+			<divider>Data read interface</divider>
+      <port name="READ_EN" dir="in" width="1">
+         Read enable
+      </port>
+      <port name="DATA_OUT" dir="out" width="CAM_ROW_WIDTH">
+         Data out
+      </port>
+      <port name="DATA_OUT_VLD" dir="out" width="1">
+         DATA_OUT is valid
+      </port>
+
+      <divider>Data search interface</divider>
+      <port name="MATCH_EN" dir="in" width="1">
+         Match enable
+      </port>
+      <port name="MATCH_RST" dir="in" width="1">
+         Match reset
+      </port>
+      <port name="MATCH_BUS" dir="out" width="CAM_ROW_COUNT">
+         Match bus
+      </port>      
+      <port name="MATCH_BUS_VLD" dir="out" width="1">
+         Match bus valid (a vector where '1' on n-th place means that n-th row matches the searched word)
+      </port>      
+   </port_map>
+</interface>
+
+
+<!-- OPERATIONS SECTION ************************************************* -->
+<!--
+<operations>
+</operations>
+-->
+<!-- ADDRESS SPACE ************************************************* -->
+<!--
+<addr_space>
+</addr_space>
+-->
+<!-- BODY ************************************************* -->
+<body>
+   <h1>Data insertion</h1>
+   <p>
+      When inserting data into CAM you just have to assert WRITE_EN signal
+      for one clock cycle and data on DATA_IN port. You have to keep in mind that 
+      long operation and you shouldn't work with CAM while CAM_BUSY is set.
+   </p>
+   
+   <h1>Data searching</h1>
+   <p>
+      This CAM offer very fast data searching in one clock cycle. Assert MATCH_EN
+      signal and after one clock cycle MATCH_BUS_VLD signal will be asserted - 
+      that means that result is ready on port MATCH_BUS. The result is encoded
+      in one-hot style, that means if match has been found on first row (with 
+      address 0) bit 0 will be asserted.
+   </p>
+   <h1>Data reading</h1>
+   <p>
+      This operation is quite similar to data insertion. You have to select
+			address on ADDR port and set READ_EN. CAM_BUSY signal will be asserted
+			until the reading is done succesfully.
+   </p>
+
+   <h1>Frequency and Resources usage</h1>
+   <p>
+      <tab sloupce="cccc">
+         <tr>
+            <th>Generic settings</th>
+            <th>Slices (% of C6X slices)</th>
+            <th>BlockRams (+ % of C6X BRAMs)</th>
+            <th>Max. HW frequency</th>
+         </tr>
+         <tr>
+            <th>68b row width, 2 CAM rows, LB support (IDS settings)</th> 
+            <td>171 (0.7%)</td>
+            <td>0 (0.0%)</td>
+            <td>150 MHz</td>
+         </tr>
+         <tr>
+            <th>32b row width, 64 CAM rows, LB support</th> 
+            <td>479 (2.0%)</td>
+            <td>0 (0.0%)</td>
+            <td>150 MHz</td>
+         </tr>
+         <tr>
+            <th>32b row width, 64 CAM rows, no LB support</th> 
+            <td>414 (1.8%)</td>
+            <td>0 (0.0%)</td>
+            <td>150 MHz</td>
+         </tr>
+      <nazev>Chip utilization &amp; max design frequency</nazev>
+      </tab> 
+   </p>
+
+   <h1>Schemes</h1>
+   <p>
+      The block structure of the component is in the following figures. It's 
+      composed of CAM Rows, where data itself are stored and where the 
+      data matching is processed and Filling Part, which takes control
+      over writing data into particular CAM Row.
+   </p>
+   <p>
+      <obr src="./fig/cam_data_array.fig">CAM core stucture</obr>
+      <obr src="./fig/cam_top_level.fig">CAM top level</obr>
+      <obr src="./fig/cam_control.fig">Filling Part</obr>
+      <obr src="./fig/cam_reading_part.fig">Filling Part</obr>
+      <obr src="./fig/cam_filling_part.fig">Filling Part</obr>
+      <obr src="./fig/cam_fill_element.fig">Filling Part Element</obr>
+      <obr src="./fig/cam_row.fig">Data Row</obr>
+      <obr src="./fig/cam_element.fig">Data Row Element</obr>
+   </p>
+
+</body>
+
+</source>

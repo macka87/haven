@@ -1,0 +1,52 @@
+#
+# top_level_sig.fdo : Include file with signals 
+# Copyright (C) 2007 CESNET
+# Author(s): Tomas Malek <tomalek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals_sig.fdo 688 2007-10-19 16:11:56Z tomalek $
+#
+
+# Global file with signals
+
+source "./signals.fdo"
+view wave
+delete wave *
+
+pcie2ib_bridge              PCIE2IB_BRIDGE  /testbench/UUT/PCIE2IB_BRIDGE_INST/PCIE2IB_BRIDGE_U
+#pcie2ib_bridge_compl_buf    COMPL_BUFFER    /testbench/UUT/PCIE2IB_BRIDGE_INST/PCIE2IB_BRIDGE_U/U_compl_buf
+#pcie2ib_bridge_tx_buf_align TX_BUF_ALIGN    /testbench/UUT/PCIE2IB_BRIDGE_INST/PCIE2IB_BRIDGE_U/U_tx_buf/U_TX_BUF_ALIGN
+#pcie2ib_bridge_bm_buf       BM_BUFFER       /testbench/UUT/PCIE2IB_BRIDGE_INST/PCIE2IB_BRIDGE_U/U_bm_buf
+#pcie2ib_bridge_tx_buf       TX_BUFFER       /testbench/UUT/PCIE2IB_BRIDGE_INST/PCIE2IB_BRIDGE_U/U_tx_buf
+#pcie2ib_bridge_rx_buf       RX_BUFFER       /testbench/UUT/PCIE2IB_BRIDGE_INST/PCIE2IB_BRIDGE_U/U_rx_buf
+#pcie2ib_bridge_trans_buf    TRANS_BUFFER    /testbench/UUT/PCIE2IB_BRIDGE_INST/PCIE2IB_BRIDGE_U/U_trans_buf
+
+restart -f
+run -all
+
+
+

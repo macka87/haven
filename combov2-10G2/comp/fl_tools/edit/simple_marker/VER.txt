@@ -1,0 +1,175 @@
+# VER: Verification configurations
+# Copyright (C) 2009 CESNET
+# Author(s): Jan Viktorin <xvikto03@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: VER.txt 10893 2009-08-28 13:49:57Z xvikto03 $
+#
+
+# 24.8.2009 14:06
+#
+# AT PART = 2:
+# IN:  | DATA DATA DATA DATA | DATA DATA DATA DATA | DATA DATA ...
+# OUT: | DATA DATA DATA DATA | MARK DATA DATA DATA | DATA DATA ...
+#
+DATA_WIDTH   = 32;        // Data width
+PARTS        = 3;         // Number of FL parts
+MARK_PART    = 1;         // Which part will be marked 
+OFFSET       = 4;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 1;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 5220; // Count of transactions to generate
+# running 100220 on 24.8.2009 16:44
+# interrupted at 140,996,035 ns, no error
+
+
+# 24.8.2009 13:58
+#
+# AT PART = 1:
+# IN:  | DATA DATA DATA DATA | DATA DATA DATA DATA | DATA DATA ...
+# OUT: | DATA DATA DATA MARK | DATA DATA DATA DATA | DATA DATA ...
+#
+DATA_WIDTH   = 32;        // Data width
+PARTS        = 3;         // Number of FL parts
+MARK_PART    = 1;         // Which part will be marked 
+OFFSET       = 3;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 1;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 5220; // Count of transactions to generate
+# running 100220 on 24.8.2009 16:44
+# interrupted at 68,976,885 ns, no error
+
+# 28.8.2009 15:30
+#
+# AT PART = 1:
+# IN:  | DATA DATA DATA DATA | DATA DATA DATA DATA | DATA DATA ...
+# OUT: | DATA DATA DATA MARK | MARK DATA DATA DATA | DATA DATA ...
+#
+DATA_WIDTH   = 32;        // Data width
+PARTS        = 3;         // Number of FL parts
+MARK_PART    = 1;         // Which part will be marked 
+OFFSET       = 3;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 2;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 5220; // Count of transactions to generate
+
+# 28.8.2009 15:30
+#
+# AT PART = 1:
+# IN:  | DATA DATA DATA DATA | DATA DATA DATA DATA | DATA DATA ...
+# OUT: | DATA DATA DATA MARK | MARK MARK MARK MARK | DATA DATA ...
+#
+DATA_WIDTH   = 32;        // Data width
+PARTS        = 3;         // Number of FL parts
+MARK_PART    = 1;         // Which part will be marked 
+OFFSET       = 3;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 5;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 5220; // Count of transactions to generate
+
+# 28.8.2009 15:30
+#
+# AT PART = 1:
+# IN:  | DATA DATA DATA DATA | DATA DATA DATA DATA | DATA DATA ...
+# OUT: | MARK MARK MARK MARK | MARK DATA DATA DATA | DATA DATA ...
+#
+DATA_WIDTH   = 32;        // Data width
+PARTS        = 3;         // Number of FL parts
+MARK_PART    = 1;         // Which part will be marked 
+OFFSET       = 0;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 5;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 5220; // Count of transactions to generate
+
+# 28.8.2009 15:30
+#
+# AT PART = 1:
+# IN:  | DATA DATA DATA DATA | DATA DATA DATA DATA | DATA DATA DATA DATA | ...
+# OUT: | DATA DATA MARK MARK | MARK MARK MARK MARK | MARK MARK MARK DATA | ...
+#
+DATA_WIDTH   = 32;        // Data width
+PARTS        = 3;         // Number of FL parts
+MARK_PART    = 1;         // Which part will be marked 
+OFFSET       = 2;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 9;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 5220; // Count of transactions to generate
+
+###########################################
+
+# 28.8.2009 15:30
+#
+# AT PART = 0:
+# IN:  | DATA DATA | DATA DATA | ...
+# OUT: | MARK DATA | DATA DATA | ...
+#
+DATA_WIDTH   = 16;        // Data width
+PARTS        = 3;         // Number of FL parts
+MARK_PART    = 0;         // Which part will be marked 
+OFFSET       = 0;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 1;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 5220; // Count of transactions to generate
+
+# 28.8.2009 15:30
+#
+# AT PART = 2:
+# IN:  | DATA DATA | DATA DATA | ...
+# OUT: | DATA MARK | MARK DATA | ...
+#
+DATA_WIDTH   = 16;        // Data width
+PARTS        = 3;         // Number of FL parts
+MARK_PART    = 2;         // Which part will be marked 
+OFFSET       = 4;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 2;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 1220; // Count of transactions to generate
+
+
+### RECOMMANDED:
+
+# 28.8.2009 15:30
+#
+DATA_WIDTH   = 32;        // Data width
+PARTS        = 2;         // Number of FL parts
+MARK_PART    = 0;         // Which part will be marked 
+OFFSET       = 24;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 4;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 100220; // Count of transactions to generate
+
+# 25.8.2009 9:32
+# NOT WORKING, MARK_NEXT in ver works only on CLK rising edge
+DATA_WIDTH   = 32;        // Data width
+PARTS        = 1;         // Number of FL parts
+MARK_PART    = 0;         // Which part will be marked 
+OFFSET       = 24;         // Mark position in FL packet in Bytes (Count from 0)
+MARK_SIZE    = 4;         // Size of MARK in Bytes 
+INSERT       = 0;         // Switch between insert and rewrite mode
+TRANSACTION_COUNT = 100220; // Count of transactions to generate
+
+

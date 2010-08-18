@@ -1,0 +1,73 @@
+<source>
+
+    <component>RocketIO to GMII interface for 10Mb/100Mb/1G Ethernet</component>
+
+    <authors>
+        <author login="friedl">Štìpán Friedl</author>
+        <author login="pazdera">Jan Pazdera</author>
+    </authors>
+
+    <features>
+        <item> SGMII auto-negotiation </item>
+        <item> RocketIO to/from GMII transformation </item>
+    </features>
+
+    <bugs>
+    </bugs>
+
+    <todo>
+    </todo>
+
+    <description>
+        This component transforms the serial RocketIO interface from PHY to GMII and vice versa. It performs the SGMII auto-negotiation and
+        put out the Link Status. To work the auto-negotiation properly, the PHY must be in the SGMII mode.
+    </description>
+
+    <interface>
+        <generic_map>
+            <generic name="BASE" type="integer" default="">
+                Base address for localbus
+            </generic>
+        </generic_map>
+
+
+        <port_map>
+            <divider>Common signals</divider>		
+            <port name="RIO_RCLK"  dir="in"  width="1">Precise reference clock for RIO, 62.5MHz</port>
+            <port name="RIO_DCLK"  dir="in"  width="1">62.5MHz RIO data clk, GMII clk phase aligned</port>
+            <port name="RESET"     dir="in"  width="1">System reset</port>
+            <divider>GMII interface</divider>		
+            <port name="GMII_CLK"  dir="in"  width="1">125MHz GMII clock, common for RX and TX</port>
+            <port name="GMII_RXD"  dir="out" width="8"></port>
+            <port name="GMII_RXDV" dir="out" width="1"></port>
+            <port name="GMII_RXER" dir="out" width="1"></port>
+            <port name="GMII_TXD"  dir="in"  width="8"></port>
+            <port name="GMII_TXEN" dir="in"  width="1"></port>
+            <port name="GMII_TXER" dir="in"  width="1"></port>
+            <divider>MGT (RocketIO) interface</divider>		
+            <port name="RXN"       dir="in"  width="1"></port>
+            <port name="RXP"       dir="in"  width="1"></port>
+            <port name="TXN"       dir="out" width="1"></port>
+            <port name="TXP"       dir="out" width="1"></port>
+            <divider>Status and service interface</divider>		
+            <port name="RXPOLARITY"dir="in" width="1">RX polarity (usually '1')</port>
+            <port name="TXPOLARITY"dir="in" width="1">TX polarity (usually '1')</port>
+            <port name="LOOPBACK"  dir="in" width="2">00: No loopback, 01: parallel loopback, 10: serial loopback</port>
+            <port name="RXSYNCLOSS"dir="out" width="1">Synchronisation lost</port>
+            <divider>PHY status interface</divider>		
+            <port name="LINK_STATUS"       dir="out" width="1">0: link down, 1: link up</port>
+            <port name="DUPLEX_MODE"       dir="out" width="1">0: half duplex, 1: full duplex</port>
+            <port name="SPEED"             dir="out" width="2">00: 10Mbps, 01: 100Mbps, 10: 1000Mbps, 11: RESERVED</port>
+            <port name="SGMII"             dir="out" width="1">
+                0: PHY status is not valid, the speed is 1000Mbps full duplex, 
+                1: SGMII mode active, the PHY status ports are valid</port>
+        </port_map>
+
+    </interface>
+
+
+    <body>
+    </body>
+
+</source>
+

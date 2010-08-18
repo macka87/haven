@@ -1,0 +1,82 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 4815 2008-08-14 13:42:32Z xkosar02 $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+proc rx {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label RX_DATA"    $PATH/RX_DATA
+     add_wave "-noupdate  -hex -label RX_DREM"     $PATH/RX_REM
+     add_wave "-noupdate  -label RX_SOF_N"        $PATH/RX_SOF_N
+     add_wave "-noupdate  -label RX_EOF_N"        $PATH/RX_EOF_N
+     add_wave "-noupdate  -label RX_SOP_N"        $PATH/RX_SOP_N
+     add_wave "-noupdate  -label RX_EOP_N"        $PATH/RX_EOP_N
+     add_wave "-noupdate  -label RX_SRC_RDY_N"    $PATH/RX_SRC_RDY_N
+     add_wave "-noupdate  -label RX_DST_RDY_N"    $PATH/RX_DST_RDY_N
+}
+
+proc tx {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label TX_DATA"    $PATH/TX_DATA
+     add_wave "-noupdate  -hex -label TX_DREM"     $PATH/TX_REM
+     add_wave "-noupdate  -label TX_SOF_N"        $PATH/TX_SOF_N
+     add_wave "-noupdate  -label TX_EOF_N"        $PATH/TX_EOF_N
+     add_wave "-noupdate  -label TX_SOP_N"        $PATH/TX_SOP_N
+     add_wave "-noupdate  -label TX_EOP_N"        $PATH/TX_EOP_N
+     add_wave "-noupdate  -label TX_SRC_RDY_N"    $PATH/TX_SRC_RDY_N
+     add_wave "-noupdate  -label TX_DST_RDY_N"    $PATH/TX_DST_RDY_N
+}
+
+proc GMII {NAME PATH} {
+  add wave -divider "$NAME"
+   add_wave "-noupdate  -hex -label D"    $PATH/D
+   add_wave "-noupdate  -label EN"        $PATH/EN
+   add_wave "-noupdate  -label ER"        $PATH/ER
+   add_wave "-noupdate  -label GCLK"      $PATH/GCLK
+}
+
+proc IBUF_CNT {NAME PATH} {
+   add wave -divider "$NAME"
+    add wave -label packets         $PATH/ibuf/buf_u/cnt_packets
+    add wave -label received        $PATH/ibuf/buf_u/cnt_recv
+    add wave -label recverror       $PATH/ibuf/buf_u/cnt_recverr
+    add wave -label bufovferr       $PATH/ibuf/buf_u/cnt_bufovferr
+}
+
+proc OBUF_CNT {NAME PATH} {
+   add wave -divider "$NAME"
+    add wave -label cnt_packets     $PATH/obuf/obuf_gmii_buf_u/cnt_packets
+    add wave -label cnt_sent        $PATH/obuf/obuf_gmii_buf_u/cnt_sent
+    add wave -label cnt_notsent     $PATH/obuf/obuf_gmii_buf_u/cnt_notsent
+}

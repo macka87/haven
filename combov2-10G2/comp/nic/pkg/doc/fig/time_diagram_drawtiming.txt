@@ -1,0 +1,62 @@
+# Initialize the signals
+CLK=tick,
+DATA=X,
+SOP_N=X,
+EOP_N=X,
+SRC_RDY_N=1,
+DST_RDY_N=0,
+SOP=0,
+STAT_DV=0,
+PACODAG_RDY=1
+.
+# Generate SOP
+SOP=1
+.
+SOP=0
+.
+# Wait
+.
+.
+.
+# Generate SOP
+SOP=1
+.
+SOP=0
+.
+# Wait
+.
+.
+.
+# Generate STAT_DV
+STAT_DV=1
+.
+STAT_DV=0,
+PACODAG_RDY=0
+.
+# Send control data
+DATA=D1,
+SOP_N=0,
+EOP_N=1,
+SRC_RDY_N=0
+.
+# IBUF is not able to process next data
+DATA=D2,
+SOP_N=1,
+EOP_N=0,
+DST_RDY_N=1
+.
+# Ignored SOP
+SOP=1,
+# Accept data 2
+DST_RDY_N=0
+.
+# Pacodag is ready again
+DATA=X,
+SOP_N=X,
+EOP_N=X,
+SRC_RDY_N=1,
+DST_RDY_N=0,
+SOP=0,
+STAT_DV=0,
+PACODAG_RDY=1
+.

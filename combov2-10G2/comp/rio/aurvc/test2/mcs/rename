@@ -1,0 +1,4 @@
+#! /bin/bash
+
+mv c6x_top.mcs combo6x-1-2vp50.mcs
+mv sfpro_top.mcs sfpro-1-2vp20.mcs

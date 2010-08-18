@@ -1,0 +1,80 @@
+#
+# signals_sig.fdo : Include file with signals 
+# Copyright (C) 2007 CESNET
+# Author(s): Tomas Malek <tomalek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals_sig.fdo 837 2007-11-14 19:06:58Z tomalek $
+#  
+
+# -----------------------------------------------------------------------------
+#                       Simulation procedures
+# -----------------------------------------------------------------------------
+
+# add_wave procedure cheks if a signals does exist before it is added
+# into the wave window
+proc add_wave { FLAGS NAME } {
+   set result [find signals $NAME]
+   if { $result == "" } {
+      puts "WARNING : I can't find signal $NAME"
+   } else {
+      set command "add wave $FLAGS $NAME"
+      eval $command
+   }
+}
+
+# source files ################################################################
+source "./signals.fdo"
+
+view wave
+delete wave * 
+
+# procedures calls ############################################################
+
+add_wave "-noupdate -hex -label CTRL"             /testbench/pcie_sim_ctrl
+add_wave "-noupdate -hex -label STROBE"           /testbench/pcie_sim_strobe
+add_wave "-noupdate -hex -label BUSY"             /testbench/pcie_sim_busy
+
+xilinx_pcie_serial /testbench
+pcie2ib_bridge     /testbench/uut/PCIE2IB_TOP_U/PCIE2IB_BRIDGE_U
+ib_endpoint        /testbench/uut/IB_ENDPOINT_MASTER_I
+
+#trans_buf   /testbench/uut/PCIE2IB_BRIDGE_U/U_trans_buf
+#rx_buf      /testbench/uut/PCIE2IB_BRIDGE_U/U_rx_buf
+#tx_buf      /testbench/uut/PCIE2IB_BRIDGE_U/U_tx_buf/ 
+#bm_buf      /testbench/uut/PCIE2IB_BRIDGE_U/U_bm_buf/ 
+#tlp_dec_gen /testbench/uut/PCIE2IB_BRIDGE_U/U_rx_buf/U_TLPDEC /testbench/PCIE_BRIDGE_TEST_U/PCIE_BRIDGE_U/U_tx_buf/U_TLPGEN
+#ib_ifc      /testbench/uut/PCIE2IB_BRIDGE_U
+#compl_buf   /testbench/uut/PCIE2IB_BRIDGE_U/U_compl_buf
+#dp_bmem     /testbench/uut/U_test_mem
+#blk_ib_endpoint_read_shift_reg /testbench/uut/IB_ENDPOINT_I
+
+restart -f
+run 160 us
+
+
+

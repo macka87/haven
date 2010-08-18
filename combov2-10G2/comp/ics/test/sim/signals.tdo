@@ -1,0 +1,47 @@
+proc toplevel_precision {NAME PATH} {
+   add wave -divider "$NAME"
+   add_wave "-noupdate -label CLK"         $PATH/CLK
+   add_wave "-noupdate -label RESET"       $PATH/RESET
+   add wave -divider "  PORT Downstream"
+   add_wave "-noupdate -label DATA"        $PATH/ib_down_data
+   add_wave "-noupdate -label SOP_N"       $PATH/ib_down_sop_n
+   add_wave "-noupdate -label EOP_N"       $PATH/ib_down_eop_n
+   add_wave "-noupdate -label SRC_RDY_N"   $PATH/ib_down_src_rdy_n
+   add_wave "-noupdate -label DST_RDY_N"   $PATH/ib_down_dst_rdy_n
+   add wave -divider "  PORT Upstream"
+   add_wave "-noupdate -label DATA"        $PATH/ib_up_data
+   add_wave "-noupdate -label SOP_N"       $PATH/ib_up_sop_n
+   add_wave "-noupdate -label EOP_N"       $PATH/ib_up_eop_n
+   add_wave "-noupdate -label SRC_RDY_N"   $PATH/ib_up_src_rdy_n
+   add_wave "-noupdate -label DST_RDY_N"   $PATH/ib_up_dst_rdy_n
+}
+
+proc ib_swith_precision {NAME PATH NO} {
+add wave -divider "$NAME"
+   add wave -divider "  PORT 1 Downstream"
+   add_wave "-noupdate -label DATA"        $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_down_data
+   add_wave "-noupdate -label SOP_N"       $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_down_sop_n
+   add_wave "-noupdate -label EOP_N"       $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_down_eop_n
+   add_wave "-noupdate -label SRC_RDY_N"   $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_down_src_rdy_n
+   add_wave "-noupdate -label DST_RDY_N"   $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_down_dst_rdy_n
+   add wave -divider "  PORT 1 Upstream"
+   add_wave "-noupdate -label DATA"          $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_up_data
+   add_wave "-noupdate -label SOP_N"         $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_up_sop_n
+   add_wave "-noupdate -label EOP_N"         $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_up_eop_n
+   add_wave "-noupdate -label SRC_RDY_N"     $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_up_src_rdy_n
+   add_wave "-noupdate -label DST_RDY_N"     $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_1_up_dst_rdy_n
+
+   add wave -divider "  PORT 2 Downstream"
+   add_wave "-noupdate -label DATA"        $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_down_data
+   add_wave "-noupdate -label SOP_N"       $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_down_sop_n
+   add_wave "-noupdate -label EOP_N"       $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_down_eop_n
+   add_wave "-noupdate -label SRC_RDY_N"   $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_down_src_rdy_n
+   add_wave "-noupdate -label DST_RDY_N"   $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_down_dst_rdy_n
+   add wave -divider "  PORT 2 Upstream"
+   add_wave "-noupdate -label DATA"          $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_up_data
+   add_wave "-noupdate -label SOP_N"         $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_up_sop_n
+   add_wave "-noupdate -label EOP_N"         $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_up_eop_n
+   add_wave "-noupdate -label SRC_RDY_N"     $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_up_src_rdy_n
+   add_wave "-noupdate -label DST_RDY_N"     $PATH/ics_test_app_u_ics_core_u_ib_switch$NO\_2_up_dst_rdy_n
+}
+

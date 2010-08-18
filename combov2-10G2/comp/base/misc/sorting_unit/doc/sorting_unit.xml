@@ -1,0 +1,183 @@
+<source>
+
+<component>
+         Simple sorting unit
+</component>
+
+<authors>
+    <author login="solanka">
+            Lukas Solanka
+    </author>
+</authors>
+
+<features>
+	<item>Data width and sumber of items generics</item>
+	<item>Number of items must be power of two</item>
+	<item>Old block must be read before new one started</item>
+</features>
+
+<description>
+    <p>
+        Generic sorting unit sorts blocks of words according to the ID given
+        as key. Data width and number of items may be set. The only limitation
+        is that the number of items to sort must be power of two and to start
+        a new block to sort, all words in a previous block must have been
+        already written.
+    </p>
+</description>
+
+<interface>
+	<generic_map>
+        <generic name="DATA_WIDTH" type="integer" default="">
+            Word width
+        </generic>
+        <generic name="SORT_ITEMS" type="integer" default="">
+            Number of items to sort
+        </generic>
+        <generic name="DISTMEM_TYPE" type="integer" default="16">
+            Type of distributed memory to use. Available values are
+            16/32/64. For details see dp_distmem documentation.
+        </generic>
+	</generic_map>
+
+<port_map>
+
+        <!-- Port description -->
+         <divider>Common signals</divider>
+        <port name="CLK" dir="in" width="1">
+            Clock
+        </port>
+        <port name="RESET" dir="in" width="1">
+            Reset
+        </port>
+
+          
+        <!-- Write interface -->
+         <divider>Write interface</divider>
+        <port name="RX_ID" dir="in" width="log2(SORT_ITEMS)">
+            Input word identification/key.
+        </port>
+        <port name="RX_DATA" dir="in" width="DATA_WIDTH">
+            Input data.
+        </port>
+        <port name="RX_SRC_RDY_N" dir="in" width="1">
+            Source ready to transmit.
+        </port>
+        <port name="RX_DST_RDY_N" dir="out" width="1">
+            Destination ready to receive.
+        </port>
+
+        <!-- Read interface -->
+         <divider>Read interface</divider>
+        <port name="TX_ID" dir="out" width="log2(SORT_ITEMS)">
+            Output word identification/key.
+        </port>
+        <port name="TX_DATA" dir="out" width="DATA_WIDTH">
+            Output data
+        </port>
+        <port name="TX_SRC_RDY_N" dir="out" width="1">
+            Source is ready to transmit.
+        </port>
+        <port name="TX_DST_RDY_N" dir="in" width="1">
+            Destination ready to receive.
+        </port>
+   </port_map>
+
+</interface>
+
+
+<body>
+
+        <h1>Specification</h1>
+
+    <p>
+        This sorting unit is based on distributed memory, so it should be
+        used to sort smaller amounts of data. Internally, the size of the
+        distributed RAM is 2xSORT_ITEMS to cover the worst case without
+        having to stop receiving data.
+    </p>
+
+    <p>
+        Data is written in random order at the RX_SRC_RDY_N and RX_DST_RDY_N
+        assertion and read sorted at the TX side. With each word, TX_ID comes
+        out from the TX interface to identify current position in the sorted
+        block.
+    </p>
+
+    <p>
+        NOTE that if there are N words to sort, all of them must be written
+        before another block of N words is to be sorted. Otherwise the unit
+        gets locked.
+    </p>
+
+
+    <h1>Frequency and Resources usage</h1>
+    <p>
+        These are device utilization characteristics of the sorting unit for
+        the most common parameters (Virtex II, speed grade -4)
+    </p>
+
+    <h2>Statistics for DISTMEM_TYPE = 16</h2>
+    <p>
+       <tab sloupce="cccc">
+          <tr>
+             <th>DATA_WIDTH/SORT_ITEMS</th>
+             <th>Slices</th>
+             <th>Max. HW frequency [Mhz]</th>
+          </tr>
+          <tr>
+             <td>16/16</td>
+             <td>68</td>
+             <td>205</td>
+          </tr>
+          <tr>
+             <td>32/16</td>
+             <td>108</td>
+             <td>198</td>
+          </tr>
+          <tr>
+             <td>32/32</td>
+             <td>199</td>
+             <td>150</td>
+          </tr>
+          <tr>
+             <td>32/64</td>
+             <td>368</td>
+             <td>142</td>
+          </tr>
+          <nazev>
+            Chip utilization &amp; max design frequency for Virtex II using
+            precision. DISTMEM_TYPE = 16.
+          </nazev>
+       </tab> 
+    </p>
+
+    <h2>Statistics for DISTMEM_TYPE = 64</h2>
+    <p>
+       <tab sloupce="cccc">
+          <tr>
+             <th>DATA_WIDTH/SORT_ITEMS</th>
+             <th>Slices</th>
+             <th>Max. HW frequency [Mhz]</th>
+          </tr>
+          <tr>
+             <td>32/64</td>
+             <td>305</td>
+             <td>196</td>
+          </tr>
+          <nazev>
+            Chip utilization &amp; max design frequency for Virtex II using
+            precision. DISTMEM_TYPE = 64
+          </nazev>
+       </tab> 
+    </p>
+
+    <p>
+        Note that increasing the DISTMEM_TYPE parameter may significantly
+        reduce the logic path in the component (as well as number of
+        occupied slices), because when using 64bit distributed memory for
+        more items, no explicit multiplexors must be instantiated.
+    </p>
+</body>
+
+</source>

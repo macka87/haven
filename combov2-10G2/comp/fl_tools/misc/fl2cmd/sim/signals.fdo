@@ -1,0 +1,73 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Martin Louda <sandin@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 159 2007-08-15 21:42:41Z solanka $
+#
+
+view wave
+delete wave *
+
+add_wave "-noupdate -label CLK" /testbench/CLK
+add_wave "-noupdate -label RESET" /testbench/RESET
+
+add wave -divider "FrameLink interface"
+add_wave "-noupdate -hex -label FL_DATA" /testbench/fl_data
+add_wave "-noupdate -hex -label FL_REM" /testbench/fl_rem
+add_wave "-noupdate -label FL_SOF_N" /testbench/fl_sof_n
+add_wave "-noupdate -label FL_EOF_N" /testbench/fl_eof_n
+add_wave "-noupdate -label FL_SOP_N" /testbench/fl_sop_n
+add_wave "-noupdate -label FL_EOP_N" /testbench/fl_eop_n
+add_wave "-noupdate -label FL_SRC_RDY_N" /testbench/fl_src_rdy_n
+add_wave "-noupdate -label FL_DST_RDY_N" /testbench/fl_dst_rdy_n
+
+add wave -divider "CMD interface"
+add_wave "-noupdate -hex -label CMD_DATA" /testbench/cmd_data
+add_wave "-noupdate -label CMD_COMMAND" /testbench/cmd_command
+add_wave "-noupdate -label CMD_SRC_RDY" /testbench/cmd_src_rdy
+add_wave "-noupdate -label CMD_DST_RDY" /testbench/cmd_dst_rdy
+
+add wave -divider "Status"
+add_wave "-noupdate -label idle" /testbench/uut/idle
+add_wave "-noupdate -label curr_state" /testbench/uut/curr_state
+add_wave "-noupdate -label next_state" /testbench/uut/next_state
+
+add wave -divider "Data FIFO"
+add_wave "-noupdate -label rd" /testbench/uut/fifo_rd
+add_wave "-noupdate -label wr" /testbench/uut/fifo_wr
+add_wave "-noupdate -label empty" /testbench/uut/data_fifo_u/empty
+add_wave "-noupdate -label full" /testbench/uut/data_fifo_u/full
+
+add wave -divider "Frame flags"
+add_wave "-noupdate -label flag_hdr" /testbench/uut/flag_hdr
+add_wave "-noupdate -label flag_hdr_term" /testbench/uut/flag_hdr_term
+add_wave "-noupdate -label flag_pld" /testbench/uut/flag_pld
+add_wave "-noupdate -label flag_pld_term" /testbench/uut/flag_pld_term
+add_wave "-noupdate -label flag_ftr" /testbench/uut/flag_ftr
+add_wave "-noupdate -label flag_ftr_term" /testbench/uut/flag_ftr_term
+

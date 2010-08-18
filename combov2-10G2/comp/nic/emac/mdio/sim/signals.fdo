@@ -1,0 +1,100 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2009 CESNET
+# Author: Jiri Matousek <xmatou06@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 7154 2009-02-18 15:33:18Z pus $
+
+   view wave
+   delete wave *
+
+proc MDIO_EMAC_interface { COMP } {
+
+   add wave -divider "MDIO EMAC interface"
+
+   add wave -divider "Clock signal"
+   add_wave "-noupdate -hex -label CLK"            $COMP/CLK
+   add_wave "-noupdate -hex -label RESET"          $COMP/RESET
+
+   add wave -divider "MI32 interface"
+   add_wave "-noupdate -hex -label MI32_DWR"        $COMP/MI32_DWR
+   add_wave "-noupdate -hex -label MI32_ADDR"       $COMP/MI32_ADDR
+   add_wave "-noupdate -hex -label MI32_RD"         $COMP/MI32_RD
+   add_wave "-noupdate -hex -label MI32_WR"         $COMP/MI32_WR
+   add_wave "-noupdate -hex -label MI32_BE"         $COMP/MI32_BE
+   add_wave "-noupdate -hex -label MI32_DRD"        $COMP/MI32_DRD
+   add_wave "-noupdate -hex -label MI32_ARDY"       $COMP/MI32_ARDY
+   add_wave "-noupdate -hex -label MI32_DRDY"       $COMP/MI32_DRDY
+   
+   add wave -divider "Host Bus 0 interface"
+   add_wave "-noupdate -hex -label EMAC0HOSTCLK"      $COMP/EMAC0HOSTCLK
+   add_wave "-noupdate -hex -label EMAC0HOSTOPCODE"   $COMP/EMAC0HOSTOPCODE
+   add_wave "-noupdate -hex -label EMAC0HOSTADDR"     $COMP/EMAC0HOSTADDR
+   add_wave "-noupdate -hex -label EMAC0HOSTWRDATA"   $COMP/EMAC0HOSTWRDATA
+   add_wave "-noupdate -hex -label EMAC0HOSTRDDATA"   $COMP/EMAC0HOSTRDDATA
+   add_wave "-noupdate -hex -label EMAC0HOSTMIIMSEL"  $COMP/EMAC0HOSTMIIMSEL
+   add_wave "-noupdate -hex -label EMAC0HOSTEMAC1SEL" $COMP/EMAC0HOSTEMAC1SEL
+   add_wave "-noupdate -hex -label EMAC0HOSTREQ"      $COMP/EMAC0HOSTREQ
+   add_wave "-noupdate -hex -label EMAC0HOSTMIIMRDY"  $COMP/EMAC0HOSTMIIMRDY
+   
+   add wave -divider "Host Bus 1 interface"
+   add_wave "-noupdate -hex -label EMAC1HOSTCLK"      $COMP/EMAC1HOSTCLK
+   add_wave "-noupdate -hex -label EMAC1HOSTOPCODE"   $COMP/EMAC1HOSTOPCODE
+   add_wave "-noupdate -hex -label EMAC1HOSTADDR"     $COMP/EMAC1HOSTADDR
+   add_wave "-noupdate -hex -label EMAC1HOSTWRDATA"   $COMP/EMAC1HOSTWRDATA
+   add_wave "-noupdate -hex -label EMAC1HOSTRDDATA"   $COMP/EMAC1HOSTRDDATA
+   add_wave "-noupdate -hex -label EMAC1HOSTMIIMSEL"  $COMP/EMAC1HOSTMIIMSEL
+   add_wave "-noupdate -hex -label EMAC1HOSTEMAC1SEL" $COMP/EMAC1HOSTEMAC1SEL
+   add_wave "-noupdate -hex -label EMAC1HOSTREQ"      $COMP/EMAC1HOSTREQ
+   add_wave "-noupdate -hex -label EMAC1HOSTMIIMRDY"  $COMP/EMAC1HOSTMIIMRDY
+   
+}
+
+
+proc Internal_signals { COMP } {
+   
+   add wave -divider "Internal signals"
+   
+   add wave -divider "Initialization signal and delay register"
+   add_wave "-noupdate -hex -label emac0/init"           $COMP/mdio_emac_i/mdio_emac0_i/init
+   add_wave "-noupdate -hex -label emac0/init1"          $COMP/mdio_emac_i/mdio_emac0_i/init1
+   add_wave "-noupdate -hex -label emac0/init_restart"   $COMP/mdio_emac_i/mdio_emac0_i/init_restart
+   add_wave "-noupdate -hex -label emac0/cnt_init_delay" $COMP/mdio_emac_i/mdio_emac0_i/cnt_init_delay
+   add_wave "-noupdate -hex -label emac0/init_reg"       $COMP/mdio_emac_i/mdio_emac0_i/init_reg
+   
+   add wave -divider "Control -> Host Bus registers"
+   add_wave "-noupdate -hex -label emac0/we_reg"         $COMP/mdio_emac_i/mdio_emac0_i/we_reg
+   add_wave "-noupdate -hex -label emac0/frame_reg"      $COMP/mdio_emac_i/mdio_emac0_i/frame_reg
+   add_wave "-noupdate -hex -label emac0/emac1_reg"      $COMP/mdio_emac_i/mdio_emac0_i/emac1_reg
+   
+   add wave -divider "Host Bus -> Control registers"
+   add_wave "-noupdate -hex -label emac0/busy_reg"       $COMP/mdio_emac_i/mdio_emac0_i/busy_reg
+   add_wave "-noupdate -hex -label emac0/rd_data_reg"    $COMP/mdio_emac_i/mdio_emac0_i/rd_data_reg
+   add_wave "-noupdate -hex -label emac0/HOSTRDDATA"    $COMP/mdio_emac_i/mdio_emac0_i/hostrddata
+   add_wave "-noupdate -hex -label emac0/HOSTMIIMRDY"    $COMP/mdio_emac_i/mdio_emac0_i/hostmiimrdy
+   
+}

@@ -1,0 +1,44 @@
+The CRC Table Generator
+~~~~~~~~~~~~~~~~~~~~~~~
+Author: Bidlo Michal <bidlom@fit.vutbr.cz>
+
+crctab is an utility for generating equations for calculating CRC values for
+a given n-bit sequence (typically n = 8, 16, 32,...). This approach to CRC
+implementation enables us to optimize CRC computation substantially. The utility
+includes the mostly used CRC generator polynomials for 16-, 32- and 64-bit CRC,
+64-bit CRC is a limit of CRC width for now.
+
+By running crctab with -h or without any parameter, the program displays a help
+screen:
+
+Usage: crctab CRCBITS PARBITS [-poly] [FILENAME]
+   -h, nothing   show this help screen
+   CRCBITS       the number of bits of the CRC intended
+   PARBITS       the number of bits processed in parallel
+   -poly         enables manual entering generator polynomial
+   FILENAME      output file name or nothing for the standard output
+
+The usage syntax is mandatory for valid CRC table generation. Arguments in
+brackets are voluntary. crctab generates equations in VHDL and C/C++ format.
+If -poly parameter is used, the user is asked to enter generator polynomial
+manually. If no FILENAME is given, the equations are written to the standard
+output.
+
+
+Examples of using crctab
+~~~~~~~~~~~~~~~~~~~~~~~~
+generate 32-bit CRC equations for calculating 8 bits in parallel, use predefined
+generator polynomial, write result to the standard output
+
+   crctab 32 8
+
+generate 64-bit CRC equations for calculating 32 bits in parallel, use
+predefined generator polynomial, write result to file 'crc64'
+
+   crctab 64 32 crc64
+
+generate 32-bit CRC equations for calculating 16 bits in parallel, enter
+generator polynommial manually, write result to file 'crc32'
+
+   crctab 32 16 -poly crc32
+

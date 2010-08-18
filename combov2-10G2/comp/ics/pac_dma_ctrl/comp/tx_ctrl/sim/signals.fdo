@@ -1,0 +1,163 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2009 CESNET
+# Author: Petr Kastovsky <kastovsky@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+#
+# $Id: signals.fdo 8122 2009-04-14 10:05:18Z kastovsky $
+
+# -------------------------------------------------------------------
+#                      Signals of component
+# -------------------------------------------------------------------
+
+proc tb_TX_CTRL {} {
+    add wave -divider "TX_CTRL - tb signals"
+    add_wave "-noupdate      -label CLK"           /testbench/CLK
+    add_wave "-noupdate      -label RESET"         /testbench/RESET
+    add_wave "-noupdate -hex -label internal_bus"  /testbench/internal_bus
+    add_wave "-noupdate -hex -label ib_wr"         /testbench/ib_wr
+    add_wave "-noupdate -hex -label ib_bm"         /testbench/ib_bm
+
+    add_wave "-noupdate -hex -label run"           /testbench/run
+    add_wave "-noupdate -hex -label idle"          /testbench/idle
+
+    add_wave "-noupdate -hex -label buf_newlen"    /testbench/buf_newlen
+    add_wave "-noupdate -hex -label buf_newlen_dv" /testbench/buf_newlen_dv
+    add_wave "-noupdate -hex -label buf_newlen_rdy" /testbench/buf_newlen_rdy
+    add_wave "-noupdate -hex -label buf_rellen"    /testbench/buf_rellen
+    add_wave "-noupdate -hex -label buf_rellen_dv" /testbench/buf_rellen_dv
+
+    add_wave "-noupdate -hex -label desc_dout"     /testbench/desc_dout
+    add_wave "-noupdate -hex -label desc_dout_vld" /testbench/desc_dout_vld
+    add_wave "-noupdate -hex -label desc_raddr"    /testbench/desc_raddr
+    add_wave "-noupdate -hex -label desc_rd"       /testbench/desc_rd
+    add_wave "-noupdate -hex -label desc_empty"    /testbench/desc_empty
+
+    add_wave "-noupdate -hex -label su_addr"       /testbench/su_addr
+    add_wave "-noupdate -hex -label su_data"       /testbench/su_data
+    add_wave "-noupdate -hex -label su_data_vld"   /testbench/su_data_vld
+    add_wave "-noupdate -hex -label su_hfull"      /testbench/su_hfull
+    add wave -divider "+--- dma2bm"
+    add_wave "-noupdate -hex"	                     /testbench/DMA2BM_U/*
+
+}
+
+proc ifc_TX_CTRL { TX_CTRL_PATH } {
+    add wave -divider "TX_CTRL - interface"
+    add_wave "-noupdate      -label CLK"                 $TX_CTRL_PATH/CLK
+    add_wave "-noupdate      -label RESET"               $TX_CTRL_PATH/RESET
+    add_wave "-noupdate -hex -label BUF_NEWLEN"	         $TX_CTRL_PATH/BUF_NEWLEN
+    add_wave "-noupdate -hex -label BUF_NEWLEN_DV"       $TX_CTRL_PATH/BUF_NEWLEN_DV
+    add_wave "-noupdate -hex -label BUF_NEWLEN_RDY"      $TX_CTRL_PATH/BUF_NEWLEN_RDY
+    add_wave "-noupdate -hex -label BUF_RELLEN"          $TX_CTRL_PATH/BUF_RELLEN
+    add_wave "-noupdate -hex -label BUF_RELLEN_DV"       $TX_CTRL_PATH/BUF_RELLEN_DV
+    add_wave "-noupdate -hex -label DESC_DO"             $TX_CTRL_PATH/DESC_DO
+    add_wave "-noupdate -hex -label DESC_DO_VLD"         $TX_CTRL_PATH/DESC_DO_VLD
+    add_wave "-noupdate -hex -label DESC_ADDR"           $TX_CTRL_PATH/DESC_ADDR
+    add_wave "-noupdate -hex -label DESC_READ"           $TX_CTRL_PATH/DESC_READ
+    add_wave "-noupdate -hex -label DESC_EMPTY"          $TX_CTRL_PATH/DESC_EMPTY
+    add_wave "-noupdate -hex -label DMA_ADDR"            $TX_CTRL_PATH/DMA_ADDR
+    add_wave "-noupdate -hex -label DMA_DOUT"            $TX_CTRL_PATH/DMA_DOUT
+    add_wave "-noupdate -hex -label DMA_REQ"             $TX_CTRL_PATH/DMA_REQ
+    add_wave "-noupdate -hex -label DMA_ACK"             $TX_CTRL_PATH/DMA_ACK
+    add_wave "-noupdate -hex -label DMA_TAG"             $TX_CTRL_PATH/DMA_TAG
+    add_wave "-noupdate -hex -label DMA_DONE"            $TX_CTRL_PATH/DMA_DONE
+    add_wave "-noupdate -hex -label SU_ADDR"             $TX_CTRL_PATH/SU_ADDR
+    add_wave "-noupdate -hex -label SU_DATA"             $TX_CTRL_PATH/SU_DATA
+    add_wave "-noupdate -hex -label SU_DATA_VLD"         $TX_CTRL_PATH/SU_DATA_VLD
+    add_wave "-noupdate -hex -label SU_HFULL"            $TX_CTRL_PATH/SU_HFULL
+
+}
+
+
+
+proc blk_TX_CTRL { PARAM } {
+   global TX_CTRL_PATH
+
+   if { $PARAM == "SIGS" } {
+	add wave -divider "Signals"
+	add_wave "-noupdate -hex -label bm_req_di"   	      $TX_CTRL_PATH/bm_req_di
+	add_wave "-noupdate -hex -label bm_req_we"   	      $TX_CTRL_PATH/bm_req_we
+	add_wave "-noupdate -hex -label bm_req_addra"         $TX_CTRL_PATH/bm_req_addra
+	add_wave "-noupdate -hex -label bm_req_addrb"         $TX_CTRL_PATH/bm_req_addrb
+	add_wave "-noupdate -hex -label bm_req_dob"           $TX_CTRL_PATH/bm_req_dob
+	add_wave "-noupdate -hex -label bm_gaddr"             $TX_CTRL_PATH/bm_gaddr
+	add_wave "-noupdate -hex -label bm_laddr"             $TX_CTRL_PATH/bm_laddr
+	add_wave "-noupdate -hex -label bm_length"            $TX_CTRL_PATH/bm_length
+	add_wave "-noupdate -hex -label bm_tag"               $TX_CTRL_PATH/bm_tag
+	add_wave "-noupdate -hex -label bm_ttype"             $TX_CTRL_PATH/bm_ttype
+	add_wave "-noupdate -hex -label cnt_chid"   	         $TX_CTRL_PATH/cnt_chid
+	add_wave "-noupdate -hex -label cnt_chid_ce" 	      $TX_CTRL_PATH/cnt_chid_ce
+	add_wave "-noupdate -hex -label cnt_chid_ld" 	      $TX_CTRL_PATH/cnt_chid_ld
+	add_wave "-noupdate -hex -label buff_addr"   	      $TX_CTRL_PATH/buff_addr
+	add_wave "-noupdate -hex -label buff_offset"   	      $TX_CTRL_PATH/buff_offset
+	add_wave "-noupdate -hex -label mux_desc_empty"       $TX_CTRL_PATH/mux_desc_empty
+	add_wave "-noupdate -hex -label fifo_di"              $TX_CTRL_PATH/fifo_di
+	add_wave "-noupdate -hex -label fifo_wr"              $TX_CTRL_PATH/fifo_wr
+	add_wave "-noupdate -hex -label fifo_full"            $TX_CTRL_PATH/fifo_full
+	add_wave "-noupdate -hex -label fifo_lstblk"          $TX_CTRL_PATH/fifo_lstblk
+	add_wave "-noupdate -hex -label fifo_do"              $TX_CTRL_PATH/fifo_do
+	add_wave "-noupdate -hex -label fifo_rd"              $TX_CTRL_PATH/fifo_rd
+	add_wave "-noupdate -hex -label fifo_empty"           $TX_CTRL_PATH/fifo_empty
+	add_wave "-noupdate -hex -label fifo_rel_chid"        $TX_CTRL_PATH/fifo_rel_chid
+	add_wave "-noupdate -hex -label fifo_rel_flags"       $TX_CTRL_PATH/fifo_rel_flags
+	add_wave "-noupdate -hex -label fifo_rel_len"         $TX_CTRL_PATH/fifo_rel_len
+	add_wave "-noupdate -hex -label rel_op_done"          $TX_CTRL_PATH/rel_op_done
+	add_wave "-noupdate -hex -label rel_len"              $TX_CTRL_PATH/rel_len
+	add_wave "-noupdate -hex -label release_packet"       $TX_CTRL_PATH/release_packet
+	add_wave "-noupdate -hex -label ra_strptr"            $TX_CTRL_PATH/ra_strptr
+	add_wave "-noupdate -hex -label strptr"               $TX_CTRL_PATH/strptr
+	add_wave "-noupdate -hex -label endptr"               $TX_CTRL_PATH/endptr
+	add_wave "-noupdate -hex -label buf_rel_len"          $TX_CTRL_PATH/buf_rel_len
+	add_wave "-noupdate -hex -label acc_strptr"           $TX_CTRL_PATH/acc_strptr
+	add_wave "-noupdate -hex -label str_allign"           $TX_CTRL_PATH/str_allign
+	add_wave "-noupdate -hex -label acc_endptr"           $TX_CTRL_PATH/acc_endptr
+	add_wave "-noupdate -hex -label end_allign"           $TX_CTRL_PATH/end_allign
+   }
+
+   if { $PARAM == "REGS" } {
+	add wave -divider "Registers"
+	add wave -divider "+ ra_endptr"
+	add_wave "-noupdate -hex" 				$TX_CTRL_PATH/reg_array_endptr_i/*
+	add wave -divider "+ ra_desclen"
+	add_wave "-noupdate -hex" 				$TX_CTRL_PATH/reg_array_desclen_i/*
+   add wave -divider "+ ra_flags"
+	add_wave "-noupdate -hex" 				$TX_CTRL_PATH/reg_array_flags_i/*
+   add wave -divider "+ ra_rellen"
+	add_wave "-noupdate -hex" 				$TX_CTRL_PATH/reg_array_rellen_i/*
+   }
+
+   if { $PARAM == "FSM" } {
+	add wave -divider "FSMs"
+	add wave -divider "+ new_packet_fsm"
+	add_wave "-noupdate -hex" 				$TX_CTRL_PATH/new_packet_fsm_i/*
+   }
+
+}
+
+# -------------------------------------------------------------------
+

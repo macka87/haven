@@ -1,0 +1,7 @@
+<!DOCTYPE fl_extract SYSTEM "fl_extract_xml.dtd">
+
+<fl_extract fl_width="32">
+  <fields>
+    <field  packet_no="1" offset="4" size="15">EXT_DATA</field>
+  </fields>
+</fl_extract>

@@ -1,0 +1,39 @@
+# set component architecture (FULL|DEBUG)
+set ARCH "FULL"
+
+# load modules
+source "modules.tcl"
+
+vlib work
+vdel -all
+vlib work
+eval "vcom -93 -work work $MOD tsu2pci_tb.vhd"
+vsim work.testbench(behavioral) -t 1ps
+radix -hexadecimal
+set  StdArithNoWarnings 1
+
+# Set basic paths
+set TSU_PATH "sim:/testbench/uut"
+set TSU_ADD_PATH "sim:/testbench/uut/u_tsu_add"
+
+# load procedures
+source "signals.fdo"
+
+# show window
+view wave
+
+# Start waveform with no signal
+delete wave *
+
+# ------------- Calling procedures ------------------------------
+tsu_clk
+tsu_lb
+tsu_regs
+tsu_inter
+tsu_ifc
+tsu_fsm
+
+# ------------- Run ---------------------------------------------
+restart -f
+run 40 us
+

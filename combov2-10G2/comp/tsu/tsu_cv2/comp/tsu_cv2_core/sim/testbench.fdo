@@ -1,0 +1,63 @@
+# testbench.fdo: Simulation file for testbench of timestamp unit component 
+# Copyright (C) 2009 CESNET
+# Author(s): Jan Stourac <xstour03@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+#
+
+# For whole design testing
+set FIRMWARE_BASE    "../../../../../.."
+set COMP_BASE        "$FIRMWARE_BASE/comp"
+set TSU_CV2_CORE_BASE "$COMP_BASE/tsu/tsu_cv2/comp/tsu_cv2_core"
+set IB_SIM_BASE	     "$COMP_BASE/ics/internal_bus/comp/ib_sim"
+
+set TB_FILE          "$TSU_CV2_CORE_BASE/sim/testbench.vhd"
+set SIG_FILE         "$TSU_CV2_CORE_BASE/sim/comp_sig.fdo"
+
+set MOD ""
+
+# Modules definition
+set COMPONENTS [list \
+	[list "TSU_CV2_CORE"   $TSU_CV2_CORE_BASE      "FULL"] \
+	[list "MI32_SIM"       $COMP_BASE/ics/local_bus/comp/mi32_sim	"FULL"] \
+]
+
+set PACKAGES [list \
+        "$IB_SIM_BASE/ib_sim_oper.vhd"		\
+	]
+
+
+# Global include file for compilation
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# File with signals
+source $SIG_FILE
+

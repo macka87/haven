@@ -1,0 +1,83 @@
+# README: 'how to' file
+# Copyright (C) 2007 CESNET
+# Author(s): Tomas Malek <tomalek@liberouter.org>
+#            Stepan Friedl <friedl@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: README 688 2007-10-19 16:11:56Z tomalek $
+#  
+
+Xilinx PCI Express Block Plus - ModelSim simulation howto
+=========================================================
+
+Prerequisites
+~~~~~~~~~~~~~
+ - Xilinx ISE 9.1 installed
+ - ModelSim SE 6.2 or greater installed
+ 
+ModelSim setup
+~~~~~~~~~~~~~~
+ 
+1. There must be all of unisim, simprim, xilinxcorelib, unisims_ver, 
+   simprims_ver and xilinxcorelib_ver libraries compiled and mapped in the 
+   ModelSim. In order to that run the following command:
+
+   compxlib -w -s mti_se -arch virtex5 -lib all -l all -dir <DIRECTORY> -smartmodel_setup
+         
+   This command will compile all libraries for both VHDL and Verilog and setups 
+   the library mapping in the Modelsim.ini file. The <DIRECTORY> is the output 
+   directory for compiled libraries.
+   
+2. Be sure the following statements are enabled and set as follows in the 
+   $MODELTECH/Modelsim.ini file:
+   
+   For Linux:
+   
+   Veriuser = $MODEL_TECH/libswiftpli.sl 
+   libsm = $MODEL_TECH/libsm.sl 
+   libswift = $LMC_HOME/lib/x86_linux.lib/libswift.so 
+
+   For Windows:
+   
+   Veriuser=$MODEL_TECH/libswiftpli.dll 
+   libsm = $MODEL_TECH/libsm.dll 
+   libswift=$LMC_HOME/lib/pcnt.lib/libswift.dll 
+   
+   Also, be sure the $LMC_HOME variable is set.
+
+Testbench, how to simulate
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+1. The simulated sequence of PCI-E read and write transactions is defined in
+   the tests.v file (in Verilog). You can change the sequence as you require.
+   See pages 126-134 in the "LogiCORE™ PCI Express Endpoint Block Plus v1.1 
+   User Guide" for list and syntax of commands available.
+
+2. Run the pcie.fdo command in the ModelSim (run "vsim -do pcie.fdo" in the 
+   shell command line or run "do pcie.fdo" in the ModelSim's command window)
+   
+3. Be patient, the simulation takes some time, first transaction occurs in 
+   simulation time about 100us.

@@ -1,0 +1,87 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 382 2007-09-08 18:06:57Z xkobie00 $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+proc ib_sim {NAME PATH} {
+    add wave -divider "$NAME"       
+      add_wave "-noupdate -color yellow -label RESET" $PATH/IB_RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/IB_CLK
+      add_wave "-noupdate -hex -label INTERNAL_BUS"   $PATH/INTERNAL_BUS
+      add_wave "-noupdate -hex -label CTRL"           $PATH/CTRL
+      add_wave "-noupdate -hex -label STROBE"         $PATH/STROBE
+      add_wave "-noupdate -hex -label BUSY"           $PATH/BUSY
+      add_wave "-noupdate -hex -label STATUS"         $PATH/STATUS
+}
+
+proc ib_bfm {NAME PATH} {
+    add wave -divider "$NAME"       
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/CLK
+      add_wave "-noupdate -hex -label INTERNAL_BUS"   $PATH/IB
+}
+
+proc ib_sim_rio {NAME PATH} {
+    add wave -divider "$NAME"       
+      add_wave "-noupdate -color yellow -label RESET" $PATH/IB_RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/IB_CLK
+      add_wave "-noupdate -color yellow -label FCLK"  $PATH/FCLK
+      add_wave "-noupdate -label TXN2"                $PATH/TXN2
+      add_wave "-noupdate -label TXP2"                $PATH/TXP2
+      add_wave "-noupdate -label RXN2"                $PATH/RXN2
+      add_wave "-noupdate -label RXP2"                $PATH/RXP2
+      add_wave "-noupdate -label TXN3"                $PATH/TXN3
+      add_wave "-noupdate -label TXP3"                $PATH/TXP3
+      add_wave "-noupdate -label RXN3"                $PATH/RXN3
+      add_wave "-noupdate -label RXP3"                $PATH/RXP3
+      add_wave "-noupdate -hex -label CTRL"           $PATH/CTRL
+      add_wave "-noupdate -hex -label STROBE"         $PATH/STROBE
+      add_wave "-noupdate -hex -label BUSY"           $PATH/BUSY
+      add_wave "-noupdate -hex -label STATUS"         $PATH/STATUS
+} 
+
+proc blk_ib_sim_write_align {NAME PATH} {
+    add wave -divider "$NAME" 
+      add_wave "-noupdate -color yellow -label RESET" $PATH/WRITE_ALIGN_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/WRITE_ALIGN_U/CLK
+      add_wave "-noupdate -hex -label data_in"        $PATH/WRITE_ALIGN_U/DATA_IN
+      add_wave "-noupdate -label data_in_vld"         $PATH/WRITE_ALIGN_U/DATA_IN_VLD
+      add_wave "-noupdate -label eop"                 $PATH/WRITE_ALIGN_U/EOP
+      add_wave "-noupdate -label align_reg"           $PATH/WRITE_ALIGN_U/ALIGN_REG
+      add_wave "-noupdate -label align_init"          $PATH/WRITE_ALIGN_U/ALIGN_INIT
+      add_wave "-noupdate -hex -label length"         $PATH/WRITE_ALIGN_U/LENGTH
+      add_wave "-noupdate -hex -label dwr"            $PATH/WRITE_ALIGN_U/DWR
+      add_wave "-noupdate -label be_wr"               $PATH/WRITE_ALIGN_U/BE_WR
+      add_wave "-noupdate -label wr"                  $PATH/WRITE_ALIGN_U/WR
+      add_wave "-noupdate -label eop_wr"              $PATH/WRITE_ALIGN_U/EOP_WR
+}

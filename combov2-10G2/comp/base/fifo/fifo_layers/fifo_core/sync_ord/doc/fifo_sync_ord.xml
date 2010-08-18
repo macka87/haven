@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<source>
+   <component>Synchronous ordinary FIFO memory</component>
+
+   <authors>
+      <author login="jenda">Jan Koritak</author>
+   </authors>
+
+   <features>
+	   <item>Synchronous FIFO I/O operations</item>
+   </features>
+   
+   <!-- Bugs -->
+   <bugs>
+     <item>Not known bugs</item>
+   </bugs>
+   
+   <!-- What have to be done -->
+   <todo>
+   </todo>
+
+
+   <description>
+	   Provides synchronous FIFO I/O operations on a generic-described
+	   type of memory.
+   </description>
+   
+   <interface>
+      <generic_map>
+         <generic name="mem_type" type="mem_type" default="LUT">
+			   Type of memory, which will be used for implementation.
+         </generic>
+         
+		   <generic name="latency" type="integer" default="1">
+			   Memory latency
+         </generic>
+         
+		   <generic name="items" type="integer" default="16">
+			   Maximum items the FIFO can contain 
+         </generic>
+         
+         <generic name="item_width" type="integer" default="32">
+			   Size of item	   
+		   </generic>
+
+         <generic name="prefetch" type="boolean" default="false">
+			   Read prefetch mode	   
+         </generic>
+      </generic_map>
+      
+      <port_map>
+                
+         <port name="CLK" dir="in" width="1">
+            Clock
+         </port>
+           
+         <port name="RESET" dir="in" width="1">
+            Reset
+         </port> 
+
+         <port name="WR" dir="in" width="1">
+            Enables write
+         </port>
+
+         <port name="DI" dir="in" width="item_width">
+            Input data port
+         </port>
+               
+         <port name="READ_EN" dir="in" width="1">
+            Enables read
+         </port>
+         
+         <port name="DO" dir="out" width="item_width">
+            Output data port
+         </port>
+	
+		 <port name="DO_DV" dir="out" width="1">
+			1 when output data are loaded properly
+         </port>
+    
+       </port_map>
+       </interface>  
+
+   
+   <body>
+
+      
+    <!-- Here is description in standard Satrapa format-->
+    <h1>fifo_sync_ord component</h1>
+    <p>
+     Component fifo_sync_ord utilizies component the fifo_mem component to provide synchronous
+	 ordinary FIFO operations on all types of memory supported by fifo_mem.
+    </p>
+
+    <h1>Frequency and Resources usage</h1>
+	<p>
+
+        <!--Resources usage and max. frequency by XST-->
+	
+		<tab sloupce="cccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+				<th>Maximal frequency</th>
+			</tr>
+			<tr>
+				<th>
+					mem_type = LUT<br />
+					latency = 1 <br />
+					items = 16 <br />
+					item_width = 32 <br />
+					prefetch = false <br />
+				</th> 
+				<td>82 (0%)</td>
+				<td>0 (0 %)</td>
+				<td>167 Mhz</td>
+			</tr>
+			<tr>
+				<th>
+					mem_type = BRAM<br />
+					latency = 1 <br />
+					items = 16 <br />
+					item_width = 32 <br />
+					prefetch = false <br />
+				</th> 
+				<td>19 (0%)</td>
+				<td>1 (0 %)</td>
+				<td>173 Mhz</td>
+			</tr>
+			<tr>
+				<th>
+					mem_type = LUT<br />
+					latency = 1 <br />
+					items = 16 <br />
+					item_width = 32 <br />
+					prefetch = true <br />
+				</th> 
+				<td>82 (0%)</td>
+				<td>0 (0 %)</td>
+				<td>143 Mhz</td>
+			</tr>
+			<tr>
+				<th>
+					mem_type = BRAM<br />
+					latency = 1 <br />
+					items = 16 <br />
+					item_width = 32 <br />
+					prefetch = true <br />
+				</th> 
+				<td>21 (0%)</td>
+				<td>1 (0 %)</td>
+				<td>158 Mhz</td>
+			</tr>
+		<nazev>Chip utilization, synthesized in XST for Virtex-II Pro</nazev>
+		</tab> 
+	
+
+	
+  </p> 
+
+
+    </body>  
+</source>

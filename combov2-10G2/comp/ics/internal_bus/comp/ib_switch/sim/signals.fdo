@@ -1,0 +1,159 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 8889 2009-06-19 12:57:21Z pus $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+
+proc ib_switch {NAME PATH} {
+      add_wave "-noupdate -color yellow -label RESET"   $PATH/IB_RESET
+      add_wave "-noupdate -color yellow -label IB_CLK"  $PATH/IB_CLK
+    add wave -divider "$NAME PORT0: Upstream"      
+      add_wave "-noupdate -hex -label PORT0_UP_DATA       " $PATH/PORT0_UP_DATA
+      add_wave "-noupdate -hex -label PORT0_UP_SOP_N      " $PATH/PORT0_UP_SOP_N
+      add_wave "-noupdate -hex -label PORT0_UP_EOP_N      " $PATH/PORT0_UP_EOP_N
+      add_wave "-noupdate -hex -label PORT0_UP_SRC_RDY_N  " $PATH/PORT0_UP_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT0_UP_DST_RDY_N  " $PATH/PORT0_UP_DST_RDY_N
+      add_wave "-noupdate -hex -label PORT0_DOWN_DATA     " $PATH/PORT0_DOWN_DATA
+      add_wave "-noupdate -hex -label PORT0_DOWN_SOP_N    " $PATH/PORT0_DOWN_SOP_N
+      add_wave "-noupdate -hex -label PORT0_DOWN_EOP_N    " $PATH/PORT0_DOWN_EOP_N
+      add_wave "-noupdate -hex -label PORT0_DOWN_SRC_RDY_N" $PATH/PORT0_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT0_DOWN_DST_RDY_N" $PATH/PORT0_DOWN_DST_RDY_N
+
+    add wave -divider "$NAME PORT1: Downstream"      
+      add_wave "-noupdate -hex -label PORT1_UP_DATA       " $PATH/PORT1_UP_DATA
+      add_wave "-noupdate -hex -label PORT1_UP_SOP_N      " $PATH/PORT1_UP_SOP_N
+      add_wave "-noupdate -hex -label PORT1_UP_EOP_N      " $PATH/PORT1_UP_EOP_N
+      add_wave "-noupdate -hex -label PORT1_UP_SRC_RDY_N  " $PATH/PORT1_UP_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT1_UP_DST_RDY_N  " $PATH/PORT1_UP_DST_RDY_N
+      add_wave "-noupdate -hex -label PORT1_DOWN_DATA     " $PATH/PORT1_DOWN_DATA
+      add_wave "-noupdate -hex -label PORT1_DOWN_SOP_N    " $PATH/PORT1_DOWN_SOP_N
+      add_wave "-noupdate -hex -label PORT1_DOWN_EOP_N    " $PATH/PORT1_DOWN_EOP_N
+      add_wave "-noupdate -hex -label PORT1_DOWN_SRC_RDY_N" $PATH/PORT1_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT1_DOWN_DST_RDY_N" $PATH/PORT1_DOWN_DST_RDY_N
+
+    add wave -divider "$NAME PORT2: Downstream"      
+      add_wave "-noupdate -hex -label PORT2_UP_DATA       " $PATH/PORT2_UP_DATA
+      add_wave "-noupdate -hex -label PORT2_UP_SOP_N      " $PATH/PORT2_UP_SOP_N
+      add_wave "-noupdate -hex -label PORT2_UP_EOP_N      " $PATH/PORT2_UP_EOP_N
+      add_wave "-noupdate -hex -label PORT2_UP_SRC_RDY_N  " $PATH/PORT2_UP_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT2_UP_DST_RDY_N  " $PATH/PORT2_UP_DST_RDY_N
+      add_wave "-noupdate -hex -label PORT2_DOWN_DATA     " $PATH/PORT2_DOWN_DATA
+      add_wave "-noupdate -hex -label PORT2_DOWN_SOP_N    " $PATH/PORT2_DOWN_SOP_N
+      add_wave "-noupdate -hex -label PORT2_DOWN_EOP_N    " $PATH/PORT2_DOWN_EOP_N
+      add_wave "-noupdate -hex -label PORT2_DOWN_SRC_RDY_N" $PATH/PORT2_DOWN_SRC_RDY_N
+      add_wave "-noupdate -hex -label PORT2_DOWN_DST_RDY_N" $PATH/PORT2_DOWN_DST_RDY_N
+
+}
+
+proc blk_ib_switch_addr_dec {NAME PATH PORT_NO} {
+    add wave -divider "$NAME"     
+      add_wave "-noupdate -color yellow -label RESET"  $PATH/IB_SWITCH_ADDR_DEC_$PORT_NO\_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"    $PATH/IB_SWITCH_ADDR_DEC_$PORT_NO\_U/CLK
+      add_wave "-noupdate -hex -label ADDR_IN"         $PATH/IB_SWITCH_ADDR_DEC_$PORT_NO\_U/ADDR_IN
+      add_wave "-noupdate -label TRANS_TYPE"           $PATH/IB_SWITCH_ADDR_DEC_$PORT_NO\_U/TRANS_TYPE
+      add_wave "-noupdate -label IF_SELECT"            $PATH/IB_SWITCH_ADDR_DEC_$PORT_NO\_U/IF_SELECT
+      add_wave "-noupdate -label MATCH"                $PATH/IB_SWITCH_ADDR_DEC_$PORT_NO\_U/MATCH
+}
+
+proc blk_ib_switch_shift_reg {NAME PATH PORT_NO} {
+    add wave -divider "$NAME" 
+      add_wave "-noupdate -color yellow -label RESET"  $PATH/IB_SHIFT_REG$PORT_NO\_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"    $PATH/IB_SHIFT_REG$PORT_NO\_U/CLK
+      add_wave "-noupdate -hex -label DATA_IN"         $PATH/IB_SHIFT_REG$PORT_NO\_U/DATA_IN
+      add_wave "-noupdate -label SOP_IN"               $PATH/IB_SHIFT_REG$PORT_NO\_U/SOP_IN
+      add_wave "-noupdate -label EOP_IN"               $PATH/IB_SHIFT_REG$PORT_NO\_U/EOP_IN
+      add_wave "-noupdate -label DATA_IN_VLD"          $PATH/IB_SHIFT_REG$PORT_NO\_U/DATA_IN_VLD
+      add_wave "-noupdate -label WR_EN"                $PATH/IB_SHIFT_REG$PORT_NO\_U/WR_EN
+      add_wave "-noupdate -label DST_RDY"              $PATH/IB_SHIFT_REG$PORT_NO\_U/DST_RDY
+      add_wave "-noupdate -hex -label DATA_OUT"        $PATH/IB_SHIFT_REG$PORT_NO\_U/DATA_OUT
+      add_wave "-noupdate -label DATA_OUT_VLD"         $PATH/IB_SHIFT_REG$PORT_NO\_U/DATA_OUT_VLD
+      add_wave "-noupdate -label SOP_OUT"              $PATH/IB_SHIFT_REG$PORT_NO\_U/SOP_OUT
+      add_wave "-noupdate -label EOP_OUT"              $PATH/IB_SHIFT_REG$PORT_NO\_U/EOP_OUT
+      add_wave "-noupdate -label OUT_FSM_RDY"          $PATH/IB_SHIFT_REG$PORT_NO\_U/OUT_FSM_RDY
+}
+
+proc blk_ib_switch_in_fsm {NAME PATH PORT_NO} {
+    add wave -divider "$NAME" 
+      add_wave "-noupdate -color yellow -label RESET"  $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"    $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/CLK
+      add_wave "-noupdate -label present_state"        $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/present_state
+      add_wave "-noupdate -label DATA_VLD"             $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/DATA_VLD
+      add_wave "-noupdate -label SOP"                  $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/SOP
+      add_wave "-noupdate -label EOP"                  $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/EOP
+      add_wave "-noupdate -label ADDR_DEC_MATCH"       $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/ADDR_DEC_MATCH
+      add_wave "-noupdate -label IF_SELECT"            $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/IF_SELECT
+      add_wave "-noupdate -label SHR_WR_EN"            $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/SHR_WR_EN
+      add_wave "-noupdate -label IF_RQ"                $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/IF_RQ
+      add_wave "-noupdate -label IF_ACK"               $PATH/IB_SWITCH_IN_FSM$PORT_NO\_U/IF_ACK
+}
+
+proc blk_ib_switch_out_mux {NAME PATH} {
+    add wave -divider "$NAME" 
+      add_wave "-noupdate -hex -label PORTO_DATA_IN"   $PATH/IB_SWITCH_MUX_U/PORTO_DATA_IN
+      add_wave "-noupdate -hex -label PORT1_DATA_IN"   $PATH/IB_SWITCH_MUX_U/PORT1_DATA_IN
+      add_wave "-noupdate -hex -label PORT2_DATA_IN"   $PATH/IB_SWITCH_MUX_U/PORT2_DATA_IN
+      add_wave "-noupdate -hex -label PORT0_DATA_OUT"  $PATH/IB_SWITCH_MUX_U/PORT0_DATA_OUT
+      add_wave "-noupdate -label PORT0_MUX_SEL"        $PATH/IB_SWITCH_MUX_U/PORT0_MUX_SEL
+      add_wave "-noupdate -hex -label PORT1_DATA_OUT"  $PATH/IB_SWITCH_MUX_U/PORT1_DATA_OUT
+      add_wave "-noupdate -label PORT1_MUX_SEL"        $PATH/IB_SWITCH_MUX_U/PORT1_MUX_SEL
+      add_wave "-noupdate -hex -label PORT2_DATA_OUT"  $PATH/IB_SWITCH_MUX_U/PORT2_DATA_OUT
+      add_wave "-noupdate -label PORT2_MUX_SEL"        $PATH/IB_SWITCH_MUX_U/PORT2_MUX_SEL
+}
+
+proc blk_ib_switch_out_fsm {NAME PATH PORT_NO} {
+    add wave -divider "$NAME" 
+      add_wave "-noupdate -color yellow -label RESET"  $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"    $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/CLK
+      add_wave "-noupdate -label present_state"        $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/present_state
+      add_wave "-noupdate -label PORT0_SEND_RQ"        $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT0_SEND_RQ
+      add_wave "-noupdate -label PORT0_SEND_ACK"       $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT0_SEND_ACK
+      add_wave "-noupdate -label PORT0_DATA_VLD"       $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT0_DATA_VLD
+      add_wave "-noupdate -label PORT0_EOP"            $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT0_EOP
+      add_wave "-noupdate -label PORT0_FSM_RDY"        $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT0_FSM_RDY
+      add_wave "-noupdate -label PORT1_SEND_RQ"        $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT1_SEND_RQ
+      add_wave "-noupdate -label PORT1_SEND_ACK"       $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT1_SEND_ACK
+      add_wave "-noupdate -label PORT1_DATA_VLD"       $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT1_DATA_VLD
+      add_wave "-noupdate -label PORT1_EOP"            $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT1_EOP
+      add_wave "-noupdate -label PORT1_FSM_RDY"        $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT1_FSM_RDY
+      add_wave "-noupdate -label PORT2_SEND_RQ"        $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT2_SEND_RQ
+      add_wave "-noupdate -label PORT2_SEND_ACK"       $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT2_SEND_ACK
+      add_wave "-noupdate -label PORT2_DATA_VLD"       $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT2_DATA_VLD
+      add_wave "-noupdate -label PORT2_EOP"            $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT2_EOP
+      add_wave "-noupdate -label PORT2_FSM_RDY"        $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/PORT2_FSM_RDY
+      add_wave "-noupdate -label MUX_SEL"              $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/MUX_SEL
+      add_wave "-noupdate -label DST_RDY"              $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/DST_RDY
+      add_wave "-noupdate -label SRC_RDY"              $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/SRC_RDY
+      add_wave "-noupdate -label SOP"                  $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/SOP
+      add_wave "-noupdate -label EOP"                  $PATH/IB_SWITCH_OUT_FSM$PORT_NO\_U/EOP
+}

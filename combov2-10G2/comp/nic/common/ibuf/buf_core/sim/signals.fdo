@@ -1,0 +1,264 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Libor Polcak <polcak_l@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 5047 2008-08-19 15:35:28Z polcak_l $
+
+
+proc COMMON_IBUF_BUF_IFC { COMP_PATH } {
+   add wave -divider ""
+   add wave -divider "BUF"
+   add_wave "-noupdate -label CLK -hex" $COMP_PATH/CLK
+   add_wave "-noupdate -label RESET -hex" $COMP_PATH/RESET
+
+   add wave -divider "Input"
+   add_wave "-noupdate -label RX_DATA -hex" $COMP_PATH/RX_DATA
+   add_wave "-noupdate -label RX_DV -hex" $COMP_PATH/RX_DV
+   add_wave "-noupdate -label RX_SOP -hex" $COMP_PATH/RX_SOP
+   add_wave "-noupdate -label RX_EOP -hex" $COMP_PATH/RX_EOP
+   add_wave "-noupdate -label RX_EOP_POS -hex" $COMP_PATH/RX_EOP_POS
+   add_wave "-noupdate -label RX_ERR -hex" $COMP_PATH/RX_ERR
+
+   add wave -divider "Statistics"
+   add_wave "-noupdate -label RX_STAT -hex" $COMP_PATH/RX_STAT
+
+
+   add wave -divider "Output"
+   add_wave "-noupdate -label FL_CLK -hex" $COMP_PATH/FL_CLK
+
+   add wave -divider "Payload"
+   add_wave "-noupdate -label TX_DATA -hex" $COMP_PATH/TX_DATA
+   add_wave "-noupdate -label TX_REM -hex" $COMP_PATH/TX_REM
+   add_wave "-noupdate -label TX_SOP_N -hex" $COMP_PATH/TX_SOP_N
+   add_wave "-noupdate -label TX_EOP_N -hex" $COMP_PATH/TX_EOP_N
+   add_wave "-noupdate -label TX_SRC_RDY_N -hex" $COMP_PATH/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N -hex" $COMP_PATH/TX_DST_RDY_N
+
+   add wave -divider "Packet headres/footers"
+   add_wave "-noupdate -label TX_HDATA -hex" $COMP_PATH/TX_HDATA
+   add_wave "-noupdate -label TX_HREM -hex" $COMP_PATH/TX_HREM
+   add_wave "-noupdate -label TX_HSOP_N -hex" $COMP_PATH/TX_HSOP_N
+   add_wave "-noupdate -label TX_HEOP_N -hex" $COMP_PATH/TX_HEOP_N
+   add_wave "-noupdate -label TX_HSRC_RDY_N -hex" $COMP_PATH/TX_HSRC_RDY_N
+   add_wave "-noupdate -label TX_HDST_RDY_N -hex" $COMP_PATH/TX_HDST_RDY_N
+
+
+   add wave -divider "MI_INT Interface"
+   add_wave "-noupdate -label MI2BUF -hex" $COMP_PATH/MI2BUF
+   add_wave "-noupdate -label BUF2MI -hex" $COMP_PATH/BUF2MI
+
+
+   add wave -divider "Control data generator interface"
+   add_wave "-noupdate -label CTRL_DATA -hex" $COMP_PATH/CTRL_DATA
+   add_wave "-noupdate -label CTRL_REM -hex" $COMP_PATH/CTRL_REM
+   add_wave "-noupdate -label CTRL_SRC_RDY_N -hex" $COMP_PATH/CTRL_SRC_RDY_N
+   add_wave "-noupdate -label CTRL_SOP_N -hex" $COMP_PATH/CTRL_SOP_N
+   add_wave "-noupdate -label CTRL_EOP_N -hex" $COMP_PATH/CTRL_EOP_N
+   add_wave "-noupdate -label CTRL_DST_RDY_N -hex" $COMP_PATH/CTRL_DST_RDY_N
+   add_wave "-noupdate -label CTRL_SOP -hex" $COMP_PATH/CTRL_SOP
+   add_wave "-noupdate -label CTRL_RDY -hex" $COMP_PATH/CTRL_RDY
+   add_wave "-noupdate -label CTRL_STAT -hex" $COMP_PATH/CTRL_STAT
+   add_wave "-noupdate -label CTRL_STAT_DV -hex" $COMP_PATH/CTRL_STAT_DV
+}
+
+
+proc COMMON_IBUF_BUF_INPUT { COMP_PATH } {
+   add wave -divider "Statistic processing"
+   add_wave "-noupdate -label stats_vector" $COMP_PATH/stats_vector
+   add_wave "-noupdate -label error_mask" $COMP_PATH/error_mask
+   add_wave "-noupdate -label stats_vector_masked" $COMP_PATH/stats_vector_masked
+   add_wave "-noupdate -label packet_err -hex" $COMP_PATH/packet_err
+   add_wave "-noupdate -label packet_err_masked" $COMP_PATH/packet_err_masked
+   add_wave "-noupdate -label stats_err -hex" $COMP_PATH/stats_err
+   add_wave "-noupdate -label reg_packet_err -hex" $COMP_PATH/reg_packet_err
+   add_wave "-noupdate -label reg_packet_err_sync_rst -hex" $COMP_PATH/reg_packet_err_sync_rst
+   add_wave "-noupdate -label reg_stat_discard_in -hex" $COMP_PATH/reg_stat_discard_in
+   add_wave "-noupdate -label reg_stat_discard_we -hex" $COMP_PATH/reg_stat_discard_we
+   add_wave "-noupdate -label reg_stat_discard -hex" $COMP_PATH/reg_stat_discard
+
+   add wave -divider "Input registers"
+   add_wave "-noupdate -label reg_data_pipe -hex" $COMP_PATH/reg_data_pipe
+   add_wave "-noupdate -label reg_sop_pipe -hex" $COMP_PATH/reg_sop_pipe
+   add_wave "-noupdate -label reg_eop_pipe -hex" $COMP_PATH/reg_eop_pipe
+   add_wave "-noupdate -label reg_eop_pos_pipe -hex" $COMP_PATH/reg_eop_pos_pipe
+   add_wave "-noupdate -label reg_dv_pipe -hex" $COMP_PATH/reg_dv_pipe
+
+   add wave -divider "Stats registers"
+   add_wave "-noupdate -label reg_stats -hex" $COMP_PATH/reg_stats
+   add_wave "-noupdate -label reg_packet_err_stat -hex" $COMP_PATH/reg_packet_err_stat
+
+   add wave -divider "Register to cut preamble"
+   add_wave "-noupdate -label reg_rsop_n -hex" $COMP_PATH/reg_rsop_n
+}
+
+proc COMMON_IBUF_BUF_TRANSFORM { COMP_PATH } {
+   add wave -divider "FSM before FL Transformer"
+   add_wave "-noupdate -label CLK -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/CLK
+   add_wave "-noupdate -label RESET -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/RESET
+
+   add_wave "-noupdate -label RX_SOP_N -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/RX_SOP_N
+   add_wave "-noupdate -label RX_EOP_N -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/RX_EOP_N
+   add_wave "-noupdate -label RX_DV -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/RX_DV
+   add_wave "-noupdate -label TX_DST_RDY_N -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/TX_DST_RDY_N
+
+   add_wave "-noupdate -label TX_SRC_RDY_N -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/TX_SRC_RDY_N
+   add_wave "-noupdate -label FRAME_DISCARDED -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/FRAME_DISCARDED
+   add_wave "-noupdate -label BUFFER_OVERFLOW -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/BUFFER_OVERFLOW
+
+   add_wave "-noupdate -label curr_state -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/curr_state
+   add_wave "-noupdate -label next_state -hex" $COMP_PATH/fltra_gen/buf_fl_src_rdy_fsmi/next_state
+
+   add wave -divider "FL Transformer input"
+   add_wave "-noupdate -label fltra_data_rx -hex" $COMP_PATH/fltra_data_rx
+   add_wave "-noupdate -label fltra_sop_rx_n -hex" $COMP_PATH/fltra_sop_rx_n
+   add_wave "-noupdate -label fltra_eop_rx_n -hex" $COMP_PATH/fltra_eop_rx_n
+   add_wave "-noupdate -label fltra_sof_rx_n -hex" $COMP_PATH/fltra_sof_rx_n
+   add_wave "-noupdate -label fltra_eof_rx_n -hex" $COMP_PATH/fltra_eof_rx_n
+   add_wave "-noupdate -label fltra_rem_rx -hex" $COMP_PATH/fltra_rem_rx
+   add_wave "-noupdate -label fltra_src_rdy_rx_n -hex" $COMP_PATH/fltra_src_rdy_rx_n
+   add_wave "-noupdate -label fltra_dst_rdy_rx_n -hex" $COMP_PATH/fltra_dst_rdy_rx_n
+
+   add wave -divider "FL Transformer output"
+   add_wave "-noupdate -label fltra_data_tx -hex" $COMP_PATH/fltra_data_tx
+   add_wave "-noupdate -label fltra_sop_tx_n -hex" $COMP_PATH/fltra_sop_tx_n
+   add_wave "-noupdate -label fltra_eop_tx_n -hex" $COMP_PATH/fltra_eop_tx_n
+   add_wave "-noupdate -label fltra_rem_tx -hex" $COMP_PATH/fltra_rem_tx
+   add_wave "-noupdate -label fltra_src_rdy_tx_n -hex" $COMP_PATH/fltra_src_rdy_tx_n
+
+   add wave -divider "Registers between FL Transformer and FSM"
+   add_wave "-noupdate -label reg_fsm_data_rx -hex" $COMP_PATH/reg_fsm_data_rx
+   add_wave "-noupdate -label reg_fsm_rem_rx -hex" $COMP_PATH/reg_fsm_rem_rx
+   add_wave "-noupdate -label reg_fsm_sop_rx_n -hex" $COMP_PATH/reg_fsm_sop_rx_n
+   add_wave "-noupdate -label reg_fsm_eop_rx_n_in -hex" $COMP_PATH/reg_fsm_eop_rx_n_in
+   add_wave "-noupdate -label reg_fsm_eop_rx_n -hex" $COMP_PATH/reg_fsm_eop_rx_n
+   add_wave "-noupdate -label reg_fsm_discard_rx -hex" $COMP_PATH/reg_fsm_discard_rx
+   add_wave "-noupdate -label reg_fsm_rx_active -hex" $COMP_PATH/reg_fsm_rx_active
+   add_wave "-noupdate -label reg_stats_tra -hex" $COMP_PATH/reg_stats_tra
+   add_wave "-noupdate -label reg_packet_err_stat_tra -hex" $COMP_PATH/reg_packet_err_stat_tra
+}
+
+
+proc COMMON_IBUF_BUF_FSM { COMP_PATH } {
+   add wave -divider "Signals incoming to the FSM Part"
+   add_wave "-noupdate -label fsm_data_rx -hex" $COMP_PATH/fsm_data_rx
+   add_wave "-noupdate -label fsm_sop_rx_n -hex" $COMP_PATH/fsm_sop_rx_n
+   add_wave "-noupdate -label fsm_eop_rx_n -hex" $COMP_PATH/fsm_eop_rx_n
+   add_wave "-noupdate -label fsm_rem_rx -hex" $COMP_PATH/fsm_rem_rx
+   add_wave "-noupdate -label fsm_discard_rx -hex" $COMP_PATH/fsm_discard_rx
+   add_wave "-noupdate -label fsm_active -hex" $COMP_PATH/fsm_active
+   add_wave "-noupdate -label fsm_dfifo_full -hex" $COMP_PATH/fsm_dfifo_full
+
+   add wave -divider "Buf FSM"
+   add_wave "-noupdate -label CLK -hex" $COMP_PATH/fsmi/CLK
+   add_wave "-noupdate -label RESET -hex" $COMP_PATH/fsmi/RESET
+
+   add wave -divider "Input"
+   add_wave "-noupdate -label SOP_RX_N -hex" $COMP_PATH/fsmi/SOP_RX_N
+   add_wave "-noupdate -label EOP_RX_N -hex" $COMP_PATH/fsmi/EOP_RX_N
+   add_wave "-noupdate -label PACODAG_RDY -hex" $COMP_PATH/fsmi/PACODAG_RDY
+   add_wave "-noupdate -label DISCARD_RX -hex" $COMP_PATH/fsmi/DISCARD_RX
+   add_wave "-noupdate -label DFIFO_FULL -hex" $COMP_PATH/fsmi/DFIFO_FULL
+   add_wave "-noupdate -label IBUF_EN -hex" $COMP_PATH/fsmi/IBUF_EN
+
+   add wave -divider "Output"
+   add_wave "-noupdate -label PACODAG_REQ -hex" $COMP_PATH/fsmi/PACODAG_REQ
+   add_wave "-noupdate -label PACODAG_SEND -hex" $COMP_PATH/fsmi/PACODAG_SEND
+   add_wave "-noupdate -label PACODAG_RELEASE -hex" $COMP_PATH/fsmi/PACODAG_RELEASE
+   add_wave "-noupdate -label DFIFO_RELEASE -hex" $COMP_PATH/fsmi/DFIFO_RELEASE
+   add_wave "-noupdate -label DFIFO_MARK -hex" $COMP_PATH/fsmi/DFIFO_MARK
+   add_wave "-noupdate -label DFIFO_WR -hex" $COMP_PATH/fsmi/DFIFO_WR
+
+   add wave -divider "Counters CE"
+   add_wave "-noupdate -label CFC -hex" $COMP_PATH/fsmi/CFC
+   add_wave "-noupdate -label DFC -hex" $COMP_PATH/fsmi/DFC
+   add_wave "-noupdate -label BODFC -hex" $COMP_PATH/fsmi/BODFC
+
+   add wave -divider "Buf FSM states"
+   add_wave "-noupdate -label curr_state -hex" $COMP_PATH/fsmi/curr_state
+   add_wave "-noupdate -label next_state -hex" $COMP_PATH/fsmi/next_state
+
+   add wave -divider "Buf FSM signals"
+   add_wave "-noupdate -label sop_ok -hex" $COMP_PATH/fsmi/sop_ok
+   add_wave "-noupdate -label release -hex" $COMP_PATH/fsmi/release
+   add_wave "-noupdate -label eop_ok -hex" $COMP_PATH/fsmi/eop_ok
+   add_wave "-noupdate -label cur_st_frame -hex" $COMP_PATH/fsmi/cur_st_frame
+   add_wave "-noupdate -label cur_st_discard -hex" $COMP_PATH/fsmi/cur_st_discard
+   add_wave "-noupdate -label next_st_discard -hex" $COMP_PATH/fsmi/next_st_discard
+
+   add wave -divider "Counter CE genertion"
+   add_wave "-noupdate -label frame_accepted -hex" $COMP_PATH/fsmi/frame_accepted
+   add_wave "-noupdate -label reg_frame_accepted -hex" $COMP_PATH/fsmi/reg_frame_accepted
+   add_wave "-noupdate -label frame_disc_eop -hex" $COMP_PATH/fsmi/frame_disc_eop
+   add_wave "-noupdate -label reg_frame_disc_eop -hex" $COMP_PATH/fsmi/reg_frame_disc_eop
+   add_wave "-noupdate -label frame_disc_mid -hex" $COMP_PATH/fsmi/frame_disc_mid
+   add_wave "-noupdate -label reg_frame_disc_mid -hex" $COMP_PATH/fsmi/frame_disc_mid
+   add_wave "-noupdate -label reg_dfifo_full -hex" $COMP_PATH/fsmi/reg_dfifo_full
+}
+
+
+
+proc COMMON_IBUF_BUF_FIFOS { COMP_PATH } {
+   add wave -divider "Data FIFO signal"
+   add_wave "-noupdate -label dfifo_data_in -hex" $COMP_PATH/dfifo_data_in
+   add_wave "-noupdate -label dfifo_data_out -hex" $COMP_PATH/dfifo_data_out
+   add_wave "-noupdate -label dfifo_full -hex" $COMP_PATH/dfifo_full
+   add_wave "-noupdate -label dfifo_empty -hex" $COMP_PATH/dfifoi/empty
+   add_wave "-noupdate -label dfifo_release -hex" $COMP_PATH/dfifo_release
+   add_wave "-noupdate -label dfifo_mark -hex" $COMP_PATH/dfifo_mark
+   add_wave "-noupdate -label dfifo_wr  -hex" $COMP_PATH/dfifo_wr
+   add_wave "-noupdate -label dfifo_rd -hex" $COMP_PATH/dfifo_rd
+   add_wave "-noupdate -label dfifo_data_vld -hex" $COMP_PATH/dfifo_data_vld
+
+   add wave -divider "Header/Footer FIFO signals"
+   add_wave "-noupdate -label hfifo_data_in -hex" $COMP_PATH/hfifo_data_in
+   add_wave "-noupdate -label hfifo_data_out -hex" $COMP_PATH/hfifo_data_out
+   add_wave "-noupdate -label hfifo_full -hex" $COMP_PATH/hfifo_full
+   add_wave "-noupdate -label hfifo_empty -hex" $COMP_PATH/hfifoi/empty
+   add_wave "-noupdate -label hfifo_wr -hex" $COMP_PATH/hfifo_wr
+   add_wave "-noupdate -label hfifo_rd -hex" $COMP_PATH/hfifo_rd
+   add_wave "-noupdate -label hfifo_data_vld -hex" $COMP_PATH/hfifo_data_vld
+}
+
+proc COMMON_IBUF_BUF_CNTRS { COMP_PATH } {
+   add wave -divider "Counters"
+   add_wave "-noupdate -label cnt_trfc -dec" $COMP_PATH/cnt_trfc
+   add_wave "-noupdate -label cnt_trfc_ce -hex" $COMP_PATH/cnt_trfc_ce
+   add_wave "-noupdate -label cnt_trfc_ld -hex" $COMP_PATH/cnt_trfc_ld
+   add_wave "-noupdate -label cnt_cfc -dec" $COMP_PATH/cnt_cfc
+   add_wave "-noupdate -label cnt_cfc_ce -hex" $COMP_PATH/cnt_cfc_ce
+   add_wave "-noupdate -label cnt_cfc_ld -hex" $COMP_PATH/cnt_cfc_ld
+   add_wave "-noupdate -label cnt_dfc -dec" $COMP_PATH/cnt_dfc
+   add_wave "-noupdate -label cnt_dfc_ce -hex" $COMP_PATH/cnt_dfc_ce
+   add_wave "-noupdate -label cnt_dfc_ld -hex" $COMP_PATH/cnt_dfc_ld
+   add_wave "-noupdate -label cnt_bodfc -dec" $COMP_PATH/cnt_bodfc
+   add_wave "-noupdate -label cnt_bodfc_ce -hex" $COMP_PATH/cnt_bodfc_ce
+   add_wave "-noupdate -label cnt_bodfc_ld -hex" $COMP_PATH/cnt_bodfc_ld
+}
+
+
+

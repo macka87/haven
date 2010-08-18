@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>BM Converter</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="washek">Vaclav Bartos</author>
+       <author login="tomalek">Tomas Malek</author>
+</authors>
+
+
+<!-- Features -->
+<features>
+   <item>Generic data width</item>
+</features>
+
+
+<!-- Bugs 
+<bugs>
+</bugs>
+-->
+
+<!-- Things to do
+<todo>
+</todo>
+-->
+
+<!-- Short Block description -->
+<description>
+
+	<!-- THE MOST IMPORTANT PART!!! There should be about 8 rows which
+	     fully describe the component and its main functions -->
+   
+   Component that converts parallel 128bit ICS BM Interface to serial 
+   GICS BM Interface with generic data width. 
+   
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Generic description -->
+	<generic_map>
+		
+		<generic name="DATA_WIDTH" type="integer" default="64">
+			Number of data bits (must be power of 2, 8-128)
+		</generic>
+	</generic_map>
+
+	<!-- Port description -->
+	<port_map>
+
+		<divider>Common signals</divider>		
+		<port  name="CLK" dir="in" width="1">
+			Global FPGA clock
+		</port>
+		<port  name="RESET" dir="in" width="1">
+			Global reset
+		</port>
+
+		<divider>BM interface</divider> 		
+		<port name="BM_GLOBAL_ADDR" dir="in" width="64">
+		   Global adress
+		</port>
+		<port name="BM_LOCAL_ADDR" dir="in" width="32">
+		   Local adress
+		</port>
+		<port name="BM_LENGTH" dir="in" width="12">
+		   Length
+		</port>
+		<port name="BM_TAG" dir="in" width="16">
+		   Operation tag
+		</port>
+		<port name="BM_TRANS_TYPE" dir="in" width="2">
+		   Type of transaction
+		</port>
+		<port name="BM_REQ" dir="in" width="1">
+		   Request
+		</port>
+		<port name="BM_ACK" dir="out" width="1">
+		   Ack
+		</port>
+		<port name="BM_OP_TAG" dir="out" width="8">
+		   Operation tag
+		</port>
+		<port name="BM_OP_DONE" dir="out" width="1">
+		   Operation done
+		</port>
+		
+		<divider>IB interface</divider> 		
+		<port name="IB_DATA" dir="out" width="DATA_WIDTH">
+		   Data
+		</port>
+		<port name="IB_SOF_N" dir="out" width="1">
+		   Start of packet
+		</port>
+		<port name="IB_EOF_N" dir="out" width="1">
+		   End of packet
+		</port>
+		<port name="IB_SRC_RDY_N" dir="out" width="1">
+		   Source ready
+		</port>
+		<port name="IB_DST_RDY_N" dir="in" width="1">
+		   Destination ready
+		</port>
+		<port name="IB_TAG" dir="in" width="8">
+		   Operation tag
+		</port>
+		<port name="IB_TAG_VLD" dir="in" width="1">
+		   Operation tag valid
+		</port>
+		
+	</port_map>
+
+</interface>
+
+
+<!-- CONSTANTS SECTION *************************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+
+<constant>
+	
+</constant>
+
+
+<!-- OPERATIONS SECTION ************************************************* -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+
+<operations>
+
+</operations>
+
+
+<!-- ADDRESS SPACE SECTION ********************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this sections -->
+
+<!-- HW BODY SECTION **************************************************** -->
+<!-- information for HW designers, structure should be as follow          -->
+<body>
+
+
+<h1>Scheme</h1>
+
+<p>
+   <obr src="./fig/bm_converter.fig">Scheme for 32bit data width</obr>
+</p>
+<p>
+   When data width is 128bits, interfaces are connected with some simple
+   logic only.
+</p>
+
+<h1>Frequency and resource usage</h1>
+
+<h2>Virtex-II</h2>
+<p>
+   <tab sloupce="cccc">
+      <tr>
+         <th>Data width</th>
+         <th>Slices</th>
+         <th>Slice Flip Flops</th>
+         <th>LUTs</th>
+         <th>Max frequency</th>
+      </tr>
+      <tr>
+         <td>128</td>
+         <td>2</td>
+         <td>0</td>
+         <td>3</td>
+         <td>-</td>
+      </tr>
+      <tr>
+         <td>64</td>
+         <td>75</td>
+         <td>130</td>
+         <td>72</td>
+         <td>288 MHz</td>
+      </tr>
+      <tr>
+         <td>32</td>
+         <td>75</td>
+         <td>131</td>
+         <td>106</td>
+         <td>283 MHz</td>
+      </tr>
+      <tr>
+         <td>8</td>
+         <td>76</td>
+         <td>133</td>
+         <td>132</td>
+         <td>279 MHz</td>
+      </tr>
+      <nazev>
+         Chip utilization (synthetized by XST, chip xc2vp50)
+      </nazev>
+   </tab>   
+</p>
+
+<h2>Virtex-5</h2>
+<p>
+   <tab sloupce="cccc">
+      <tr>
+         <th>Data width</th>
+         <th>Slice registers</th>
+         <th>Slice LUTs</th>
+         <th>Bit slices used</th>
+         <th>Max frequency</th>
+      </tr>
+      <tr>
+         <td>128</td>
+         <td>0</td>
+         <td>3</td>
+         <td>3</td>
+         <td>-</td>
+      </tr>
+      <tr>
+         <td>64</td>
+         <td>130</td>
+         <td>72</td>
+         <td>133</td>
+         <td>438 MHz</td>
+      </tr>
+      <tr>
+         <td>32</td>
+         <td>131</td>
+         <td>105</td>
+         <td>134</td>
+         <td>437 MHz</td>
+      </tr>
+      <tr>
+         <td>8</td>
+         <td>133</td>
+         <td>132</td>
+         <td>137</td>
+         <td>391 MHz</td>
+      </tr>
+      <nazev>
+         Chip utilization (synthetized by XST, chip xc5vlx110)
+      </nazev>
+   </tab>
+</p>
+
+
+
+</body>
+
+</source>
+
+
+

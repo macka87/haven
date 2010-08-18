@@ -1,0 +1,597 @@
+#
+# signals.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author(s): Tomas Malek <tomalek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 5056 2008-08-19 16:55:05Z xkobie00 $
+#
+
+# -------------------------------------------------------------------
+#                       PCIE2IB BRIDGE Signals of interfaces
+# -------------------------------------------------------------------
+
+proc pcie_bridge {NAME PATH} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                          $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                              $PATH/TRN_CLK
+      
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RBAR_HIT_N"       $PATH/TRN_RBAR_HIT_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RD"               $PATH/TRN_RD
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RREM_N"           $PATH/TRN_RREM_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RSOF_N"           $PATH/TRN_RSOF_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_REOF_N"           $PATH/TRN_REOF_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RSRC_RDY_N"       $PATH/TRN_RSRC_RDY_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RDST_RDY_N"       $PATH/TRN_RDST_RDY_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RERRFWD_N"        $PATH/TRN_RERRFWD_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RNP_OK_N"         $PATH/TRN_RNP_OK_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RCPL_STREAMING_N" $PATH/TRN_RCPL_STREAMING_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RSRC_DSC_N"       $PATH/TRN_RSRC_DSC_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RFC_PD_AV"        $PATH/TRN_RFC_PD_AV
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RFC_NPD_AV"       $PATH/TRN_RFC_NPD_AV
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RFC_NPH_AV"       $PATH/TRN_RFC_NPH_AV
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RFC_PH_AV"        $PATH/TRN_RFC_PH_AV
+
+      
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_LNK_UP_N"         $PATH/TRN_LNK_UP_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TD"               $PATH/TRN_TD
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TREM_N"           $PATH/TRN_TREM_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TSOF_N"           $PATH/TRN_TSOF_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TEOF_N"           $PATH/TRN_TEOF_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TSRC_RDY_N"       $PATH/TRN_TSRC_RDY_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TDST_RDY_N"       $PATH/TRN_TDST_RDY_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TSRC_DSC_N"       $PATH/TRN_TSRC_DSC_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TERRFWD_N"        $PATH/TRN_TERRFWD_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TDST_DSC_N"       $PATH/TRN_TDST_DSC_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TBUF_AV"          $PATH/TRN_TBUF_AV
+
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DO"                  $PATH/CFG_DO
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_RD_WR_DONE_N"        $PATH/CFG_RD_WR_DONE_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DI"                  $PATH/CFG_DI
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DWADDR"              $PATH/CFG_DWADDR
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_WR_EN_N"             $PATH/CFG_WR_EN_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_RD_EN_N"             $PATH/CFG_RD_EN_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_INTERRUPT_N"         $PATH/CFG_INTERRUPT_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_INTERRUPT_RDY_N"     $PATH/CFG_INTERRUPT_RDY_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_INTERRUPT_MMENABLE"  $PATH/CFG_INTERRUPT_MMENABLE
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_INTERRUPT_MSIENABLE" $PATH/CFG_INTERRUPT_MSIENABLE
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_INTERRUPT_DI"        $PATH/CFG_INTERRUPT_DI
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_INTERRUPT_DO"        $PATH/CFG_INTERRUPT_DO
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_INTERRUPT_ASSERT_N"  $PATH/CFG_INTERRUPT_ASSERT_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_TO_TURNOFF_N"        $PATH/CFG_TO_TURNOFF_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_BYTE_EN_N"           $PATH/CFG_BYTE_EN_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_BUS_NUMBER"          $PATH/CFG_BUS_NUMBER
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DEVICE_NUMBER"       $PATH/CFG_DEVICE_NUMBER
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_FUNCTION_NUMBER"     $PATH/CFG_FUNCTION_NUMBER
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_STATUS"              $PATH/CFG_STATUS
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_COMMAND"             $PATH/CFG_COMMAND
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DSTATUS"             $PATH/CFG_DSTATUS
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DCOMMAND"            $PATH/CFG_DCOMMAND
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_LSTATUS"             $PATH/CFG_LSTATUS
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_LCOMMAND"            $PATH/CFG_LCOMMAND
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_PM_WAKE_N"           $PATH/CFG_PM_WAKE_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_PCIE_LINK_STATE_N"   $PATH/CFG_PCIE_LINK_STATE_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_TRN_PENDING_N"       $PATH/CFG_TRN_PENDING_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DSN"                 $PATH/CFG_DSN
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_ECRC_N"          $PATH/CFG_ERR_ECRC_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_UR_N"            $PATH/CFG_ERR_UR_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_CPL_TIMEOUT_N"   $PATH/CFG_ERR_CPL_TIMEOUT_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_CPL_UNEXPECT_N"  $PATH/CFG_ERR_CPL_UNEXPECT_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_CPL_ABORT_N"     $PATH/CFG_ERR_CPL_ABORT_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_POSTED_N"        $PATH/CFG_ERR_POSTED_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_COR_N"           $PATH/CFG_ERR_COR_N
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_TLP_CPL_HEADER"  $PATH/CFG_ERR_TLP_CPL_HEADER
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_ERR_CPL_RDY_N"       $PATH/CFG_ERR_CPL_RDY_N
+
+      add_wave "-group {$NAME: IB TX Interface} -noupdate -hex -label TX_DATA"           $PATH/TX_DATA
+      add_wave "-group {$NAME: IB TX Interface} -noupdate -hex -label TX_SOP_N"          $PATH/TX_SOP_N
+      add_wave "-group {$NAME: IB TX Interface} -noupdate -hex -label TX_EOP_N"          $PATH/TX_EOP_N
+      add_wave "-group {$NAME: IB TX Interface} -noupdate -hex -label TX_SRC_RDY_N"      $PATH/TX_SRC_RDY_N
+      add_wave "-group {$NAME: IB TX Interface} -noupdate -hex -label TX_DST_RDY_N"      $PATH/TX_DST_RDY_N
+
+      add_wave "-group {$NAME: IB RX Interface} -noupdate -hex -label RX_DATA"           $PATH/RX_DATA
+      add_wave "-group {$NAME: IB RX Interface} -noupdate -hex -label RX_SOP_N"          $PATH/RX_SOP_N
+      add_wave "-group {$NAME: IB RX Interface} -noupdate -hex -label RX_EOP_N"          $PATH/RX_EOP_N
+      add_wave "-group {$NAME: IB RX Interface} -noupdate -hex -label RX_SRC_RDY_N"      $PATH/RX_SRC_RDY_N
+      add_wave "-group {$NAME: IB RX Interface} -noupdate -hex -label RX_DST_RDY_N"      $PATH/RX_DST_RDY_N
+}      
+
+proc rx_decoder {NAME PATH} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                          $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                              $PATH/TRN_CLK
+
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RBAR_HIT_N"       $PATH/TRN_RBAR_HIT_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RD"               $PATH/TRN_RD
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RREM_N"           $PATH/TRN_RREM_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RSOF_N"           $PATH/TRN_RSOF_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_REOF_N"           $PATH/TRN_REOF_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RSRC_RDY_N"       $PATH/TRN_RSRC_RDY_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RDST_RDY_N"       $PATH/TRN_RDST_RDY_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RERRFWD_N"        $PATH/TRN_RERRFWD_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RNP_OK_N"         $PATH/TRN_RNP_OK_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RCPL_STREAMING_N" $PATH/TRN_RCPL_STREAMING_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RSRC_DSC_N"       $PATH/TRN_RSRC_DSC_N
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RFC_PD_AV"        $PATH/TRN_RFC_PD_AV
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RFC_NPD_AV"       $PATH/TRN_RFC_NPD_AV
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RFC_NPH_AV"       $PATH/TRN_RFC_NPH_AV
+      add_wave "-group {$NAME: PCIe RX Interface} -noupdate -hex -label TRN_RFC_PH_AV"        $PATH/TRN_RFC_PH_AV
+
+      add_wave "-group {$NAME: IB Generator Interface} -noupdate -hex -label DATA"            $PATH/DATA
+      add_wave "-group {$NAME: IB Generator Interface} -noupdate -hex -label SOP_N"           $PATH/SOP_N
+      add_wave "-group {$NAME: IB Generator Interface} -noupdate -hex -label EOP_N"           $PATH/EOP_N
+      add_wave "-group {$NAME: IB Generator Interface} -noupdate -hex -label SRC_RDY_N"       $PATH/SRC_RDY_N
+      add_wave "-group {$NAME: IB Generator Interface} -noupdate -hex -label DST_RDY_N"       $PATH/DST_RDY_N
+      add_wave "-group {$NAME: IB Generator Interface} -noupdate -hex -label READ_TRANS_EN_N" $PATH/READ_TRANS_EN_N
+}      
+
+
+proc ib_generator {NAME PATH} {
+   add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                                 $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                                     $PATH/TRN_CLK
+
+      add_wave "-group {$NAME: PCIE RX Decoder Interface} -noupdate -hex -label DEC_DATA"            $PATH/DEC_DATA
+      add_wave "-group {$NAME: PCIE RX Decoder Interface} -noupdate -hex -label DEC_SOP_N"           $PATH/DEC_SOP_N
+      add_wave "-group {$NAME: PCIE RX Decoder Interface} -noupdate -hex -label DEC_EOP_N"           $PATH/DEC_EOP_N
+      add_wave "-group {$NAME: PCIE RX Decoder Interface} -noupdate -hex -label DEC_SRC_RDY_N"       $PATH/DEC_SRC_RDY_N
+      add_wave "-group {$NAME: PCIE RX Decoder Interface} -noupdate -hex -label DEC_DST_RDY_N"       $PATH/DEC_DST_RDY_N
+      add_wave "-group {$NAME: PCIE RX Decoder Interface} -noupdate -hex -label DEC_READ_TRANS_EN_N" $PATH/DEC_READ_TRANS_EN_N
+
+      add_wave "-group {$NAME: Local Buffer Interface} -noupdate -hex -label LCB_TAG"                $PATH/LCB_TAG
+      add_wave "-group {$NAME: Local Buffer Interface} -noupdate -hex -label LCB_WR_0"               $PATH/LCB_WR_0
+      add_wave "-group {$NAME: Local Buffer Interface} -noupdate -hex -label LCB_REQ_ID"             $PATH/LCB_REQ_ID
+      add_wave "-group {$NAME: Local Buffer Interface} -noupdate -hex -label LCB_WR_1"               $PATH/LCB_WR_1
+      add_wave "-group {$NAME: Local Buffer Interface} -noupdate -hex -label LCB_ALLOW"              $PATH/LCB_ALLOW
+      add_wave "-group {$NAME: Local Buffer Interface} -noupdate -hex -label LCB_LOCAL_TAG"          $PATH/LCB_LOCAL_TAG
+      add_wave "-group {$NAME: Local Buffer Interface} -noupdate -hex -label LCB_FULL"               $PATH/LCB_FULL
+
+      add_wave "-group {$NAME: Global Buffer Interface} -noupdate -hex -label GCB_LOCAL_ADDR"        $PATH/GCB_LOCAL_ADDR
+      add_wave "-group {$NAME: Global Buffer Interface} -noupdate -hex -label GCB_LOCAL_TAG"         $PATH/GCB_LOCAL_TAG
+      add_wave "-group {$NAME: Global Buffer Interface} -noupdate -hex -label GCB_RD"                $PATH/GCB_RD
+      add_wave "-group {$NAME: Global Buffer Interface} -noupdate -hex -label GCB_GLOBAL_TAG"        $PATH/GCB_GLOBAL_TAG
+      add_wave "-group {$NAME: Global Buffer Interface} -noupdate -hex -label GCB_LAST_CPL"          $PATH/GCB_LAST_CPL
+      add_wave "-group {$NAME: Global Buffer Interface} -noupdate -hex -label GCB_LEN_CPL"           $PATH/GCB_LEN_CPL
+
+      add_wave "-group {$NAME: Internal Bus TX Interface} -noupdate -hex -label DATA"                $PATH/DATA
+      add_wave "-group {$NAME: Internal Bus TX Interface} -noupdate -hex -label SOP_N"               $PATH/SOP_N
+      add_wave "-group {$NAME: Internal Bus TX Interface} -noupdate -hex -label EOP_N"               $PATH/EOP_N
+      add_wave "-group {$NAME: Internal Bus TX Interface} -noupdate -hex -label SRC_RDY_N"           $PATH/SRC_RDY_N
+      add_wave "-group {$NAME: Internal Bus TX Interface} -noupdate -hex -label DST_RDY_N"           $PATH/DST_RDY_N
+}      
+
+proc ib_decoder {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                                 $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                                     $PATH/TRN_CLK
+
+      add_wave "-group {$NAME: Internal Bus RX Interface} -noupdate -hex -label RX_DATA"             $PATH/RX_DATA
+      add_wave "-group {$NAME: Internal Bus RX Interface} -noupdate -hex -label RX_SOP_N"            $PATH/RX_SOP_N
+      add_wave "-group {$NAME: Internal Bus RX Interface} -noupdate -hex -label RX_EOP_N"            $PATH/RX_EOP_N
+      add_wave "-group {$NAME: Internal Bus RX Interface} -noupdate -hex -label RX_SRC_RDY_N"        $PATH/RX_SRC_RDY_N
+      add_wave "-group {$NAME: Internal Bus RX Interface} -noupdate -hex -label RX_DST_RDY_N"        $PATH/RX_DST_RDY_N
+
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_DATA"             $PATH/GEN_DATA
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_SOP_N"            $PATH/GEN_SOP_N
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_EOP_N"            $PATH/GEN_EOP_N
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_SRC_RDY_N"        $PATH/GEN_SRC_RDY_N
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_DST_RDY_N"        $PATH/GEN_DST_RDY_N
+
+      add_wave "-group {$NAME: Local Completition Buffer} -noupdate -hex -label LCB_TAG"             $PATH/LCB_TAG
+      add_wave "-group {$NAME: Local Completition Buffer} -noupdate -hex -label LCB_REQ_ID"          $PATH/LCB_REQ_ID
+      add_wave "-group {$NAME: Local Completition Buffer} -noupdate -hex -label LCB_RD"              $PATH/LCB_RD
+      add_wave "-group {$NAME: Local Completition Buffer} -noupdate -hex -label LCB_RTAG"            $PATH/LCB_RTAG
+
+      add_wave "-group {$NAME: Global Completition Buffer} -noupdate -hex -label GCB_LOCAL_ADDR"     $PATH/GCB_LOCAL_ADDR
+      add_wave "-group {$NAME: Global Completition Buffer} -noupdate -hex -label GCB_LOCAL_TAG"      $PATH/GCB_LOCAL_TAG
+      add_wave "-group {$NAME: Global Completition Buffer} -noupdate -hex -label GCB_WR"             $PATH/GCB_WR
+      add_wave "-group {$NAME: Global Completition Buffer} -noupdate -hex -label GCB_WR_ALLOW"       $PATH/GCB_WR_ALLOW
+      add_wave "-group {$NAME: Global Completition Buffer} -noupdate -hex -label GCB_RTAG"           $PATH/GCB_RTAG
+}
+
+proc tx_generator {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                           $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                               $PATH/TRN_CLK
+
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_DATA"       $PATH/GEN_DATA
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_SOP_N"      $PATH/GEN_SOP_N
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_EOP_N"      $PATH/GEN_EOP_N
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_SRC_RDY_N"  $PATH/GEN_SRC_RDY_N
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_DST_RDY_N"  $PATH/GEN_DST_RDY_N
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_DW4"        $PATH/GEN_DW4
+      add_wave "-group {$NAME: PCIe Generator Interface} -noupdate -hex -label GEN_DW4_VLD"    $PATH/GEN_DW4_VLD
+
+
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_LNK_UP_N"          $PATH/TRN_LNK_UP_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TD"                $PATH/TRN_TD
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TREM_N"            $PATH/TRN_TREM_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TSOF_N"            $PATH/TRN_TSOF_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TEOF_N"            $PATH/TRN_TEOF_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TSRC_RDY_N"        $PATH/TRN_TSRC_RDY_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TDST_RDY_N"        $PATH/TRN_TDST_RDY_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TSRC_DSC_N"        $PATH/TRN_TSRC_DSC_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TERRFWD_N"         $PATH/TRN_TERRFWD_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TDST_DSC_N"        $PATH/TRN_TDST_DSC_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TBUF_AV"           $PATH/TRN_TBUF_AV
+
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_BUS_NUMBER"       $PATH/CFG_BUS_NUMBER
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DEVICE_NUMBER"    $PATH/CFG_DEVICE_NUMBER
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_FUNCTION_NUMBER"  $PATH/CFG_FUNCTION_NUMBER
+      add_wave "-group {$NAME: PCIe CFG Interface} -noupdate -hex -label CFG_DCOMMAND"         $PATH/CFG_DCOMMAND
+}      
+
+proc local_compl_buf {NAME PATH} {
+    add_wave "-noupdate -color yellow -label {$NAME: RESET}"                           $PATH/RESET
+    add_wave "-noupdate -color yellow -label {$NAME: CLK}"                             $PATH/CLK
+
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label RX_TAG"            $PATH/RX_TAG
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label RX_WR_0"           $PATH/RX_WR_0
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label RX_REQ_ID"         $PATH/RX_REQ_ID
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label RX_WR_1"           $PATH/RX_WR_1
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label RX_ALLOW"          $PATH/RX_ALLOW
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label RX_LOCAL_TAG"      $PATH/RX_LOCAL_TAG
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label RX_FULL"           $PATH/RX_FULL
+
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label TX_TAG"             $PATH/TX_TAG
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label TX_REQ_ID"          $PATH/TX_REQ_ID
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label TX_RD"              $PATH/TX_RD
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label TX_RTAG"            $PATH/TX_RTAG
+
+    add_wave "-group {$NAME: Status Interface} -noupdate -hex -label STATUS"           $PATH/STATUS
+    add_wave "-group {$NAME: Status Interface} -noupdate -hex -label TRANS_EN_N"       $PATH/TRANS_EN_N
+}      
+
+proc global_compl_buf {NAME PATH} {
+    add_wave "-noupdate -color yellow -label {$NAME: RESET}"                            $PATH/RESET
+    add_wave "-noupdate -color yellow -label {$NAME: CLK}"                              $PATH/CLK
+
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label RX_LOCAL_ADDR"      $PATH/RX_LOCAL_ADDR
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label RX_LOCAL_TAG"       $PATH/RX_LOCAL_TAG
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label RX_RD"              $PATH/RX_RD
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label RX_GLOBAL_TAG"      $PATH/RX_GLOBAL_TAG
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label RX_LAST_CPL"        $PATH/RX_LAST_CPL
+    add_wave "-group {$NAME: Read Interface} -noupdate -hex -label RX_LEN_CPL"         $PATH/RX_LEN_CPL
+
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label TX_LOCAL_ADDR"      $PATH/TX_LOCAL_ADDR
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label TX_LOCAL_TAG"       $PATH/TX_LOCAL_TAG
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label TX_WR"              $PATH/TX_WR
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label TX_ALLOW"           $PATH/TX_ALLOW
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label TX_FULL"            $PATH/TX_FULL
+    add_wave "-group {$NAME: Write Interface} -noupdate -hex -label TX_RTAG"            $PATH/TX_RTAG
+
+    add_wave "-group {$NAME: Status Interface} -noupdate -hex -label STATUS"            $PATH/STATUS
+    add_wave "-group {$NAME: Status Interface} -noupdate -hex -label TRANS_EN_N"        $PATH/TRANS_EN_N
+}      
+
+
+proc tx_generator_in_fsm {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                              $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                                  $PATH/TRN_CLK
+      add_wave "-noupdate -hex -label present_state"                                              $PATH/present_state
+
+      add_wave "-group {$NAME: Data Input Interface} -noupdate -hex -label IN_SOP_N"              $PATH/IN_SOP_N
+      add_wave "-group {$NAME: Data Input Interface} -noupdate -hex -label IN_EOP_N"              $PATH/IN_EOP_N
+      add_wave "-group {$NAME: Data Input Interface} -noupdate -hex -label IN_SRC_RDY_N"          $PATH/IN_SRC_RDY_N
+      add_wave "-group {$NAME: Data Input Interface} -noupdate -hex -label IN_DST_RDY_N"          $PATH/IN_DST_RDY_N
+
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_SOP_N"      $PATH/REALIGN_SOP_N
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_EOP_N"      $PATH/REALIGN_EOP_N
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_SRC_RDY_N"  $PATH/REALIGN_SRC_RDY_N
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_DST_RDY_N"  $PATH/REALIGN_DST_RDY_N
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_RDY"        $PATH/REALIGN_RDY
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_INIT"       $PATH/REALIGN_INIT
+
+      add_wave "-group {$NAME: Output FSM Interface} -noupdate -hex -label HDR0_RDY"              $PATH/HDR0_RDY
+      add_wave "-group {$NAME: Output FSM Interface} -noupdate -hex -label HDR1_RDY"              $PATH/HDR1_RDY
+      add_wave "-group {$NAME: Output FSM Interface} -noupdate -hex -label HDR0_ACK"              $PATH/HDR0_ACK
+      add_wave "-group {$NAME: Output FSM Interface} -noupdate -hex -label HDR1_ACK"              $PATH/HDR1_ACK
+
+      add_wave "-group {$NAME: Register Control Interface} -noupdate -hex -label LEN_WE"               $PATH/LEN_WE
+      add_wave "-group {$NAME: Register Control Interface} -noupdate -hex -label LEN_WE"               $PATH/TAG_WE
+      add_wave "-group {$NAME: Register Control Interface} -noupdate -hex -label FIRST_BE_SRC_ADDR_WE" $PATH/FIRST_BE_SRC_ADDR_WE
+      add_wave "-group {$NAME: Register Control Interface} -noupdate -hex -label ADDR_WE"              $PATH/ADDR_WE
+      add_wave "-group {$NAME: Register Control Interface} -noupdate -hex -label LOWER_ADDR_WE"        $PATH/LOWER_ADDR_WE
+      add_wave "-group {$NAME: Register Control Interface} -noupdate -hex -label REQUESTER_ID_WE"      $PATH/REQUESTER_ID_WE
+}      
+
+
+proc tx_generator_out_fsm {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                              $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                                  $PATH/TRN_CLK
+      add_wave "-noupdate -hex -label present_state"                                              $PATH/present_state
+
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_LNK_UP_N"          $PATH/TRN_LNK_UP_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TREM_N"            $PATH/TRN_TREM_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TSOF_N"            $PATH/TRN_TSOF_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TEOF_N"            $PATH/TRN_TEOF_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TSRC_RDY_N"        $PATH/TRN_TSRC_RDY_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TDST_RDY_N"        $PATH/TRN_TDST_RDY_N
+      add_wave "-group {$NAME: PCIe TX Interface} -noupdate -hex -label TRN_TBUF_AV"           $PATH/TRN_TBUF_AV
+
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_SOP_N"      $PATH/REALIGN_SOP_N
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_EOP_N"      $PATH/REALIGN_EOP_N
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_SRC_RDY_N"  $PATH/REALIGN_SRC_RDY_N
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_DST_RDY_N"  $PATH/REALIGN_DST_RDY_N
+      add_wave "-group {$NAME: Realign Input Interface} -noupdate -hex -label REALIGN_REM_N"      $PATH/REALIGN_REM_N
+
+      add_wave "-group {$NAME: Input FSM Interface} -noupdate -hex -label HDR0_RDY"              $PATH/HDR0_RDY
+      add_wave "-group {$NAME: Input FSM Interface} -noupdate -hex -label HDR1_RDY"              $PATH/HDR1_RDY
+      add_wave "-group {$NAME: Input FSM Interface} -noupdate -hex -label HDR0_ACK"              $PATH/HDR0_ACK
+      add_wave "-group {$NAME: Input FSM Interface} -noupdate -hex -label HDR1_ACK"              $PATH/HDR1_ACK
+
+      add_wave "-group {$NAME: Control Interface} -noupdate -hex -label SPLIT_TRANS"     $PATH/SPLIT_TRANS
+      add_wave "-group {$NAME: Control Interface} -noupdate -hex -label WITH_DATA"       $PATH/WITH_DATA
+      add_wave "-group {$NAME: Control Interface} -noupdate -hex -label DW4_REG "        $PATH/DW4_REG 
+      add_wave "-group {$NAME: Control Interface} -noupdate -hex -label TR_TYPE"         $PATH/TR_TYPE
+
+
+      add_wave "-group {$NAME: Control Interface} -noupdate -hex -label DATA_SEL"        $PATH/DATA_SEL
+      add_wave "-group {$NAME: Control Interface} -noupdate -hex -label TYPE_OUT"        $PATH/TYPE_OUT
+      add_wave "-group {$NAME: Control Interface} -noupdate -hex -label NEXT_PART"       $PATH/NEXT_PART
+      add_wave "-group {$NAME: Control Interface} -noupdate -hex -label DW4_OUT"         $PATH/DW4_OUT
+ 
+
+}  
+
+proc tx_generator_len_decoder {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                                   $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                                       $PATH/TRN_CLK
+
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label LEN_IN"                 $PATH/LEN_IN
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label LEN_IN_WE"              $PATH/LEN_IN_WE
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label len_in_reg"             $PATH/len_in_reg
+
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label TYPE_REG"               $PATH/TYPE_REG
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label MAX_READ_SIZE"          $PATH/MAX_READ_SIZE
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label MAX_PAYLOAD_SIZE"       $PATH/MAX_PAYLOAD_SIZE
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label FIRST_BE_SRC_ADDR_REG"  $PATH/FIRST_BE_SRC_ADDR_REG
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label SPLIT_TRANS"            $PATH/SPLIT_TRANS
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label NEXT_PART"              $PATH/NEXT_PART
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label DW_LEN_OUT"             $PATH/DW_LEN_OUT
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label FIRST_BE_OUT"           $PATH/FIRST_BE_OUT
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label LAST_BE_OUT"            $PATH/LAST_BE_OUT
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label BYTE_COUNT"             $PATH/BYTE_COUNT
+}      
+
+proc tx_generator_addr_decoder {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                                   $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                                       $PATH/TRN_CLK
+
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label ADDR_IN"                $PATH/ADDR_IN
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label ADDR_IN_WE"             $PATH/ADDR_IN_WE
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label TYPE_REG"               $PATH/TYPE_REG
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label MAX_READ_SIZE"          $PATH/MAX_READ_SIZE
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label MAX_PAYLOAD_SIZE"       $PATH/MAX_PAYLOAD_SIZE
+      add_wave "-group {$NAME: Length Decoder Interface} -noupdate -hex -label ADDR_OUT"               $PATH/ADDR_OUT
+}
+
+proc tx_generator_realign {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                                   $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                                       $PATH/TRN_CLK
+
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label IN_DATA"                       $PATH/IN_DATA
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label IN_SOP_N"                      $PATH/IN_SOP_N
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label IN_EOP_N"                      $PATH/IN_EOP_N
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label IN_SRC_RDY_N"                  $PATH/IN_SRC_RDY_N
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label IN_DST_RDY_N"                  $PATH/IN_DST_RDY_N
+
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label OUT_DATA"                      $PATH/OUT_DATA
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label OUT_SOP_N"                     $PATH/OUT_SOP_N
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label OUT_EOP_N"                     $PATH/OUT_EOP_N
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label OUT_SRC_RDY_N"                 $PATH/OUT_SRC_RDY_N
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label OUT_DST_RDY_N"                 $PATH/OUT_DST_RDY_N
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label OUT_REM_N"                     $PATH/OUT_REM_N
+
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label LEN_IN"                        $PATH/LEN_IN
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label FIRST_BE"                      $PATH/FIRST_BE
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label DW4"                           $PATH/DW4
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label INIT"                          $PATH/INIT
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label INIT_RDY"                      $PATH/INIT_RDY
+      add_wave "-group {$NAME: Realign Interface} -noupdate -hex -label in_eop_reg_n"                  $PATH/in_eop_reg_n
+}
+
+
+proc tx_spliter {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_RESET_N}"                                   $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label {$NAME: TRN_CLK}"                                       $PATH/TRN_CLK
+
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label IN_DATA"                      $PATH/IN_DATA
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label IN_SOP_N"                     $PATH/IN_SOP_N
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label IN_EOP_N"                     $PATH/IN_EOP_N
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label IN_SRC_RDY_N"                 $PATH/IN_SRC_RDY_N
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label IN_DST_RDY_N"                 $PATH/IN_DST_RDY_N
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label IN_REM_N"                     $PATH/IN_REM_N
+
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label OUT_DATA"                      $PATH/OUT_DATA
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label OUT_SOP_N"                     $PATH/OUT_SOP_N
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label OUT_EOP_N"                     $PATH/OUT_EOP_N
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label OUT_SRC_RDY_N"                 $PATH/OUT_SRC_RDY_N
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label OUT_DST_RDY_N"                 $PATH/OUT_DST_RDY_N
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label OUT_REM_N"                     $PATH/OUT_REM_N
+
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label DW4"                           $PATH/DW4
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label INIT"                          $PATH/INIT
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label MAX_PAYLOAD_SIZE"              $PATH/MAX_PAYLOAD_SIZE
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label dw3_plus_one"                  $PATH/dw3_plus_one
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label max_words_out"                 $PATH/max_words_out
+      add_wave "-group {$NAME: Spiltter Interface} -noupdate -hex -label eop_n_split"                   $PATH/eop_n_split
+}
+
+
+proc blk_ib_decoder {NAME PATH} {
+
+    add wave -divider "$NAME"
+    add_wave "-group {$NAME: Common} -noupdate -color yellow -label RESET"            $PATH/TRN_RESET_N
+    add_wave "-group {$NAME: Common} -noupdate -color yellow -label CLK"              $PATH/TRN_CLK
+	  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label out_gen_src_rdy_n" 	      $PATH/out_gen_src_rdy_n
+	  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label type_dec" 	      $PATH/type_dec
+	  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label type_dec_reg"     $PATH/type_dec_reg
+    add_wave "-group {$NAME: Input Interface} -noupdate -hex -label in_rx_sop_n"     $PATH/in_rx_sop_n
+    add_wave "-group {$NAME: Input Interface} -noupdate -hex -label sop_n_reg"     $PATH/sop_n_reg
+    add_wave "-group {$NAME: Input Interface} -noupdate -hex -label second_hdr_vld"     $PATH/second_hdr_vld
+    add_wave "-group {$NAME: Input Interface} -noupdate -hex -label first_hdr_vld"     $PATH/first_hdr_vld
+    add_wave "-group {$NAME: Input Interface} -noupdate -hex -label data_low_mux_sel"     $PATH/data_low_mux_sel
+    add_wave "-group {$NAME: Input Interface} -noupdate -hex -label data_low_mux_dec_in"     $PATH/data_low_mux_dec_in
+	}  
+
+
+
+proc blk_rx_decoder_fsm {NAME PATH} {
+    add wave -divider "   $NAME"
+      add_wave "-noupdate -color yellow -label TRN_RESET_N"  $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label TRN_CLK"      $PATH/TRN_CLK
+      add_wave "-noupdate -hex -label present_state"         $PATH/present_state
+   add wave -divider "  FSM"
+      add_wave "-noupdate -hex -label TRN_RSOF_N"            $PATH/TRN_RSOF_N
+      add_wave "-noupdate -hex -label TRN_REOF_N"            $PATH/TRN_REOF_N
+      add_wave "-noupdate -hex -label TRN_RSRC_RDY_N"        $PATH/TRN_RSRC_RDY_N
+      add_wave "-noupdate -hex -label TRN_RDST_RDY_N"        $PATH/TRN_RDST_RDY_N
+      add_wave "-noupdate -hex -label TRN_RERR_FWD_N"        $PATH/TRN_RERR_FWD_N
+
+      add_wave "-noupdate -hex -label REG_NO_DATA"           $PATH/REG_NO_DATA
+      add_wave "-noupdate -hex -label REG_3DW"               $PATH/REG_3DW
+      add_wave "-noupdate -hex -label UNSUPPORTED"           $PATH/UNSUPPORTED
+      add_wave "-noupdate -hex -label LAST_DATA"             $PATH/LAST_DATA
+
+      add_wave "-noupdate -hex -label GEN_HDR0"              $PATH/GEN_HDR0
+      add_wave "-noupdate -hex -label GEN_HDR1"              $PATH/GEN_HDR1
+      add_wave "-noupdate -hex -label FSM_CONTROL_WE"        $PATH/FSM_CONTROL_WE
+      add_wave "-noupdate -hex -label PIPE_REG_WE"           $PATH/PIPE_REG_WE
+
+      add_wave "-noupdate -hex -label SOP_N"                 $PATH/SOP_N
+      add_wave "-noupdate -hex -label EOP_N"                 $PATH/EOP_N
+      add_wave "-noupdate -hex -label SRC_RDY_N"             $PATH/SRC_RDY_N
+      add_wave "-noupdate -hex -label DST_RDY_N"             $PATH/DST_RDY_N
+  }
+
+
+proc blk_rx_decoder {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label TRN_RESET_N"  $PATH/TRN_RESET_N
+      add_wave "-noupdate -color yellow -label TRN_CLK"      $PATH/TRN_CLK
+   add wave -divider "  PCIE Fields"
+      add_wave "-noupdate -hex -label trn_fmt"            $PATH/trn_fmt
+      add_wave "-noupdate -hex -label trn_type"           $PATH/trn_type
+      add_wave "-noupdate -hex -label trn_tc"             $PATH/trn_tc
+      add_wave "-noupdate -hex -label trn_attr"           $PATH/trn_attr
+      add_wave "-noupdate -hex -label trn_td"             $PATH/trn_td
+      add_wave "-noupdate -hex -label trn_ep"             $PATH/trn_ep
+      add_wave "-noupdate -hex -label trn_length"         $PATH/trn_length
+      add_wave "-noupdate -hex -label trn_first_be"       $PATH/trn_first_be
+      add_wave "-noupdate -hex -label trn_last_be"        $PATH/trn_last_be
+      add_wave "-noupdate -hex -label trn_request_id"     $PATH/trn_request_id
+      add_wave "-noupdate -hex -label trn_tag"            $PATH/trn_tag
+      add_wave "-noupdate -hex -label trn_byte_count"     $PATH/trn_byte_count
+      add_wave "-noupdate -hex -label trn_compl_tag"      $PATH/trn_compl_tag
+      add_wave "-noupdate -hex -label trn_lower_address"  $PATH/trn_lower_address
+      add_wave "-noupdate -hex -label trn_low_address32"  $PATH/trn_low_address32
+      add_wave "-noupdate -hex -label trn_low_address64"  $PATH/trn_low_address64
+   add wave -divider "  Decoded signals"
+      add_wave "-noupdate -hex -label local_addr"         $PATH/local_addr
+      add_wave "-noupdate -hex -label tag_mux"            $PATH/tag_mux
+      add_wave "-noupdate -hex -label cpl_last_dec"       $PATH/cpl_last_dec
+      add_wave "-noupdate -hex -label command_dec_out"    $PATH/command_dec_out
+      add_wave "-noupdate -hex -label len_dec_out"        $PATH/len_dec_out
+
+#add_wave "-noupdate -hex -label rw_len_dec_out"        $PATH/rw_len_dec_out
+#add_wave "-noupdate -hex -label cmpl_len_dec_out"        $PATH/cmpl_len_dec_out
+#add_wave "-noupdate -hex -label aux_len_dec_out"        $PATH/aux_len_dec_out
+#add_wave "-noupdate -hex -label aux_len_dec_in" $PATH/aux_len_dec_in
+add_wave "-noupdate -hex -label data_mux_sel_reg" $PATH/data_mux_sel_reg
+add_wave "-noupdate -hex -label data_mux"         $PATH/data_mux
+add_wave "-noupdate -hex -label data_core" $PATH/data_core
+add_wave "-noupdate -hex -label data_pipe" $PATH/data_pipe
+}
+
+proc blk_rx_align_unit {NAME PATH} {
+  add wave -divider "$NAME"
+  add_wave "-noupdate -color yellow -label RESET"                                  $PATH/RESET 
+  add_wave "-noupdate -color yellow -label CLK"                                    $PATH/CLK
+  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_DATA" 	       $PATH/in_data
+  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_SOP_N"	       $PATH/in_sop_n
+	add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_EOP_N"		     $PATH/in_eop_n
+	add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_SRC_RDY_N"    $PATH/in_src_rdy_n
+	add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_DST_RDY_N"    $PATH/in_dst_rdy_n
+	add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_SRC_ADDR" 	   $PATH/in_src_addr
+  
+  add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_DATA" 	     $PATH/out_data
+  add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_SOP_N"	     $PATH/out_sop_n
+	add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_EOP_N"		   $PATH/out_eop_n
+	add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_SRC_RDY_N"  $PATH/out_src_rdy_n
+	add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_DST_RDY_N"  $PATH/out_dst_rdy_n
+
+  add_wave "-group {$NAME: Control} -noupdate -hex -label GO_ALIGN" 	             $PATH/go_align
+  add_wave "-group {$NAME: Control} -noupdate -hex -label DATA_SEL"	               $PATH/data_sel
+  add_wave "-group {$NAME: Control} -noupdate -hex -label MUX_SEL"	               $PATH/mux_sel
+  add_wave "-group {$NAME: Control} -noupdate -hex -label IN_DATA_LEN_REG" 	       $PATH/in_data_len_reg
+  add_wave "-group {$NAME: Control} -noupdate -hex -label IN_DST_ADDR_REG" 	       $PATH/in_dst_addr_reg
+  add_wave "-group {$NAME: Control} -noupdate -hex -label IN_SRC_ADDR_REG" 	       $PATH/in_src_addr_reg
+}  
+
+
+proc blk_align_unit {NAME PATH} {
+
+      add wave -divider "$NAME"
+      add_wave "-group {$NAME: Common} -noupdate -color yellow -label RESET"            $PATH/RESET 
+      add_wave "-group {$NAME: Common} -noupdate -color yellow -label CLK"              $PATH/CLK
+	  add_wave "-group {$NAME: Control Input Interface} -noupdate -hex -label SRC_ADDR"         $PATH/src_addr
+	  add_wave "-group {$NAME: Control Input Interface} -noupdate -hex -label DST_ADDR"	        $PATH/dst_addr
+	  add_wave "-group {$NAME: Control Input Interface} -noupdate -hex -label DATA_LEN"		    $PATH/data_len
+      add_wave "-group {$NAME: Control Output Interface} -noupdate -hex -label WAIT_ON_START"	$PATH/wait_on_start
+	  add_wave "-group {$NAME: Control Output Interface} -noupdate -hex -label WAIT_ON_END"		$PATH/wait_on_end
+      add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_DATA" 	        $PATH/in_data
+	  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_SOF"	        $PATH/in_sof
+	  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_EOF"		    $PATH/in_eof
+	  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_SRC_RDY"   	$PATH/in_src_rdy
+	  add_wave "-group {$NAME: Input Interface} -noupdate -hex -label IN_DST_RDY" 	    $PATH/in_dst_rdy
+      add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_DATA" 	    $PATH/out_data
+	  add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_SOF"	        $PATH/out_sof
+	  add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_EOF"		    $PATH/out_eof
+	  add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_SRC_RDY"   	$PATH/out_src_rdy
+	  add_wave "-group {$NAME: Output Interface} -noupdate -hex -label OUT_DST_RDY" 	$PATH/out_dst_rdy
+
+   	  add_wave "-group {$NAME: Control} -noupdate -hex -label in_src_rdy_reg" 		    $PATH/in_src_rdy_reg
+	  add_wave "-group {$NAME: Control} -noupdate -hex -label stop_output_n" 		    $PATH/stop_output_n
+	  add_wave "-group {$NAME: Control} -noupdate -hex -label enable_output"	        $PATH/enable_output
+	  add_wave "-group {$NAME: Control} -noupdate -hex -label stop_input_n" 		    $PATH/stop_input_n
+      add_wave "-group {$NAME: Control} -noupdate -hex -label in_eof_reg" 	   	        $PATH/in_eof_reg
+	  add_wave "-group {$NAME: Control} -noupdate -hex -label in_eof_reg2" 	            $PATH/in_eof_reg2
+	  add_wave "-group {$NAME: Control} -noupdate -hex -label in_eof_reg3"	            $PATH/in_eof_reg3
+      add_wave "-group {$NAME: Control} -noupdate -hex -label partial_sel" 		        $PATH/partial_sel
+      add_wave "-group {$NAME: Control} -noupdate -hex -label partial_sel_add"          $PATH/partial_sel_add
+	  add_wave "-group {$NAME: Control} -noupdate -hex -label src_dst_same" 		    $PATH/src_dst_same
+
+}  
+
+

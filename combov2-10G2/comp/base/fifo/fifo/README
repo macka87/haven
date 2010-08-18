@@ -1,0 +1,13 @@
+# Author(s): Tomas Pecenka <pecenka@liberouter.org>
+# $Id: README 14 2007-07-31 06:44:05Z kosek $
+
+Files in this directory:
+========================
+
+README                  - this file
+
+fifo.vhd                - FIFO entity
+fifo_status.vhd         - FIFO_STATUS entity
+Makefile                - Makefile for FIFO
+
+sim/                    - Simulations of FIFO

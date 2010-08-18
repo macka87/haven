@@ -1,0 +1,169 @@
+/* common.hch: Constants and common parts of DMA controllers
+ * Copyright (C) 2009 CESNET
+ * Author(s): Martin Spinler <xspinl00@stud.fit.vutbr.cz>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ * 3. Neither the name of the Company nor the names of its contributors
+ *    may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
+ *
+ * This software is provided ``as is'', and any express or implied
+ * warranties, including, but not limited to, the implied warranties of
+ * merchantability and fitness for a particular purpose are disclaimed.
+ * In no event shall the company or contributors be liable for any
+ * direct, indirect, incidental, special, exemplary, or consequential
+ * damages (including, but not limited to, procurement of substitute
+ * goods or services; loss of use, data, or profits; or business
+ * interruption) however caused and on any theory of liability, whether
+ * in contract, strict liability, or tort (including negligence or
+ * otherwise) arising in any way out of the use of this software, even
+ * if advised of the possibility of such damage.
+ *
+ * $Id: common.hch 14841 2010-08-05 07:40:59Z xspinl00 $
+ *
+ */
+
+//#define IFC_COUNT
+//#define BUFFER_SIZE
+
+#define BUFFER_AREA                 (BUFFER_SIZE*2)
+#define PAGE_SIZE                   4096
+
+#define DMA_REQ_WIDTH               128
+#define DESC_WIDTH                  64
+#define SW_PTR_SIZE                 32
+#define HW_PTR_SIZE                 (log2ceil(BUFFER_SIZE) + 1)     // 4096 -> 12+1
+#define IFC_WIDTH                   (log2ceil(IFC_COUNT))
+#define PAGE_WIDTH                  (log2ceil(PAGE_SIZE))              // 4096 -> 12
+#define DMA_ADDR_WIDTH              (log2ceil(DMA_PARTS))
+#define DMA_PARTS                   (DMA_REQ_WIDTH / DMAREQ_WIDTH)
+
+#define PENDING_FIFO_WIDTH          (HW_PTR_SIZE + IFC_WIDTH)
+#define PENDING_FIFO_LENGTH         (IFC_COUNT*2)       	// should be power of 2
+
+#define TYPE_RAM2FPGA               0           // Request data transfer RAM => FPGA - TX
+#define TYPE_FPGA2RAM               1           // Request data transfer FPGA => RAM - RX
+
+#define TAG_RX                      0
+#define TAG_TX                      1
+
+#define CONTROL_RUN                 0
+#define CONTROL_PAUSE               1
+#define CONTROL_STOP                2
+
+#define STATUS_UNDEFINED            0
+#define STATUS_STOPPED              1
+#define STATUS_RUNNING              2
+#define STATUS_PAUSED               4
+
+
+#if IFC_COUNT >= 16
+#define SELECTRAM
+#define swBufferMask1R  swBufferMask1.R
+#define swBufferMask1W  swBufferMask1.W
+#define swBufferMask2R  swBufferMask2.R
+#define swBufferMask2W  swBufferMask2.W
+#define swEndPtrValue1R swEndPtrValue1.R
+#define swEndPtrValue1W swEndPtrValue1.W
+#define swEndPtrValue2R swEndPtrValue2.R
+#define swEndPtrValue2W swEndPtrValue2.W
+#define swStrPtrValue1R swStrPtrValue1.R
+#define swStrPtrValue1W swStrPtrValue1.W
+#define swStrPtrValue2R swStrPtrValue2.R
+#define swStrPtrValue2W swStrPtrValue2.W
+#else
+#define swBufferMask1R  swBufferMask
+#define swBufferMask1W  swBufferMask
+#define swBufferMask2R  swBufferMask
+#define swBufferMask2W  swBufferMask
+#define swEndPtrValue1R swEndPtrValue
+#define swEndPtrValue1W swEndPtrValue
+#define swEndPtrValue2R swEndPtrValue
+#define swEndPtrValue2W swEndPtrValue
+#define swStrPtrValue1R swStrPtrValue
+#define swStrPtrValue1W swStrPtrValue
+#define swStrPtrValue2R swStrPtrValue
+#define swStrPtrValue2W swStrPtrValue
+#endif
+
+/* ------------------------ COMMON SIGNALS ------------------------ */
+       unsigned IFC_COUNT           ifc_enable = 0;
+/*     + descriptor fifo interface */
+signal unsigned 1                   ifc_desc_read = 0;
+       unsigned IFC_WIDTH           ifc_desc_ifc = 0;
+/*     + dma request interface */
+signal unsigned DMAREQ_WIDTH        ifc_dma_dout = 0;
+signal unsigned 1                   ifc_dma_req = 0;
+/*     + memory interface */
+signal unsigned 32                  ifc_sw_drd = 0;
+signal unsigned 1                   ifc_sw_ardy = 0;
+signal unsigned 1                   ifc_sw_drdy = 0;
+/*     + interrupt */
+signal unsigned 2                   ifc_interrupt = 0;
+       unsigned IFC_WIDTH           ifc_interrupt_ifc = 0;
+
+signal unsigned 1                   helper = 0;
+
+#if __VHDL__
+/*     + Common interface */
+set reset = external "RESET";
+set clock = external "CLK";
+/*     + generics mapped to interface signals and others*/
+//interface port_in                   (unsigned int 32              BUFFER_ADDR)      buffer_addr()     with { vhdl_type = "std_logic_vector" };
+interface port_out() enable         (unsigned int IFC_COUNT       ENABLE          = ifc_enable)       with { vhdl_type = "std_logic_vector" };
+/*     + Interrupt interface */
+interface port_out() interrupt      (unsigned int 2               INTERRUPT       = ifc_interrupt)    with { vhdl_type = "std_logic_vector" };
+#if IFC_COUNT == 1
+interface port_out() interrupt_ifc  (unsigned int 1               INTERRUPT_IFC   = helper)           with { vhdl_type = "std_logic_vector" };
+interface port_out() desc_ifc       (unsigned int 1               DESC_IFC        = helper)           with { vhdl_type = "std_logic_vector" };
+#else
+interface port_out() interrupt_ifc  (unsigned int IFC_WIDTH       INTERRUPT_IFC   = ifc_interrupt_ifc) with{ vhdl_type = "std_logic_vector" };
+/*     + descriptor manager interface */
+interface port_out() desc_ifc       (unsigned int IFC_WIDTH       DESC_IFC        = ifc_desc_ifc)     with { vhdl_type = "std_logic_vector" };
+#endif
+interface port_out() desc_read      (unsigned int 1               DESC_READ       = ifc_desc_read);
+interface port_in                   (unsigned int DESC_WIDTH      DESC_DATA)        desc_data()       with { vhdl_type = "std_logic_vector" };
+interface port_in                   (unsigned int 1               DESC_EMPTY)       desc_empty();
+interface port_in                   (unsigned int 1               DESC_DV)          desc_dv();
+/*     + software interface */ 
+interface port_in                   (unsigned int 32              SW_DWR)           sw_dwr()          with { vhdl_type = "std_logic_vector" };
+interface port_in                   (unsigned int 32              SW_ADDR)          sw_addr()         with { vhdl_type = "std_logic_vector" };
+interface port_in                   (unsigned int 1               SW_RD)            sw_rd();
+interface port_in                   (unsigned int 1               SW_WR)            sw_wr();
+interface port_in                   (unsigned int 4               SW_BE)            sw_be()           with { vhdl_type = "std_logic_vector" };
+interface port_out() sw_drd         (unsigned int 32              SW_DRD          = ifc_sw_drd)       with { vhdl_type = "std_logic_vector" };
+interface port_out() sw_ardy        (unsigned int 1               SW_ARDY         = ifc_sw_ardy);
+interface port_out() sw_drdy        (unsigned int 1               SW_DRDY         = ifc_sw_drdy);
+/*     + DMA interface */
+interface port_in                   (unsigned int DMA_ADDR_WIDTH  DMA_ADDR)         dma_addr()        with { vhdl_type = "std_logic_vector" };
+interface port_out() dma_dout       (unsigned int DMAREQ_WIDTH    DMA_DOUT        = ifc_dma_dout)     with { vhdl_type = "std_logic_vector" };
+interface port_out() dma_req        (unsigned int 1               DMA_REQ         = ifc_dma_req);
+interface port_in                   (unsigned int 1               DMA_ACK)          dma_ack();
+interface port_in                   (unsigned int 1               DMA_DONE)         dma_done();
+
+/*     + input ports renaming */
+//#define HW_BUFFER_ADDR              buffer_addr.BUFFER_ADDR
+
+#define ifc_dma_addr                dma_addr.DMA_ADDR
+#define ifc_dma_done                dma_done.DMA_DONE
+#define ifc_dma_ack                 dma_ack.DMA_ACK
+
+#define ifc_desc_data               desc_data.DESC_DATA
+#define ifc_desc_empty              desc_empty.DESC_EMPTY
+#define ifc_desc_dv                 desc_dv.DESC_DV
+
+#define ifc_sw_dwr                  sw_dwr.SW_DWR
+#define ifc_sw_addr                 sw_addr.SW_ADDR
+#define ifc_sw_rd                   sw_rd.SW_RD
+#define ifc_sw_wr                   sw_wr.SW_WR
+#define ifc_sw_be                   sw_be.SW_BE
+
+#endif

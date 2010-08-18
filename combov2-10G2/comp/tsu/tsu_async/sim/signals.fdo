@@ -1,0 +1,137 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2009 CESNET
+# Author(s): Jan Stourac <xstour03@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+
+view wave
+delete wave *
+
+# -------------------------------------------------------------------------
+#                       Waveform Definition 
+# -------------------------------------------------------------------------
+
+proc blk_TSU_CV2 { PARAM } {
+   global TSU_CV2_PATH
+
+add wave -divider "TSU_CV2_UNIT"
+# User signals
+add wave -divider "MI32 Bus interface"
+add wave -noupdate -label dwr -hex  		 $TSU_CV2_PATH/DWR
+add wave -noupdate -label addr -hex		 $TSU_CV2_PATH/ADDR
+add wave -noupdate -label rd		  	 $TSU_CV2_PATH/RD
+add wave -noupdate -label wr		  	 $TSU_CV2_PATH/WR
+add wave -noupdate -label be 			 $TSU_CV2_PATH/BE
+add wave -noupdate -label drd -hex		 $TSU_CV2_PATH/DRD
+add wave -noupdate -label ardy 			 $TSU_CV2_PATH/ARDY
+add wave -noupdate -label drdy 			 $TSU_CV2_PATH/DRDY
+
+add wave -divider "Output interface"
+add wave -noupdate -label ts_async -hex	  	 $TSU_CV2_PATH/TS
+add wave -noupdate -label ts_dv_async 		 $TSU_CV2_PATH/TS_DV
+
+add wave -divider "Registers"
+add wave -noupdate -label detect_pps_bits	 $TSU_CV2_PATH/detect_pps_bits
+add wave -noupdate -label core_detect_pps_bits	 $TSU_CV2_PATH/core_detect_pps_bits
+add wave -noupdate -label detect_pps0_reg	 $TSU_CV2_PATH/detect_pps0_reg
+add wave -noupdate -label detect_pps1_reg	 $TSU_CV2_PATH/detect_pps1_reg
+add wave -noupdate -label clk_mux_reg   	 $TSU_CV2_PATH/clk_mux_reg
+
+#  -- PPS pipelines
+#  signal reg0_pps                : std_logic;
+#  signal reg0_pps2               : std_logic;
+#  signal reg0_pps3               : std_logic;
+#  signal pps0_pipe               : std_logic_vector(2 downto 0);
+#  signal sync_pps0_n             : std_logic;
+#  signal sync_pps1_n             : std_logic;
+
+#  signal old_sync_pps0_n         : std_logic;
+#  signal old_sync_pps1_n         : std_logic;
+#  signal xor_sync_pps0_n         : std_logic;
+#  signal xor_sync_pps1_n         : std_logic;
+
+
+
+add wave -divider "PPS counters"
+add wave -noupdate -label pps0_cnt_reg -hex	 $TSU_CV2_PATH/pps0_cnt_reg
+add wave -noupdate -label pps1_cnt_reg -hex	 $TSU_CV2_PATH/pps1_cnt_reg
+add wave -noupdate -label cnt_pps_n -hex	 $TSU_CV2_PATH/cnt_pps_n
+
+add wave -divider "PPS mux signals"
+add wave -noupdate -label pps_mux_cntrl -hex	 $TSU_CV2_PATH/pps_mux_cntrl
+add wave -noupdate -label pps_mux_out -hex	 $TSU_CV2_PATH/pps_mux_out
+
+add wave -divider "MUX select signals"
+add wave -noupdate -label sel_detect_regs -hex	 $TSU_CV2_PATH/sel_detect_regs
+add wave -noupdate -label sel_pps_mux_cntrl -hex $TSU_CV2_PATH/sel_pps_mux_cntrl
+add wave -noupdate -label sel_freq -hex	         $TSU_CV2_PATH/sel_freq
+add wave -noupdate -label sel_tsu_core_clk_mux_cntrl -hex	 $TSU_CV2_PATH/sel_tsu_core_clk_mux_cntrl
+
+add wave -noupdate -label drd_input -hex	 $TSU_CV2_PATH/drd_input
+
+add wave -divider "Write enable signals"
+add wave -noupdate -label core_reg_det_pps_we -hex $TSU_CV2_PATH/core_reg_det_pps_we
+add wave -noupdate -label reg_pps_mux_cntrl_we          -hex	 $TSU_CV2_PATH/reg_pps_mux_cntrl_we
+add wave -noupdate -label reg_tsu_core_clk_mux_cntrl_we -hex	 $TSU_CV2_PATH/reg_tsu_core_clk_mux_cntrl_we
+
+add wave -divider "Read enable signals"
+add wave -noupdate -label reg_tsu_core_clk_mux_cntrl_we -hex	 $TSU_CV2_PATH/reg_freq_re
+add wave -noupdate -label reg_tsu_core_clk_mux_cntrl_we -hex	 $TSU_CV2_PATH/reg_detect_regs_re
+
+
+#  signal tsu_core_pps_n          : std_logic;
+#  signal tsu_core_clk            : std_logic;
+#  signal tsu_core_reset          : std_logic;
+
+#  signal cnt_reset_pps_reg       : std_logic_vector(8 downto 0);
+#  signal cnt_pps_apx_reg         : std_logic_vector(27 downto 0); -- maximum frequency supported 268435455 HZ
+#  signal comparator_reg          : std_logic;
+
+#  signal tsu_core_frequency      : std_logic_vector(31 downto 0);
+#  signal drd_input_from_tsu_core : std_logic_vector(31 downto 0);
+#  signal drd_input_mux_cntrl     : std_logic_vector(1 downto 0);
+
+#  signal tsu_core_drdy           : std_logic;
+#  signal tsu_core_ardy           : std_logic;
+#  signal freq_drdy               : std_logic;
+#  signal detect_drdy             : std_logic;
+}
+
+proc blk_TSU_ASYNC { PARAM } {
+   global TSU_ASYNC_PATH
+
+add wave -divider "TSU_ASYNC_UNIT"
+
+add wave -noupdate -label RESET -hex	 $TSU_ASYNC_PATH/RESET
+add wave -noupdate -label IN_CLK -hex	 $TSU_ASYNC_PATH/IN_CLK
+add wave -noupdate -label IN_TS -hex	 $TSU_ASYNC_PATH/IN_TS
+add wave -noupdate -label IN_TS_DV -hex	 $TSU_ASYNC_PATH/IN_TS_DV
+add wave -noupdate -label OUT_CLK -hex	 $TSU_ASYNC_PATH/OUT_CLK
+add wave -noupdate -label OUT_TS -hex	 $TSU_ASYNC_PATH/OUT_TS
+add wave -noupdate -label OUT_TS_DV -hex $TSU_ASYNC_PATH/OUT_TS_DV
+
+}

@@ -1,0 +1,45 @@
+###############################################################################
+# Timing Constraints
+###############################################################################
+#
+#
+# Ignore timing on asynchronous signals.
+#
+
+NET "PCLK250_P"   TIG ;
+NET "PCLK250_N"   TIG ;
+
+NET "*sys_clk" PERIOD = 4ns HIGH 50%;
+NET "*pcie_core_trn_clk" PERIOD = 4ns HIGH 50%;
+#NET "*ics_clk" PERIOD = 5ns HIGH 50%;
+NET "*gt_refclk_out[0]" PERIOD = 4ns HIGH 50%;
+NET "PCI_SYSTEM*IB_SP_RX*RXCLK*" MAXDELAY = 3ns;
+NET "XHSH(8)" PERIOD = 8ns HIGH 50%;
+
+NET "*ep/pcie_ep0/pcie_blk/SIO/.pcie_gt_wrapper_i/gt_refclk_out[0]" TNM_NET = "MGTCLK" ;
+TIMESPEC "TS_MGTCLK"  = PERIOD "MGTCLK" 250.00 MHz HIGH 50 % ;
+
+INST "*regiob*" IOB = TRUE;
+INST "*regiob_tx_sop" INIT = S;
+INST "*regiob_tx_eop" INIT = S;
+INST "*regiob_tx_src_rdy" INIT = S;
+
+NET "XHSH(8)" CLOCK_DEDICATED_ROUTE = FALSE;
+
+NET "XHSH(10)" TIG;
+
+NET pcie_core_trn_rst TIG;
+
+# Ignore false paths in Interrupt ASFIFO:
+## RAM is driven by ics_clk, but output is connected to FF in bridge_clk domain
+## This path is false, because RAM Read Addres is in bridge_clk domain and
+## RAM reading is asynchronous.
+NET "*trn_clk" TNM = "TNM_TRN_CLK";
+#NET "*pcie_core_trn_clk" TNM = "TNM_TRN_CLK";
+NET "*ics_clk" TNM = "TNM_ICS_CLK";
+TIMESPEC TSig_intr_asfifo_i2b = FROM "TNM_ICS_CLK" TO "TNM_TRN_CLK" TIG;
+TIMESPEC TSig_intr_asfifo_b2i = FROM "TNM_TRN_CLK" TO "TNM_ICS_CLK" TIG;
+
+###############################################################################
+# End
+###############################################################################

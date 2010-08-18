@@ -1,0 +1,63 @@
+                              ==================
+                                 sw_rxbuf_top
+                              ==================
+
+Abstract:
+~~~~~~~~~
+RX (receive) DMA buffer for szedata. Technically this is a wrapper over
+nfifo2mem component transforming its interface into Framelink(s) on input
+and Internal Bus on output. There is also an interface to DMA controller.
+Input data is filled with zeros up to DATA_WIDTH length after each EOF_N.
+After a frame is written into memory, newlen signal with aligned length
+in Bytes is sent to DMA ctrl (with latency due to internal architecture).
+RX_NEWLEN_RDY is ignored. (Controller is always ready.)
+
+
+Author:
+~~~~~~~
+Jan Vozenilek <xvozen00@stud.fit.vutbr.cz>
+
+
+Documentation:
+~~~~~~~~~~~~~~
+https://www.liberouter.org/trac/netcope/wiki/DMABuffery#RXbuffer
+
+
+Verification:
+~~~~~~~~~~~~~
+ * status: verification environment ready, common configurations verified
+ * https://www.liberouter.org/wiki/index.php/NetCOPE_(SystemVerilog)#DMA_RX_BUFFER
+
+
+
+                              ==================
+                               sw_rxbuf_pac_top
+                              ==================
+
+Abstract:
+~~~~~~~~~
+RX (receive) DMA buffer for packets. Technically this is a wrapper over
+nfifo2mem component transforming its interface into Framelink(s) on input
+and Internal Bus on output. There is also an interface to DMA controller.
+Input data is filled with zeros up to DATA_WIDTH length after each EOF_N.
+After a packet is written into memory, newlen signal with UNaligned length
+in Bytes is stored into shift FIFO (with latency due to internal architecture).
+DMA ctrl reads it with RX_NEWLEN_RDY. RX_RELLEN can be unaligned length,
+buffer aligns it before passing to nfifo2mem. (These are the only differences
+against szedata version.)
+
+
+Author:
+~~~~~~~
+Jan Vozenilek <xvozen00@stud.fit.vutbr.cz>
+
+
+Documentation:
+~~~~~~~~~~~~~~
+https://www.liberouter.org/trac/netcope/wiki/DMABuffery#Paketov%C3%BDRXbuffer
+
+
+Verification:
+~~~~~~~~~~~~~
+ * status: verification environment ready, common configurations verified
+ * https://www.liberouter.org/wiki/index.php/NetCOPE_(SystemVerilog)#SW_RXBUF_PAC

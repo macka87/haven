@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>XGMII Dec</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="solanka">Lukas Solanka</author>
+       <author login="polcak_l">Libor Polcak</author>
+</authors>
+
+
+<!-- Features -->
+<features>
+   <item>Decodes incoming Aligned SDR XGMII protocol</item>
+</features>
+
+
+<!-- Bugs -->
+<bugs>
+	<item>PDEC is not synthesizable by XST</item>
+</bugs>
+
+
+<!-- Things to do -->
+<todo>
+		<item>HW tests</item>
+</todo>
+
+
+<!-- Short Block description -->
+<description>
+   <p>
+		 This component finally translate XGMII protocol into protocol similar to
+		 the FrameLink. This protocol is designed to be used only in the IBUF so
+		 it is as easier as possible. This protocol also makes writing additional
+		 components for IBUF easier than XGMII protocol does.
+   </p>
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Port description -->
+	<port_map>
+
+      <divider>Common signals</divider>		
+      <port  name="CLK" dir="in" width="1">
+         XGMII clock
+      </port>
+      <port  name="RESET" dir="in" width="1">
+         IBUF reset
+      </port>
+
+      <divider>Input interface</divider>
+      <port name="RXD_ALIGNED" dir="in" width="64">
+         Aligned data.
+      </port>
+      <port name="RXC_ALIGNED" dir="in" width="8">
+         Aligned control information.
+      </port>
+      <port name="SOP_ALIGNED" dir="in" width="1">
+         Start of the packet. Active in '1'.
+      </port>
+  	
+      <divider>Output interface</divider>
+      <port name="DATA" dir="out" width="64">
+         Packet Data
+      </port>
+      <port name="SOP" dir="out" width="1">
+         Start of the packet. Active in '1'.
+      </port>
+      <port name="EOP" dir="out" width="1">
+         End of the packet. Active in '1'.
+      </port>
+      <port name="EOP_POS" dir="out" width="3">
+         Position of the end of the packet. Valid only if EOP is set to '1'.
+      </port>
+      <port name="ERR" dir="out" width="1">
+         Error inside the packet was detected. Active in '1'.
+      </port>
+      
+   </port_map>
+</interface>
+
+<!-- HW BODY SECTION **************************************************** -->
+<body>
+
+<h1>XGMII Dec information</h1>
+
+	<h2>General info</h2>
+	<p>
+    Aligned SDR XGMII protocol is driven to the input of the XGMII Dec unit.
+    This component is divided into 6 pipeline stages shown in the figure below.
+		After the last stage there is Finite state machine to check output protocol
+		integity and to detect errors like EOP without SOP etc.
+	</p>
+
+	<h2>Output protocol</h2>
+	<p>
+		The output protocol consists of these signals:
+
+		<ul>
+			<li>Data</li>
+			<li>SOP</li>
+			<li>EOP</li>
+			<li>EOP_POS</li>
+			<li>ERR</li>
+		</ul>
+	</p>
+	<p>
+		EOP_POS has a similar function as DREM. It does not determine the position
+		of the term, but the position of the last byte in the word and is valid only
+		if EOP is set to '1'. Signal ERR indicates error in the current packet. The
+		position of the error is not decoded, but it can be added later.
+	</p>
+
+	<h2>Pipeline</h2>
+	<p>
+		The pipeline is quiete long but but it is written to be synthetised into
+		shift registers if possible. Data, the widest part of the protocol,
+		are transported through all stages of the pipeline in one 64-bit shift
+		register so it does not consume too many resources.
+	</p>
+
+		
+<h1>Frequency and Resources usage</h1>
+
+  <h2>Precision</h2>
+	<p>
+		<tab sloupce="cccc">
+			<tr>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+				<th>Max.frequency by Precision</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<td>87 (0.37%)</td>
+				<td>0 (0.00%)</td>
+				<td>209.3 MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Precision chip utilization and maximal frequency</nazev>
+		</tab> 
+	
+  </p> 
+
+  <h2>XST</h2>
+	<p>
+		<tab sloupce="ccc">
+			<tr>
+				<th>Slices (% of C6X slices)</th>
+				<th>Max.frequency by XST</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<td>93 (0%)</td>
+				<td>215.0 MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>XST chip utilization and maximal frequency</nazev>
+		</tab> 
+	
+  </p> 
+
+<h1>Schemes</h1>
+	
+	<p>
+		The block structure of the component is in the following figure.
+		<obr src="./fig/xgmii_dec.fig">XGMII Dec architecture</obr>
+	</p>
+	<p>
+		Structure of the FSM is in the following figure.
+		<obr src="./fig/xgmii_dec_fsm.fig">Finite State Machine</obr>
+	</p>
+
+</body>
+
+</source>

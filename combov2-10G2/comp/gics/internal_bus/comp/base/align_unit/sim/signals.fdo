@@ -1,0 +1,84 @@
+# signals.fdo: Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Pavol Korcek <korcek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+
+exec make
+view wave
+delete wave *
+
+	add wave -divider "COMMON"
+	add_wave "-noupdate -color blue -label CLK" 	/testbench/clk
+	add_wave "-noupdate -color blue -label RESET" 	/testbench/reset
+
+	add wave -divider "CONTROL IN"
+	add_wave "-noupdate -hex -label src_addr"  	/testbench/uut/src_addr
+	add_wave "-noupdate -hex -label dst_addr" 	/testbench/uut/dst_addr
+	add_wave "-noupdate -hex -label data_len"	/testbench/uut/data_len
+
+	add wave -divider "CONTROL OUT"
+	add_wave "-noupdate -hex -label wait_on_start" 	/testbench/uut/wait_on_start
+	add_wave "-noupdate -hex -label wait_on_end" 	/testbench/uut/wait_on_end
+
+	add wave -divider "INPUT"
+	add_wave "-noupdate -hex -label in_data" 	/testbench/uut/in_data
+	add_wave "-noupdate -label in_sof" 		/testbench/uut/in_sof
+	add_wave "-noupdate -label in_eof" 		/testbench/uut/in_eof
+	add_wave "-noupdate -label in_src_rdy" 		/testbench/uut/in_src_rdy
+	add_wave "-noupdate -label in_dst_rdy" 		/testbench/uut/in_dst_rdy
+
+	add wave -divider "OUTPUT"
+	add_wave "-noupdate -hex -label out_data" 	/testbench/uut/out_data
+	add_wave "-noupdate -label out_sof" 		/testbench/uut/out_sof
+	add_wave "-noupdate -label out_eof" 		/testbench/uut/out_eof
+	add_wave "-noupdate -label out_src_rdy" 	/testbench/uut/out_src_rdy
+	add_wave "-noupdate -label out_dst_rdy" 	/testbench/uut/out_dst_rdy
+
+	add wave -divider "OTHER"
+#	add_wave "-noupdate -hex -label AUX_1" 		/testbench/uut/aux_1
+#	add_wave "-noupdate -hex -label AUX_2" 		/testbench/uut/aux_2
+#	add_wave "-noupdate -hex -label AUX_3" 		/testbench/uut/aux_3
+
+	add_wave "-noupdate -hex -label write_allow" 	/testbench/uut/write_allow
+	add_wave "-noupdate -hex -label f_we" 		/testbench/uut/f_we
+	add_wave "-noupdate -hex -label in_sof_p" 	/testbench/uut/in_sof_p
+	add_wave "-noupdate -hex -label in_sof_p_p" 	/testbench/uut/in_sof_p_p
+	add_wave "-noupdate -hex -label in_eof_p" 	/testbench/uut/in_eof_p
+	add_wave "-noupdate -hex -label in_eof_p_p" 	/testbench/uut/in_eof_p_p
+	add_wave "-noupdate -hex -label in_eof_p_p_p" 	/testbench/uut/in_eof_p_p_p
+	add_wave "-noupdate -hex -label empty_link" 	/testbench/uut/empty_link
+	add_wave "-noupdate -hex -label last_word" 	/testbench/uut/last_word
+	add_wave "-noupdate -hex -label in_src_rdy_p" 	/testbench/uut/in_src_rdy_p
+	add_wave "-noupdate -hex -label stop_output" 	/testbench/uut/stop_output
+
+
+
+restart -f
+run 2 us
+
+wave zoomrange 0 200ns

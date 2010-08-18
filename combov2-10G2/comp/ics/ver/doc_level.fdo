@@ -1,0 +1,66 @@
+# doc_level.fdo: Documentation Level file
+# Copyright (C) 2009 CESNET
+# Author: Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: doc_level.fdo 9253 2009-07-09 13:55:06Z xsimko03 $
+#
+
+# For whole design testing
+set FIRMWARE_BASE                 "../../../.."
+set RX_DMA_CTRL_OPT_WRAP_BASE     "$FIRMWARE_BASE/comp/ics/pac_dma_ctrl/ver/rx_ctrl"
+
+# verification environment base
+set RX_DMA_CTRL_OPT_DUT_VER_BASE  "$RX_DMA_CTRL_OPT_WRAP_BASE"
+set TB_FILE                       "../tbench/testbench.sv"
+
+# remote included files
+set MOD "../../../fl_tools/ver/fl_driver.sv"
+set MOD "$MOD ../../../fl_tools/ver/fl_monitor.sv"
+set MOD "$MOD ../../../fl_tools/ver/fl_responder.sv"
+set MOD "$MOD ../../../fl_tools/ver/fl_ifc.sv"
+set MOD "$MOD ../../../fl_tools/ver/fl_transaction.sv"
+set MOD "$MOD ../../../ver/transaction.sv"
+set MOD "$MOD ../../../ver/generator.sv"
+set MOD "$MOD ../../../ver/driver_cbs.sv"
+set MOD "$MOD ../../../ver/monitor_cbs.sv"
+set MOD "$MOD ../../../ver/transaction_table.sv"
+
+# components list
+set COMPONENTS [list [list "RX_DMA_CTRL_OPT_DUT"      $RX_DMA_CTRL_OPT_WRAP_BASE     "FULL"]\
+                     [list "RX_DMA_CTRL_OPT_DUT_VER"  $RX_DMA_CTRL_OPT_DUT_VER_BASE  "FULL"]\
+                     ]
+
+# Enable Code Coverage
+set CODE_COVERAGE "true"
+
+# Global include file for compilation
+source "$FIRMWARE_BASE/build/SVDoxy.inc.tcl"
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
