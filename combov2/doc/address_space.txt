@@ -1,0 +1,6 @@
+= Description of the address space =
+
+  00000000 -- 0007FFFF: NetCOPE
+  00080000 -- 000FFFFF: Application core
+  00100000 -- 01FFFFFF: '''VERIFICATION CORE'''
+  02000000 -- FFFFFFFF: NetCOPE
