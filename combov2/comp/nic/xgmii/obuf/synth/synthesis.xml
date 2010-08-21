@@ -1,0 +1,89 @@
+<synthesis>
+   <tool>
+      precision
+   </tool>
+   <tool>
+      xst
+   </tool>
+   <toplevel>
+      obuf_xgmii_ent.vhd
+   </toplevel>
+   <fpga>
+      xc2vp30
+   </fpga>
+   <archgrp>
+      FULL
+   </archgrp>
+   <generics>
+      <generic name="CTRL_CMD">
+         true
+      </generic>
+      <generic name="FL_WIDTH_RX">
+         64
+      </generic>
+      <generic name="DFIFO_SIZE">
+         1023
+      </generic>
+      <generic name="HFIFO_SIZE">
+         256
+      </generic>
+      <generic name="HFIFO_MEMTYPE">
+         LUT
+      </generic>
+   </generics>
+   <generics>
+      <generic name="CTRL_CMD">
+         false
+      </generic>
+      <generic name="FL_WIDTH_RX">
+         64
+      </generic>
+      <generic name="DFIFO_SIZE">
+         1023
+      </generic>
+      <generic name="HFIFO_SIZE">
+         256
+      </generic>
+      <generic name="HFIFO_MEMTYPE">
+         LUT
+      </generic>
+   </generics>
+   <generics>
+      <generic name="CTRL_CMD">
+         true
+      </generic>
+      <generic name="FL_WIDTH_RX">
+         128
+      </generic>
+      <generic name="DFIFO_SIZE">
+         1023
+      </generic>
+      <generic name="HFIFO_SIZE">
+         256
+      </generic>
+      <generic name="HFIFO_MEMTYPE">
+         LUT
+      </generic>
+   </generics>
+   <generics>
+      <generic name="CTRL_CMD">
+         false
+      </generic>
+      <generic name="FL_WIDTH_RX">
+         128
+      </generic>
+      <generic name="DFIFO_SIZE">
+         1023
+      </generic>
+      <generic name="HFIFO_SIZE">
+         256
+      </generic>
+      <generic name="HFIFO_MEMTYPE">
+         LUT
+      </generic>
+   </generics>
+
+   <frequency clock="TX_CLK_REF">
+      157
+   </frequency>
+</synthesis>

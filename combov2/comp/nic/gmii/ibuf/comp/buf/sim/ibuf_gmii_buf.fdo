@@ -1,0 +1,59 @@
+# ibuf_gmii_buf.fdo : Include file with signals
+# Copyright (C) 2005 CESNET
+# Authors: Martin Mikusek <martin.mikusek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: ibuf_gmii_buf.fdo 14 2007-07-31 06:44:05Z kosek $
+#
+
+# For whole design testing
+set VHDL_BASE     "../../../../../.."
+set IBUF_BASE     "$VHDL_BASE/units/gmii/ibuf"
+set IBUF_BUF_BASE "$IBUF_BASE/comp/buf"
+
+set TB_FILE       "ibuf_gmii_buf_tb.vhd"
+set SIG_FILE      "ibuf_gmii_buf_sig.fdo"
+
+# List of additional components
+set COMPONENTS [list \
+   [list "IBUF_BUF"  $IBUF_BUF_BASE     "FULL"] \
+]
+
+
+# Global include file for compilation
+source "$VHDL_BASE/base/Modelsim.inc.fdo"
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# Fix wrong paths in generated Makefile
+exec sh Makefile_fix
+
+# File with signals
+source $SIG_FILE
+

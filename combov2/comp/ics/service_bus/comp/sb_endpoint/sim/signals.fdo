@@ -1,0 +1,71 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Viktor Pus <pus@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 14 2007-07-31 06:44:05Z kosek $
+
+   exec make
+   view wave
+   delete wave *
+
+   add_wave "-noupdate -hex -label RESET"       /testbench/RESET
+   add_wave "-noupdate -hex -label CLK"       /testbench/CLK
+   
+   add wave -divider "Serial In and Out interfaces"
+   add_wave "-noupdate -hex -label TDI"       /testbench/TDI
+   add_wave "-noupdate -hex -label TDI_DV"       /testbench/TDI_DV
+   add_wave "-noupdate -hex -label TDO"       /testbench/TDO
+   add_wave "-noupdate -hex -label TDO_DV"       /testbench/TDO_DV
+
+   add wave -divider "Component interface"
+   add_wave "-noupdate -hex -label ADDR" /testbench/ADDR
+   add_wave "-noupdate -hex -label RD" /testbench/RD
+   add_wave "-noupdate -hex -label WR" /testbench/WR
+   add_wave "-noupdate -hex -label DWR" /testbench/DWR
+   add_wave "-noupdate -hex -label DRD" /testbench/DRD
+   add_wave "-noupdate -hex -label DRDY" /testbench/DRDY
+
+   add wave -divider "internal signals"
+   add_wave "-noupdate -hex -label shift_in" /testbench/uut/shift_in
+   add_wave "-noupdate -hex -label sig_di" /testbench/uut/sig_di
+   add_wave "-noupdate -hex -label sig_rd" /testbench/uut/sig_rd
+   add_wave "-noupdate -hex -label sig_addr" /testbench/uut/sig_addr
+   add_wave "-noupdate -hex -label sig_di" /testbench/uut/sig_di
+   add_wave "-noupdate -hex -label fsm" /testbench/uut/fsm
+#   add_wave "-noupdate -hex -label fsm_next" /testbench/uut/fsm_next
+   add_wave "-noupdate -hex -label cnt_recv" /testbench/uut/cnt_recv
+   add_wave "-noupdate -hex -label cnt_send" /testbench/uut/cnt_send
+   add_wave "-noupdate -hex -label reg_got_id" /testbench/uut/reg_got_id
+   add_wave "-noupdate -hex -label reg_id" /testbench/uut/reg_id
+
+   add wave -divider "Testbench signals"
+   add_wave "-noupdate -hex -label message" /testbench/message
+   add_wave "-noupdate -hex -label message_out" /testbench/message_out
+
+   restart -f 
+   run 5 us

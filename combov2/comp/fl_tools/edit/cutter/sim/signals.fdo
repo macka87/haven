@@ -1,0 +1,125 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author(s): Bronislav Pribyl <xpriby12@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 2958 2008-06-27 11:22:29Z xpriby12 $
+
+view wave
+delete wave *
+
+proc blk_FL_CUTTER { PARAM } {
+   global FL_CUTTER_PATH
+
+   # CUTTER interface
+   if { $PARAM == "IFC" } {
+#       add wave -divider "FL_CUTTER"
+#       add_wave "-noupdate -label CLK" $FL_CUTTER_PATH/CLK
+#       add_wave "-noupdate -label RESET" $FL_CUTTER_PATH/RESET
+
+      add wave -divider "FL_CUTTER: Cut data"
+      add_wave "-noupdate -hex -label CUT_DATA" $FL_CUTTER_PATH/CUT_DATA
+      add_wave "-noupdate -label CUT_VLD" $FL_CUTTER_PATH/CUT_VLD
+
+      add wave -divider "FL_CUTTER: RX interface"
+      add_wave "-noupdate -label RX_SOF_N" $FL_CUTTER_PATH/RX_SOF_N
+      add_wave "-noupdate -label RX_SOP_N" $FL_CUTTER_PATH/RX_SOP_N
+      add_wave "-noupdate -label RX_EOP_N" $FL_CUTTER_PATH/RX_EOP_N
+      add_wave "-noupdate -label RX_EOF_N" $FL_CUTTER_PATH/RX_EOF_N
+      add_wave "-noupdate -color gold -label RX_SRC_RDY_N" $FL_CUTTER_PATH/RX_SRC_RDY_N
+      add_wave "-noupdate -color gold -label RX_DST_RDY_N" $FL_CUTTER_PATH/RX_DST_RDY_N
+      add_wave "-noupdate -hex -label RX_DATA" $FL_CUTTER_PATH/RX_DATA
+      add_wave "-noupdate -unsigned -label RX_REM" $FL_CUTTER_PATH/RX_REM
+
+      add wave -divider "FL_CUTTER: TX interface"
+#       add_wave "-noupdate -label TX_SOF_N" $FL_CUTTER_PATH/TX_SOF_N
+      add_wave "-noupdate -label TX_SOP_N" $FL_CUTTER_PATH/TX_SOP_N
+      add_wave "-noupdate -label TX_EOP_N" $FL_CUTTER_PATH/TX_EOP_N
+#       add_wave "-noupdate -label TX_EOF_N" $FL_CUTTER_PATH/TX_EOF_N
+      add_wave "-noupdate -color gold -label TX_SRC_RDY_N" $FL_CUTTER_PATH/TX_SRC_RDY_N
+      add_wave "-noupdate -color gold -label TX_DST_RDY_N" $FL_CUTTER_PATH/TX_DST_RDY_N
+      add_wave "-noupdate -hex -label TX_DATA" $FL_CUTTER_PATH/TX_DATA
+      add_wave "-noupdate -unsigned -label TX_REM" $FL_CUTTER_PATH/TX_REM
+   }
+   
+
+   # internal signals
+    if { $PARAM == "INNER" } {
+      add wave -divider "FL_CUTTER: internal signals"
+      add_wave "-noupdate -label transmit_progress" $FL_CUTTER_PATH/transmit_progress
+      add_wave "-noupdate -label transmit_pause" $FL_CUTTER_PATH/transmit_pause
+      add_wave "-noupdate -label cut_progress" $FL_CUTTER_PATH/cut_progress
+      add_wave "-noupdate -hex -label cut_extracted" $FL_CUTTER_PATH/cut_extracted
+      add_wave "-noupdate -label reg_rx_sof_n" $FL_CUTTER_PATH/reg_rx_sof_n
+      add_wave "-noupdate -label reg_rx_sop_n" $FL_CUTTER_PATH/reg_rx_sop_n
+      add_wave "-noupdate -label reg_rx_eop_n" $FL_CUTTER_PATH/reg_rx_eop_n
+      add_wave "-noupdate -label reg_rx_eof_n" $FL_CUTTER_PATH/reg_rx_eof_n
+      add_wave "-noupdate -color gold -label reg_rx_src_rdy_n" $FL_CUTTER_PATH/reg_rx_src_rdy_n
+      add_wave "-noupdate -color purple -label ready" $FL_CUTTER_PATH/ready
+      add_wave "-noupdate -hex -label reg_rx_data" $FL_CUTTER_PATH/reg_rx_data
+      add_wave "-noupdate -unsigned -label reg_rx_rem" $FL_CUTTER_PATH/reg_rx_rem
+#       add wave -divider
+#       add_wave "-noupdate -label reg_rx_sof_n_lv" $FL_CUTTER_PATH/reg_rx_sof_n_lv
+#       add_wave "-noupdate -label reg_rx_sop_n_lv" $FL_CUTTER_PATH/reg_rx_sop_n_lv
+#       add_wave "-noupdate -label reg_rx_eop_n_lv" $FL_CUTTER_PATH/reg_rx_eop_n_lv
+#       add_wave "-noupdate -label reg_rx_eof_n_lv" $FL_CUTTER_PATH/reg_rx_eof_n_lv
+			add wave -divider "..."
+      add_wave "-noupdate -label reg_rx_sof_n_bc" $FL_CUTTER_PATH/reg_rx_sof_n_bc
+      add_wave "-noupdate -label reg_rx_sop_n_bc" $FL_CUTTER_PATH/reg_rx_sop_n_bc
+      add_wave "-noupdate -label reg_rx_eop_n_bc" $FL_CUTTER_PATH/reg_rx_eop_n_bc
+      add_wave "-noupdate -label reg_rx_eof_n_bc" $FL_CUTTER_PATH/reg_rx_eof_n_bc
+      add wave -divider "..."
+      add_wave "-noupdate -label reg2_rx_sof_n_lv" $FL_CUTTER_PATH/reg2_rx_sof_n_lv
+      add_wave "-noupdate -label reg2_rx_sop_n_lv" $FL_CUTTER_PATH/reg2_rx_sop_n_lv
+      add_wave "-noupdate -label reg2_rx_eop_n_lv" $FL_CUTTER_PATH/reg2_rx_eop_n_lv
+      add_wave "-noupdate -label reg2_rx_eof_n_lv" $FL_CUTTER_PATH/reg2_rx_eof_n_lv
+      
+      add wave -divider "TX SRC RDY computation"
+      add_wave "-noupdate -hex -label tx_src_rdy_n" $FL_CUTTER_PATH/tx_src_rdy_n
+      add_wave "-noupdate -hex -label generated_tx_src_rdy_n" $FL_CUTTER_PATH/generated_tx_src_rdy_n
+      add_wave "-noupdate -hex -label reg_generated_tx_src_rdy_n" $FL_CUTTER_PATH/reg_generated_tx_src_rdy_n
+
+      
+      add wave -divider "TX REM computation"
+      add_wave "-noupdate -hex -label generated_tx_rem" $FL_CUTTER_PATH/generated_tx_rem
+      add_wave "-noupdate -hex -label reg_generated_tx_rem" $FL_CUTTER_PATH/reg_generated_tx_rem
+    
+      add wave -divider "other signals"
+      add_wave "-noupdate -hex -label cnt_part" $FL_CUTTER_PATH/cnt_part
+      add_wave "-noupdate -hex -label cnt_word" $FL_CUTTER_PATH/cnt_word
+      add_wave "-noupdate -hex -label sel_reorder_end" $FL_CUTTER_PATH/sel_reorder_end
+      add_wave "-noupdate -hex -label sel_reorder" $FL_CUTTER_PATH/sel_reorder
+      add wave -divider "..."
+      add_wave "-noupdate -hex -label cnt_aux_en" $FL_CUTTER_PATH/cnt_aux_en
+      add_wave "-noupdate -hex -label sel_aux0_en" $FL_CUTTER_PATH/sel_aux0_en
+      add_wave "-noupdate -hex -label sel_aux1_en" $FL_CUTTER_PATH/sel_aux1_en
+      add wave -divider "..."
+      add_wave "-noupdate -hex -label cnt_output_en" $FL_CUTTER_PATH/cnt_output_en
+      add_wave "-noupdate -hex -label I_TX_DATA_en" $FL_CUTTER_PATH/I_TX_DATA_en
+
+   }
+}

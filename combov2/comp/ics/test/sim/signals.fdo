@@ -1,0 +1,326 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 14 2007-07-31 06:44:05Z kosek $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+proc ib_endpoint {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/IB_ENDPOINT_CORE_U/IB_RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/IB_ENDPOINT_CORE_U/IB_CLK
+      add_wave "-noupdate -hex -label INTERNAL_BUS"   $PATH/INTERNAL_BUS
+    add wave -divider "  Write Interface"
+      add_wave "-noupdate -hex -label WR_ADDR"        $PATH/IB_ENDPOINT_CORE_U/WR_ADDR
+      add_wave "-noupdate -hex -label WR_DATA"        $PATH/IB_ENDPOINT_CORE_U/WR_DATA
+      add_wave "-noupdate -label WR_BE"               $PATH/IB_ENDPOINT_CORE_U/WR_BE
+      add_wave "-noupdate -label WR_REQ"              $PATH/IB_ENDPOINT_CORE_U/WR_REQ
+      add_wave "-noupdate -label WR_RDY"              $PATH/IB_ENDPOINT_CORE_U/WR_RDY
+      add_wave "-noupdate -label WR_LENGTH"           $PATH/IB_ENDPOINT_CORE_U/WR_LENGTH
+      add_wave "-noupdate -label WR_SOF"              $PATH/IB_ENDPOINT_CORE_U/WR_SOF
+      add_wave "-noupdate -label WR_EOF"              $PATH/IB_ENDPOINT_CORE_U/WR_EOF
+    add wave -divider "  Read Interface"
+      add_wave "-noupdate -hex -label RD_ADDR"        $PATH/IB_ENDPOINT_CORE_U/RD_ADDR
+      add_wave "-noupdate -label RD_BE"               $PATH/IB_ENDPOINT_CORE_U/RD_BE
+      add_wave "-noupdate -label RD_REQ"              $PATH/IB_ENDPOINT_CORE_U/RD_REQ
+      add_wave "-noupdate -label RD_ARDY"             $PATH/IB_ENDPOINT_CORE_U/RD_ARDY
+      add_wave "-noupdate -label RD_SOF_IN"           $PATH/IB_ENDPOINT_CORE_U/RD_SOF_IN
+      add_wave "-noupdate -label RD_EOF_IN"           $PATH/IB_ENDPOINT_CORE_U/RD_EOF_IN
+      add_wave "-noupdate -hex -label RD_DATA"        $PATH/IB_ENDPOINT_CORE_U/RD_DATA
+      add_wave "-noupdate -label RD_SRC_RDY"          $PATH/IB_ENDPOINT_CORE_U/RD_SRC_RDY
+      add_wave "-noupdate -label RD_DST_RDY"          $PATH/IB_ENDPOINT_CORE_U/RD_DST_RDY
+}
+
+proc ib_endpoint_master {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/IB_ENDPOINT_CORE_U/IB_RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/IB_ENDPOINT_CORE_U/IB_CLK
+      add_wave "-noupdate -hex -label INTERNAL_BUS"   $PATH/INTERNAL_BUS
+    add wave -divider "  Write Interface"
+      add_wave "-noupdate -hex -label WR_ADDR"        $PATH/IB_ENDPOINT_CORE_U/WR_ADDR
+      add_wave "-noupdate -hex -label WR_DATA"        $PATH/IB_ENDPOINT_CORE_U/WR_DATA
+      add_wave "-noupdate -label WR_BE"               $PATH/IB_ENDPOINT_CORE_U/WR_BE
+      add_wave "-noupdate -label WR_REQ"              $PATH/IB_ENDPOINT_CORE_U/WR_REQ
+      add_wave "-noupdate -label WR_RDY"              $PATH/IB_ENDPOINT_CORE_U/WR_RDY
+      add_wave "-noupdate -label WR_LENGTH"           $PATH/IB_ENDPOINT_CORE_U/WR_LENGTH
+      add_wave "-noupdate -label WR_SOF"              $PATH/IB_ENDPOINT_CORE_U/WR_SOF
+      add_wave "-noupdate -label WR_EOF"              $PATH/IB_ENDPOINT_CORE_U/WR_EOF
+    add wave -divider "  Read Interface"
+      add_wave "-noupdate -hex -label RD_ADDR"        $PATH/IB_ENDPOINT_CORE_U/RD_ADDR
+      add_wave "-noupdate -label RD_BE"               $PATH/IB_ENDPOINT_CORE_U/RD_BE
+      add_wave "-noupdate -label RD_REQ"              $PATH/IB_ENDPOINT_CORE_U/RD_REQ
+      add_wave "-noupdate -label RD_ARDY"             $PATH/IB_ENDPOINT_CORE_U/RD_ARDY
+      add_wave "-noupdate -label RD_SOF_IN"           $PATH/IB_ENDPOINT_CORE_U/RD_SOF_IN
+      add_wave "-noupdate -label RD_EOF_IN"           $PATH/IB_ENDPOINT_CORE_U/RD_EOF_IN
+      add_wave "-noupdate -hex -label RD_DATA"        $PATH/IB_ENDPOINT_CORE_U/RD_DATA
+      add_wave "-noupdate -label RD_SRC_RDY"          $PATH/IB_ENDPOINT_CORE_U/RD_SRC_RDY
+      add_wave "-noupdate -label RD_DST_RDY"          $PATH/IB_ENDPOINT_CORE_U/RD_DST_RDY
+   add wave -divider "BusMaster Interface"
+      add_wave "-noupdate -hex -label GLOBAL_ADDR"    $PATH/IB_ENDPOINT_CORE_U/BM_GLOBAL_ADDR
+      add_wave "-noupdate -hex -label LOCAL_ADDR"     $PATH/IB_ENDPOINT_CORE_U/BM_LOCAL_ADDR
+      add_wave "-noupdate -unsigned -label LENGTH"    $PATH/IB_ENDPOINT_CORE_U/BM_LENGTH
+      add_wave "-noupdate -hex -label TAG"            $PATH/IB_ENDPOINT_CORE_U/BM_TAG
+      add_wave "-noupdate -label DIR"                 $PATH/IB_ENDPOINT_CORE_U/BM_DIR
+      add_wave "-noupdate -label REQ"                 $PATH/IB_ENDPOINT_CORE_U/BM_REQ
+      add_wave "-noupdate -label ACK"                 $PATH/IB_ENDPOINT_CORE_U/BM_ACK
+      add_wave "-noupdate -hex -label OP_TAG"         $PATH/IB_ENDPOINT_CORE_U/BM_OP_TAG
+      add_wave "-noupdate -label OP_DONE"             $PATH/IB_ENDPOINT_CORE_U/BM_OP_DONE
+}
+
+proc blk_ib_endpoint_addr_dec {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/CLK
+      add_wave "-noupdate -label EN"                  $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/EN
+      add_wave "-noupdate -hex -label ADDR_IN"        $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/ADDR_IN
+      add_wave "-noupdate -hex -label TRANS_TYPE"     $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/TRANS_TYPE
+      add_wave "-noupdate -label WRITE_TRANS"         $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/WRITE_TRANS
+      add_wave "-noupdate -label READ_TRANS"          $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/READ_TRANS
+      add_wave "-noupdate -label TRANS_FLAG"          $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/TRANS_FLAG
+      add_wave "-noupdate -label ADDR_MATCH"          $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_ADDR_DEC_U/ADDR_MATCH
+}
+
+proc blk_ib_endpoint_shift_reg {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/CLK
+      add_wave "-noupdate -hex -label DATA_IN"        $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/DATA_IN
+      add_wave "-noupdate -label SOP_IN"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/SOP_IN
+      add_wave "-noupdate -label EOP_IN"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/EOP_IN
+      add_wave "-noupdate -label DATA_IN_VLD"         $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/DATA_IN_VLD
+      add_wave "-noupdate -label DST_RDY"             $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/DST_RDY
+      add_wave "-noupdate -hex -label DATA_OUT"       $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/DATA_OUT
+      add_wave "-noupdate -label DATA_OUT_VLD"        $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/DATA_OUT_VLD
+      add_wave "-noupdate -label SOP_OUT"             $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/SOP_OUT
+      add_wave "-noupdate -label EOP_OUT"             $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/EOP_OUT
+      add_wave "-noupdate -label SHR_RE"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_SHIFT_REG_U/SHR_RE
+}
+
+proc blk_ib_endpoint_write_fsm {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/CLK
+      add_wave "-noupdate -label present_state"       $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/present_state
+      add_wave "-noupdate -label IDLE"                $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/IDLE
+      add_wave "-noupdate -label READ_FSM_IDLE"       $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/READ_FSM_IDLE
+      add_wave "-noupdate -label DATA_VLD"            $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/DATA_VLD
+      add_wave "-noupdate -label SOP"                 $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/SOP
+      add_wave "-noupdate -label EOP"                 $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/EOP
+      add_wave "-noupdate -label SHR_RE"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/SHR_RE
+      add_wave "-noupdate -label ADDR_MATCH"          $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/ADDR_MATCH
+      add_wave "-noupdate -label WRITE_TRANS"         $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/WRITE_TRANS
+      add_wave "-noupdate -label TRANS_FLAG"          $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/TRANS_FLAG
+      add_wave "-noupdate -label DST_ADDR_WE"         $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/DST_ADDR_WE
+      add_wave "-noupdate -label DST_ADDR_CNT_CE"     $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/DST_ADDR_CNT_CE
+      add_wave "-noupdate -label SRC_ADDR_WE"         $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/SRC_ADDR_WE
+      add_wave "-noupdate -label LENGTH_WE"           $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/LENGTH_WE
+      add_wave "-noupdate -label TAG_WE"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/TAG_WE
+      add_wave "-noupdate -label INIT_BE"             $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/INIT_BE
+      add_wave "-noupdate -label WR_COMPL_REQ"        $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/WR_COMPL_REQ
+      add_wave "-noupdate -label WR_COMPL_ACK"        $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/WR_COMPL_ACK
+      add_wave "-noupdate -label WR_SOF"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/WR_SOF
+      add_wave "-noupdate -label WR_EOF"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/WR_EOF
+      add_wave "-noupdate -label WR_RDY"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/WR_RDY
+      add_wave "-noupdate -label WR_REQ"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_WRITE_FSM_U/WR_REQ
+}
+
+proc blk_ib_endpoint_read_fsm {NAME PATH} {
+    add wave -divider "$NAME"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/CLK
+      add_wave "-noupdate -label present_state"       $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/present_state
+      add_wave "-noupdate -label IDLE"                $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/IDLE
+      add_wave "-noupdate -label WRITE_FSM_IDLE"      $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/WRITE_FSM_IDLE
+      add_wave "-noupdate -label BUSMASTER_REQ"       $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/BUSMASTER_REQ
+      add_wave "-noupdate -label DATA_VLD"            $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/DATA_VLD
+      add_wave "-noupdate -label SOP"                 $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/SOP
+      add_wave "-noupdate -label SHR_RE"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/SHR_RE
+      add_wave "-noupdate -label ADDR_MATCH"          $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/ADDR_MATCH
+      add_wave "-noupdate -label READ_TRANS"          $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/READ_TRANS
+      add_wave "-noupdate -label UPSTREAM_FSM_RDY"    $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/UPSTREAM_FSM_RDY
+      add_wave "-noupdate -label LAST_READ_REQ"       $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/LAST_READ_REQ
+      add_wave "-noupdate -label ADDR_WE"             $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/ADDR_WE
+      add_wave "-noupdate -label TAG_WE"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/TAG_WE
+      add_wave "-noupdate -label LENGTH_WE"           $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/LENGHT_WE
+      add_wave "-noupdate -label DST_ADDR_WE"         $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/DST_ADDR_WE
+      add_wave "-noupdate -label INIT_BE"             $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/INIT_BE
+      add_wave "-noupdate -label READ_ALIGN_INIT"     $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/READ_ALIGN_INIT
+      add_wave "-noupdate -label RD_COMPL_REQ"        $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/RD_COMPL_REQ
+      add_wave "-noupdate -label RD_COMPL_ACK"        $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/RD_COMPL_ACK
+      add_wave "-noupdate -label RD_SOF_IN"           $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/RD_SOF_IN
+      add_wave "-noupdate -label RD_EOF_IN"           $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/RD_EOF_IN
+      add_wave "-noupdate -label RD_REQ"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/RD_REQ
+      add_wave "-noupdate -label RD_ARDY"             $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_FSM_U/RD_ARDY
+}
+
+
+
+
+proc blk_ib_endpoint_master_fsm { } {
+    add wave -divider "IB2ADC-MASTER-FSM"
+      add_wave "-noupdate -color yellow -label clk"  /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/CLK
+      add_wave "-noupdate -label reset"              /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/RESET
+      add_wave "-noupdate -label present_state"      /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/present_state
+      add_wave "-noupdate -label read_fsm_idle"      /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/READ_FSM_IDLE
+      add_wave "-noupdate -label req"                /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/REQ
+      add_wave "-noupdate -label ack"                /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/ACK
+      add_wave "-noupdate -label dir"                /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/DIR
+      add_wave "-noupdate -label l2gr_done"          /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/L2GR_DONE
+      add_wave "-noupdate -label g2lr_store"         /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/G2LR_STORE
+      add_wave "-noupdate -label g2lr_buffer_full"   /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/G2LR_BUFFER_FULL
+      add_wave "-noupdate -label upstream_fsm_rdy"   /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/UPSTREAM_FSM_RDY
+      add_wave "-noupdate -label last_read_req"      /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/LAST_READ_REQ
+      add_wave "-noupdate -label eop_was_send"       /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/EOP_WAS_SEND
+      add_wave "-noupdate -label addr_we"            /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/ADDR_WE
+      add_wave "-noupdate -label length_we"          /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/LENGHT_WE
+      add_wave "-noupdate -label init_be"            /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/INIT_BE
+      add_wave "-noupdate -label hdr_master_req"     /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/HDR_MASTER_REQ
+      add_wave "-noupdate -label read_align_init"    /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/READ_ALIGN_INIT
+      add_wave "-noupdate -label rd_sof_in"          /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/RD_SOF_IN
+      add_wave "-noupdate -label rd_eof_in"          /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/RD_EOF_IN
+      add_wave "-noupdate -label rd_req"             /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/RD_REQ
+      add_wave "-noupdate -label rd_ardy"            /testbench/uut2/IB_ENDPOINT_CORE_U/BUSMASTER_FSM/IB_ENDPOINT_MASTER_FSM_U/RD_ARDY
+}
+
+proc blk_ib_endpoint_hdr_master { } {
+    add wave -divider "IB2ADC-HDR_MASTER"
+      add_wave "-noupdate -label clk"                /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/CLK
+      add_wave "-noupdate -label reset"              /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/RESET
+      add_wave "-noupdate -label compl_dst_addr"     /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/COMPL_DST_ADDR
+      add_wave "-noupdate -label compl_tag"          /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/COMPL_TAG
+      add_wave "-noupdate -label compl_length"       /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/COMPL_LENGTH
+      add_wave "-noupdate -label compl_hdr_req"      /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/COMPL_HDR_REQ
+      add_wave "-noupdate -label compl_hdr_done"     /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/COMP_HDR_DONE
+      add_wave "-noupdate -label compl_hdr_full"     /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/COMPL_HDR_FULL
+      add_wave "-noupdate -label master_global_addr" /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/MASTER_GLOBAL_ADDR
+      add_wave "-noupdate -label master_local_addr"  /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/MASTER_LOCAL_ADDR
+      add_wave "-noupdate -label master_tag"         /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/MASTER_TAG
+      add_wave "-noupdate -label master_length"      /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/MASTER_LENGTH
+      add_wave "-noupdate -label master_dir"         /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/MASTER_DIR
+      add_wave "-noupdate -label master_req"         /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/MASTER_REQ
+      add_wave "-noupdate -label header_data"        /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/HEADER_DATA
+      add_wave "-noupdate -label hdr_rdy"            /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/HDR_RDY
+      add_wave "-noupdate -label completition_flag"  /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/COMPLETITION_FLAG
+      add_wave "-noupdate -label l2gw_flag"          /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/L2GW_FLAG
+      add_wave "-noupdate -label g2lr_flag"          /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/G2LR_FLAG
+      add_wave "-noupdate -label get_second_global"  /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_HDR/IB_ENDPOINT_HDR_GEN_U/GET_SECOND_GLOBAL
+
+}
+
+proc blk_ib_endpoint_read_align_master { } {
+   add wave -divider "MASTER-READ_ALIGN"
+      add_wave "-noupdate -label clk"              /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/clk
+      add_wave "-noupdate -hex -label rd_data_in"  /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_DATA_IN
+      add_wave "-noupdate -label rd_src_rdy_in"    /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_SRC_RDY_IN
+      add_wave "-noupdate -label rd_dst_rdy_in"    /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_DST_RDY_IN
+
+      add_wave "-noupdate -hex -label rd_data_out" /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_DATA_OUT
+      add_wave "-noupdate -label rd_src_rdy_out"   /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_SRC_RDY_OUT
+      add_wave "-noupdate -label rd_dst_rdy_out"   /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_DST_RDY_OUT
+      add_wave "-noupdate -label rd_eof"           /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_EOF
+
+      add_wave "-noupdate -label slave_init"         /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/SLAVE_INIT
+      add_wave "-noupdate -label master_init"        /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/MASTER_INIT
+      add_wave "-noupdate -hex -label slave_lenght"  /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/SLAVE_LENGHT
+      add_wave "-noupdate -hex -label master_lenght" /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/MASTER_LENGHT
+      add_wave "-noupdate -label align_reg"          /testbench/uut2/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/ALIGN_REG
+}
+proc blk_ib_endpoint_upstream_master_fsm { } {
+    add wave -divider "IB2ADC-MASTER-FSM"
+      add_wave "-noupdate -color yellow -label clk"  /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/CLK
+      add_wave "-noupdate -label reset"              /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/RESET
+      add_wave "-noupdate -label present_state"      /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/present_state
+      add_wave "-noupdate -label idle"               /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/IDLE
+      add_wave "-noupdate -label rd_compl_req"       /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/RD_COMPL_REQ
+      add_wave "-noupdate -label rd_compl_ack"       /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/RD_COMPL_ACK
+      add_wave "-noupdate -label wr_compl_req"       /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/WR_COMPL_REQ
+      add_wave "-noupdate -label wr_compl_ack"       /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/WR_COMPL_ACK
+      add_wave "-noupdate -label bm_req"             /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/BM_REQ
+      add_wave "-noupdate -label bm_ack"             /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/BM_ACK
+      add_wave "-noupdate -label bm_dir"             /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/BM_DIR
+      add_wave "-noupdate -label get_rd_wr_compl"    /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/GET_RD_WR_COMPL
+      add_wave "-noupdate -label gel_l2gw_g2lr"      /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/GET_L2GW_G2LR
+      add_wave "-noupdate -label get_slave_master"   /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/GET_SLAVE_MASTER
+      add_wave "-noupdate -label get_second_hdr"     /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/GET_SECOND_HDR
+      add_wave "-noupdate -label rd_src_rdy"         /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/RD_SRC_RDY
+      add_wave "-noupdate -label rd_dst_rdy"         /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/RD_DST_RDY
+      add_wave "-noupdate -label rd_eof"             /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/RD_EOF
+      add_wave "-noupdate -label mux_sel"            /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/MUX_SEL
+      add_wave "-noupdate -label sop"                /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/SOP
+      add_wave "-noupdate -label eop"                /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/EOP
+      add_wave "-noupdate -label src_rdy"            /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/SRC_RDY
+      add_wave "-noupdate -label dst_rdy"            /testbench/uut2/IB_ENDPOINT_CORE_U/MASTER_FSM/IB_ENDPOINT_UPSTREAM_FSM_U/DST_RDY
+}
+
+
+
+
+
+proc blk_ib_endpoint_read_shift_reg { } {
+   add wave -divider "READ_SHIFT_REG"
+      add_wave "-noupdate -label clk"              /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/clk
+      add_wave "-noupdate -hex -label rd_data_in"  /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_DATA_IN
+      add_wave "-noupdate -label rd_src_rdy_in"    /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_SRC_RDY_IN
+      add_wave "-noupdate -label rd_dst_rdy_in"    /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_DST_RDY_IN
+      add_wave "-noupdate -hex -label rd_data_out" /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_DATA_OUT
+      add_wave "-noupdate -label rd_src_rdy_out"   /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_SRC_RDY_OUT
+      add_wave "-noupdate -label rd_dst_rdy_out"   /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_DST_RDY_OUT
+}
+
+proc blk_ib_endpoint_read_align { } {
+   add wave -divider "READ_ALIGN"
+      add_wave "-noupdate -label clk"              /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/clk
+      add_wave "-noupdate -hex -label rd_data_in"  /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_DATA_IN
+      add_wave "-noupdate -label rd_src_rdy_in"    /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_SRC_RDY_IN
+      add_wave "-noupdate -label rd_dst_rdy_in"    /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_DST_RDY_IN
+
+      add_wave "-noupdate -hex -label rd_data_out" /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_DATA_OUT
+      add_wave "-noupdate -label rd_src_rdy_out"   /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_SRC_RDY_OUT
+      add_wave "-noupdate -label rd_dst_rdy_out"   /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_DST_RDY_OUT
+      add_wave "-noupdate -label rd_eof"           /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/RD_EOF
+
+      add_wave "-noupdate -label slave_init"         /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/SLAVE_INIT
+      add_wave "-noupdate -label master_init"        /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/MASTER_INIT
+      add_wave "-noupdate -hex -label slave_lenght"  /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/SLAVE_LENGHT
+      add_wave "-noupdate -hex -label master_lenght" /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/MASTER_LENGHT
+      add_wave "-noupdate -label align_reg"          /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_ALIGN_U/ALIGN_REG
+}
+
+proc blk_ib_endpoint_read_be { } {
+   add wave -divider "READ_BE"
+      add_wave "-noupdate -label clk"              /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_BE_RE_U/clk
+      add_wave "-noupdate -label load_lenght"      /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_BE_RE_U/LOAD_LENGHT
+      add_wave "-noupdate -hex -label lenght"      /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_BE_RE_U/LENGHT
+      add_wave "-noupdate -label align_reg"        /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_BE_RE_U/ALIGN_REG
+      add_wave "-noupdate -label be_rd"            /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_BE_RE_U/be_rd
+      add_wave "-noupdate -label ardy"             /testbench/uut/IB_ENDPOINT_CORE_U/IB_ENDPOINT_BE_RE_U/ardy
+}

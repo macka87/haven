@@ -1,0 +1,19 @@
+<!-- ### doplnit vsude name ### -->
+
+<versions>
+    <version id="HEAD" name="ACTUAL_VERSION">
+        <item>10/100/1000Mb mode now available.</item>
+    </version>
+
+    <version id="IBUF_01_03" name="01_03">
+        <item>10/100/1000Mb mode now available.</item>
+    </version>
+
+    <version id="IBUF_01_02" name="01_02">
+        <item>Counter of frames discarded due to buffer overflow included.</item>
+    </version>
+
+    <version id="IBUF_01_01" name="01_01">
+        <item>MAC control included.</item>
+    </version>
+</versions>

@@ -1,0 +1,679 @@
+<source>
+
+<component>MI32 interface for XGMII IBUF</component>
+
+<authors>
+    <author login="solanka">Lukas Solanka</author>
+    <author login="polcak_l">Libor Polcak</author>
+</authors>
+
+<features>
+    <item> Provides MI32 interface to XGMII IBUF </item>
+</features>
+
+<!--<bugs>
+</bugs>-->
+
+<todo>
+   <item>HW tests</item>
+</todo>
+
+<description>
+	This component provides a layer between MI32 local bus and XGMII IBUF.
+	It provides important signals and records to other XGMII IBUF components.
+</description>
+
+<interface>
+    <generic_map>
+        <generic name="MAC_COUNT" type="integer" default="">
+            Number of supported MAC addresses (up to 16)
+        </generic>
+    </generic_map>
+
+
+    <port_map>
+
+        <divider> Common signals </divider>
+        <port name="RESET" dir="in" width="1">
+            IBUF reset
+        </port>
+        <port name="IBUF_CLK" dir="in" width="1">
+            IBUF main clock
+        </port>
+
+        <divider> MI32 interface </divider>
+        <port name="MI_CLK" dir="in" width="1">
+            MI32 bus clock
+        </port>
+        <port name="MI" dir="inout" width="32">
+            MI32 interface
+        </port>
+
+				<divider> Check interface </divider>
+				<port name="MI2CHECK" dir="out" width="1">
+					Data provided to Check component
+				</port>
+
+				<divider> Buf interface </divider>
+				<port name="MI2BUF" dir="out" width="1">
+					Data provided to Buf component
+				</port>
+				<port name="BUF2MI" dir="in" width="1">
+					Data provided by Buf component
+				</port>
+
+				<divider> CAM interface </divider>
+				<port name="CAM_DI" dir="in" width="64">
+      		MAC address to be searched
+				</port>
+				<port name="CAM_MATCH_EN" dir="in" width="1">
+      		MAC address search enable
+				</port>
+				<port name="CAM_MASK" dir="in" width="64">
+      		CAM mask
+				</port>
+				<port name="CAM_MATCH_RST" dir="in" width="1">
+      		CAM match reset
+				</port>
+				<port name="CAM_MATCH_BUS" dir="out" width="MAC_COUNT">
+      		Addresses found in CAM
+				</port>
+				<port name="CAM_MATCH_BUS_VLD" dir="out" width="1">
+      		CAM_MATCH_BUS is valid, active in '1'
+				</port>
+
+
+    </port_map>
+
+</interface>
+
+<constant>
+    <const name="IBUF command: Strobe frame counters" id="IBUFCMD_STROBE_COUNTERS" value="0x01">
+        Writing this constant into <ref id="REG_IBUF_CTRL">the command register</ref> will cause that
+        the current frame counters' values will be stored into the frame counter registers at the
+        same moment.
+    </const>
+
+    <const name="IBUF command: Reset frame counters" id="IBUFCMD_RESET_COUNTERS" value="0x02">
+        Writing this constant into <ref id="REG_IBUF_CTRL">the command register</ref> will cause that
+        the frame counters will be reset.
+    </const>
+
+</constant>
+
+<operations>
+	<init>
+
+		<it ref="IBUF_SET_ENABLE_STATUS">Disable IBUF</it>
+
+		<it ref="IBUF_SET_ERROR_MASK">Set IBUF error mask</it>
+
+		<it ref="IBUF_SET_ENABLE_STATUS">Enable IBUF</it>
+
+  </init>
+    <op name="Enable/Disable IBUF" id="IBUF_SET_ENABLE_STATUS">
+        To enable/disable IBUF set/reset 
+        <ref id="REG_ENABLE"> IBUF enable register</ref>. Set This register
+        to enable IBUF or reset it to disable IBUF.
+    </op>
+
+    <op name="Set MAC check mode" id="IBUF_SET_MAC_CHECK">
+        To set IBUF MAC check mode store a appropriate value into the 
+        <ref id="REG_MAC_CHECK"> IBUF MAC check register</ref>.
+        You should <ref id="IBUF_SET_ENABLE_STATUS">disable IBUF first</ref>.
+    </op>
+
+    <op name="Set IBUF error mask" id="IBUF_SET_ERROR_MASK">
+        To set IBUF error mask store a appropriate value into the 
+        <ref id="REG_ERRMASK"> IBUF error mask register</ref>.
+        You should <ref id="IBUF_SET_ENABLE_STATUS">disable IBUF first</ref>.
+    </op>
+
+    <op name="Set minimal frame length" id="IBUF_SET_MIN_LEN">
+        To set the minimal frame length store the appropriate value into the 
+        <ref id="REG_MIN_LEN"> IBUF minimum frame len register</ref>. 
+        You should <ref id="IBUF_SET_ENABLE_STATUS">disable IBUF first</ref>.
+    </op>
+
+    <op name="Set frame MTU" id="IBUF_SET_MTU">
+        To set the frame MTU store the appropriate value into the 
+        <ref id="REG_MTU"> IBUF frame MTU register</ref>.
+        You should <ref id="IBUF_SET_ENABLE_STATUS">disable IBUF first</ref>.
+    </op>
+
+    <op name="Sample frame counters" id="IBUF_STROBE_COUNTERS">
+        To sample the current frame counters values store 
+        <ref id="IBUFCMD_STROBE_COUNTERS"> IBUFCMD_STROBE_COUNTERS</ref> command
+        into <ref id="REG_IBUF_CTRL">the command register</ref>.
+    </op>
+
+    <op name="Read frame counters' content" id="IBUF_READ_COUNTERS">
+        IBUF has four frame counters: Total Received Frames Counter (TRFC),
+        Correct Frames Counter (CFC), Discarded Frames Counter (DFC) and Counter of Frames Discarded
+				due to Buffer Overflow. If the IBUF unit is enabled,
+        these counters will have a floating content. For this reason, it is necessary to
+        strobe their actual values at the one moment into the frame counter registers. Software driver
+        is than able to read those registers.
+    </op>
+</operations>
+
+<addr_space id="IBUF_MI_INT" name="Input Buffer MI Interface" main="yes" size="0x100">
+    <instantion ref="IBUF_MI_INT_AS" offset="0x000000">
+        MI Int address space
+    </instantion>
+</addr_space>
+
+<addr_space id="IBUF_MI_INT_AS" name="IBUF address space" >
+    <reg name="Total Received Frames Counter - low part (TRFCL)" id="CNT_PACKETS_LOW" offset="0x00" access="R" words="0x1">
+        <bit_vect bits="32">
+            <description_above>
+							This is the low part of counter that holds number of all arrived
+							frames including those being received at the moment.
+							TRFC = CFC + DFC (+ 1).
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="Counter value">
+                    Current counter value.
+                </bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Correct Frames Counter - low part (CFCL)" id="CNT_RECV_LOW" offset="0x04" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+							This is the low part of counter that holds number of frames that
+							passed sampling and all controls (was found to be correct) and
+							are forwarded to the IBUF's output. CFC = TRFC - DFC (- 1).
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="Counter value">
+                    Current counter value.
+                </bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Discarded Frames Counter - low part (DFCL)" id="CNT_RECVERR_LOW" offset="0x08" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+							This is the low part of counter taht holds number of frames that
+							NOT passed sampling or any control (was found to be NOT
+							correct) and are NOT forwarded to the IBUF's output.
+							DFC = TRFC - CFC (- 1).
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="Counter value">
+                    Current counter value.
+                </bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Counter of frames discarded due to buffer overflow - low part" id="CNT_BUFOVFERR_LOW" offset="0x0C" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+							This is the low part of counter that holds number of frames that
+							were discarded due to buffer overflow.
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="Counter value">
+                    Current counter value.
+                </bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Total Received Frames Counter - high part (TRFCH)" id="CNT_PACKETS_HIGH" offset="0x10" access="R" words="0x1">
+        <bit_vect bits="32">
+            <description_above>
+							This is the high part of counter that holds number of all arrived
+							frames including those being received at the moment.
+							TRFC = CFC + DFC (+ 1).
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="Counter value">
+                    Current counter value.
+                </bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Correct Frames Counter - high part (CFCH)" id="CNT_RECV_HIGH" offset="0x14" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+							This is the high part of counter that holds number of frames that
+							passed sampling and all controls (was found to be correct) and
+							are forwarded to the IBUF's output. CFC = TRFC - DFC (- 1).
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="Counter value">
+                    Current counter value.
+                </bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Discarded Frames Counter - high part (DFCH)" id="CNT_RECVERR_HIGH" offset="0x18" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+							This is the high part of counter taht holds number of frames that
+							NOT passed sampling or any control (was found to be NOT
+							correct) and are NOT forwarded to the IBUF's output.
+							DFC = TRFC - CFC (- 1).
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="Counter value">
+                    Current counter value.
+                </bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Counter of frames discarded due to buffer overflow - high part" id="CNT_BUFOVFERR_HIGH" offset="0x1C" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+							This is the high part of counter that holds number of frames that
+							were discarded due to buffer overflow.
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="Counter value">
+                    Current counter value.
+                </bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="IBUF enable register" id="REG_ENABLE" offset="0x20" access="RW" words="1">
+        <bit_vect bits="1">
+            <description_above>
+                The value stored in this register determines whether the IBUF unit is 
+                enabled or not.
+            </description_above>
+            <format>
+                <bit from="0" to="0" name="IBUF enabled">
+                    Assert this bit to change the IBUF status to 'enabled'.
+                    Clear this bit to change the IBUF status to 'disabled'.
+                </bit>
+            </format>
+            <description_below>
+                As soon as the IBUF status is set to 'enabled' the IBUF unit starts working.
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="Error mask register" id="REG_ERRMASK" offset="0x24" access="RW" words="1">
+        <bit_vect bits="8">
+            <description_above>
+                This register specifies which controls will be done over incoming frames.
+            </description_above>
+            <format>
+                <bit from="0" to="0" name="XGMII_ERROR">
+                    This bit signals whether the frame error notified by XGMII Decoder
+                    will cause the frame discarding. Assert this bit to allow frame discarding.
+                    Clear this bit to mask this error.
+                </bit>
+                <bit from="1" to="1" name="CRC_ERROR">
+                    This bit signals whether the CRC check error
+                    will cause the frame discarding. Assert this bit to allow frame discarding.
+                    Clear this bit to mask this error.
+                </bit>
+                <bit from="2" to="2" name="MIN_LEN_CHECK">
+                    This bit enables the minimum frame length check. If the incoming frame length is less than the
+                    <ref id="REG_MIN_LEN"> IBUF minimum frame length register</ref>, the frame will be discarded.
+                </bit>
+                <bit from="3" to="3" name="MTU_CHECK">
+                    This bit enables the MTU frame length check. If the incoming frame length is greater than the
+                    <ref id="REG_MTU"> IBUF frame MTU register</ref>, the frame will be discarded.
+                </bit>
+                <bit from="4" to="4" name="MAC_CHECK">
+									This bit enables the frame MAC address check. If the incoming frame destination MAC address
+									doesn't pass the control, the frame will be discarded. 
+                </bit>
+                <bit from="5" to="7" name="RESERVED">
+                    Reserved (tied to zero).
+                </bit>
+            </format>
+            <description_below>
+                The value stored in this register determines which kinds of errors cause the frame
+                discarding.
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="IBUF status register" id="REG_IBUF_STATUS" offset="0x28" access="RW" words="1">
+        <bit_vect bits="8">
+            <description_above>
+                IBUF status register.
+            </description_above>
+            <format>
+                <bit from="0" to="0" name="PACODAG_OVF">
+									This bit is asserted in case one or more incoming packets has not been
+									processed because of the fact that the PACODAG component was not ready
+									to generate control data for the packets. Bit reset is performed by writing
+									operation.
+                </bit>
+                <bit from="1" to="1" name="DFIFO_OVF">
+                    This bit is asserted in case the DFIFO overflow has occured.
+                    Bit reset is performed by writing operation.
+                </bit>
+                <bit from="2" to="3" name="DEBUG">
+                    Debug data (should be tied to zero).
+                </bit>
+                <bit from="4" to="5" name="IBUF speed">
+                    Reserved (tied to ones).
+                </bit>
+                <bit from="6" to="7" name="BUF FSM DEBUG">
+                    State of Buf part FSM. 00 = st_wait,
+										01 = st_frame, 10 = st_discard
+                </bit>
+                <bit from="8" to="8" name="HFIFO_FULL">
+								</bit>
+                <bit from="9" to="9" name="HFIFO_EMPTY">
+								</bit>
+                <bit from="10" to="10" name="HFIFO_WR">
+								</bit>
+                <bit from="11" to="11" name="HFIFO_RD">
+								</bit>
+                <bit from="12" to="12" name="HFIFO_DO_DV">
+								</bit>
+                <bit from="13" to="13" name="DFIFO_FULL">
+								</bit>
+                <bit from="14" to="14" name="DFIFO_EMPTY">
+								</bit>
+                <bit from="15" to="15" name="DFIFO_WR">
+								</bit>
+                <bit from="16" to="16" name="DFIFO_RD">
+								</bit>
+                <bit from="17" to="17" name="DFIFO_DO_DV">
+								</bit>
+                <bit from="18" to="18" name="CTRL_RDY">
+								</bit>
+								<bit from="19" to="19" name="COMPOSER_FIFO_SEL">
+									'0' -> DFIFO, '1' -> HFIFO
+								</bit>
+            </format>
+            <description_below>
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="IBUF command register" id="REG_IBUF_CTRL" offset="0x2c" access="W" words="1">
+        <bit_vect bits="8">
+            <description_above>
+                IBUF command register.
+            </description_above>
+            <format>
+                <bit from="0" to="7" name="Command">
+                    Write a command into this register.
+                </bit>
+            </format>
+            <description_below>
+                See a Software section for Command constats review.
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="Minimum frame length allowed" id="REG_MIN_LEN" offset="0x30" access="RW" words="1">
+        <bit_vect bits="16">
+            <description_above>
+                This register specifies the minimal frame length allowed. Default value is 64.
+            </description_above>
+            <format>
+                <bit from="0" to="15" name="Minimal length">
+                    The minimal frame length allowed.
+                </bit>
+            </format>
+            <description_below>
+                The frame length includes the length of Ethernet frame including FCS.
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="Frame MTU" id="REG_MTU" offset="0x34" access="RW" words="1">
+        <bit_vect bits="16">
+            <description_above>
+                This register specifies the maximal frame length allowed (MTU). Default value is 1526.
+            </description_above>
+            <format>
+                <bit from="0" to="15" name="Frame MTU">
+                    The maximal frame length allowed (MTU).
+                </bit>
+            </format>
+            <description_below>
+                The frame length includes the length of Ethernet frame including FCS.
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="MAC address check mode" id="REG_MAC_CHECK" offset="0x38" access="RW" words="1">
+        <bit_vect bits="2">
+            <description_above>
+                This register specifies the mode of MAC address checking.
+            </description_above>
+            <format>
+                <bit from="0" to="1" name="Check mode">
+                    The MAC address checking mode.
+                </bit>
+            </format>
+            <description_below>
+                <ul>
+                    <li>
+                        0x0 - MODE 0: All MACs can pass (promiscuous mode). 
+                    </li>
+                    <li>
+                        0x1 - MODE 1: Only frames with valid MAC addresses can pass (see MAC memory). 
+                    </li>
+                    <li>
+                        0x2 - MODE 2: MODE 1 + All brodcast frames can pass. 
+                    </li>
+                    <li>
+                        0x3 - MODE 3: MODE 2 + All multicast frames can pass.
+                    </li>
+                </ul>
+            </description_below>
+        </bit_vect>
+    </reg>
+
+		<reg name="Memory of available MAC addresses" id="MAC_MEM" offset="0x80" access="RW" words="2">
+			<bit_vect bits="49">
+				<description_above>
+					This memory contains all available MAC addresses for
+					network interface.
+				</description_above>
+				<format>
+					<bit from="0" to="47" name="MAC address">
+						The MAC address.
+					</bit>
+					<bit from="48" to="48" name="Valid bit">
+						MAC address is valid when asserted.
+					</bit>
+				</format>
+				<description_below>
+					!!!IMPORTANT: To write the MAC adress item properly you must first
+					write low 32 bits and then high 16 bits. If you would not do it right
+					way the MAC have not been written. The MAC memory can be accessed by
+					software only when the IBUF is disabled!!! Memory can contain up to
+					16 MAC addresses (it depends on MAC_COUNT generic). Each MAC address
+					is stored on two address positions. The lower address contains the
+					lower 4 bytes and the upper contains the 2 upper bytes and valid bit.
+					Only valid MAC addresses are used for matching.
+				</description_below>
+			</bit_vect>
+		</reg>
+
+</addr_space>
+
+<sw_body>
+	<h1>Initialization</h1>
+	<p>
+		You should <ref id="IBUF_SET_ENABLE_STATUS">disable IBUF first</ref>. Then,
+		you can <ref id="IBUF_SET_MAC_CHECK">set MAC check mode</ref> and,
+		<ref id="IBUF_SET_ERROR_MASK">set IBUF error mask</ref>,
+		set <ref id="IBUF_SET_MIN_LEN">minimal</ref> and
+		<ref id="IBUF_SET_MTU">maximal</ref> frame length.
+		You should also write all valid MAC addresses into
+		<ref id="MAC_MEM">MAC memory</ref>.
+	</p>
+	<p>
+	 	After you are done you
+		can <ref id="IBUF_SET_ENABLE_STATUS">enable IBUF</ref>.
+	</p>
+	<h1>Frame counters</h1>
+	<p>
+		You can read number of received, correct, discarded and dicarded due to
+		buffer overflow frame counters. You has to
+		<ref id="IBUF_STROBE_COUNTERS">sample frame counters</ref> first and then
+		you can <ref id="IBUF_READ_COUNTERS">read frame counters' content</ref>.
+	</p>
+	<h1>General info</h1>
+	<p>
+		This component does not support unaligned access to the registers or CAM
+		memory.
+	</p>
+</sw_body>
+
+<body>
+
+	<h1>MI Int information</h1>
+
+	<h2>General info</h2>
+	<p>
+		This component was designed to provide abstraction between the MI32 local
+		bus and the other componets in the
+		<ref_comp ref="xgmii_ibuf" tag_id="HEAD">IBUF</ref_comp>.
+	</p>
+
+	<h2>Registers</h2>
+	<p>
+		Important data that are readable and/or writable through the MI32 bus are
+		stored here. You can see the purpose of each register in software section.
+		Registers are connected to the records so they are readable or writable
+		from other IBUF components. Note that there are separate records for
+		incoming and outgoing data so it should not bring us any synthesis problem.
+	</p>
+
+	<h2>CAM Memory</h2>
+	<p>
+		Special <ref_comp ref="xgmii_ibuf_cam">CAM memory</ref_comp> component is
+		used in order to provide both reading and writing support.
+		Software is able to write/read MAC addresses into/from this memory.
+		<ref_comp ref="xgmii_ibuf_check">Check</ref_comp> component
+		uses this memory to search MAC addresses of incoming frames. If the MAC
+		address is not found <ref_comp ref="xgmii_ibuf_buf" tag_id="HEAD">Buf</ref_comp>
+		component can discard the frame.
+	</p>
+	<p>
+		Note that writing and reading are time expensive and ARDY signal has to be
+		to '0' during these operations.
+	</p>
+
+	<h2>Address decoder</h2>
+	<p>
+		Address decoder is used to write data from the MI32 bus to the selected
+		register and to provide data from the demanded register to the software
+		interface.
+	</p>
+
+	<h2>Asynchronous MI32 mode</h2>
+	<p>
+		The core of the <ref_comp ref="xgmii_ibuf" tag_id="HEAD">IBUF</ref_comp>
+		and MI32 local bus may have different clock period so it is necessary to use
+		asynchronous MI32 connection.
+	</p>
+		
+
+	<h1>Frequency and Resources usage by Precision</h1>
+	<h2>Precision</h2>
+
+	<p>
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 16</th> 
+				<td>370 (1.57%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 8</th> 
+				<td>276 (1.17%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+		<nazev>Chip utilization (Precision)</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by Precision (IBUF/MI)</th>
+				<th>Frequency tested in HW (IBUF/MI)</th>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 16</th> 
+				<td>163/409 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 8</th> 
+				<td>163/409 MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Maximal frequency (Precision)</nazev>
+		</tab> 
+  </p> 
+
+	<h2>XST</h2>
+  <p> 
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 16</th> 
+				<td>471 (1%)</td>
+				<td>0 (0%)</td>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 8</th> 
+				<td>367 (1%)</td>
+				<td>0 (0%)</td>
+			</tr>
+		<nazev>Chip utilization (XST)</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by XST (IBUF/MI)</th>
+				<th>Frequency tested in HW (IBUF/MI)</th>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 16</th> 
+				<td>166/346 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 8</th> 
+				<td>165/346 MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Maximal frequency (XST)</nazev>
+		</tab>	
+  </p> 
+
+	<h1>Schemes</h1>
+	<p>
+		The block structure of the component is in the following figure.
+		<obr src="./fig/mi_int.fig">MI Int architecture</obr>
+	</p>
+
+</body>
+
+
+</source>

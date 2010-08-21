@@ -1,0 +1,125 @@
+<synthesis>
+   <tool>
+      precision
+   </tool>
+   <tool>
+      xst
+   </tool>
+   <toplevel>
+      ibuf_xgmii_ent.vhd
+   </toplevel>
+   <fpga>
+      xc2vp50
+   </fpga>
+   <archgrp>
+      FULL
+   </archgrp>
+   <generics>
+      <generic name="DFIFO_SIZE">
+         1023
+      </generic>
+      <generic name="HFIFO_SIZE">
+         128
+      </generic>
+      <generic name="HFIFO_MEMTYPE">
+         LUT
+      </generic>
+      <generic name="CTRL_HDR_EN">
+         true
+      </generic>
+      <generic name="CTRL_FTR_EN">
+         false
+      </generic>
+      <generic name="MACS">
+         16
+      </generic>
+      <generic name="FL_WIDTH_TX">
+         64
+      </generic>
+      <generic name="FL_RELAY">
+         true
+      </generic>
+   </generics>
+   <generics>
+      <generic name="DFIFO_SIZE">
+         2047
+      </generic>
+      <generic name="HFIFO_SIZE">
+         256
+      </generic>
+      <generic name="HFIFO_MEMTYPE">
+         LUT
+      </generic>
+      <generic name="CTRL_HDR_EN">
+         true
+      </generic>
+      <generic name="CTRL_FTR_EN">
+         false
+      </generic>
+      <generic name="MACS">
+         16
+      </generic>
+      <generic name="FL_WIDTH_TX">
+         64
+      </generic>
+      <generic name="FL_RELAY">
+         true
+      </generic>
+   </generics>
+   <generics>
+      <generic name="DFIFO_SIZE">
+         1023
+      </generic>
+      <generic name="HFIFO_SIZE">
+         128
+      </generic>
+      <generic name="HFIFO_MEMTYPE">
+         LUT
+      </generic>
+      <generic name="CTRL_HDR_EN">
+         true
+      </generic>
+      <generic name="CTRL_FTR_EN">
+         false
+      </generic>
+      <generic name="MACS">
+         1
+      </generic>
+      <generic name="FL_WIDTH_TX">
+         64
+      </generic>
+      <generic name="FL_RELAY">
+         true
+      </generic>
+   </generics>
+   <generics>
+      <generic name="DFIFO_SIZE">
+         1023
+      </generic>
+      <generic name="HFIFO_SIZE">
+         128
+      </generic>
+      <generic name="HFIFO_MEMTYPE">
+         LUT
+      </generic>
+      <generic name="CTRL_HDR_EN">
+         true
+      </generic>
+      <generic name="CTRL_FTR_EN">
+         false
+      </generic>
+      <generic name="MACS">
+         16
+      </generic>
+      <generic name="FL_WIDTH_TX">
+         128
+      </generic>
+      <generic name="FL_RELAY">
+         true
+      </generic>
+   </generics>
+
+   <frequency clock="XGMII_RXCLK">
+      157
+   </frequency>
+</synthesis>

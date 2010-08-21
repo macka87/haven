@@ -1,0 +1,2 @@
+This is a edited version of FL Transformer used in ibuf. It hhas asynchronous reset rather than
+synchronous.

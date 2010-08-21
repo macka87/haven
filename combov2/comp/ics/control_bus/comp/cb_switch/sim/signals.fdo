@@ -1,0 +1,244 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#         Patrik Beck <beck@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 14 2007-07-31 06:44:05Z kosek $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+proc ifc { } {
+   global CB_SWITCH_PATH
+   set BASE    $CB_SWITCH_PATH
+
+   add wave -divider "Clock and Reset"
+      add_wave "-noupdate -color yellow -label reset" /testbench/uut1/cb_reset
+      add_wave "-noupdate -color yellow -label clk"   /testbench/uut1/cb_clk
+} 
+
+proc cb_switch { } {
+   global CB_SWITCH_PATH
+   set BASE    $CB_SWITCH_PATH
+
+   add wave -divider "CB SWITCH"      
+      add_wave "-noupdate -color yellow -label clk"  $BASE/cb_clk
+      add_wave "-noupdate -hex -label PORT0_IN"      $BASE/PORT0_IN
+      add_wave "-noupdate -hex -label PORT0_OUT"     $BASE/PORT0_OUT
+      add_wave "-noupdate -hex -label DS_IN"         $BASE/DS_IN
+      add_wave "-noupdate -hex -label DS_IN_RD"      $BASE/DS_IN_RD
+      add_wave "-noupdate -hex -label DS_OUT"        $BASE/DS_OUT
+      add_wave "-noupdate -hex -label DS_OUT_RD"     $BASE/DS_OUT_RD
+
+}
+
+proc switch1 { } {
+   add wave -divider "SWITCH1"      
+      add_wave "-noupdate -color yellow -label clk"  /testbench/uut1/cb_clk
+      add_wave "-noupdate -hex -label PORT0_IN"      /testbench/uut1/PORT0_IN
+      add_wave "-noupdate -hex -label PORT0_OUT"     /testbench/uut1/PORT0_OUT
+      add_wave "-noupdate -hex -label PORT1_IN"      /testbench/uut1/PORT1_IN
+      add_wave "-noupdate -hex -label PORT1_OUT"     /testbench/uut1/PORT1_OUT
+      add_wave "-noupdate -hex -label PORT2_IN"      /testbench/uut1/PORT2_IN
+      add_wave "-noupdate -hex -label PORT2_OUT"     /testbench/uut1/PORT2_OUT
+
+}
+
+
+proc switch2 { } {
+   add wave -divider "SWITCH2"      
+      add_wave "-noupdate -color yellow -label clk"  /testbench/uut2/cb_clk
+      add_wave "-noupdate -hex -label PORT0_IN"      /testbench/uut2/PORT0_IN
+      add_wave "-noupdate -hex -label PORT0_OUT"     /testbench/uut2/PORT0_OUT
+      add_wave "-noupdate -hex -label PORT1_IN"      /testbench/uut2/PORT1_IN
+      add_wave "-noupdate -hex -label PORT1_OUT"     /testbench/uut2/PORT1_OUT
+      add_wave "-noupdate -hex -label PORT2_IN"      /testbench/uut2/PORT2_IN
+      add_wave "-noupdate -hex -label PORT2_OUT"     /testbench/uut2/PORT2_OUT
+
+}
+
+proc switch3 { } {
+    global CB_SWITCH_PATH
+   set BASE    $CB_SWITCH_PATH
+
+  add wave -divider "SWITCH3"      
+      add_wave "-noupdate -color yellow -label clk"  /testbench/uut3/cb_clk
+      add_wave "-noupdate -hex -label PORT0_IN"      /testbench/uut3/PORT0_IN
+      add_wave "-noupdate -hex -label PORT0_OUT"     /testbench/uut3/PORT0_OUT
+      add_wave "-noupdate -hex -label DS_IN"         /testbench/uut3/DS_IN
+      add_wave "-noupdate -hex -label DS_IN_RD"      /testbench/uut3/DS_IN_RD
+      add_wave "-noupdate -hex -label DS_OUT"        /testbench/uut3/DS_OUT
+      add_wave "-noupdate -hex -label DS_OUT_RD"     /testbench/uut3/DS_OUT_RD
+} 
+
+proc cb_shift_reg { N } {
+    global CB_SWITCH_PATH
+    set BASE    $CB_SWITCH_PATH
+
+   add wave -divider "CB_SWITCH_SHIFT_REG"
+      add_wave "-noupdate -label clk"              $BASE/SHR__$N/CB_SHIFT_REG_U/clk
+      add_wave "-noupdate -hex -label data_in"     $BASE/SHR__$N/CB_SHIFT_REG_U/data_in
+      add_wave "-noupdate -label data_in_vld"      $BASE/SHR__$N/CB_SHIFT_REG_U/data_in_vld
+      add_wave "-noupdate -label sop_in"           $BASE/SHR__$N/CB_SHIFT_REG_U/sop_in
+      add_wave "-noupdate -label eop_in"           $BASE/SHR__$N/CB_SHIFT_REG_U/eop_in
+      add_wave "-noupdate -label we"               $BASE/SHR__$N/CB_SHIFT_REG_U/we
+      add_wave "-noupdate -label srl_en"           $BASE/SHR__$N/CB_SHIFT_REG_U/srl_en
+
+      add_wave "-noupdate -hex -label data_out"    $BASE/SHR__$N/CB_SHIFT_REG_U/data_out
+      add_wave "-noupdate -label data_out_vld"     $BASE/SHR__$N/CB_SHIFT_REG_U/data_out_vld
+      add_wave "-noupdate -label sop_out"          $BASE/SHR__$N/CB_SHIFT_REG_U/sop_out
+      add_wave "-noupdate -label eop_out"          $BASE/SHR__$N/CB_SHIFT_REG_U/eop_out
+
+      add_wave "-noupdate -label dst_rdy"          $BASE/SHR__$N/CB_SHIFT_REG_U/dst_rdy
+      add_wave "-noupdate -label counter"          $BASE/SHR__$N/CB_SHIFT_REG_U/counter
+      add_wave "-noupdate -label srl_addr"         $BASE/SHR__$N/CB_SHIFT_REG_U/srl_addr
+      
+}
+
+
+proc shift_reg0 { } {
+   add wave -divider "PORT0_SHIFT_REG"
+      add_wave "-noupdate -label clk"              /testbench/uut1/CB_SHIFT_REG0_U/clk
+      add_wave "-noupdate -hex -label data_in"     /testbench/uut1/CB_SHIFT_REG0_U/data_in
+      add_wave "-noupdate -label data_in_vld"      /testbench/uut1/CB_SHIFT_REG0_U/data_in_vld
+      add_wave "-noupdate -label sop_in"           /testbench/uut1/CB_SHIFT_REG0_U/sop_in
+      add_wave "-noupdate -label eop_in"           /testbench/uut1/CB_SHIFT_REG0_U/eop_in
+      add_wave "-noupdate -label we"               /testbench/uut1/CB_SHIFT_REG0_U/we
+      add_wave "-noupdate -label srl_en"           /testbench/uut1/CB_SHIFT_REG0_U/srl_en
+
+      add_wave "-noupdate -hex -label data_out"    /testbench/uut1/CB_SHIFT_REG0_U/data_out
+      add_wave "-noupdate -label data_out_vld"     /testbench/uut1/CB_SHIFT_REG0_U/data_out_vld
+      add_wave "-noupdate -label sop_out"          /testbench/uut1/CB_SHIFT_REG0_U/sop_out
+      add_wave "-noupdate -label eop_out"          /testbench/uut1/CB_SHIFT_REG0_U/eop_out
+
+      add_wave "-noupdate -label dst_rdy"          /testbench/uut1/CB_SHIFT_REG0_U/dst_rdy
+      add_wave "-noupdate -label counter"          /testbench/uut1/CB_SHIFT_REG0_U/counter
+      add_wave "-noupdate -label srl_addr"         /testbench/uut1/CB_SHIFT_REG0_U/srl_addr
+      
+}
+
+proc shift_reg1 { } {      
+   add wave -divider "PORT1_SHIFT_REG"
+      add_wave "-noupdate -label clk"              /testbench/uut1/CB_SHIFT_REG1_U/clk
+      add_wave "-noupdate -hex -label data_in"     /testbench/uut1/CB_SHIFT_REG1_U/data_in
+      add_wave "-noupdate -label data_in_vld"      /testbench/uut1/CB_SHIFT_REG1_U/data_in_vld
+      add_wave "-noupdate -label sop_in"           /testbench/uut1/CB_SHIFT_REG1_U/sop_in
+      add_wave "-noupdate -label eop_in"           /testbench/uut1/CB_SHIFT_REG1_U/eop_in
+      add_wave "-noupdate -label we"               /testbench/uut1/CB_SHIFT_REG1_U/we
+      add_wave "-noupdate -hex -label data_out"    /testbench/uut1/CB_SHIFT_REG1_U/data_out
+      add_wave "-noupdate -label data_out_vld"     /testbench/uut1/CB_SHIFT_REG1_U/data_out_vld
+      add_wave "-noupdate -label sop_out"          /testbench/uut1/CB_SHIFT_REG1_U/sop_out
+      add_wave "-noupdate -label eop_out"          /testbench/uut1/CB_SHIFT_REG1_U/eop_out
+      add_wave "-noupdate -label dst_rdy"          /testbench/uut1/CB_SHIFT_REG1_U/dst_rdy
+}
+
+proc shift_reg2 { } {      
+   add wave -divider "PORT2_SHIFT_REG"
+      add_wave "-noupdate -label clk"              /testbench/uut1/CB_SHIFT_REG2_U/clk
+      add_wave "-noupdate -hex -label data_in"     /testbench/uut1/CB_SHIFT_REG2_U/data_in
+      add_wave "-noupdate -label data_in_vld"      /testbench/uut1/CB_SHIFT_REG2_U/data_in_vld
+      add_wave "-noupdate -label sop_in"           /testbench/uut1/CB_SHIFT_REG2_U/sop_in
+      add_wave "-noupdate -label eop_in"           /testbench/uut1/CB_SHIFT_REG2_U/eop_in
+      add_wave "-noupdate -label we"               /testbench/uut1/CB_SHIFT_REG2_U/we
+      add_wave "-noupdate -hex -label data_out"    /testbench/uut1/CB_SHIFT_REG2_U/data_out
+      add_wave "-noupdate -label data_out_vld"     /testbench/uut1/CB_SHIFT_REG2_U/data_out_vld
+      add_wave "-noupdate -label sop_out"          /testbench/uut1/CB_SHIFT_REG2_U/sop_out
+      add_wave "-noupdate -label eop_out"          /testbench/uut1/CB_SHIFT_REG2_U/eop_out
+      add_wave "-noupdate -label dst_rdy"          /testbench/uut1/CB_SHIFT_REG2_U/dst_rdy
+
+}
+
+proc input_fsm { SWITCH FSM } {
+   add wave -divider "SWITCH $SWITCH IN_FSM"
+      add_wave "-noupdate -label clk"              /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/clk
+      add_wave "-noupdate -label present_state"    /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/present_state
+      add_wave "-noupdate -label data_vld"         /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/DATA_VLD
+      add_wave "-noupdate -label dst_rdy"          /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/DST_RDY
+      add_wave "-noupdate -label sop"              /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/SOP
+      add_wave "-noupdate -label eop"              /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/EOP
+      add_wave "-noupdate -label if_rdy"           /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/IF_RDY
+      add_wave "-noupdate -label rq"               /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/IF_RQ
+      add_wave "-noupdate -label ack"              /testbench/uut$SWITCH/CB_SWITCH_IN_FSM_G__$FSM/CB_SWITCH_IN_FSM/IF_ACK
+
+}
+
+proc output_mux { SWITCH } {
+    add wave -divider "OUTPUT_MULTIPLEXOR"
+    add_wave "-noupdate -label clk"                  /testbench/uut$SWITCH/CB_CLK
+    add_wave "-noupdate -hex -label port0_data_in"   /testbench/uut$SWITCH/CB_SWITCH_MUX_U/PORT0_DATA_IN
+    add_wave "-noupdate -hex -label port0_data_out"  /testbench/uut$SWITCH/CB_SWITCH_MUX_U/PORT0_DATA_OUT
+    add_wave "-noupdate -label port0_mux_sel"        /testbench/uut$SWITCH/CB_SWITCH_MUX_U/PORT0_MUX_SEL
+    add_wave "-noupdate -hex -label ds_data_in"      /testbench/uut$SWITCH/CB_SWITCH_MUX_U/DS_DATA_IN
+    add_wave "-noupdate -hex -label ds_data_out"     /testbench/uut$SWITCH/CB_SWITCH_MUX_U/DS_DATA_OUT
+}
+
+proc output_fsm { SWITCH } {
+   add wave -divider "OUT_FSM"
+   add_wave "-noupdate -label present_state"   /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/present_state
+   add_wave "-noupdate -label ds_rq"           /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/DS_SEND_RQ
+   add_wave "-noupdate -label ds_ack"          /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/DS_SEND_ACK
+   add_wave "-noupdate -label ds_data_vld"     /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/DS_DATA_VLD
+   add_wave "-noupdate -label ds_eop"          /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/DS_EOP
+   add_wave "-noupdate -label ds_fsm_rdy"      /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/DS_FSM_RDY
+   add_wave "-noupdate -label mux_sel"         /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/MUX_SEL
+   add_wave "-noupdate -label dst_rdy"         /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/DST_RDY
+   add_wave "-noupdate -label src_rdy"         /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/SRC_RDY
+   add_wave "-noupdate -label sop"             /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/SOP
+   add_wave "-noupdate -label eop"             /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/EOP
+}
+
+proc arbiter { SWITCH } {
+   add wave -divider "ARBITER, SWITCH $SWITCH"
+   add_wave "-noupdate -label enable"            /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/enable 
+   add_wave "-noupdate -label priority_reg"      /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/priority_reg
+   add_wave "-noupdate -label sig_arb_rq"        /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/sig_arb_rq
+   add_wave "-noupdate -label change_priority"   /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/change_priority
+   add_wave "-noupdate -label ack_we"            /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/ack_we
+   add_wave "-noupdate -label sig_ack"           /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/sig_ack 
+   add_wave "-noupdate -label sig_arb_ack"       /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/sig_arb_ack
+   add_wave "-noupdate -label sig_arb_ack_out"   /testbench/uut$SWITCH/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/sig_arb_ack_out
+
+}
+
+proc cb_arbiter { } {
+   global CB_SWITCH_PATH
+   set BASE    $CB_SWITCH_PATH
+
+   add wave -divider "ARBITER, SWITCH"
+   add_wave "-noupdate -label enable"            $BASE/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/enable
+   add_wave "-noupdate -label priority_reg"      $BASE/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/priority_reg
+   add_wave "-noupdate -label rq"                $BASE/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/rq
+   add_wave "-noupdate -label change_priority"   $BASE/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/change_priority
+   add_wave "-noupdate -label ack_we"            $BASE/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/ack_we
+   add_wave "-noupdate -label sig_ack"           $BASE/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/sig_ack 
+#   add_wave "-noupdate -label sig_arb_ack"       $BASE/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/sig_arb_ack
+#   add_wave "-noupdate -label sig_arb_ack_out"   $BASE/CB_SWITCH_OUT_FSM_U/CB_PRIORITY_DEC_U/sig_arb_ack_out
+
+}

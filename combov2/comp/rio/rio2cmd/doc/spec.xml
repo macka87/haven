@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<source>
+
+    <!-- Page name -->
+    <component>Command protocol via RocketIO transport component</component>
+
+
+    <!-- Authors worked on -->
+    <authors>
+        <author login="pazdera">Jan Pazdera</author>
+    </authors>
+
+
+    <!-- Versions list -->
+    <versions>
+        <version id="RIO2CMD_01_00">
+            <item>First version has been released.</item>
+        </version>
+    </versions>
+
+
+    <!-- Bugs -->
+    <bugs>
+    </bugs>
+
+    <!-- What have to be done -->
+    <todo>
+    </todo>
+
+
+    <!-- Short Block description -->
+    <description>
+
+        This component provides Command protocol transport via RocketIO. 
+        It can be instanced either with transmit or receive logic for simplex transport,
+        or with both for full duplex.
+
+    </description>
+
+    <!-- COMPONENT INTERFACE ************************************************* -->
+    <interface>
+
+        <generic_map>
+            <generic name="LOOPBACK" type="std_logic_vector" default="00">
+                "00": no loopback (standart mode), "01": parallel loopbach, "10": serial loopback
+            </generic>
+            <generic name="TX_LOGIC" type="boolean" default="true">
+                Enables TX logic instantion. Example: in simplex mode set 'false' for receivers.
+            </generic>
+            <generic name="RX_LOGIC" type="boolean" default="true">
+                Enables RX logic instantion. Example: in simplex mode set 'false' for transmitters.
+            </generic>
+        </generic_map>
+
+        <port_map>
+
+            <!-- Port description -->
+            <!-- FPGA global signals -->
+            <port   name="RESET" dir="in" width="1">
+                Design reset
+            </port>
+            <port   name="REFCLK" dir="in" width="1">
+                RocketIO clock (connected to xtal directly - no DCMs)
+            </port>
+            <port   name="USRCLK" dir="in" width="1">
+                Clock to clock transmit and receive logic - must be the same frequency as REFCLK
+            </port>
+            <port   name="USRCLK2" dir="in" width="1">
+                Clock to clock transmit and receive logic (USRCLK halfrated and shifted)
+            </port>
+            <port   name="CMDCLK" dir="in" width="1">
+                Clock to clock command protocol interface
+            </port>
+
+            <port   name="DI" dir="in" width="32">
+                Input Data
+            </port>
+            <port   name="DI_CMD" dir="in" width="4">
+                Byte-mapped command flag
+            </port>
+            <port   name="DI_DV" dir="in" width="1">
+                DI valid flag
+            </port>
+            <port   name="DI_FULL" dir="out" width="1">
+                Transmit buffer full flag
+            </port>
+
+            <port   name="DO" dir="out" width="32">
+                Output Data
+            </port>
+            <port   name="DO_CMD" dir="out" width="4">
+                Byte-mapped command flag
+            </port>
+            <port   name="DO_DV" dir="out" width="1">
+                DO valid flag
+            </port>
+            <port   name="DO_FULL" dir="in" width="1">
+                Stop Receiving
+            </port>
+
+            <port   name="STATUS" dir="out" width="8">
+                Its value is valid at the same time that STATUS_DV goes High.
+            </port>
+
+            <port   name="STATUS_DV" dir="out" width="1">
+                This port is asserted within several CMDCLKs of the packet's last TERM
+                received.
+            </port>
+
+            <port   name="RXN" dir="in" width="1">
+                Receive MGT port
+            </port>
+            <port   name="RXP" dir="in" width="1">
+                Receive MGT port
+            </port>
+            <port   name="TXN" dir="out" width="1">
+                Transmit MGT port
+            </port>
+            <port   name="TXP" dir="out" width="1">
+                Transmit MGT port
+            </port>
+
+        </port_map>
+
+    </interface>
+
+    <!-- BODY ************************************************* -->
+    <body>
+        <p>
+            Component is designated to transport data encapsulated by Command Protocol
+            via RocketIO interface supporting a 32-bit invariant CRC. 
+            It can be used either for simplex or full duplex transport
+            (see port section).        
+        </p>
+
+        <p>
+            Data length must be greater than 20 bytes for correct CRC generation. For CRC
+            to operate correctly, at least four IDLE bytes are required between two consecutive
+            packets. If these conditions are not fulfilled the CRC check will not be correct.
+        </p>
+
+        <p>
+            Component has no flow control and small receive buffer (16 items) so transmitted
+            data can be lost in case the receive can't process incoming data.
+        </p>
+        
+        <p>
+            Component throughput depends on input clock and is equal to 
+        </p>
+
+        <pre>
+            THRPT = DATA_IN'len * USRCLK2.
+        </pre>
+
+        <p> 
+            For every received command protocol packet its error status is set within 
+            several CMDCLKs of the last TERM being received (see port section).
+        </p>
+
+        <p>
+            STATUS port format:
+
+            <ul>
+                <li>
+                    <b>bit0:</b> signals CRC check error
+                </li>
+                <li>
+                    <b>bit1:</b> signals receive buffer overflow
+                </li>
+                <li>
+                    <b>bit2 to bit7:</b> RESERVED
+                </li>
+            </ul>
+
+        </p>
+    </body>
+
+</source>

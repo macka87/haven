@@ -1,0 +1,2 @@
+Odkaz na dokumentaci v Tracu:
+	https://www.liberouter.org/trac/firmware/wiki/fl_cutter_new_doc

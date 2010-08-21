@@ -1,0 +1,121 @@
+  <source>
+    <component>
+      32-bit CRC module processing 32 bits in parallel
+    </component>
+
+    <authors>
+       <author login="bidlom">Michal Bidlo</author>
+    </authors>
+
+    <versions>
+        <version id="1.2">
+            <item>Fully functional CRC32 module.</item>
+        </version>
+    </versions>
+
+    <description>
+      The module computes 32-bit CRC processing 32 bits in parallel during the
+      calculation. The processed packets may have arbitrary length (computed in
+      bytes). This approach to the CRC implementation allows us to optimize CRC
+	  computation substantially.
+    </description>
+
+   <interface>
+
+   <port_map>
+     <port name="DI" dir="in" width="32">
+      Data input (32-bit block).
+     </port>
+
+     <port name="DI_DV" dir="in" width="1">
+	  Input data validity indicator.
+
+      Indicates the validity of input data (DI). During computation with valid
+	  data this input must be '1'. If DI_DV = '0' then the computation is
+	  suspended (the CRC register holds its last valid value) until DI_DV is
+	  '1'.
+     </port>
+
+     <port name="DI_MASK" dir="in" width="2">
+	  Partial-validity of the last data block indicator.
+
+      This port is set to "01" if the last word of packet contains only one
+	  valid data byte, "10" in case of two valid bytes in the last data block
+	  and "11" in case of only three valid bytes in the last 32-bit data block.
+	  If one of these cases arises, DI_MASK has to be set to the appropriate
+	  value simultaneously with the last data block at DI and hold at least two
+	  clock periods. In all the other cases DI_MASK has to be "00".
+     </port>
+
+     <port name="EOP" dir="in" width="1">
+	  End of packet (last data block) indicator.
+
+      Indicates the last word of packet. EOP must be changed to '1' simultaneously
+	  with the last block of packet at DI and must be holt at least one clock period.
+     </port>
+
+     <port name="RDY" dir="out" width="1">
+	  Input data acceptance indicator.
+
+      RDY is set to '1' if the CRC module is ready for processing of valid data.
+	  If RDY equals '0' the input data is ignored - this happens during last
+	  clock periods after processing the last word of packet until DO_DV = '1'.
+     </port>
+
+     <port name="CRC" dir="out" width="32">
+	  Resulting CRC value.
+
+      Resulting CRC value. CRC is reversed over bytes and inverted.
+     </port>
+
+     <port name="DO_DV" dir="out" width="1">
+	  CRC validity indicator.
+
+      Indicates the validity of resulting CRC. DO_DV is set to '1' after
+	  finishing the CRC computation of the current packet, else it is '0'
+	  (during the CRC computation).
+     </port>
+
+     <port name="RESET" dir="in" width="1">
+      Global reset port.
+     </port>
+
+     <port name="CLK" dir="in" width="1">
+      Global clock port.
+     </port>
+   </port_map>
+
+   </interface>
+
+    <operations>
+        <init>
+            <it ref="reset">
+             By setting RESET port to '1' for at least one clock period, the
+			 system gets to initial state.
+            </it>
+        </init>
+    </operations>
+
+   <structure src="./fig/crc32_32b.fig">
+        The CRC32 module processing 32 bits in parallel
+   </structure>
+
+   <body>
+    <p>
+     crc32_32b module consists of one 32-bit register for storing the value
+	 during the computation and resulting CRC at the end of the computation.
+	 Data enters the register in 32-bit blocks. The output of the register
+	 is interpreted as 32-bit address of 32-bit CRC table (combinational unit
+	 inside the module) for calculating temporary CRC value of these 32 bits in parallel.
+	 This temporary CRC value is XORed with the actual content of the register.
+     If the last block of packet contains less than four valid bytes, the
+	 computation is performed by addressing 32-bit CRC table (another combinational
+	 unit processing 8 bits in parallel) successively by means of these valid bytes.
+     The temporary CRC value if XORed with appropriate part of the register to
+	 compute CRC value considering only the valid bytes of the last data block.
+	 After all the blocks of the packet are processed, the content of the
+	 register is reversed over bytes and inverted to calculate the final 32-bit
+	 CRC value of the entire packet.
+	</p>
+   </body>
+</source>

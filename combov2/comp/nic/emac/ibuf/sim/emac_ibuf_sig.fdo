@@ -1,0 +1,93 @@
+# xgmii_ibuf_sig.fdo : Include sig file
+# Copyright (C) 2007 CESNET
+# Author: Libor Polcak <polcak_l@liberouter.org>
+#         Jiri Matousek <xmatou06@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: emac_ibuf_sig.fdo 6133 2008-10-28 09:49:59Z xmatou06 $
+
+# Paths
+set COMP_PATH		"/testbench/uut"
+set BUF_PATH      "/testbench/uut/bufi"
+set TB_BASE       "/testbench"
+
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+########## EMAC IBUF interface ##########
+IBUF_EMAC_INTERFACE "$TB_BASE" "$COMP_PATH"
+
+add wave -divider ""
+
+########## RX part of EMAC IBUF ##########
+rx_part "$COMP_PATH"
+
+# rx_part_signals "$COMP_PATH"
+
+add wave -divider ""
+
+########## BUF part of EMAC IBUF ##########
+buf_part "$COMP_PATH"
+
+# buf_part_signals "$COMP_PATH"
+
+add wave -divider ""
+
+########## BUF_CORE part of BUF part ##########
+# buf_core_part "$BUF_PATH"
+
+# buf_core_part_signals "$BUF_PATH"
+
+# add wave -divider ""
+
+########## MAC_CHECK part of EMAC IBUF ##########
+mac_check_part "$COMP_PATH"
+
+# mac_check_part_signals "$COMP_PATH"
+
+add wave -divider ""
+
+########## FL part of EMAC IBUF ##########
+fl_part "$COMP_PATH"
+
+# fl_part_signals "$COMP_PATH"
+
+add wave -divider ""
+
+########## Testbench input - EMAC sim ##########
+# testbench "$TB_BASE"
+
+# add wave -divider ""
+
+########## Testbench output - FL sim RX ##########
+# fl_out "$TB_BASE"
+
+restart -f
+run 8 us

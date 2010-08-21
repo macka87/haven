@@ -1,0 +1,169 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Martin Kosek <kosek@liberouter.org>
+#         Lukas Solanka <solanka@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 5180 2008-08-23 21:56:11Z solanka $
+
+proc blk_RXTX_BUFFER_OPT_MISC { BASE } {
+
+   #add wave -divider "RXTX_BUFFER_OPT - MISC"
+   #   add_wave "-label ib_rxbuf_rd_sel" $BASE/ib_rxbuf_rd_sel
+   #   add_wave "-label ib_txbuf_rd_sel" $BASE/ib_txbuf_rd_sel
+   #   add_wave "-label ib_rxcontrol_rd_sel" $BASE/ib_rxcontrol_rd_sel
+   #   add_wave "-label ib_txcontrol_rd_sel" $BASE/ib_txcontrol_rd_sel
+   #   add_wave "-label ib_desc_rd_sel" $BASE/ib_desc_rd_sel
+   #   add_wave "-label ib_rxbuf_wr_sel" $BASE/ib_rxbuf_wr_sel
+   #   add_wave "-label ib_txbuf_wr_sel" $BASE/ib_txbuf_wr_sel
+   #   add_wave "-label ib_rxcontrol_wr_sel" $BASE/ib_rxcontrol_wr_sel
+   #   add_wave "-label ib_txcontrol_wr_sel" $BASE/ib_txcontrol_wr_sel
+   #   add_wave "-label ib_desc_wr_sel" $BASE/ib_desc_wr_sel
+
+   add wave -divider "DESC MANAGER"
+   #add wave -divider "IB wr interface"
+   #   add_wave "-label wr_addr -hex" $BASE/desc_man_i/wr_addr
+   #   add_wave "-label wr_data -hex" $BASE/desc_man_i/wr_data
+   #   add_wave "-label wr_be" $BASE/desc_man_i/wr_be
+   #   add_wave "-label wr_req" $BASE/desc_man_i/wr_req
+   #   add_wave "-label wr_rdy" $BASE/desc_man_i/wr_rdy
+
+   add wave -divider "Control interface"
+      add_wave "-label empty     " $BASE/desc_man_i/empty
+      add_wave "-label read      " $BASE/desc_man_i/read
+      add_wave "-label data_out  " $BASE/desc_man_i/data_out
+      add_wave "-label enable    " $BASE/desc_man_i/enable
+   
+   #add wave -divider "DMA ARRAY"
+   #add wave -divider "mi32 interface"
+   #   add_wave "-label sw_dwr -hex" $BASE/dma_ctrl_array_opt_i/sw_dwr
+   #   add_wave "-label sw_addr -hex" $BASE/dma_ctrl_array_opt_i/sw_addr
+   #   add_wave "-label sw_rd" $BASE/dma_ctrl_array_opt_i/sw_rd
+   #   add_wave "-label sw_wr" $BASE/dma_ctrl_array_opt_i/sw_wr
+   #   add_wave "-label sw_be" $BASE/dma_ctrl_array_opt_i/sw_be
+   #   add_wave "-label sw_drd -hex" $BASE/dma_ctrl_array_opt_i/sw_drd
+   #   add_wave "-label sw_ardy" $BASE/dma_ctrl_array_opt_i/sw_ardy
+   #   add_wave "-label sw_drdy" $BASE/dma_ctrl_array_opt_i/sw_drdy
+
+   #add wave -divider "MI Splitter"
+   #   add_wave "-label clk" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/clk
+   #   add_wave "-label reset" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/reset
+   #   add_wave "-label in_dwr" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/in_dwr
+   #   add_wave "-label in_addr" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/in_addr
+   #   add_wave "-label in_be" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/in_be
+   #   add_wave "-label in_rd" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/in_rd
+   #   add_wave "-label in_wr" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/in_wr
+   #   add_wave "-label in_ardy" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/in_ardy
+   #   add_wave "-label in_drd" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/in_drd
+   #   add_wave "-label in_drdy" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/in_drdy
+   #   add_wave "-label out_dwr" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/out_dwr
+   #   add_wave "-label out_addr" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/out_addr
+   #   add_wave "-label out_be" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/out_be
+   #   add_wave "-label out_rd" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/out_rd
+   #   add_wave "-label out_wr" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/out_wr
+   #   add_wave "-label out_ardy" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/out_ardy
+   #   add_wave "-label out_drd" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/out_drd
+   #   add_wave "-label out_drdy" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/out_drdy
+
+# MI Splitter errorneous FIFO
+#      add wave -divider "MI Splitter FIFO"
+#      add_wave "-label clk" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/clk
+#      add_wave "-label reset" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/reset
+#      add_wave "-label din" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/din
+#      add_wave "-label we" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/we
+#      add_wave "-label full" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/full
+#      add_wave "-label dout" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/dout
+#      add_wave "-label re" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/re
+#      add_wave "-label empty" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/empty
+#      add_wave "-label status" $BASE/dma_ctrl_array_opt_i/mi_splitter_i/fifo/status
+#
+
+   #   
+   #add wave -divider "STATUS REGISTERS"
+   #   
+   #   add wave -divider "rx status"
+   #   add_wave "-label rd_be" $BASE/rx_dma_status_reg_i/rd_be
+   #   add_wave "-label rd_req" $BASE/rx_dma_status_reg_i/rd_req
+   #   add_wave "-label rd_data" $BASE/rx_dma_status_reg_i/rd_data
+
+   #   add wave -divider "tx status"
+   #   add_wave "-label rd_be" $BASE/tx_dma_status_reg_i/rd_be
+   #   add_wave "-label rd_req" $BASE/tx_dma_status_reg_i/rd_req
+   #   add_wave "-label rd_data -hex" $BASE/tx_dma_status_reg_i/rd_data
+
+   add wave -divider "RXBUF"
+      
+      add wave -divider "FL input"
+      add_wave "-label rx_data -hex" $BASE/rxbuf_i/rx_data
+      add_wave "-label rx_sop_n" $BASE/rxbuf_i/rx_sop_n
+      add_wave "-label rx_eop_n" $BASE/rxbuf_i/rx_eop_n
+      add_wave "-label rx_sof_n" $BASE/rxbuf_i/rx_sof_n
+      add_wave "-label rx_eof_n" $BASE/rxbuf_i/rx_eof_n
+      add_wave "-label rx_rem -hex" $BASE/rxbuf_i/rx_rem
+      add_wave "-label rx_src_rdy_n" $BASE/rxbuf_i/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $BASE/rxbuf_i/rx_dst_rdy_n
+      
+      add wave -divider "IB read interface"
+      add_wave "-label rd_addr -hex" $BASE/rxbuf_i/rd_addr
+      add_wave "-label rd_be" $BASE/rxbuf_i/rd_be
+      add_wave "-label rd_req" $BASE/rxbuf_i/rd_req
+      add_wave "-label rd_ardy" $BASE/rxbuf_i/rd_ardy
+      add_wave "-label rd_data -hex" $BASE/rxbuf_i/rd_data
+      add_wave "-label rd_src_rdy" $BASE/rxbuf_i/rd_src_rdy
+      add_wave "-label rd_dst_rdy" $BASE/rxbuf_i/rd_dst_rdy
+   
+   add wave -divider "TXBUF"
+
+      add wave -divider "IB write interface"
+      add_wave "-label wr_addr -hex" $BASE/txbuf_i/wr_addr
+      add_wave "-label wr_be" $BASE/txbuf_i/wr_be
+      add_wave "-label wr_req" $BASE/txbuf_i/wr_req
+      add_wave "-label wr_rdy" $BASE/txbuf_i/wr_rdy
+      add_wave "-label wr_data -hex" $BASE/txbuf_i/wr_data
+      
+      add wave -divider "FL output"
+      add_wave "-label tx_data -hex" $BASE/txbuf_i/tx_data
+      add_wave "-label tx_sof_n" $BASE/txbuf_i/tx_sof_n
+      add_wave "-label tx_sop_n" $BASE/txbuf_i/tx_sop_n
+      add_wave "-label tx_eop_n" $BASE/txbuf_i/tx_eop_n
+      add_wave "-label tx_eof_n" $BASE/txbuf_i/tx_eof_n
+      add_wave "-label tx_rem -hex" $BASE/txbuf_i/tx_rem
+      add_wave "-label tx_src_rdy_n" $BASE/txbuf_i/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n" $BASE/txbuf_i/tx_dst_rdy_n
+}
+
+
+# IB Endpoint signals
+proc blk_RXTX_BUFFER_OPT_IB_EP { PATH } {
+   add wave -divider "IB_EP interface"
+
+      add_wave "-label IB       -hex" $PATH/IB
+      add_wave "-label ib_ep_wr -hex" $PATH/ib_ep_wr
+      add_wave "-label ib_ep_rd -hex" $PATH/ib_ep_rd
+      add_wave "-label ib_ep_bm -hex" $PATH/ib_ep_bm
+}
+

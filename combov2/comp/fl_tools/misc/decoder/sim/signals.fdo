@@ -1,0 +1,67 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Martin Kosek <kosek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 40 2007-07-31 21:13:21Z kosek $
+
+   view wave
+   delete wave *
+
+proc blk_FL_DEC { PARAM } {
+   global FL_DEC_BASE
+   
+   # FL_DEC interface
+   if { $PARAM == "IFC" } {
+      add wave -divider "FL_DEC"
+      add_wave "-label clk" $FL_DEC_BASE/clk
+      add_wave "-label reset" $FL_DEC_BASE/reset
+      
+      add wave -divider "FrameLink interface"
+      add_wave "-label sof_n" $FL_DEC_BASE/sof_n
+      add_wave "-label sop_n" $FL_DEC_BASE/sop_n
+      add_wave "-label eop_n" $FL_DEC_BASE/eop_n
+      add_wave "-label eof_n" $FL_DEC_BASE/eof_n
+      add_wave "-label src_rdy_n" $FL_DEC_BASE/src_rdy_n
+      add_wave "-label dst_rdy_n" $FL_DEC_BASE/dst_rdy_n
+
+      add wave -divider "Decoder interface"
+      add_wave "-label sof" $FL_DEC_BASE/sof
+      add_wave "-label sohdr" $FL_DEC_BASE/sohdr
+      add_wave "-label eohdr" $FL_DEC_BASE/eohdr
+      add_wave "-label hdr_frame" $FL_DEC_BASE/hdr_frame
+      add_wave "-label sopld" $FL_DEC_BASE/sopld
+      add_wave "-label eopld" $FL_DEC_BASE/eopld
+      add_wave "-label pld_frame" $FL_DEC_BASE/pld_frame
+      add_wave "-label softr" $FL_DEC_BASE/softr
+      add_wave "-label eoftr" $FL_DEC_BASE/eoftr
+      add_wave "-label ftr_frame" $FL_DEC_BASE/ftr_frame
+      add_wave "-label eof" $FL_DEC_BASE/eof
+      add_wave "-label src_rdy" $FL_DEC_BASE/src_rdy
+      add_wave "-label dst_rdy" $FL_DEC_BASE/dst_rdy
+   }
+}

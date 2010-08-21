@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<source>
+   <component>Internal Bus Switch</component>
+
+   <authors>
+      <author login="xkobie00">Petr Kobiersky</author>
+   </authors>
+
+   <features>
+      <item>Three pipelined ports</item>
+      <item>Address based packet switching</item> 
+   </features>
+
+   <description>
+      Component switch incoming Internal Bus transactions from one of three input
+      ports to output port. Output port is selected based on transaction destination
+      address. Global transactions are automaticaly switched to upstream port. Each
+      port has defined his address space using generic parameters. All ports are pipelined
+      for better bus distance sensitivity.
+   </description>
+   
+   <interface>
+      <generic_map>
+         <generic name="DATA_WIDTH" type="integer" default="64">
+			   Width of Internal Bus. Currently only 64 bits width is supported.
+         </generic>
+         
+		   <generic name="SWITCH_BASE" type="std_logic_vector(31:0)" default="">
+			   Switch base address. Address space for whole switch tree.
+         </generic>
+         
+		   <generic name="SWITCH_LIMIT" type="std_logic_vector(31:0)" default="">
+			   Size of a switch address space (bytes). Address space for whole switch tree.
+         </generic>
+
+         <generic name="DOWNSTREAM0_BASE" type="std_logic_vector(31:0)" default="">
+			   Port 1 Base address.
+         </generic>
+         
+		   <generic name="DOWNSTREAM0_LIMIT" type="std_logic_vector(31:0)" default="">
+			   Size of user address space on port 1 (BASE, BASE+LIMIT)
+         </generic>
+
+         <generic name="DOWNSTREAM1_BASE" type="std_logic_vector(31:0)" default="">
+			   Port 2 Base address.
+         </generic>
+         
+		   <generic name="DOWNSTREAM1_LIMIT" type="std_logic_vector(31:0)" default="">
+            Size of user address space on port 2 (BASE, BASE+LIMIT)
+         </generic>
+      </generic_map>
+      
+      <port_map>
+         <divider>Common Interface</divider>
+         
+         <port name="IB_CLK" dir="in" width="1">
+            Internal Bus Clock.
+         </port>
+           
+         <port name="IB_RESET" dir="in" width="1">
+            Internal Bus Reset.
+         </port>
+         
+         <divider>Upstream Port</divider>
+         
+         <port name="PORT0" dir="inout" width="t_internal_bus64">
+            Internal Bus Downstream Port (closer to PCI-X Bus)
+         </port> 
+
+         <divider>Downstream Ports</divider>
+
+         <port name="PORT1" dir="inout" width="t_internal_bus64">
+            Internal Bus Upstream Port (closer to user components)
+         </port>
+
+         <port name="PORT2" dir="inout" width="t_internal_bus64">
+            Internal Bus Upstream Port (closer to user components)
+         </port>
+      </port_map>
+   </interface>
+  
+<body>
+   
+<!-- Here is description in standard Satrapa format-->
+<h2>Informations</h2>
+    <p>
+       Address and transaction type of incoming packet is processed by Address Decoder
+       which choose target interface. Input FSM controls saving packets to input
+       buffer and send requests for sending transaction to correct port. Output FSM
+       send req_ack to specified interface and send transaction to output port. Each
+       output port is pipelined for beter distance sensitivity.
+   </p>
+   
+    <p>
+      <obr src="../../../doc/fig/ib_switch.fig">Switch block schema</obr>
+    </p>
+
+    <p>
+       <obr src="fig/ib_switch.fig">Switch current implementation</obr>
+    </p>
+    
+<h2>Packet routing</h2>
+  <p>
+    <b>Incoming packet from downstream port:</b>
+    <ol>
+      <li>If packet belongs to &lt;DOWNSTREAMx_BASE, DOWNSTEAMx_LIMIT&gt; range, then it's
+          routed to specified downstream port.</li>
+      <li>If packet don't belongs to &lt;SWITH_BASE, SWITH_LIMIT&gt; range, or it's packet
+           for global address space then it's routed to upstream port.</li>
+      <li>Diferent behaviour leads to packet droping and error logging. Packet can't be
+         routed to the same port on which is comming from.</li>
+   </ol>
+   <b>Incoming packet from upstream port:</b>
+   <ol>
+      <li>If packet belongs to &lt;DOWNSTREAMx_BASE, DOWNSTEAMx_LIMIT&gt; range, then it's
+          routed to specified downstream port.</li>
+      <li>Diferent behaviour leads to packet droping and error logging. Packet can't be
+          routed to the same port on which is comming from.</li>
+   </ol>
+  </p> 
+
+
+<h2>Frequency and Resources</h2>
+      <p>
+         <tab sloupce="cccc">
+          <tr>
+            <th>LUTs (% of C6X LUTs)</th>
+      	   <th>Slices (% of C6X Slices)</th>
+            <th>BlockRAMs (% of C6X BRAMs)</th>
+            <th>Max. HW frequency</th>
+         </tr>
+         <tr>
+            <th>901 (1.9%)</th>
+            <th>451 (1.9%)</th>
+            <th>0 (0%)</th>
+            <th>148 MHz</th>
+         </tr>
+         <nazev>Chip utilization</nazev>
+         </tab>
+      </p>
+
+
+</body>  
+</source>

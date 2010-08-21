@@ -1,0 +1,176 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Michal Kajan <xkajan01@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 8957 2009-06-25 00:01:44Z xstour03 $
+
+   view wave
+   delete wave *
+
+proc blk_FL_SHORTENER { TB FL_SHORTENER } {
+      add wave -divider "FL_SHORTENER"
+   add_wave "-noupdate -label clk  " $FL_SHORTENER/clk
+   add_wave "-noupdate -label reset" $FL_SHORTENER/reset
+
+      add wave -divider "Internal signals"
+   add_wave "-noupdate -unsigned -label cnt_eop " $FL_SHORTENER/cnt_eop
+   add_wave "-noupdate -unsigned -label cnt_word" $FL_SHORTENER/cnt_word
+
+      add wave -divider "Input interface"
+   add_wave "-noupdate -label RX_DATA -hex" $FL_SHORTENER/RX_DATA
+   add_wave "-noupdate -label RX_REM -hex " $FL_SHORTENER/RX_REM
+   add_wave "-noupdate -label RX_SOF_N    " $FL_SHORTENER/RX_SOF_N
+   add_wave "-noupdate -label RX_SOP_N    " $FL_SHORTENER/RX_SOP_N
+   add_wave "-noupdate -label RX_EOP_N    " $FL_SHORTENER/RX_EOP_N
+   add_wave "-noupdate -label RX_EOF_N    " $FL_SHORTENER/RX_EOF_N
+   add_wave "-noupdate -label RX_SRC_RDY_N" $FL_SHORTENER/RX_SRC_RDY_N
+   add_wave "-noupdate -label RX_DST_RDY_N" $FL_SHORTENER/RX_DST_RDY_N
+
+#	 add wave -divider "FSM connection"
+#   add_wave "-noupdate -label CLK               " $TB/CLK
+#   add_wave "-noupdate -label RESET             " $TB/RESET
+#   add_wave "-noupdate -hex -label REM          " $TB/RX_REM
+#   add_wave "-noupdate -label SRC_RDY           " $FL_SHORTENER/RX_SRC_RDY_N
+#   add_wave "-noupdate -label DST_RDY           " $FL_SHORTENER/TX_DST_RDY_N
+#   add_wave "-noupdate -label EOP               " $FL_SHORTENER/RX_EOP_N
+#   add_wave "-noupdate -label EOF               " $FL_SHORTENER/RX_EOF_N
+#   add_wave "-noupdate -unsigned -label CNT_EOP " $FL_SHORTENER/CNT_EOP
+#   add_wave "-noupdate -unsigned -label CNT_WORD" $FL_SHORTENER/CNT_WORD
+#   add_wave "-noupdate -label SRC_RDY           " $FL_SHORTENER/RX_SRC_RDY_N
+#   add_wave "-noupdate -label DST_RDY           " $FL_SHORTENER/TX_DST_RDY_N
+
+      add wave -divider "Output interface"
+#   add_wave "-noupdate -label clk         " $TB/clk
+   add_wave "-noupdate -hex -label TX_DATA" $FL_SHORTENER/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM " $FL_SHORTENER/TX_REM
+   add_wave "-noupdate -label TX_SOF_N    " $FL_SHORTENER/TX_SOF_N
+   add_wave "-noupdate -label TX_SOP_N    " $FL_SHORTENER/TX_SOP_N
+   add_wave "-noupdate -label TX_EOP_N    " $FL_SHORTENER/TX_EOP_N
+   add_wave "-noupdate -label TX_EOF_N    " $FL_SHORTENER/TX_EOF_N
+   add_wave "-noupdate -label TX_SRC_RDY_N" $FL_SHORTENER/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $FL_SHORTENER/TX_DST_RDY_N
+	 
+      add wave -divider "FrameLink Shortener FSM"
+   add_wave "-noupdate -label clk  " $FL_SHORTENER/fsmi/clk
+   add_wave "-noupdate -label reset" $FL_SHORTENER/fsmi/reset
+
+      add wave -divider "FSM states"
+   add_wave "-noupdate -label Present_state" $FL_SHORTENER/fsmi/present_state
+   add_wave "-noupdate -label Next_state   " $FL_SHORTENER/fsmi/next_state
+
+#      add wave -divider "FSM generic constants"
+#   add_wave "-noupdate -hex -label rem_const " $TB/fsmi/rem_const
+#   add_wave "-noupdate -dec -label PART_NUM  " $TB/uut/fsmi/part_num
+#   add_wave "-noupdate -dec -label WORDS_KEPT" $TB/uut/fsmi/WORDS_KEPT
+#   add_wave "-noupdate -dec -label PARTS     " $TB/uut/fsmi/PARTS
+
+
+      add wave -divider "FSM input signals"
+   add_wave "-noupdate -label REM               " $FL_SHORTENER/fsmi/DREM
+   add_wave "-noupdate -label SRC_RDY           " $FL_SHORTENER/fsmi/SRC_RDY
+   add_wave "-noupdate -label DST_RDY           " $FL_SHORTENER/fsmi/DST_RDY
+   add_wave "-noupdate -label EOP               " $FL_SHORTENER/fsmi/EOP
+   add_wave "-noupdate -label EOF               " $FL_SHORTENER/fsmi/EOF
+   add_wave "-noupdate -unsigned -label CNT_EOP " $FL_SHORTENER/fsmi/CNT_EOP
+   add_wave "-noupdate -unsigned -label CNT_WORD" $FL_SHORTENER/fsmi/CNT_WORD
+
+      add wave -divider "FSM output signals"
+   add_wave "-noupdate -hex -label FSM_REM" $FL_SHORTENER/fsmi/FSM_REM
+   add_wave "-noupdate -label FSM_EOF     " $FL_SHORTENER/fsmi/FSM_EOF
+   add_wave "-noupdate -label FSM_EOP     " $FL_SHORTENER/fsmi/FSM_EOP
+   add_wave "-noupdate -label FSM_SRC_RDY " $FL_SHORTENER/fsmi/FSM_SRC_RDY
+   add_wave "-noupdate -label FSM_DST_RDY " $FL_SHORTENER/fsmi/FSM_DST_RDY
+
+#     add wave -divider "TESTBENCH"
+#     add wave -divider "FL Sim 1"
+#  add_wave "-noupdate -label clk         " $TB/fl_sim_1/fl_clk
+#  add_wave "-noupdate -label reset       " $TB/fl_sim_1/fl_reset
+#  add_wave "-noupdate -hex -label tx_data" $TB/fl_sim_1/tx_data
+#  add_wave "-noupdate -hex -label tx_rem " $TB/fl_sim_1/tx_rem
+#  add_wave "-noupdate -label tx_sof_n    " $TB/fl_sim_1/tx_sof_n
+#  add_wave "-noupdate -label tx_sop_n    " $TB/fl_sim_1/tx_sop_n
+#  add_wave "-noupdate -label tx_eop_n    " $TB/fl_sim_1/tx_eop_n
+#  add_wave "-noupdate -label tx_eof_n    " $TB/fl_sim_1/tx_eof_n
+#  add_wave "-noupdate -label tx_src_rdy_n" $TB/fl_sim_1/tx_src_rdy_n
+#  add_wave "-noupdate -label tx_dst_rdy_n" $TB/fl_sim_1/tx_dst_rdy_n
+#  add_wave "-noupdate -label clk         " $TB/fl_sim_1/fl_clk
+#  add_wave "-noupdate -label reset       " $TB/fl_sim_1/fl_reset
+#  add_wave "-noupdate -hex -label rx_data" $TB/fl_sim_1/rx_data
+#  add_wave "-noupdate -hex -label rx_rem " $TB/fl_sim_1/rx_rem
+#  add_wave "-noupdate -label rx_sof_n    " $TB/fl_sim_1/rx_sof_n
+#  add_wave "-noupdate -label rx_sop_n    " $TB/fl_sim_1/rx_sop_n
+#  add_wave "-noupdate -label rx_eop_n    " $TB/fl_sim_1/rx_eop_n
+#  add_wave "-noupdate -label rx_eof_n    " $TB/fl_sim_1/rx_eof_n
+#  add_wave "-noupdate -label rx_src_rdy_n" $TB/fl_sim_1/rx_src_rdy_n
+#  add_wave "-noupdate -label rx_dst_rdy_n" $TB/fl_sim_1/rx_dst_rdy_n
+
+#     add wave -divider "FL Sim 2"
+#  add_wave "-noupdate -label clk         " $TB/fl_sim_2/fl_clk
+#  add_wave "-noupdate -label reset       " $TB/fl_sim_2/fl_reset
+#  add_wave "-noupdate -hex -label tx_data" $TB/fl_sim_2/tx_data
+#  add_wave "-noupdate -hex -label tx_rem " $TB/fl_sim_2/tx_rem
+#  add_wave "-noupdate -label tx_sof_n    " $TB/fl_sim_2/tx_sof_n
+#  add_wave "-noupdate -label tx_sop_n    " $TB/fl_sim_2/tx_sop_n
+#  add_wave "-noupdate -label tx_eop_n    " $TB/fl_sim_2/tx_eop_n
+#  add_wave "-noupdate -label tx_eof_n    " $TB/fl_sim_2/tx_eof_n
+#  add_wave "-noupdate -label tx_src_rdy_n" $TB/fl_sim_2/tx_src_rdy_n
+#  add_wave "-noupdate -label tx_dst_rdy_n" $TB/fl_sim_2/tx_dst_rdy_n
+#  add_wave "-noupdate -label clk         " $TB/fl_sim_2/fl_clk
+#  add_wave "-noupdate -label reset       " $TB/fl_sim_2/fl_reset
+#  add_wave "-noupdate -hex -label rx_data" $TB/fl_sim_2/rx_data
+#  add_wave "-noupdate -hex -label rx_rem " $TB/fl_sim_2/rx_rem
+#  add_wave "-noupdate -label rx_sof_n    " $TB/fl_sim_2/rx_sof_n
+#  add_wave "-noupdate -label rx_sop_n    " $TB/fl_sim_2/rx_sop_n
+#  add_wave "-noupdate -label rx_eop_n    " $TB/fl_sim_2/rx_eop_n
+#  add_wave "-noupdate -label rx_eof_n    " $TB/fl_sim_2/rx_eof_n
+#  add_wave "-noupdate -label rx_src_rdy_n" $TB/fl_sim_2/rx_src_rdy_n
+#  add_wave "-noupdate -label rx_dst_rdy_n" $TB/fl_sim_2/rx_dst_rdy_n
+}
+
+#HFE_NUM identifies HFE in which current FrameLink shortener instance is used
+proc FL_SHORTENER_INTERNAL { PATH HFE_NUM } {
+
+   add wave -divider "FL_SHORTENER_HFE_$HFE_NUM"
+   add_wave "-noupdate -label clk                     " $PATH/clk
+   add_wave "-noupdate -label reset                   " $PATH/reset
+   add_wave "-noupdate -unsigned -label cnt_eop       " $PATH/cnt_eop
+   add_wave "-noupdate -unsigned -label cnt_word      " $PATH/cnt_word
+#   add_wave "-noupdate -label clk         " $TB/clk
+   add_wave "-noupdate -label Present_state           " $PATH/fsmi/present_state
+   add_wave "-noupdate -label Next_state              " $PATH/fsmi/next_state
+
+}
+
+#HFE_NUM indentifies  HFE in which FrameLink shortener cover is used
+proc FL_SHORTENER_COVER_IFC { PATH HFE_NUM } {
+
+      add wave -divider "FL_SHORTENER_COVER_INTERFACE_HFE_$HFE_NUM"
+   add_wave "-noupdate -label RX " $PATH/RX
+   add_wave "-noupdate -label TX " $PATH/TX
+
+}

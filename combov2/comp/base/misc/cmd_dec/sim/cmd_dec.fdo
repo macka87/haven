@@ -1,0 +1,33 @@
+vlib work
+
+vcom -93 -explicit -work work ../../pkg/math_pack.vhd
+vcom -93 -explicit -work work ../../pkg/commands.vhd
+vcom -93 -explicit -work work ../cmd_dec_cmp.vhd
+vcom -93 -explicit -work work ../cmd_dec.vhd
+vcom -93 -explicit -work work cmd_dec_tb.vhd
+vsim -t 1ps  -L xilinxcorelib  -lib work testbench
+
+view wave
+# view signals
+
+delete wave *
+
+add wave /testbench/clk
+
+add wave -divider "Input Interface"
+add wave -hex /testbench/uut/di
+add wave /testbench/uut/di_cmd
+add wave /testbench/uut/en
+
+add wave -divider "Output Interface"
+add wave -hex /testbench/uut/do
+add wave /testbench/uut/cmd_sop
+add wave /testbench/uut/cmd_soc
+add wave /testbench/uut/cmd_idle
+add wave /testbench/uut/cmd_term
+add wave /testbench/uut/cmd_data
+add wave /testbench/uut/len
+
+restart -f
+run 500ns
+

@@ -1,0 +1,99 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2010 CESNET
+# Author: Karel Koranda <xkoran01@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 13905 2010-06-02 13:15:58Z xkoran01 $
+
+   view wave
+   delete wave *
+
+proc blk_RXBUF { BASE } {
+
+  add wave -divider "SW RX Buffer"
+
+   add wave -divider "SW RX Buffer - IFC"
+   add_wave "-noupdate -hex -label clk               " $BASE/clk 
+   add_wave "-noupdate -hex -label reset             " $BASE/reset
+   add_wave "-noupdate -hex -label init              " $BASE/init
+   
+   add wave -divider "SW RX Buffer - Status signals"
+   add_wave "-noupdate -label full                   " $BASE/full
+   add_wave "-noupdate -label empty                  " $BASE/empty
+#   add_wave "-noupdate -label status                 " $BASE/status 
+
+   add wave -divider "SW RX Buffer - RX FrameLink"
+   add_wave "-noupdate -hex -label rx_addr           " $BASE/rx_addr
+   add_wave "-noupdate -hex -label rx_data           " $BASE/rx_data 
+   add_wave "-noupdate -hex -label rx_sop_n          " $BASE/rx_sop_n 
+   add_wave "-noupdate -hex -label rx_eop_n          " $BASE/rx_eop_n 
+   add_wave "-noupdate -hex -label rx_sof_n          " $BASE/rx_sof_n 
+   add_wave "-noupdate -hex -label rx_eof_n          " $BASE/rx_eof_n 
+   add_wave "-noupdate -hex -label rx_rem            " $BASE/rx_rem 
+   add_wave "-noupdate -hex -label rx_src_rdy_n      " $BASE/rx_src_rdy_n 
+   add_wave "-noupdate -label rx_dst_rdy_n      " $BASE/rx_dst_rdy_n 
+
+   add wave -divider "SW RX Buffer - DMA IFC"
+   add_wave "-noupdate -hex -label buf_newlen         " $BASE/buf_newlen 
+   add_wave "-noupdate -hex -label buf_newlen_dv      " $BASE/buf_newlen_dv 
+   add_wave "-noupdate -hex -label buf_newlen_ifc     " $BASE/buf_newlen_ifc 
+   add_wave "-noupdate -hex -label buf_rellen         " $BASE/buf_rellen 
+   add_wave "-noupdate -hex -label buf_rellen_dv      " $BASE/buf_rellen_dv 
+   add_wave "-noupdate -hex -label buf_rellen_ifc     " $BASE/buf_rellen_ifc
+
+   add wave -divider "SW RX Buffer - IB"
+   add_wave "-noupdate -hex -label rd_addr           " $BASE/rd_addr 
+   add_wave "-noupdate -hex -label rd_be             " $BASE/rd_be 
+   add_wave "-noupdate -hex -label rd_req            " $BASE/rd_req 
+   add_wave "-noupdate -hex -label rd_ardy           " $BASE/rd_ardy 
+   add_wave "-noupdate -hex -label rd_data           " $BASE/rd_data 
+   add_wave "-noupdate -hex -label rd_src_rdy        " $BASE/rd_src_rdy 
+   add_wave "-noupdate -hex -label rd_dst_rdy        " $BASE/rd_dst_rdy 
+   
+   add wave -divider "MFIFO2MEM signals"
+   add wave -divider "MFIFO2MEM input"
+   add_wave "-noupdate -hex -label data_in           " $BASE/mfifo2mem_i/data_in
+   add_wave "-noupdate -hex -label wr_blk_addr       " $BASE/mfifo2mem_i/wr_blk_addr
+   add_wave "-noupdate -hex -label write             " $BASE/mfifo2mem_i/write
+   add_wave "-noupdate -label full                   " $BASE/mfifo2mem_i/full
+   
+   add wave -divider "MFIFO2MEM output"
+   add_wave "-noupdate -hex -label data_out          " $BASE/mfifo2mem_i/data_out
+   add_wave "-noupdate -hex -label data_vld          " $BASE/mfifo2mem_i/data_vld
+   add_wave "-noupdate -hex -label rd_blk_addr       " $BASE/mfifo2mem_i/rd_blk_addr
+   add_wave "-noupdate -hex -label rd_addr           " $BASE/mfifo2mem_i/rd_addr
+   add_wave "-noupdate -hex -label read              " $BASE/mfifo2mem_i/read
+   add_wave "-noupdate -hex -label rel_len             " $BASE/mfifo2mem_i/rel_len
+   add_wave "-noupdate -hex -label rel_len_dv             " $BASE/mfifo2mem_i/rel_len_dv
+   add_wave "-noupdate -hex -label empty             " $BASE/mfifo2mem_i/empty
+   add_wave "-noupdate -hex -label pipe_en             " $BASE/mfifo2mem_i/pipe_en
+   add_wave "-noupdate -hex -label STATUS            " $BASE/mfifo2mem_i/blk_status
+   
+   add wave -divider "MFIFO2MEM memory"
+   add_wave "-noupdate -uns -label memory            " $BASE/mfifo2mem_i/buf_mem_i/bram_mem/memory
+   
+}

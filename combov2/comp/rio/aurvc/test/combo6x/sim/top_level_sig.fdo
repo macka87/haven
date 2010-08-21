@@ -1,0 +1,175 @@
+# RIO2CMD simulation procedures
+# Author(s): Jan Pazdera <pazdera@liberouter.org>
+#
+
+
+# ------------------------------------------------------------------------
+# -------------------------- Procedures ----------------------------------
+# ------------------------------------------------------------------------
+
+
+
+#####################################################################
+# Common signals 
+#####################################################################
+proc aurvc_test_common {  } {
+    global AURVC_TEST_PATH
+    add wave -divider "Common"
+    radix -hex
+
+    add wave -label lclkf           sim:/testbench/lclkf
+    add wave -label clkf            sim:/testbench/clkf
+    add wave -label REFCLK          $AURVC_TEST_PATH/REFCLK
+    add wave -label USRCLK          $AURVC_TEST_PATH/USRCLK
+    add wave -label USRCLK2         $AURVC_TEST_PATH/USRCLK2
+    add wave -label LBCLK          sim:/testbench/uut/clk100
+    add wave -label reset           sim:/testbench/uut/reset
+}
+
+#####################################################################
+# Interfaces 
+#####################################################################
+
+
+#####################################################################
+# Sub-components 
+#####################################################################
+
+proc aurvc_test_lb {  } {
+    global AURVC_TEST_PATH
+    add wave -divider "LB/PLX"
+    radix -hex
+
+    add wave -label lbclk           uut/clk100
+    add wave -label lb_data_out     $AURVC_TEST_PATH/lb_data_out
+    add wave -label lb_data_in      $AURVC_TEST_PATH/lb_data_in
+    add wave -label lb_addr         $AURVC_TEST_PATH/lb_addr
+    add wave -label lb_en           $AURVC_TEST_PATH/lb_en
+    add wave -label lb_rw           $AURVC_TEST_PATH/lb_rw
+    add wave -label reg_lb_drdy     $AURVC_TEST_PATH/reg_lb_drdy
+    add wave -label status-do       sim:/testbench/plx_status.do
+    add wave -label status-dv       sim:/testbench/plx_status.dv
+    add wave -label lad {lad {
+                  sim:/testbench/lad1
+                  sim:/testbench/lad0}}
+    add wave -label lholda          sim:/testbench/lholda
+    add wave -label ads             sim:/testbench/ads
+    add wave -label blast           sim:/testbench/blast
+    add wave -label lwr             sim:/testbench/lwr
+    add wave -label ready           sim:/testbench/ready
+    add wave -label lhold           sim:/testbench/lhold
+#    add wave -label usero           sim:/testbench/usero
+}
+
+proc aurvc_test_tx_bram {  } {
+    global AURVC_TEST_PATH
+    add wave -divider "TX_BRAM"
+    radix -hex
+
+    add wave -label reg_adc_di      $AURVC_TEST_PATH/reg_adc_di
+    add wave -label reg_adc_di_we   $AURVC_TEST_PATH/reg_adc_di_we
+    add wave -label adc_ctrl    $AURVC_TEST_PATH/adc_ctrl
+    add wave -label txdata_to_lb   $AURVC_TEST_PATH/txdata_to_lb
+    add wave -label txctrl_to_lb  $AURVC_TEST_PATH/txctrl_to_lb
+    add wave -label adc_tx_we   $AURVC_TEST_PATH/adc_tx_we
+    add wave -label cnt_tx_addr     $AURVC_TEST_PATH/cnt_tx_addr
+    add wave -label data_to_aurvc     $AURVC_TEST_PATH/data_to_aurvc
+    add wave -label ctrl_to_aurvc    $AURVC_TEST_PATH/ctrl_to_aurvc
+}
+
+proc aurvc_test_ctrl {  } {
+    global AURVC_TEST_PATH
+    add wave -divider "Control logic"
+    radix -hex
+
+
+    add wave -label reg_tx_active      $AURVC_TEST_PATH/reg_tx_active
+    add wave -label reg_tx_active_we   $AURVC_TEST_PATH/reg_tx_active_we
+#    add wave -label reg_rx_active      $AURVC_TEST_PATH/reg_rx_active
+#    add wave -label rx_active_set      $AURVC_TEST_PATH/rx_active_set
+#    add wave -label rx_active_rst      $AURVC_TEST_PATH/rx_active_rst
+    add wave -label reg_status         $AURVC_TEST_PATH/reg_status
+}
+
+proc aurvc_bus_probe {  } {
+    global BUS_PROBE_PATH
+    add wave -divider "Bus Probe"
+    radix -hex
+
+
+    add wave -label lb_data_out     $BUS_PROBE_PATH/lb_data_out
+    add wave -label lb_data_in  $BUS_PROBE_PATH/lb_data_in
+    add wave -label lb_addr     $BUS_PROBE_PATH/lb_addr
+    add wave -label lb_rd   $BUS_PROBE_PATH/lb_rd
+    add wave -label lb_wr   $BUS_PROBE_PATH/lb_wr
+    add wave -label lb_drdy     $BUS_PROBE_PATH/lb_drdy
+    add wave -label reg_addr    $BUS_PROBE_PATH/reg_addr
+    add wave -label reg_addr_we     $BUS_PROBE_PATH/reg_addr_we
+    add wave -label reg_drdy    $BUS_PROBE_PATH/reg_drdy
+    add wave -label reg_control     $BUS_PROBE_PATH/reg_control
+    add wave -label reg_control_we  $BUS_PROBE_PATH/reg_control_we
+    add wave -label bmem_we     $BUS_PROBE_PATH/bmem_we
+    add wave -label bmem_rd     $BUS_PROBE_PATH/bmem_rd
+    add wave -label bmem_dinb   $BUS_PROBE_PATH/bmem_dinb
+    add wave -label bmem_doutb  $BUS_PROBE_PATH/bmem_doutb
+    add wave -label bmem_doutb_v    $BUS_PROBE_PATH/bmem_doutb_v
+    add wave -label hw_sw_enable    $BUS_PROBE_PATH/hw_sw_enable
+    add wave -label mx_addr     $BUS_PROBE_PATH/mx_addr
+    add wave -label cnt_addra   $BUS_PROBE_PATH/cnt_addra
+    add wave -label cnt_addra_rst   $BUS_PROBE_PATH/cnt_addra_rst
+    add wave -label sw_addrb    $BUS_PROBE_PATH/sw_addrb
+}
+
+# Set basic paths
+set TOPLEVEL_PATH "sim:/testbench/uut"
+set AURVC_TEST_PATH "sim:/testbench/uut/AURVC_TEST_U"
+set AURVC_PATH "$AURVC_TEST_PATH/aurvc_u"
+set AURVC_CORE_PATH "$AURVC_PATH/aurvc_core_u"
+set AURVC_TXCHNL_CTRL_PATH "$AURVC_CORE_PATH/tx_chnl_ctrl_u"
+set AURVC_TXARBITER_PATH "$AURVC_CORE_PATH/tx_chnl_ctrl_u/chnl_arbiter_u"
+set AURVC_TXBUF0_PATH "$AURVC_PATH/tx_buf_gen__0/norm_gen/tx_buffer_u"
+set AURVC_TXBUF1_PATH "$AURVC_PATH/tx_buf_gen__1/norm_gen/tx_buffer_u"
+set AURVC_TXBUF2_PATH "$AURVC_PATH/tx_buf_gen__2/norm_gen/tx_buffer_u"
+set AURVC_TXBUF3_PATH "$AURVC_PATH/tx_buf_gen__3/norm_gen/tx_buffer_u"
+set AURVC_RXCHNL_CTRL_PATH "$AURVC_CORE_PATH/rx_chnl_ctrl_u"
+set AURVC_RXBUF0_PATH "$AURVC_PATH/rx_buf_gen__0/norm_gen/rx_buffer_u"
+set AURVC_RXBUF1_PATH "$AURVC_PATH/rx_buf_gen__1/norm_gen/rx_buffer_u"
+set AURVC_RXBUF2_PATH "$AURVC_PATH/rx_buf_gen__2/norm_gen/rx_buffer_u"
+set AURVC_RXBUF3_PATH "$AURVC_PATH/rx_buf_gen__3/norm_gen/rx_buffer_u"
+set PLXSIM_PATH "sim:/testbench/plx_sim_u"
+set BUS_PROBE_PATH "sim:/testbench/uut/aurvc_test_u/bus_probe_gen__0/bus_probe_i"
+
+source "../../../../../../models/rio/sim/signals.fdo"
+source "../../../../../../models/plx_9054/sim/signals.fdo"
+source "../../../sim/signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+# ------------- Calling procedures ------------------------------
+#aurvc_bus_probe
+aurvc_test_lb
+aurvc_test_common
+#blk_PLXSIM ifc_SIM
+aurvc_test_tx_bram
+aurvc_test_ctrl
+
+aurvc_fl
+#aurvc_txbuf TRUE TRUE TRUE FALSE
+aurvc_core_txbuf_ifc
+aurvc_common
+aurvc_txchnl_ctrl
+#aurvc_txchnl_arbiter
+aurvc_core
+aurvc_common
+aurvc_rxbuf TRUE TRUE TRUE FALSE
+aurvc_rxchnl_ctrl
+#aurvc_flow_ctrl
+#aurvc_xon_xoff_buffer
+
+# ------------- Run ---------------------------------------------
+restart -f
+run 70 us
+
+

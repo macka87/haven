@@ -1,0 +1,153 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Pavol Korcek <korcek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 1710 2008-03-10 20:07:02Z korcek $
+
+proc blk_FL_FRAME_METER { PARAM } {
+   global FL_FRAME_METER_PATH
+   set BASE "$FL_FRAME_METER_PATH"
+  
+   # interface
+   if { $PARAM == "IFC" } {
+   
+      add wave -divider "Input data"
+      add_wave "-label rx_data -hex" $BASE/rx_data
+      add_wave "-label rx_rem -hex" $BASE/rx_rem
+      add_wave "-label rx_sof_n" $BASE/rx_sof_n
+      add_wave "-label rx_sop_n" $BASE/rx_sop_n
+      add_wave "-label rx_eop_n" $BASE/rx_eop_n
+      add_wave "-label rx_eof_n" $BASE/rx_eof_n
+      add_wave "-label rx_src_rdy_n" $BASE/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $BASE/rx_dst_rdy_n
+
+      add wave -divider "Output data"
+      add_wave "-label tx_data -hex" $BASE/tx_data
+      add_wave "-label tx_rem -hex" $BASE/tx_rem
+      add_wave "-label tx_sof_n" $BASE/tx_sof_n
+      add_wave "-label tx_sop_n" $BASE/tx_sop_n
+      add_wave "-label tx_eop_n" $BASE/tx_eop_n
+      add_wave "-label tx_eof_n" $BASE/tx_eof_n
+      add_wave "-label tx_src_rdy_n" $BASE/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n" $BASE/tx_dst_rdy_n
+   }
+
+   # Miscelaneous signals
+   if { $PARAM == "MISC" } {
+     # add wave -divider "FL_FRAME_METER misc signals"
+     # add_wave "-label clk -color magenta" $BASE/clk
+     # add_wave "-label reset -color magenta" $BASE/reset
+      
+     add wave -divider "Input Logic"
+     add_wave "-label reg_header_len -hex" $BASE/reg_header_len
+     add_wave "-label reg_header_len_we" $BASE/reg_header_len_we
+     add_wave "-label cnt_header -hex" $BASE/cnt_header
+     add_wave "-label cnt_header_ce" $BASE/cnt_header_ce
+     add_wave "-label cnt_header_clr" $BASE/cnt_header_clr
+     add_wave "-label cnt_payload -hex" $BASE/cnt_payload
+     add_wave "-label cnt_payload_ce" $BASE/cnt_payload_ce
+     add_wave "-label cnt_payload_clr" $BASE/cnt_payload_clr
+     add_wave "-label header_len_8B -hex" $BASE/header_len_8B
+     add_wave "-label payload_len -hex" $BASE/payload_len
+     add_wave "-label idle_bytes" $BASE/idle_bytes
+     add_wave "-label idle_bytes_trunc" $BASE/idle_bytes_trunc
+     add_wave "-label h_len_8B_trunc" $BASE/h_len_8B_trunc
+     add_wave "-label h_len_trunc" $BASE/h_len_trunc
+
+     add wave -divider "Output Logic"
+     add_wave "-label reg_is_idle" $BASE/reg_is_idle
+     add_wave "-label reg_is_idle_we" $BASE/reg_is_idle_we
+     add_wave "-label reg_is_idle_clr" $BASE/reg_is_idle_clr
+     add_wave "-label is_idle" $BASE/is_idle
+     add_wave "-label mxs_sel" $BASE/mxs_sel
+
+     
+     add_wave "-label cnt_idle_cycles" $BASE/cnt_idle_cycles
+     add_wave "-label cnt_idle_cycles_ld" $BASE/cnt_idle_cycles_ld
+     add_wave "-label cnt_idle_cycles_ce" $BASE/cnt_idle_cycles_ce
+     add_wave "-label cnt_length_part" $BASE/cnt_length_part
+     add_wave "-label cnt_length_part_clr" $BASE/cnt_length_part_clr
+     add_wave "-label cnt_length_part_ce" $BASE/cnt_length_part_ce
+     add_wave "-label first_part" $BASE/first_part
+     add_wave "-label last_part" $BASE/last_part
+     add_wave "-label mx_data_in -hex" $BASE/mx_data_in
+     add_wave "-label mx_data_out -hex" $BASE/mx_data_out
+
+     add wave -divider "FSM Interface"
+     add_wave "-label fsm_eof_valid_n" $BASE/fsm_eof_valid_n
+     add_wave "-label fsm_eop_valid_n" $BASE/fsm_eop_valid_n
+     add_wave "-label fsm_fifo_empty" $BASE/fsm_fifo_empty
+     add_wave "-label fsm_is_idle" $BASE/fsm_is_idle
+     add_wave "-label fsm_next_data" $BASE/fsm_next_data
+     add_wave "-label fsm_wait_state" $BASE/fsm_wait_state
+     add_wave "-label fsm_send_length" $BASE/fsm_send_length
+     add_wave "-label fsm_send_header" $BASE/fsm_send_header
+     add_wave "-label fsm_send_idle" $BASE/fsm_send_idle
+     add_wave "-label fsm_send_data" $BASE/fsm_send_data
+
+      add wave -divider "FIFO Interface"
+     # add_wave "-label reset" $BASE/fifo_length_i/reset
+     # add_wave "-label clk" $BASE/fifo_length_i/clk
+      add_wave "-label data_in -hex" $BASE/fifo_length_i/data_in
+      add_wave "-label write_req" $BASE/fifo_length_i/write_req
+      add_wave "-label full" $BASE/fifo_length_i/full
+      add_wave "-label data_out -hex" $BASE/fifo_length_i/data_out
+      add_wave "-label read_req" $BASE/fifo_length_i/read_req
+      add_wave "-label empty" $BASE/fifo_length_i/empty
+      
+      add wave -divider "FL_FIFO Interface"
+     # add_wave "-label clk" $BASE/fl_fifo_i/clk
+     # add_wave "-label reset" $BASE/fl_fifo_i/reset
+      add_wave "-label rx_data -hex" $BASE/fl_fifo_i/rx_data
+      add_wave "-label rx_rem -hex" $BASE/fl_fifo_i/rx_rem
+      add_wave "-label rx_src_rdy_n" $BASE/fl_fifo_i/rx_src_rdy_n
+      add_wave "-label rx_dst_rdy_n" $BASE/fl_fifo_i/rx_dst_rdy_n
+      add_wave "-label rx_sop_n" $BASE/fl_fifo_i/rx_sop_n
+      add_wave "-label rx_eop_n" $BASE/fl_fifo_i/rx_eop_n
+      add_wave "-label rx_sof_n" $BASE/fl_fifo_i/rx_sof_n
+      add_wave "-label rx_eof_n" $BASE/fl_fifo_i/rx_eof_n
+      add_wave "-label tx_data -hex" $BASE/fl_fifo_i/tx_data
+      add_wave "-label tx_rem -hex" $BASE/fl_fifo_i/tx_rem
+      add_wave "-label tx_src_rdy_n" $BASE/fl_fifo_i/tx_src_rdy_n
+      add_wave "-label tx_dst_rdy_n" $BASE/fl_fifo_i/tx_dst_rdy_n
+      add_wave "-label tx_sop_n" $BASE/fl_fifo_i/tx_sop_n
+      add_wave "-label tx_eop_n" $BASE/fl_fifo_i/tx_eop_n
+      add_wave "-label tx_sof_n" $BASE/fl_fifo_i/tx_sof_n
+      add_wave "-label tx_eof_n" $BASE/fl_fifo_i/tx_eof_n
+      
+      add wave -divider "FL_DEC Interface"
+      add_wave "-label hdr_frame" $BASE/fl_dec_i/hdr_frame
+      add_wave "-label sopld" $BASE/fl_dec_i/sopld
+      add_wave "-label pld_frame" $BASE/fl_dec_i/pld_frame
+      add_wave "-label ftr_frame" $BASE/fl_dec_i/ftr_frame
+      add_wave "-label eof" $BASE/fl_dec_i/eof
+      add_wave "-label src_rdy" $BASE/fl_dec_i/src_rdy
+      add_wave "-label dst_rdy" $BASE/fl_dec_i/dst_rdy
+
+   }
+}

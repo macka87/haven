@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+
+<!-- Page name -->
+<component>
+   CAM
+</component>
+
+<!-- Authors worked on -->
+<authors>
+   <author login="kosek">Martin Kosek</author>
+</authors>
+
+<features>
+   <item>Generic number of memory rows and their width</item>
+   <item>Designed to achieve high frequencies (over 150MHz) and occupy as small recources as possible</item>
+   <item>Fast data search (1 clock cycle), slower data inserting (16 clocks cycles)</item>
+</features>
+
+<!-- Short Block description -->
+<description>
+   <p>
+      Content Addressable Memory (CAM) allows a fast search for specific data 
+      in a memory. This component is fully generic - you can enter width 
+      (number of bits) of one CAM word by CAM_ROW_WIDTH and number of these words by
+      CAM_ROW_COUNT.
+   </p>
+   <p>
+      You can also set "care" and "don't care" bits of inserted
+      word to specify which bits should be compared with searched word and 
+      witch should be not (via MASK_IN signal).
+   </p>
+</description>
+
+<!-- COMPONENT INTERFACE ************************************************* -->
+<interface>
+
+   <generic_map>
+      <generic name="CAM_ROW_WIDTH" type="integer" default="">
+         Data row width (should be a multiple of 4).
+      </generic>
+      <generic name="CAM_ROW_COUNT" type="integer" default="">
+         Number of data rows.
+      </generic>
+      <generic name="CAM_ADDR_WIDTH" type="integer" default="">
+         Address signal width (should be wide enough to handle number of data
+         rows).
+      </generic>
+   </generic_map>
+
+   <port_map>
+      <divider>Common interface</divider>
+      <port name="CLK" dir="in" width="1">
+         Global clock
+      </port>
+      <port name="RESET" dir="in" width="1">
+         Global reset
+      </port>
+      
+      <divider>Data insert interface</divider>
+      <port name="ADDR" dir="in" width="CAM_ADDR_WIDTH">
+         Address
+      </port>
+      <port name="DATA_IN" dir="in" width="CAM_ROW_WIDTH">
+         Data in
+      </port>
+      <port name="MASK_IN" dir="in" width="CAM_ADDR_WIDTH">
+         Mask ('1' -> care bit; '0' -> don't care bit)
+      </port>
+      <port name="WRITE_EN" dir="in" width="1">
+         Write enable
+      </port>
+
+      <divider>Data search interface</divider>
+      <port name="MATCH_EN" dir="in" width="1">
+         Match enable
+      </port>
+      <port name="MATCH_RST" dir="in" width="1">
+         Match reset
+      </port>
+      <port name="MATCH_BUS" dir="out" width="CAM_ROW_COUNT">
+         Match bus
+      </port>      
+      <port name="MATCH_BUS_VLD" dir="out" width="1">
+         Match bus valid (a vector where '1' on n-th place means that n-th row matches the searched word)
+      </port>      
+   </port_map>
+</interface>
+
+
+<!-- OPERATIONS SECTION ************************************************* -->
+
+<operations>
+   <init>
+      <it ref="LOAD_CAM_DATA">Load data into CAM</it>
+   </init>
+
+  <op name="Load data into CAM" id="LOAD_CAM_DATA">
+    <p>
+       When you need to load data into CAM over Localbus, you have to take 
+       control over CAM first.
+    </p>
+    <p>
+       This task is done by following few steps. At first, send request to
+       component attached to CAM via Command register (STOP_REQUEST bit). Then
+       wait until ACK bit in Status register is set to '1'. This marks that
+       attached component allowed you to use CAM over Localbus. Now you are
+       ready to take control over CAM. This is done by writing '1' to Command
+       register (BUSY bit).
+    </p>
+    <p>
+       When you have successfuly taken control CAM, you can start filling CAM:
+       Fill mask, data, address registers and insert item into CAM by writing
+       any data to "Write command" address.
+    </p>
+    <p>       
+       Finally, when you have filled all CAM items, don't forget to return 
+       control back to component atached to CAM by writing '0' to BUSY bit 
+       in Control Register.
+    </p>
+  </op>
+  
+</operations>
+
+<!-- ADDRESS SPACE ************************************************* -->
+<addr_space id ="CAM" name="CAM" main="yes" size="0x150">
+
+   <reg name="Command register"
+      id="REG_CMD"  offset="0x0000" access="RW" words="1">
+	   <bit_vect bits="32">
+		   <description_above>
+			   Used to take control over CAM from SW.
+		   </description_above>
+		   <format>
+			   <bit from="0" to="0" name="STOP_REQUEST" access="RW">Request to component attached 
+				   to CAM to allow control over CAM to software</bit>
+			   <bit from="1" to="1" name="BUSY"  access="RW">Notify attached component, that we're 
+				   using CAM from software</bit>
+			   <bit from="2" to="31" name="RESERVED" access="">Reserved</bit>
+		   </format>
+	   </bit_vect>
+   </reg>
+
+   <reg name="Status register"
+      id="REG_STATUS"  offset="0x0040"   access="R" words="1">
+	   <bit_vect bits="32">
+		   <description_above>
+			   Used to get informations about CAM.
+		   </description_above>
+		   <format>
+			   <bit from="0" to="0" name="ACK" access="R">Attached component acknowledge to your 
+				   request of control over CAM (via REG_CMD(0)).</bit>
+			   <bit from="1" to="1" name="CAM_BUSY" access="R">CAM is busy writing a record (one 
+				   record input lasts 16 cycles)</bit>
+			   <bit from="2" to="31" name="RESERVED" access="R">Reserved</bit>
+		   </format>
+</bit_vect>
+   </reg>
+
+   <reg name="Mask Register"
+      id="REG_MASK"  offset="0x0080"   access="W" words="16">
+	   <bit_vect bits="32">
+		   <description_above>
+			   Mask of the record we want to store in CAM. If CAM width exceeds 32 bits 
+			   you need to fill as many REG_MASKs registers as needed.
+			   For example if CAM is 68 bits wide you need to fill 2 REG_MASK registers 
+			   fully and 4 bits of third mask register.
+		   </description_above>
+		   <format>
+			   <bit from="0" to="31" name="MASK" access="W">Mask ('1' -> "care bit")</bit>
+		   </format>
+	   </bit_vect>
+   </reg>
+
+   <reg name="Data Register"
+      id="REG_DATA"  offset="0x00C0"   access="W" words="16">
+	   <bit_vect bits="32">
+		   <description_above>
+			   Data we want to store in CAM. You need to fill as many REG_DATA registers
+			   as needed according to your CAM width (see REG_MASK filling).
+		   </description_above>
+		   <format>
+			   <bit from="0" to="31" name="DATA" access="W">Data</bit>
+		   </format>
+</bit_vect>
+   </reg>
+
+   <reg name="Address Register"
+      id="REG_ADDR"  offset="0x0100"   access="RW" words="1">
+	   <bit_vect bits="32">
+		   <description_above>
+			   Address in which you want to store your data saved in REG_DATA register.
+		   </description_above>
+		   <format>
+			   <bit from="0" to="31" name="ADDR" access="W">Address</bit>
+		   </format>
+</bit_vect>
+   </reg>
+
+   <reg name="Write command"
+      id="WRITE_COMMAND"  offset="0x0140"   access="W" words="1">
+	   <bit_vect bits="32">
+		   <description_above>
+			   Write anything on this address and data stored in REG_DATA register and 
+			   mask stored in REG_MASK register will be written in CAM.
+		   </description_above>
+		   <format>
+			   <bit from="0" to="31" name="ADDR" access="W">Reserved</bit>
+		   </format>
+</bit_vect>
+   </reg>
+
+</addr_space>
+
+<!-- BODY ************************************************* -->
+<body>
+   <h1>Data insertion</h1>
+   <p>
+      When inserting data into CAM you just have to assert WRITE_EN signal
+      for one clock cycle and data on DATA_IN port. You have to keep in mind that 
+      write operation takes 16 clock cycles. Within this time you shouldn't
+      work with CAM.
+   </p>
+   
+   <h1>Data searching</h1>
+   <p>
+      This CAM offer very fast data searching in one clock cycle. Assert MATCH_EN
+      signal and after one clock cycle MATCH_BUS_VLD signal will be asserted - 
+      that means that result is ready on port MATCH_BUS. The result is encoded
+      in one-hot style, that means if match has been found on first row (with 
+      address 0) bit 0 will be asserted.
+   </p>
+   <p>
+      The number of matches can be greater than 1 because this CAM supports 
+      MASK when inserting data. In this case there will be more asserted bits
+      in MATCH_BUS.
+   </p>
+
+   <h1>Connecting CAM to your design</h1>
+   <p>
+      This task is quite easy and CAM has a simple interface, which should be
+      easy to use. There is just one important task when using software access
+      to CAM: You need to set carefuly the ACK port.
+   </p>
+   <p>
+      Of you want the software side to use CAM everytime it wants just connect
+      it to '1'. Otherwise use RQ and ACK signals to negotiate when software 
+      side can take control over CAM.
+   </p>
+
+   <h1>Frequency and Resources usage</h1>
+   <p>
+      <tab sloupce="cccc">
+         <tr>
+            <th>Generic settings</th>
+            <th>Slices (% of C6X slices)</th>
+            <th>BlockRams (+ % of C6X BRAMs)</th>
+            <th>Max. HW frequency</th>
+         </tr>
+         <tr>
+            <th>68b row width, 2 CAM rows, LB support (IDS settings)</th> 
+            <td>171 (0.7%)</td>
+            <td>0 (0.0%)</td>
+            <td>150 MHz</td>
+         </tr>
+         <tr>
+            <th>32b row width, 64 CAM rows, LB support</th> 
+            <td>479 (2.0%)</td>
+            <td>0 (0.0%)</td>
+            <td>150 MHz</td>
+         </tr>
+         <tr>
+            <th>32b row width, 64 CAM rows, no LB support</th> 
+            <td>414 (1.8%)</td>
+            <td>0 (0.0%)</td>
+            <td>150 MHz</td>
+         </tr>
+      <nazev>Chip utilization &amp; max design frequency</nazev>
+      </tab> 
+   </p>
+
+   <h1>Schemes</h1>
+   <p>
+      The block structure of the component is in the following figures. It's 
+      composed of CAM Rows, where data itself are stored and where the 
+      data matching is processed and Filling Part, which takes control
+      over writing data into particular CAM Row.
+   </p>
+   <p>
+      <obr src="./fig/cam_data_array.fig">CAM core stucture</obr>
+      <obr src="./fig/cam_top_level.fig">CAM top level</obr>
+      <obr src="./fig/cam_filling_part.fig">Filling Part</obr>
+      <obr src="./fig/cam_fill_element.fig">Filling Part Element</obr>
+      <obr src="./fig/cam_row.fig">Data Row</obr>
+      <obr src="./fig/cam_element.fig">Data Row Element</obr>
+   </p>
+
+</body>
+
+</source>

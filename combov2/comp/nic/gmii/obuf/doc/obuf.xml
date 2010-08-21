@@ -1,0 +1,459 @@
+<source>
+
+<component>Output buffer for gmii interface</component>
+
+<authors>
+    <author login="pazdera">Jan Pazdera</author>
+    <author login="xmikus03">Martin Mikusek</author>
+    <author login="martinek">Tomas Martinek</author>
+    <author login="polcak_l">Libor Polcak</author>
+</authors>
+
+<features>
+    <item> Source MAC Address replacement </item>
+    <item> Frame check sum generation </item>
+    <item> 3 speed modes (10, 100 and 1000 Mb/s) </item>
+</features>
+
+<todo>
+    <item>Padding</item>
+    <item>Len/type item checking (must be consistent with real packet length)</item>
+</todo>
+
+<description>
+    The OBUF component implements transmitting part of MAC layer described
+    in standard IEEE 802.3. It performs transmition of ethernet frames generated from FrameLink packets.
+    This action includes preamble generation and FCS computation.
+    
+    The OBUF can work in 3 speed modes: 10Mb/s, 100Mb/s, 1000Mb/s. The speed mode is set by sw driver according to the actual NIC
+    configuration. 
+
+</description>
+
+<interface>
+    <!-- doplnit dividery -->
+    <generic_map>
+        <generic name="ADDR_BASE" type="integer" default="none">
+            Address space base address
+        </generic>
+
+        <generic name="ADDR_WIDTH" type="integer" default="9">
+            Address space width
+        </generic>
+
+        <generic name="DATA_PATHS" type="integer" default="none">
+            Data paths number (1-8, but 8 data_paths will probably not work on 125 MHz now)
+        </generic>
+
+        <generic name="DFIFO_SIZE" type="integer" default="none">
+            Data FIFO count of ITEMS. Buffer size is DFIFO_SIZE*DATA_PATHS.
+        </generic>
+
+        <generic name="SFIFO_SIZE" type="integer" default="none">
+            Maximal count of packets that can be stored.
+        </generic>
+
+        <generic name="CTRL_CMD" type="boolean" default="none">
+            It means whether input control command protocol contains control part.
+        </generic>
+
+    </generic_map>
+
+    <port_map>
+        <port name="RESET" dir="in" width="1">
+            Global reset port.
+        </port>
+
+        <port name="WRCLK" dir="in" width="1">
+            Write clock.
+        </port>
+
+        <port name="DATA" dir="out" width="DATA_PATHS*8">
+            FRAMELINK: Outgoing data (Ascending bit order)
+        </port>
+        <port name="DREM" dir="out" width="log2(DATA_PATHS)">
+            FRAMELINK: Specifies the number of valid bytes in the last data beat; valid only when EOP_N is asserted
+        </port>
+        <port name="SRC_RDY_N" dir="out" width="1">
+            FRAMELINK: Asserted (low) when FrameLink signals from the source are valid
+        </port>
+        <port name="SOF_N" dir="out" width="1">
+            FRAMELINK: Signals the start of the incoming frame (Active-low, asserted for a single user clock cycle)
+        </port>
+        <port name="SOP_N" dir="out" width="1">
+            FRAMELINK: Signals the start of the incoming packet (the frame's sub-block) (Active-low, asserted for a single user clock cycle)
+        </port>
+        <port name="EOF_N" dir="out" width="1">
+            FRAMELINK: Signals the end of the incoming frame (Active-low, asserted for a single user clock cycle)
+        </port>
+        <port name="EOP_N" dir="out" width="1">
+            FRAMELINK: Signals the end of the incoming packet (the frame's sub-block) (Active-low, asserted for a single user clock cycle)
+        </port>
+        <port name="DST_RDY_N" dir="in" width="1">
+            FRAMELINK: Asserted (low) during clock edges when signals from the source will be accepted (if SRC_RDY_N is also asserted)
+        </port>
+
+        <port name="TXCLK" dir="in" width="1">
+            GMII transmit clock (125 MHz)
+        </port>
+
+        <port name="TXD" dir="out" width="1">
+            GMII transmitt data
+        </port>
+
+        <port name="TXEN" dir="out" width="1">
+            GMII transmit enable
+        </port>
+
+        <port name="TXER" dir="out" width="1">
+            GMII transmit error
+        </port>
+
+
+        <port name="ADC_RD" dir="in" width="1">
+            Address decoder read request
+        </port>
+
+        <port name="ADC_WR" dir="in" width="1">
+            Address decoder write request
+        </port>
+
+        <port name="ADC_ADDR" dir="in" width="ADDR_WIDTH">
+            Address decoder address
+        </port>
+
+        <port name="ADC_DI" dir="in" width="32">
+            Address decoder input data
+        </port>
+
+        <port name="ADC_DO" dir="out" width="32">
+            Address decoder output data
+        </port>
+
+        <port name="ADC_DRDY" dir="out" width="1">
+            Address decoder data ready
+        </port>
+    </port_map>
+
+</interface>
+
+<constant>
+    <const name="OBUF command: Strobe frame counters" id="OBUFCMD_STROBE_COUNTERS" value="0x01">
+        Writing this constant into <ref id="REG_OBUF_CTRL">the command register</ref> will cause that
+        the current frame counters' values will be stored into the frame counter registers at the
+        same moment.
+    </const>
+
+    <const name="OBUF command: Reset frame counters" id="OBUFCMD_RESET_COUNTERS" value="0x02">
+        Writing this constant into <ref id="REG_OBUF_CTRL">the command register</ref> will cause that
+        the frame counters will be reset.
+    </const>
+
+    <const name="OBUF command: Set speed to 10Mb/s" id="OBUFCMD_SET_SPEED10" value="0x04">
+        Writing this constant into <ref id="REG_OBUF_CTRL">the command register</ref> will set OBUF to 10Mb/s mode.
+    </const>
+
+    <const name="OBUF command: Set speed to 100Mb/s" id="OBUFCMD_SET_SPEED100" value="0x05">
+        Writing this constant into <ref id="REG_OBUF_CTRL">the command register</ref> will set OBUF to 100Mb/s mode.
+    </const>
+
+    <const name="OBUF command: Set speed to 1000Mb/s" id="OBUFCMD_SET_SPEED1000" value="0x06">
+        Writing this constant into <ref id="REG_OBUF_CTRL">the command register</ref> will set OBUF to 1000Mb/s mode.
+    </const>
+</constant>
+
+
+<operations>
+    <init>
+
+		<it ref="OBUF_SET_ENABLE_STATUS">Disable OBUF</it>
+
+        <it ref="OBUF_SET_SPEED">Set OBUF speed</it>
+
+		<it ref="OBUF_SET_ENABLE_STATUS">Enable OBUF</it>
+
+    </init>
+
+    <op name="Enable/Disable OBUF" id="OBUF_SET_ENABLE_STATUS">
+        To enable/disable OBUF set/reset 
+        <ref id="REG_ENABLE"> OBUF enable register</ref>. Set This register
+        to enable OBUF or reset it to disable OBUF.
+    </op>
+
+    <op name="Set MAC Address" id="OBUF_SET_MAC_ADDRESS">
+        To set OBUF MAC address store an appropriate value into the OBUF MAC address register.
+        As the MAC address is 48 bits wide, you must do it in two steps. First store
+        <ref id="REG_MAC0">the low 32 bits</ref> and then <ref id="REG_MAC1">the high 16 bits</ref>.
+        You must <ref id="OBUF_SET_ENABLE_STATUS">disable OBUF first</ref>.
+    </op>
+
+    <op name="Set OBUF speed" id="OBUF_SET_SPEED">
+        To set the OBUF speed to 10Mb/s, write  
+        <ref id="OBUFCMD_SET_SPEED10"> OBUFCMD_SET_SPEED10</ref> command
+        into <ref id="REG_OBUF_CTRL">the command register</ref>.
+        To set the OBUF speed to 100Mb/s, write  
+        <ref id="OBUFCMD_SET_SPEED100"> OBUFCMD_SET_SPEED100</ref> command
+        into <ref id="REG_OBUF_CTRL">the command register</ref>.
+        To set the OBUF speed to 1000Mb/s, write  
+        <ref id="OBUFCMD_SET_SPEED1000"> OBUFCMD_SET_SPEED1000</ref> command
+        into <ref id="REG_OBUF_CTRL">the command register</ref>.
+    </op>
+
+</operations>
+
+<addr_space id="OBUF" name="Output Buffer" main="yes" size="0x400">
+    <instantion ref="OBUF_AS" offset="0x000000">
+        OBUF0 address space
+    </instantion>
+    <instantion ref="OBUF_AS" offset="0x000100">
+        OBUF1 address space
+    </instantion>
+    <instantion ref="OBUF_AS" offset="0x000200">
+        OBUF2 address space
+    </instantion>
+    <instantion ref="OBUF_AS" offset="0x000300">
+        OBUF3 address space
+    </instantion>
+</addr_space>
+
+<addr_space id="OBUF_AS" name="Output Buffer">
+    <reg name="Total packets counter (low part)" id="CNT_PACKETS_LOW" offset="0x00000" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+                It holds the number of all incoming packets (low part).
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="NUMBER">Number</bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Transmitted packets counter (low part)" id="CNT_SENT_LOW" offset="0x00004" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+                It holds the number of all transmitted packets (low part).
+            </description_above>
+            <format> 
+                <bit from="0" to="31" name="NUMBER">Number</bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Discarded packets counter (low part)" id="CNT_NOTSENT_LOW" offset="0x00008" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+                It holds the number of all packets, that was not transmitted (low part).
+            </description_above>
+            <format> 
+                <bit from="0" to="31" name="NUMBER">Number</bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Total packets counter (high part)" id="CNT_PACKETS_HIGH" offset="0x00010" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+                It holds the number of all incoming packets (high part).
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="NUMBER">Number</bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Transmitted packets counter (high part)" id="CNT_SENT_HIGH" offset="0x00014" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+                It holds the number of all transmitted packets (high part).
+            </description_above>
+            <format> 
+                <bit from="0" to="31" name="NUMBER">Number</bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="Discarded packets counter (high part)" id="CNT_NOTSENT_HIGH" offset="0x00018" access="R" words="1">
+        <bit_vect bits="32">
+            <description_above>
+                It holds the number of all packets, that was not transmitted (high part).
+            </description_above>
+            <format> 
+                <bit from="0" to="31" name="NUMBER">Number</bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="OBUF enable register" id="REG_ENABLE" offset="0x00020" access="RW" words="1">
+        <bit_vect bits="1">
+            <description_above>
+                Enables/Disables packet transmission. STAT='1' means the transmission is
+                enabled, STAT='0' means the transmission is disabled. When disabled, no packets are transmitted, but
+                incoming packets for transmission are stored to buffer.
+            </description_above>
+            <format>
+                <bit from="0" to="0" name="STAT">Status</bit>
+            </format>
+        </bit_vect>
+    </reg>
+
+    <reg name="MAC address register (low part)" id="REG_MAC0" offset="0x00024" access="RW" words="2">
+        <bit_vect bits="32">
+            <description_above>
+                MAC address register 0.
+            </description_above>
+            <format>
+                <bit from="0" to="31" name="MAC_ADDR">Low 32 bits of MAC address</bit>
+            </format>
+            <description_below>
+                It holds the low 32 bits of MAC addressx
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="MAC address register (high part)" id="REG_MAC1" offset="0x00028" access="RW" words="2">
+        <bit_vect bits="32">
+            <description_above>
+                MAC address register 1.
+            </description_above>
+            <format>
+                <bit from="0" to="15" name="MAC_ADDR">High 16 bits of MAC address</bit>
+            </format>
+            <description_below>
+                It holds the high 16 bits of MAC addressx
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="OBUF command register" id="REG_OBUF_CTRL" offset="0x2c" access="W" words="1">
+        <bit_vect bits="8">
+            <description_above>
+                OBUF command register.
+            </description_above>
+            <format>
+                <bit from="0" to="7" name="Command">
+                    Write a command into this register.
+                </bit>
+            </format>
+            <description_below>
+                See a Software section for Command constats review.
+            </description_below>
+        </bit_vect>
+    </reg>
+
+    <reg name="OBUF status register" id="REG_OBUF_STATUS" offset="0x30" access="R" words="1">
+        <bit_vect bits="8">
+            <description_above>
+                OBUF status register.
+            </description_above>
+            <format>
+                <bit from="0" to="3" name="RESERVED">
+                    Reserved (tied to zero).
+                </bit>
+                <bit from="4" to="5" name="OBUF speed">
+                    These bits signal the actual OBUF speed.
+                    "00"-10Mb/s, "01"-100Mb/s, "10"-1000Mb/s.
+                </bit>
+                <bit from="6" to="7" name="RESERVED">
+                    Reserved (tied to zero).
+                </bit>
+            </format>
+            <description_below>
+            </description_below>
+        </bit_vect>
+    </reg>
+
+</addr_space>
+
+<sw_body> <!-- ### doplnit ### --> </sw_body>
+
+<body>
+    <h1>Frequency and Resources usage</h1>
+
+    <p>
+
+        <!--Resources usage and max. frequency by Precision-->
+
+        <tab sloupce="ccc">
+            <tr>
+                <th>Generic settings (obuf_top4_fl64)</th>
+                <th>Slices (% of SFPRO slices)</th>
+                <th>BlockRams (% of SFPRO BRAMs)</th>
+            </tr>
+            <tr>
+                <th>DFIFO_SIZE=4095, HFIFO_SIZE=10</th> 
+                <td>1279(13.78%)</td>
+                <td>64(72.73%)</td>
+            </tr>
+            <nazev>Chip utilization</nazev>
+        </tab> 
+
+        <tab sloupce="ccc">
+            <tr>
+                <th>Generic settings (obuf_top4_fl64)</th>
+                <th>Max.frequency by Precision</th>
+                <th>Frequency tested in HW</th>
+            </tr>
+            <tr>
+                <th>WRCLK</th> 
+                <td>220 MHz</td>
+                <td>100 MHz</td>
+            </tr>
+            <tr>
+                <th>REFCLK</th> 
+                <td>110 MHz</td>
+                <td>125 MHz (it really works:)</td>
+            </tr>
+            <nazev>Maximal frequency</nazev>
+        </tab> 
+
+    </p> 
+
+    <p>
+        The OBUF architecture is composed of three sub-components: 
+        <ul>
+            <li>OBUF_FL - it transforms input FrameLink protocol to FIFO interface </li>
+            <li>OBUF_BUF - it is used as a data buffer and transmition controller </li>
+            <li>OBUF_TX - it is used for ethernet frame generation and transmition </li>
+        </ul>
+    </p>
+
+    <h2>Input FrameLink protocol stream</h2>
+    <p>
+        There are two variants depending on generic parameter CTRL_CMD.
+    </p>
+    <p>
+        Input stream wihtout Footer means, the frame should be transmitted
+        without any other restrictions. However, input stream with Footer 
+        can add addition information controlling packet transmitting. For instance,
+        it could contain information whether the paket should be transmitted
+        or not (because error can occure while external component are sending
+        packet to OBUF component).
+    </p>      
+
+    <h3>Without control part</h3>
+    <p>
+        (SOP)(FRAME_DATA)(EOP)
+    </p>
+
+    <h3>With footer</h3>
+    <p>
+        (SOP)(FRAME_DATA)(EOP)(SOP)(FOOTER DATA)(EOP)
+    </p>
+
+    <p>
+        Footer data structure is as follows:
+
+        <ol>
+            <li>bit0 : Frame Valid - frame is corrupted and will be discarded when Frame Valid bit is deasserted</li>
+            <li>bit1 : Replace Source MAC - frame source MAC address will be replaced by that stored in MAC address register when
+                Replace Source MAC bit is asserted</li>
+        </ol>
+    </p>
+
+
+    <h2>Output GMII protocol</h2>
+    <p>This protocol is specified in standard IEEE 802.3.</p>
+
+</body>
+
+</source>

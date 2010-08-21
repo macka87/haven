@@ -1,0 +1,604 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Libor Polcak <polcak_l@liberouter.org>
+#         Jiri Matousek <xmatou06@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 13008 2010-03-01 23:23:41Z polcak_l $
+
+
+# OBUF interface for SDR XGMII OBUF
+proc xgmii_obuf_top_ifc { OBUF_PATH } {
+   add wave -divider "XGMII OBUF"
+   add wave -divider "XGMII interface"
+   add_wave "-noupdate -hex -label CLK_INT" $OBUF_PATH/CLK_INT
+   add_wave "-noupdate -hex -label RESET_XGMII" $OBUF_PATH/RESET_XGMII
+   add_wave "-noupdate -hex -label XGMII_SDR_TXD" $OBUF_PATH/XGMII_SDR_TXD
+   add_wave "-noupdate -hex -label XGMII_SDR_TXC" $OBUF_PATH/XGMII_SDR_TXC
+
+   add wave -divider "Input FrameLink inteface"
+   add_wave "-noupdate -hex -label FL_CLK" $OBUF_PATH/FL_CLK
+   add_wave "-noupdate -hex -label FL_RESET" $OBUF_PATH/RESET_FL
+   add_wave "-noupdate -hex -label RX_SOF_N" $OBUF_PATH/RX_SOF_N
+   add_wave "-noupdate -hex -label RX_SOP_N" $OBUF_PATH/RX_SOP_N
+   add_wave "-noupdate -hex -label RX_EOP_N" $OBUF_PATH/RX_EOP_N
+   add_wave "-noupdate -hex -label RX_EOF_N" $OBUF_PATH/RX_EOF_N
+   add_wave "-noupdate -hex -label RX_SRC_RDY_N" $OBUF_PATH/RX_SRC_RDY_N
+   add_wave "-noupdate -hex -label RX_DST_RDY_N" $OBUF_PATH/RX_DST_RDY_N
+   add_wave "-noupdate -hex -label RX_DATA" $OBUF_PATH/RX_DATA
+   add_wave "-noupdate -hex -label RX_REM" $OBUF_PATH/RX_REM
+
+   add wave -divider "MI32 interface"
+   add_wave "-noupdate -hex -label MI_CLK" $OBUF_PATH/MI_CLK
+   add_wave "-noupdate -hex -label RESET_MI" $OBUF_PATH/RESET_MI
+   add_wave "-noupdate -hex -label MI32" $OBUF_PATH/MI
+}
+
+# OBUF interface
+proc xgmii_obuf_ifc { OBUF_PATH } {
+   add wave -divider "XGMII OBUF"
+   add wave -divider "Global reset"
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/RESET
+
+   add wave -divider "XGMII interface"
+   add_wave "-noupdate -hex -label XGMII_TXCLK" $OBUF_PATH/XGMII_TXCLK
+   add_wave "-noupdate -hex -label XGMII_TXD" $OBUF_PATH/XGMII_TXD
+   add_wave "-noupdate -hex -label XGMII_TXC" $OBUF_PATH/XGMII_TXC
+   add_wave "-noupdate -hex -label TX_CLK_REF" $OBUF_PATH/TX_CLK_REF
+
+   add wave -divider "Input FrameLink inteface"
+   add_wave "-noupdate -hex -label RX_SOF_N" $OBUF_PATH/RX_SOF_N
+   add_wave "-noupdate -hex -label RX_SOP_N" $OBUF_PATH/RX_SOP_N
+   add_wave "-noupdate -hex -label RX_EOP_N" $OBUF_PATH/RX_EOP_N
+   add_wave "-noupdate -hex -label RX_EOF_N" $OBUF_PATH/RX_EOF_N
+   add_wave "-noupdate -hex -label RX_SRC_RDY_N" $OBUF_PATH/RX_SRC_RDY_N
+   add_wave "-noupdate -hex -label RX_DST_RDY_N" $OBUF_PATH/RX_DST_RDY_N
+   add_wave "-noupdate -hex -label RX_DATA" $OBUF_PATH/RX_DATA
+   add_wave "-noupdate -hex -label RX_REM" $OBUF_PATH/RX_REM
+   add_wave "-noupdate -hex -label FL_CLK" $OBUF_PATH/FL_CLK
+
+   add wave -divider "Status interface"
+   add_wave "-noupdate -hex -label OUTGOING_PCKT" $OBUF_PATH/OUTGOING_PCKT
+
+   add wave -divider "MI32 interface"
+   add_wave "-noupdate -hex -label MI_CLK" $OBUF_PATH/MI_CLK
+   add_wave "-noupdate -hex -label MI32" $OBUF_PATH/MI
+}
+
+
+proc xgmii_obuf_int { OBUF_PATH } {
+   add wave -divider "XGMII OBUF - Internal signals"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/clk_int
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/reset_int
+}
+
+
+# FL part of XGMII OBUF
+proc xgmii_obuf_fl_ifc { OBUF_PATH } {
+   add wave -divider "XGMII OBUF - FL Part"
+   add wave -divider "Common signals"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/FLi/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/FLi/RESET
+
+   add wave -divider "Input FrameLink interface"
+   add_wave "-noupdate -hex -label RX_DATA" $OBUF_PATH/FLi/RX_DATA
+   add_wave "-noupdate -hex -label RX_REM" $OBUF_PATH/FLi/RX_REM
+   add_wave "-noupdate -hex -label RX_SOF_N" $OBUF_PATH/FLi/RX_SOF_N
+   add_wave "-noupdate -hex -label RX_SOP_N" $OBUF_PATH/FLi/RX_SOP_N
+   add_wave "-noupdate -hex -label RX_EOP_N" $OBUF_PATH/FLi/RX_EOP_N
+   add_wave "-noupdate -hex -label RX_EOF_N" $OBUF_PATH/FLi/RX_EOF_N
+   add_wave "-noupdate -hex -label RX_SRC_RDY_N" $OBUF_PATH/FLi/RX_SRC_RDY_N
+   add_wave "-noupdate -hex -label RX_DST_RDY_N" $OBUF_PATH/FLi/RX_DST_RDY_N
+
+   add wave -divider "Output DFIFO interface"
+   add_wave "-noupdate -hex -label TX_DATA" $OBUF_PATH/FLi/TX_DATA
+   add_wave "-noupdate -hex -label TX_SOP_N" $OBUF_PATH/FLi/TX_SOP_N
+   add_wave "-noupdate -hex -label TX_EOP_N" $OBUF_PATH/FLi/TX_EOP_N
+   add_wave "-noupdate -hex -label TX_EOP_POS" $OBUF_PATH/FLi/TX_EOP_POS
+   add_wave "-noupdate -hex -label TX_WR" $OBUF_PATH/FLi/TX_WR
+   add_wave "-noupdate -hex -label TX_MARK" $OBUF_PATH/FLi/TX_MARK
+   add_wave "-noupdate -hex -label TX_DFIFO_FULL" $OBUF_PATH/FLi/TX_DFIFO_FULL
+   add_wave "-noupdate -hex -label TX_DFIFO_OVF" $OBUF_PATH/FLi/TX_DFIFO_OVF
+
+   add wave -divider "Output HFIFO interface"
+   add_wave "-noupdate -hex -label TX_HDATA" $OBUF_PATH/FLi/TX_HDATA
+   add_wave "-noupdate -hex -label TX_HFIFO_WR" $OBUF_PATH/FLi/TX_HFIFO_WR
+   add_wave "-noupdate -hex -label TX_HFIFO_FULL" $OBUF_PATH/FLi/TX_HFIFO_FULL
+}
+
+proc xgmii_obuf_fl_sig { OBUF_PATH } {
+   add wave -divider "FL Part FSM"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/FLi/fsmi/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/FLi/fsmi/RESET
+
+   add_wave "-noupdate -hex -label SOP_N" $OBUF_PATH/FLi/fsmi/SOP_N
+   add_wave "-noupdate -hex -label EOP_N" $OBUF_PATH/FLi/fsmi/EOP_N
+   add_wave "-noupdate -hex -label SRC_RDY_N" $OBUF_PATH/FLi/fsmi/SRC_RDY_N
+
+   add_wave "-noupdate -hex -label DFIFO_OVF" $OBUF_PATH/FLi/fsmi/DFIFO_OVF
+   add_wave "-noupdate -hex -label DFIFO_FULL" $OBUF_PATH/FLi/fsmi/DFIFO_FULL
+   add_wave "-noupdate -hex -label HFIFO_FULL" $OBUF_PATH/FLi/fsmi/HFIFO_FULL
+
+   add_wave "-noupdate -hex -label DST_RDY_N" $OBUF_PATH/FLi/fsmi/DST_RDY_N
+   add_wave "-noupdate -hex -label DFIFO_MARK" $OBUF_PATH/FLi/fsmi/DFIFO_MARK
+   add_wave "-noupdate -hex -label DFIFO_WR" $OBUF_PATH/FLi/fsmi/DFIFO_WR
+   add_wave "-noupdate -hex -label HFIFO_WR" $OBUF_PATH/FLi/fsmi/HFIFO_WR
+
+   add_wave "-noupdate -hex -label curr_state" $OBUF_PATH/FLi/fsmi/curr_state
+   add_wave "-noupdate -hex -label next_state" $OBUF_PATH/FLi/fsmi/next_state
+   add_wave "-noupdate -hex -label sop_ni" $OBUF_PATH/FLi/fsmi/sop_ni
+   add_wave "-noupdate -hex -label eop_ni" $OBUF_PATH/FLi/fsmi/eop_ni
+}
+
+
+# BUF part of XGMII OBUF
+proc xgmii_obuf_buf_ifc { OBUF_PATH } {
+   add wave -divider "XGMII OBUF - BUF Part"
+   add wave -divider "Clocks and reset"
+   add_wave "-noupdate -hex -label FL_CLK" $OBUF_PATH/BUFi/FL_CLK
+   add_wave "-noupdate -hex -label RESET_FL" $OBUF_PATH/BUFi/RESET_FL
+   add_wave "-noupdate -hex -label XGMII_CLK" $OBUF_PATH/BUFi/XGMII_CLK
+   add_wave "-noupdate -hex -label RESET_XGMII" $OBUF_PATH/BUFi/RESET_XGMII
+
+   add wave -divider "DFIFO input interface"
+   add_wave "-noupdate -hex -label RX_DATA" $OBUF_PATH/BUFi/RX_DATA
+   add_wave "-noupdate -hex -label RX_SOP_N" $OBUF_PATH/BUFi/RX_SOP_N
+   add_wave "-noupdate -hex -label RX_EOP_N" $OBUF_PATH/BUFi/RX_EOP_N
+   add_wave "-noupdate -hex -label RX_EOP_POS" $OBUF_PATH/BUFi/RX_EOP_POS
+   add_wave "-noupdate -hex -label RX_WR" $OBUF_PATH/BUFi/RX_WR
+   add_wave "-noupdate -hex -label RX_MARK" $OBUF_PATH/BUFi/RX_MARK
+   add_wave "-noupdate -hex -label RX_DFIFO_FULL" $OBUF_PATH/BUFi/RX_DFIFO_FULL
+   add_wave "-noupdate -hex -label RX_DFIFO_OVF" $OBUF_PATH/BUFi/RX_DFIFO_OVF
+
+   add wave -divider "HFIFO input interface"
+   add_wave "-noupdate -hex -label RX_HDATA" $OBUF_PATH/BUFi/RX_HDATA
+   add_wave "-noupdate -hex -label RX_HFIFO_WR" $OBUF_PATH/BUFi/RX_HFIFO_WR
+   add_wave "-noupdate -hex -label RX_HFIFO_FULL" $OBUF_PATH/BUFi/RX_HFIFO_FULL
+
+   add wave -divider "Process interface"
+   add_wave "-noupdate -hex -label TX_DATA" $OBUF_PATH/BUFi/TX_DATA
+   add_wave "-noupdate -hex -label TX_SOP" $OBUF_PATH/BUFi/TX_SOP
+   add_wave "-noupdate -hex -label TX_EOP" $OBUF_PATH/BUFi/TX_EOP
+   add_wave "-noupdate -hex -label TX_EOP_POS" $OBUF_PATH/BUFi/TX_EOP_POS
+   add_wave "-noupdate -hex -label TX_DV" $OBUF_PATH/BUFi/TX_DV
+   add_wave "-noupdate -hex -label SRC_MAC_RPLC" $OBUF_PATH/BUFi/SRC_MAC_RPLC
+   add_wave "-noupdate -hex -label NEXT_SRC_MAC_RPLC" $OBUF_PATH/BUFi/NEXT_SRC_MAC_RPLC
+   add_wave "-noupdate -hex -label REG_MAC_ADDR" $OBUF_PATH/BUFi/REG_MAC_ADDR
+   add_wave "-noupdate -hex -label TX_DST_RDY" $OBUF_PATH/BUFi/TX_DST_RDY
+
+   add wave -divider "OBUF MI32 interface"
+   add_wave "-noupdate -hex -label MI32" $OBUF_PATH/BUFi/MI
+   add_wave "-noupdate -hex -label MI_CLK" $OBUF_PATH/BUFi/MI_CLK
+   add_wave "-noupdate -hex -label RESET_MI" $OBUF_PATH/BUFi/RESET_MI
+}
+
+proc xgmii_obuf_buf_sig { OBUF_PATH } {
+   add wave -divider "BUF Part - Signals and registers"
+	add wave -divider "Asynchronous FIFOs reset"
+   add_wave "-noupdate -hex -label async_fifo_reset" $OBUF_PATH/BUFi/async_fifo_reset
+
+	add wave -divider "Data FIFO signals"
+   add_wave "-noupdate -hex -label dfifo_overflow" $OBUF_PATH/BUFi/dfifo_overflow
+   add_wave "-noupdate -hex -label dfifo_release" $OBUF_PATH/BUFi/dfifo_release
+   add_wave "-noupdate -hex -label dfifo_rd" $OBUF_PATH/BUFi/dfifo_rd
+   add_wave "-noupdate -hex -label dfifo_data_in" $OBUF_PATH/BUFi/dfifo_data_in
+   add_wave "-noupdate -hex -label dfifo_data_out" $OBUF_PATH/BUFi/dfifo_data_out
+   add_wave "-noupdate -hex -label dfifo_empty" $OBUF_PATH/BUFi/dfifo_empty
+   add_wave "-noupdate -hex -label dfifo_full" $OBUF_PATH/BUFi/dfifo_full
+   add_wave "-noupdate -hex -label dfifo_data_vld" $OBUF_PATH/BUFi/dfifo_data_vld
+
+   add wave -divider "DFIFO"
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/BUFi/dfifoi/RESET
+   add_wave "-noupdate -hex -label CLK_WR" $OBUF_PATH/BUFi/dfifoi/CLK_WR
+   add_wave "-noupdate -hex -label WR" $OBUF_PATH/BUFi/dfifoi/WR
+   add_wave "-noupdate -hex -label DI" $OBUF_PATH/BUFi/dfifoi/DI
+   add_wave "-noupdate -hex -label FULL" $OBUF_PATH/BUFi/dfifoi/FULL
+   add_wave "-noupdate -hex -label MARK" $OBUF_PATH/BUFi/dfifoi/MARK
+   add_wave "-noupdate -hex -label RELEASE" $OBUF_PATH/BUFi/dfifoi/RELEASE
+   add_wave "-noupdate -hex -label CLK_RD" $OBUF_PATH/BUFi/dfifoi/CLK_RD
+   add_wave "-noupdate -hex -label RD" $OBUF_PATH/BUFi/dfifoi/RD
+   add_wave "-noupdate -hex -label DO" $OBUF_PATH/BUFi/dfifoi/DO
+   add_wave "-noupdate -hex -label DO_DV" $OBUF_PATH/BUFi/dfifoi/DO_DV
+   add_wave "-noupdate -hex -label EMPTY" $OBUF_PATH/BUFi/dfifoi/EMPTY
+
+   add wave -divider "Header/Footer FIFO signals"
+   add_wave "-noupdate -hex -label hfifo_rd" $OBUF_PATH/BUFi/hfifo_rd
+   add_wave "-noupdate -hex -label hfifo_data_out" $OBUF_PATH/BUFi/hfifo_data_out
+   add_wave "-noupdate -hex -label hfifo_data_vld" $OBUF_PATH/BUFi/hfifo_data_vld
+
+   add wave -divider "Reading from FIFOs"
+   add_wave "-noupdate -hex -label output_part_rdy" $OBUF_PATH/BUFi/output_part_rdy
+   add_wave "-noupdate -hex -label fsm_eop" $OBUF_PATH/BUFi/fsm_eop
+   add_wave "-noupdate -hex -label fsm_frame_rdy" $OBUF_PATH/BUFi/fsm_frame_rdy
+   add_wave "-noupdate -hex -label packet_start" $OBUF_PATH/BUFi/packet_start
+   add_wave "-noupdate -hex -label packet_discarded" $OBUF_PATH/BUFi/packet_discarded
+   add_wave "-noupdate -hex -label fsm_dfifo_rd" $OBUF_PATH/BUFi/fsm_dfifo_rd
+
+   add wave -divider "FL Transformer interface"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/BUFi/fltrai/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/BUFi/fltrai/RESET
+   add_wave "-noupdate -hex -label RX_DATA" $OBUF_PATH/BUFi/fltrai/RX_DATA
+   add_wave "-noupdate -hex -label RX_REM" $OBUF_PATH/BUFi/fltrai/RX_REM
+   add_wave "-noupdate -hex -label RX_SOF_N" $OBUF_PATH/BUFi/fltrai/RX_SOF_N
+   add_wave "-noupdate -hex -label RX_EOF_N" $OBUF_PATH/BUFi/fltrai/RX_EOF_N
+   add_wave "-noupdate -hex -label RX_SOP_N" $OBUF_PATH/BUFi/fltrai/RX_SOP_N
+   add_wave "-noupdate -hex -label RX_EOP_N" $OBUF_PATH/BUFi/fltrai/RX_EOP_N
+   add_wave "-noupdate -hex -label RX_SRC_RDY_N" $OBUF_PATH/BUFi/fltrai/RX_SRC_RDY_N
+   add_wave "-noupdate -hex -label RX_DST_RDY_N" $OBUF_PATH/BUFi/fltrai/RX_DST_RDY_N
+   add_wave "-noupdate -hex -label TX_DATA" $OBUF_PATH/BUFi/fltrai/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM" $OBUF_PATH/BUFi/fltrai/TX_REM
+   add_wave "-noupdate -hex -label TX_SOF_N" $OBUF_PATH/BUFi/fltrai/TX_SOF_N
+   add_wave "-noupdate -hex -label TX_EOF_N" $OBUF_PATH/BUFi/fltrai/TX_EOF_N
+   add_wave "-noupdate -hex -label TX_SOP_N" $OBUF_PATH/BUFi/fltrai/TX_SOP_N
+   add_wave "-noupdate -hex -label TX_EOP_N" $OBUF_PATH/BUFi/fltrai/TX_EOP_N
+   add_wave "-noupdate -hex -label TX_SRC_RDY_N" $OBUF_PATH/BUFi/fltrai/TX_SRC_RDY_N
+   add_wave "-noupdate -hex -label TX_DST_RDY_N" $OBUF_PATH/BUFi/fltrai/TX_DST_RDY_N
+
+
+   add wave -divider "FL PIPE interface"
+   add_wave "-noupdate -hex -label RX_DATA" $OBUF_PATH/BUFi/flpipei/RX_DATA
+   add_wave "-noupdate -hex -label RX_REM" $OBUF_PATH/BUFi/flpipei/RX_REM
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/BUFi/flpipei/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/BUFi/flpipei/RESET
+   add_wave "-noupdate -hex -label RX_SOF_N" $OBUF_PATH/BUFi/flpipei/RX_SOF_N
+   add_wave "-noupdate -hex -label RX_SOP_N" $OBUF_PATH/BUFi/flpipei/RX_SOP_N
+   add_wave "-noupdate -hex -label RX_EOP_N" $OBUF_PATH/BUFi/flpipei/RX_EOP_N
+   add_wave "-noupdate -hex -label RX_EOF_N" $OBUF_PATH/BUFi/flpipei/RX_EOF_N
+   add_wave "-noupdate -hex -label RX_SRC_RDY_N" $OBUF_PATH/BUFi/flpipei/RX_SRC_RDY_N
+   add_wave "-noupdate -hex -label RX_DST_RDY_N" $OBUF_PATH/BUFi/flpipei/RX_DST_RDY_N
+   add_wave "-noupdate -hex -label TX_DATA" $OBUF_PATH/BUFi/flpipei/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM" $OBUF_PATH/BUFi/flpipei/TX_REM
+   add_wave "-noupdate -hex -label TX_SOF_N" $OBUF_PATH/BUFi/flpipei/TX_SOF_N
+   add_wave "-noupdate -hex -label TX_SOP_N" $OBUF_PATH/BUFi/flpipei/TX_SOP_N
+   add_wave "-noupdate -hex -label TX_EOP_N" $OBUF_PATH/BUFi/flpipei/TX_EOP_N
+   add_wave "-noupdate -hex -label TX_EOF_N" $OBUF_PATH/BUFi/flpipei/TX_EOF_N
+   add_wave "-noupdate -hex -label TX_SRC_RDY_N" $OBUF_PATH/BUFi/flpipei/TX_SRC_RDY_N
+   add_wave "-noupdate -hex -label TX_DST_RDY_N" $OBUF_PATH/BUFi/flpipei/TX_DST_RDY_N
+
+   add wave -divider "FL PIPE internal signals"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/BUFi/flpipei/PIPE/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/BUFi/flpipei/PIPE/RESET
+   add_wave "-noupdate -hex -label IN_DATA" $OBUF_PATH/BUFi/flpipei/PIPE/IN_DATA
+   add_wave "-noupdate -hex -label IN_SRC_RDY" $OBUF_PATH/BUFi/flpipei/PIPE/IN_SRC_RDY
+   add_wave "-noupdate -hex -label IN_DST_RDY" $OBUF_PATH/BUFi/flpipei/PIPE/IN_DST_RDY
+   add_wave "-noupdate -hex -label OUT_DATA" $OBUF_PATH/BUFi/flpipei/PIPE/OUT_DATA
+   add_wave "-noupdate -hex -label OUT_SRC_RDY" $OBUF_PATH/BUFi/flpipei/PIPE/OUT_SRC_RDY
+   add_wave "-noupdate -hex -label OUT_DST_RDY" $OBUF_PATH/BUFi/flpipei/PIPE/OUT_DST_RDY
+   add_wave "-noupdate -hex -label present_state" $OBUF_PATH/BUFi/flpipei/PIPE/present_state
+   add_wave "-noupdate -hex -label next_state" $OBUF_PATH/BUFi/flpipei/PIPE/next_state
+   add_wave "-noupdate -hex -label reg_data" $OBUF_PATH/BUFi/flpipei/PIPE/reg_data
+   add_wave "-noupdate -hex -label ce" $OBUF_PATH/BUFi/flpipei/PIPE/ce
+   add_wave "-noupdate -hex -label addr" $OBUF_PATH/BUFi/flpipei/PIPE/addr
+
+   add wave -divider "SW readable/writable registers"
+   add_wave "-noupdate -hex -label reset_counters" $OBUF_PATH/BUFi/reset_counters
+   add_wave "-noupdate -hex -label reg_counters_we" $OBUF_PATH/BUFi/reg_counters_we
+   add_wave "-noupdate -dec -label reg_cnt_packets" $OBUF_PATH/BUFi/reg_cnt_packets
+   add_wave "-noupdate -dec -label reg_cnt_sent" $OBUF_PATH/BUFi/reg_cnt_sent
+   add_wave "-noupdate -dec -label reg_cnt_notsent" $OBUF_PATH/BUFi/reg_cnt_notsent
+   add_wave "-noupdate -hex -label reg_obuf_en_we" $OBUF_PATH/BUFi/reg_obuf_en_we
+   add_wave "-noupdate -hex -label reg_obuf_en" $OBUF_PATH/BUFi/reg_obuf_en
+   add_wave "-noupdate -hex -label reg_mac_low_we" $OBUF_PATH/BUFi/reg_mac_low_we
+   add_wave "-noupdate -hex -label reg_mac_high_we" $OBUF_PATH/BUFi/reg_mac_high_we
+   add_wave "-noupdate -hex -label reg_mac" $OBUF_PATH/BUFi/reg_mac
+   add_wave "-noupdate -hex -label reg_ctrl_we" $OBUF_PATH/BUFi/reg_ctrl_we
+
+   add wave -divider "Decoder"
+   add_wave "-noupdate -hex -label mx_decoder_mi_drd" $OBUF_PATH/BUFi/mx_decoder_mi_drd
+   add_wave "-noupdate -hex -label reg_obuf_en_cs" $OBUF_PATH/BUFi/reg_obuf_en_cs
+   add_wave "-noupdate -hex -label reg_mac_low_cs" $OBUF_PATH/BUFi/reg_mac_low_cs
+   add_wave "-noupdate -hex -label reg_mac_high_cs" $OBUF_PATH/BUFi/reg_mac_high_cs
+   add_wave "-noupdate -hex -label reg_ctrl_cs" $OBUF_PATH/BUFi/reg_ctrl_cs
+   add_wave "-noupdate -hex -label reg_obuf_en32" $OBUF_PATH/BUFi/reg_obuf_en32
+   add_wave "-noupdate -hex -label reg_mac_low32" $OBUF_PATH/BUFi/reg_mac_low32
+   add_wave "-noupdate -hex -label reg_mac_high32" $OBUF_PATH/BUFi/reg_mac_high32
+
+   add wave -divider "MI32"
+   add_wave "-noupdate -hex -label mi_int" $OBUF_PATH/BUFi/mi_int
+
+   add wave -divider "Counters"
+   add_wave "-noupdate -dec -label cnt_packets" $OBUF_PATH/BUFi/cnt_packets
+   add_wave "-noupdate -dec -label cnt_sent" $OBUF_PATH/BUFi/cnt_sent
+   add_wave "-noupdate -dec -label cnt_sent_ce" $OBUF_PATH/BUFi/cnt_sent_ce
+   add_wave "-noupdate -dec -label cnt_notsent" $OBUF_PATH/BUFi/cnt_notsent
+   add_wave "-noupdate -dec -label cnt_notsent_ce" $OBUF_PATH/BUFi/cnt_notsent_ce
+
+   add wave -divider "FSM"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/BUFi/buf_fsmi/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/BUFi/buf_fsmi/RESET
+   add_wave "-noupdate -hex -label REG_OBUF_EN" $OBUF_PATH/BUFi/buf_fsmi/REG_OBUF_EN
+   add_wave "-noupdate -hex -label EOP" $OBUF_PATH/BUFi/buf_fsmi/EOP
+   add_wave "-noupdate -hex -label FRAME_RDY" $OBUF_PATH/BUFi/buf_fsmi/FRAME_RDY
+   add_wave "-noupdate -hex -label DFIFO_RD" $OBUF_PATH/BUFi/buf_fsmi/DFIFO_RD
+   add_wave "-noupdate -hex -label curr_state" $OBUF_PATH/BUFi/buf_fsmi/curr_state
+   add_wave "-noupdate -hex -label next_state" $OBUF_PATH/BUFi/buf_fsmi/next_state
+}
+
+
+# PROCESS part of XGMII OBUF
+proc xgmii_obuf_process_ifc { OBUF_PATH } {
+   add wave -divider "XGMII OBUF - PROCESS Part"
+   add wave -divider "Clocks and reset"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/PROCESSi/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/PROCESSi/RESET
+
+   add wave -divider "Process RX interface"
+   add_wave "-noupdate -hex -label RX_DATA" $OBUF_PATH/PROCESSi/RX_DATA
+   add_wave "-noupdate -hex -label RX_SOP" $OBUF_PATH/PROCESSi/RX_SOP
+   add_wave "-noupdate -hex -label RX_EOP" $OBUF_PATH/PROCESSi/RX_EOP
+   add_wave "-noupdate -hex -label RX_EOP_POS" $OBUF_PATH/PROCESSi/RX_EOP_POS
+   add_wave "-noupdate -hex -label RX_DV" $OBUF_PATH/PROCESSi/RX_DV
+   add_wave "-noupdate -hex -label SRC_MAC_RPLC" $OBUF_PATH/PROCESSi/SRC_MAC_RPLC
+   add_wave "-noupdate -hex -label REG_MAC_ADDR" $OBUF_PATH/PROCESSi/REG_MAC_ADDR
+   add_wave "-noupdate -hex -label NEXT_SRC_MAC_RPLC" $OBUF_PATH/PROCESSi/NEXT_SRC_MAC_RPLC
+   add_wave "-noupdate -hex -label RX_DST_RDY" $OBUF_PATH/PROCESSi/RX_DST_RDY
+
+   add wave -divider "Process TX interface"
+   add_wave "-noupdate -hex -label TX_DATA" $OBUF_PATH/PROCESSi/TX_DATA
+   add_wave "-noupdate -hex -label TX_SOP" $OBUF_PATH/PROCESSi/TX_SOP
+   add_wave "-noupdate -hex -label TX_EOP" $OBUF_PATH/PROCESSi/TX_EOP
+   add_wave "-noupdate -hex -label TX_EOP_POS" $OBUF_PATH/PROCESSi/TX_EOP_POS
+   add_wave "-noupdate -hex -label TX_DV" $OBUF_PATH/PROCESSi/TX_DV
+   add_wave "-noupdate -hex -label TX_DATA_READ" $OBUF_PATH/PROCESSi/TX_DATA_READ
+   add_wave "-noupdate -hex -label TX_CRC" $OBUF_PATH/PROCESSi/TX_CRC
+   add_wave "-noupdate -hex -label TX_CRC_DV" $OBUF_PATH/PROCESSi/TX_CRC_DV
+}
+
+proc xgmii_obuf_process_sig { OBUF_PATH } {
+   add wave -divider "Process internal signals"
+   add wave -divider "FSMRX"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/PROCESSi/fsmrx/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/PROCESSi/fsmrx/RESET
+
+   add wave -divider "Inputs"
+   add_wave "-noupdate -hex -label LAST_PAD_WORD" $OBUF_PATH/PROCESSi/fsmrx/LAST_PAD_WORD
+   add_wave "-noupdate -hex -label RX_SOP" $OBUF_PATH/PROCESSi/fsmrx/RX_SOP
+   add_wave "-noupdate -hex -label RX_EOP" $OBUF_PATH/PROCESSi/fsmrx/RX_EOP
+   add_wave "-noupdate -hex -label RX_DV" $OBUF_PATH/PROCESSi/fsmrx/RX_DV
+   add_wave "-noupdate -hex -label PIPE_RD" $OBUF_PATH/PROCESSi/fsmrx/PIPE_RD
+
+   add wave -divider "Outputs"
+   add_wave "-noupdate -hex -label FSMRX_DST_RDY" $OBUF_PATH/PROCESSi/fsmrx/FSMRX_DST_RDY
+   add_wave "-noupdate -hex -label FSMRX_PADDING" $OBUF_PATH/PROCESSi/fsmrx/FSMRX_PADDING
+   add_wave "-noupdate -hex -label FSMRX_EOP" $OBUF_PATH/PROCESSi/fsmrx/FSMRX_EOP
+   add_wave "-noupdate -hex -label FSMRX_DV" $OBUF_PATH/PROCESSi/fsmrx/FSMRX_DV
+   add_wave "-noupdate -hex -label FSMRX_CNT_PAD_CE" $OBUF_PATH/PROCESSi/fsmrx/FSMRX_CNT_PAD_CE
+   add_wave "-noupdate -hex -label FSMRX_CNT_PAD_LD" $OBUF_PATH/PROCESSi/fsmrx/FSMRX_CNT_PAD_LD
+
+   add wave -divider "States"
+   add_wave "-noupdate -hex -label present_state" $OBUF_PATH/PROCESSi/fsmrx/present_state
+   add_wave "-noupdate -hex -label next_state" $OBUF_PATH/PROCESSi/fsmrx/next_state
+
+   add wave -divider "counter"
+   add_wave "-noupdate -hex -label cnt_pad" $OBUF_PATH/PROCESSi/cnt_pad
+
+   add wave -divider "select units"
+   add_wave "-noupdate -hex -label select_mx" $OBUF_PATH/PROCESSi/select_mx
+   add_wave "-noupdate -hex -label select_eop_pos" $OBUF_PATH/PROCESSi/select_eop_pos
+
+   add wave -divider "Pipeline control signals"
+   add_wave "-noupdate -hex -label pipe_rd" $OBUF_PATH/PROCESSi/pipe_rd
+   add_wave "-noupdate -hex -label rx_pipe_rd" $OBUF_PATH/PROCESSi/rx_pipe_rd
+   add_wave "-noupdate -hex -label pipe_ce" $OBUF_PATH/PROCESSi/pipe_ce
+
+   add wave -divider "pipeline registers - level 1"
+   add_wave "-noupdate -hex -label reg1_data" $OBUF_PATH/PROCESSi/reg1_data
+   add_wave "-noupdate -hex -label reg1_mx_select" $OBUF_PATH/PROCESSi/reg1_mx_select
+   add_wave "-noupdate -hex -label reg1_sop" $OBUF_PATH/PROCESSi/reg1_sop
+   add_wave "-noupdate -hex -label reg1_eop" $OBUF_PATH/PROCESSi/reg1_eop
+   add_wave "-noupdate -hex -label reg1_dv" $OBUF_PATH/PROCESSi/reg1_dv
+   add_wave "-noupdate -hex -label reg1_eop_pos" $OBUF_PATH/PROCESSi/reg1_eop_pos
+
+   add wave -divider "data with padding"
+   add_wave "-noupdate -hex -label mx_data" $OBUF_PATH/PROCESSi/mx_data
+
+   add wave -divider "replacing src MAC"
+   add_wave "-noupdate -hex -label reg_sop_delay" $OBUF_PATH/PROCESSi/reg_sop_delay
+   add_wave "-noupdate -hex -label src_mac_mx_sel1" $OBUF_PATH/PROCESSi/src_mac_mx_sel1
+   add_wave "-noupdate -hex -label src_mac_mx_sel2" $OBUF_PATH/PROCESSi/src_mac_mx_sel2
+   add_wave "-noupdate -hex -label src_mac_mx1" $OBUF_PATH/PROCESSi/src_mac_mx1
+   add_wave "-noupdate -hex -label src_mac_mx2" $OBUF_PATH/PROCESSi/src_mac_mx2
+
+   add wave -divider "pipeline registers - level 2"
+   add_wave "-noupdate -hex -label reg2_data" $OBUF_PATH/PROCESSi/reg2_data
+   add_wave "-noupdate -hex -label reg2_sop" $OBUF_PATH/PROCESSi/reg2_sop
+   add_wave "-noupdate -hex -label reg2_eop" $OBUF_PATH/PROCESSi/reg2_eop
+   add_wave "-noupdate -hex -label reg2_dv" $OBUF_PATH/PROCESSi/reg2_dv
+   add_wave "-noupdate -hex -label reg2_eop_pos" $OBUF_PATH/PROCESSi/reg2_eop_pos
+
+   add wave -divider "CRC related signals"
+   add_wave "-noupdate -hex -label eop_pos_crc" $OBUF_PATH/PROCESSi/eop_pos_crc
+   add_wave "-noupdate -hex -label crc_di_dv" $OBUF_PATH/PROCESSi/crc_di_dv
+   add_wave "-noupdate -hex -label crc_mask" $OBUF_PATH/PROCESSi/crc_mask
+   add_wave "-noupdate -hex -label crc_eop" $OBUF_PATH/PROCESSi/crc_eop
+   add_wave "-noupdate -hex -label eop_mask" $OBUF_PATH/PROCESSi/eop_mask
+   add_wave "-noupdate -hex -label crc_do" $OBUF_PATH/PROCESSi/crc_do
+   add_wave "-noupdate -hex -label crc_do_dv" $OBUF_PATH/PROCESSi/crc_do_dv
+   add_wave "-noupdate -hex -label reg_crc_ready" $OBUF_PATH/PROCESSi/reg_crc_ready
+
+   add wave -divider "CRC outputs"
+   add_wave "-noupdate -hex -label crc_do" $OBUF_PATH/PROCESSi/crc_do
+   add_wave "-noupdate -hex -label crc_do_dv" $OBUF_PATH/PROCESSi/crc_do_dv
+
+   add wave -divider "CRC Interface"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/PROCESSi/crc/CLK
+   add_wave "-noupdate -hex -label CRCRESET" $OBUF_PATH/PROCESSi/crc/CRCRESET
+   add_wave "-noupdate -hex -label DATA_IN" $OBUF_PATH/PROCESSi/crc/DATA_IN
+   add_wave "-noupdate -hex -label DATA_VLD" $OBUF_PATH/PROCESSi/crc/DATA_VLD
+   add_wave "-noupdate -hex -label DATA_WIDTH" $OBUF_PATH/PROCESSi/crc/DATA_WIDTH
+   add_wave "-noupdate -hex -label CRC_OUT" $OBUF_PATH/PROCESSi/crc/CRC_OUT
+
+   add wave -divider "CRC output transform to NBO"
+   add_wave "-noupdate -hex -label crc_do_nbo" $OBUF_PATH/PROCESSi/crc_do_nbo
+
+   add wave -divider "shift register"
+   add_wave "-noupdate -hex -label sh_reg_data_in" $OBUF_PATH/PROCESSi/sh_reg_data_in
+   add_wave "-noupdate -hex -label sh_reg_data_out" $OBUF_PATH/PROCESSi/sh_reg_data_out
+   add_wave "-noupdate -bin -label sh_reg_ctrl_in" $OBUF_PATH/PROCESSi/sh_reg_ctrl_in
+   add_wave "-noupdate -bin -label sh_reg_ctrl_out" $OBUF_PATH/PROCESSi/sh_reg_ctrl_out
+   add_wave "-noupdate -hex -label reg_tx_sop" $OBUF_PATH/PROCESSi/reg_tx_sop
+   add_wave "-noupdate -hex -label reg_tx_eop" $OBUF_PATH/PROCESSi/reg_tx_eop
+   add_wave "-noupdate -hex -label reg_tx_eop_pos" $OBUF_PATH/PROCESSi/reg_tx_eop_pos
+   add_wave "-noupdate -hex -label reg_tx_dv0" $OBUF_PATH/PROCESSi/reg_tx_dv0
+   add_wave "-noupdate -hex -label reg_tx_dv1" $OBUF_PATH/PROCESSi/reg_tx_dv1
+   add_wave "-noupdate -hex -label reg_tx_dv2" $OBUF_PATH/PROCESSi/reg_tx_dv2
+
+   add wave -divider "Output sh fifo component"
+   add_wave "-noupdate -hex -label CLK            " $OBUF_PATH/PROCESSi/tx_fifo/CLK
+   add_wave "-noupdate -hex -label RESET          " $OBUF_PATH/PROCESSi/tx_fifo/RESET
+   add_wave "-noupdate -hex -label DIN            " $OBUF_PATH/PROCESSi/tx_fifo/DIN
+   add_wave "-noupdate -hex -label WE             " $OBUF_PATH/PROCESSi/tx_fifo/WE
+   add_wave "-noupdate -hex -label FULL           " $OBUF_PATH/PROCESSi/tx_fifo/FULL
+   add_wave "-noupdate -hex -label DOUT           " $OBUF_PATH/PROCESSi/tx_fifo/DOUT
+   add_wave "-noupdate -hex -label RE             " $OBUF_PATH/PROCESSi/tx_fifo/RE
+   add_wave "-noupdate -hex -label EMPTY          " $OBUF_PATH/PROCESSi/tx_fifo/EMPTY
+}
+
+# XGMII_ENC part of XGMII OBUF
+proc xgmii_obuf_xgmii_enc_ifc { OBUF_PATH } {
+   add wave -divider "XGMII OBUF - XGMII_ENC Part"
+   add wave -divider "XGMII_ENC interface"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/XGMII_ENCi/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/XGMII_ENCi/RESET
+   add_wave "-noupdate -hex -label RX_DATA" $OBUF_PATH/XGMII_ENCi/RX_DATA
+   add_wave "-noupdate -hex -label RX_SOP" $OBUF_PATH/XGMII_ENCi/RX_SOP
+   add_wave "-noupdate -hex -label RX_EOP" $OBUF_PATH/XGMII_ENCi/RX_EOP
+   add_wave "-noupdate -hex -label RX_EOP_POS" $OBUF_PATH/XGMII_ENCi/RX_EOP_POS
+   add_wave "-noupdate -hex -label RX_DV" $OBUF_PATH/XGMII_ENCi/RX_DV
+   add_wave "-noupdate -hex -label RX_DATA_READ" $OBUF_PATH/XGMII_ENCi/RX_DATA_READ
+   add_wave "-noupdate -hex -label RX_CRC" $OBUF_PATH/XGMII_ENCi/RX_CRC
+   add_wave "-noupdate -hex -label RX_CRC_DV" $OBUF_PATH/XGMII_ENCi/RX_CRC_DV
+   add_wave "-noupdate -hex -label TX_DATA" $OBUF_PATH/XGMII_ENCi/TX_DATA
+   add_wave "-noupdate -bin -label TX_CMD" $OBUF_PATH/XGMII_ENCi/TX_CMD
+}
+
+proc xgmii_obuf_xgmii_enc_sig { OBUF_PATH } {
+   add wave -divider "XGMII_ENC internal signals"
+   add wave -divider "FSM"
+   add_wave "-noupdate -hex -label fsm_shifter_ce" $OBUF_PATH/XGMII_ENCi/fsm_shifter_ce
+   add_wave "-noupdate -bin -label fsm_dsel_pos" $OBUF_PATH/XGMII_ENCi/fsm_dsel_pos
+   add_wave "-noupdate -hex -label fsm_mx_data_sel" $OBUF_PATH/XGMII_ENCi/fsm_mx_data_sel
+   add_wave "-noupdate -hex -label fsm_rx_rd" $OBUF_PATH/XGMII_ENCi/fsm_rx_rd
+
+   add wave -divider "Deficit idle count management"
+   add_wave "-noupdate -hex -label reg_dic" $OBUF_PATH/XGMII_ENCi/reg_dic
+   add_wave "-noupdate -hex -label reg_dic_we" $OBUF_PATH/XGMII_ENCi/reg_dic_we
+   add_wave "-noupdate -hex -label new_dic" $OBUF_PATH/XGMII_ENCi/new_dic
+   add_wave "-noupdate -hex -label shorter_ifg" $OBUF_PATH/XGMII_ENCi/shorter_ifg
+   add_wave "-noupdate -hex -label reg_dic_mode" $OBUF_PATH/XGMII_ENCi/reg_dic_mode
+   add_wave "-noupdate -hex -label reg_dic_mode_in" $OBUF_PATH/XGMII_ENCi/reg_dic_mode_in
+   add_wave "-noupdate -hex -label reg_dic_mode_we" $OBUF_PATH/XGMII_ENCi/reg_dic_mode_we
+   add_wave "-noupdate -hex -label mx_dic_mode_in" $OBUF_PATH/XGMII_ENCi/mx_dic_mode_in
+   add_wave "-noupdate -hex -label reg_next_dic_mode" $OBUF_PATH/XGMII_ENCi/reg_next_dic_mode
+   add_wave "-noupdate -hex -label reg_next_dic_mode_in" $OBUF_PATH/XGMII_ENCi/reg_next_dic_mode_in
+   add_wave "-noupdate -hex -label reg_next_dic_mode_we" $OBUF_PATH/XGMII_ENCi/reg_next_dic_mode_we
+   add_wave "-noupdate -hex -label reg_set_next_dic_mode" $OBUF_PATH/XGMII_ENCi/reg_set_next_dic_mode
+
+   add wave -divider "crc_shift outputs"
+   add_wave "-noupdate -hex -label crc_shift_do" $OBUF_PATH/XGMII_ENCi/crc_shift_do
+   add_wave "-noupdate -bin -label crc_shift_do_cmd" $OBUF_PATH/XGMII_ENCi/crc_shift_do_cmd
+   add_wave "-noupdate -hex -label crc_shift_last" $OBUF_PATH/XGMII_ENCi/crc_shift_last
+
+   add wave -divider "data_sel outputs"
+   add_wave "-noupdate -hex -label data_sel_do" $OBUF_PATH/XGMII_ENCi/data_sel_do
+   add_wave "-noupdate -bin -label data_sel_do_cmd" $OBUF_PATH/XGMII_ENCi/data_sel_do_cmd
+
+   add wave -divider "Registers"
+   add_wave "-noupdate -hex -label reg0_data" $OBUF_PATH/XGMII_ENCi/reg0_data
+   add_wave "-noupdate -hex -label reg0_crc_shift_do" $OBUF_PATH/XGMII_ENCi/reg0_crc_shift_do
+   add_wave "-noupdate -hex -label reg0_crc_shift_do_cmd" $OBUF_PATH/XGMII_ENCi/reg0_crc_shift_do_cmd
+   add_wave "-noupdate -hex -label reg0_fsm_dsel_pos" $OBUF_PATH/XGMII_ENCi/reg0_fsm_dsel_pos
+   add_wave "-noupdate -hex -label reg0_fsm_mx_data_sel" $OBUF_PATH/XGMII_ENCi/reg0_fsm_mx_data_sel
+   add_wave "-noupdate -hex -label reg1_data" $OBUF_PATH/XGMII_ENCi/reg1_data
+   add_wave "-noupdate -hex -label reg1_data_sel" $OBUF_PATH/XGMII_ENCi/reg1_data_sel
+   add_wave "-noupdate -bin -label reg1_cmd" $OBUF_PATH/XGMII_ENCi/reg1_cmd
+   add_wave "-noupdate -hex -label reg2_data" $OBUF_PATH/XGMII_ENCi/reg2_data
+   add_wave "-noupdate -bin -label reg2_cmd" $OBUF_PATH/XGMII_ENCi/reg2_cmd
+
+   add wave -divider "Multiplexers input"
+   add_wave "-noupdate -hex -label sig_c_xgmii_error" $OBUF_PATH/XGMII_ENCi/sig_c_xgmii_error
+   add_wave "-noupdate -hex -label sig_c_xgmii_idle" $OBUF_PATH/XGMII_ENCi/sig_c_xgmii_idle
+
+   add wave -divider "Multiplexers output"
+   add_wave "-noupdate -hex -label mx_data" $OBUF_PATH/XGMII_ENCi/mx_data
+   add_wave "-noupdate -bin -label mx_cmd" $OBUF_PATH/XGMII_ENCi/mx_cmd
+
+   add wave -divider "FSM - interface"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/XGMII_ENCi/fsm/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/XGMII_ENCi/fsm/RESET
+
+   add_wave "-noupdate -hex -label SHIFTER_LAST" $OBUF_PATH/XGMII_ENCi/fsm/SHIFTER_LAST
+   add_wave "-noupdate -hex -label RX_SOP" $OBUF_PATH/XGMII_ENCi/fsm/RX_SOP
+   add_wave "-noupdate -hex -label RX_EOP" $OBUF_PATH/XGMII_ENCi/fsm/RX_EOP
+   add_wave "-noupdate -hex -label RX_DV" $OBUF_PATH/XGMII_ENCi/fsm/RX_DV
+   add_wave "-noupdate -hex -label RX_EOP_POS" $OBUF_PATH/XGMII_ENCi/fsm/RX_EOP_POS
+   add_wave "-noupdate -hex -label DIC_MODE" $OBUF_PATH/XGMII_ENCi/fsm/DIC_MODE
+   add_wave "-noupdate -hex -label DIC_SHORTER_IFG" $OBUF_PATH/XGMII_ENCi/fsm/DIC_SHORTER_IFG
+
+   add_wave "-noupdate -hex -label FSM_CRC_FILLED_CLR" $OBUF_PATH/XGMII_ENCi/fsm/FSM_CRC_FILLED_CLR
+   add_wave "-noupdate -hex -label FSM_SHIFTER_CE" $OBUF_PATH/XGMII_ENCi/fsm/FSM_SHIFTER_CE
+   add_wave "-noupdate -hex -label FSM_DSEL_POS" $OBUF_PATH/XGMII_ENCi/fsm/FSM_DSEL_POS
+   add_wave "-noupdate -hex -label FSM_MX_DATA_SEL" $OBUF_PATH/XGMII_ENCi/fsm/FSM_MX_DATA_SEL
+   add_wave "-noupdate -hex -label FSM_RX_RD" $OBUF_PATH/XGMII_ENCi/fsm/FSM_RX_RD
+
+   add wave -divider "FSM - states"
+   add_wave "-noupdate -hex -label present_state" $OBUF_PATH/XGMII_ENCi/fsm/present_state
+   add_wave "-noupdate -hex -label next_state" $OBUF_PATH/XGMII_ENCi/fsm/next_state
+
+   add wave -divider "CRC SHIFT MODULE - Interface"
+   add_wave "-noupdate -hex -label CLK" $OBUF_PATH/XGMII_ENCi/crc_shift/CLK
+   add_wave "-noupdate -hex -label RESET" $OBUF_PATH/XGMII_ENCi/crc_shift/RESET
+   add_wave "-noupdate -hex -label CRC_DI" $OBUF_PATH/XGMII_ENCi/crc_shift/CRC_DI
+   add_wave "-noupdate -hex -label CE" $OBUF_PATH/XGMII_ENCi/crc_shift/CE
+   add_wave "-noupdate -hex -label CNT" $OBUF_PATH/XGMII_ENCi/crc_shift/CNT
+   add_wave "-noupdate -hex -label DO" $OBUF_PATH/XGMII_ENCi/crc_shift/DO
+   add_wave "-noupdate -bin -label DO_CMD" $OBUF_PATH/XGMII_ENCi/crc_shift/DO_CMD
+   add_wave "-noupdate -hex -label LAST" $OBUF_PATH/XGMII_ENCi/crc_shift/LAST
+
+   add wave -divider "CRC SHIFT MODULE - Internal signals"
+   add_wave "-noupdate -hex -label present_state" $OBUF_PATH/XGMII_ENCi/crc_shift/present_state
+   add_wave "-noupdate -hex -label next_state" $OBUF_PATH/XGMII_ENCi/crc_shift/next_state
+   add_wave "-noupdate -hex -label word_2" $OBUF_PATH/XGMII_ENCi/crc_shift/word_2
+   add_wave "-noupdate -hex -label crc_word" $OBUF_PATH/XGMII_ENCi/crc_shift/crc_word
+   add_wave "-noupdate -hex -label reg_crc_word_2" $OBUF_PATH/XGMII_ENCi/crc_shift/reg_crc_word_2
+   add_wave "-noupdate -hex -label mx_crc_data" $OBUF_PATH/XGMII_ENCi/crc_shift/mx_crc_data
+   add_wave "-noupdate -hex -label cmd_word" $OBUF_PATH/XGMII_ENCi/crc_shift/cmd_word
+   add_wave "-noupdate -hex -label reg_cmd_word_2" $OBUF_PATH/XGMII_ENCi/crc_shift/reg_cmd_word_2
+}
+
+# Simulation related signals
+proc xgmii_obuf_simulation { TB_PATH } {
+   add wave -divider "FL SIM COMPONENT"
+   add_wave "-noupdate -hex -label flsim_tx_data" $TB_PATH/flsim_tx_data
+   add_wave "-noupdate -hex -label flsim_tx_drem" $TB_PATH/flsim_tx_drem
+   add_wave "-noupdate -hex -label flsim_tx_sof_n" $TB_PATH/flsim_tx_sof_n
+   add_wave "-noupdate -hex -label flsim_tx_eof_n" $TB_PATH/flsim_tx_eof_n
+   add_wave "-noupdate -hex -label flsim_tx_sop_n" $TB_PATH/flsim_tx_sop_n
+   add_wave "-noupdate -hex -label flsim_tx_eop_n" $TB_PATH/flsim_tx_eop_n
+   add_wave "-noupdate -hex -label flsim_tx_src_rdy_n" $TB_PATH/flsim_tx_src_rdy_n
+   add_wave "-noupdate -hex -label flsim_tx_dst_rdy_n" $TB_PATH/flsim_tx_dst_rdy_n
+}

@@ -1,0 +1,6 @@
+<versions>
+   <version id="HEAD" name="Actual version" system="3">
+      <item>Data width 8, 16, 32, 64, or 128 bits</item>
+      <item>Fixed count of output interfaces</item>
+   </version>
+</versions>

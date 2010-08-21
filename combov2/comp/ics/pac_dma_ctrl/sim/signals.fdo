@@ -1,0 +1,149 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2009 CESNET
+# Author: Petr Kastovsky <kastovsky@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+#
+#
+
+# -------------------------------------------------------------------
+#                      Signals of component
+# -------------------------------------------------------------------
+
+proc tb_DMA_CTRL {} {
+    add wave -divider "DMA_CTRL - tb signals"
+#    add_wave "-noupdate      -label CLK"             /testbench/CLK
+    add_wave "-noupdate      -label RESET"           /testbench/RESET
+    add_wave "-noupdate -hex -label internal_bus" 		/testbench/internal_bus
+    add_wave "-noupdate -hex -label switch1_port1" 	/testbench/switch1_port1
+    add_wave "-noupdate -hex -label switch1_port2"    /testbench/switch1_port2
+    add_wave "-noupdate -hex -label local_bus16"		/testbench/local_bus16
+    add_wave "-noupdate -hex -label ib_wr"		      /testbench/ib_wr
+    add_wave "-noupdate -hex -label ib_rd"		      /testbench/ib_rd
+    add_wave "-noupdate -hex -label ib_bm"		      /testbench/ib_bm
+    add_wave "-noupdate -hex -label mi32"		         /testbench/mi32
+
+    add_wave "-noupdate -hex -label rx_newlen"		   /testbench/rx_newlen
+    add_wave "-noupdate -hex -label rx_newlen_dv"     /testbench/rx_newlen_dv
+    add_wave "-noupdate -hex -label rx_newlen_rdy"    /testbench/rx_newlen_rdy
+    add_wave "-noupdate -hex -label rx_rellen"	      /testbench/rx_rellen
+    add_wave "-noupdate -hex -label rx_rellen_dv"     /testbench/rx_rellen_dv
+
+    add_wave "-noupdate -hex -label tx_newlen"		   /testbench/tx_newlen
+    add_wave "-noupdate -hex -label tx_newlen_dv"     /testbench/tx_newlen_dv
+    add_wave "-noupdate -hex -label tx_newlen_rdy"    /testbench/tx_newlen_rdy
+    add_wave "-noupdate -hex -label tx_rellen"	      /testbench/tx_rellen
+    add_wave "-noupdate -hex -label tx_rellen_dv"     /testbench/tx_rellen_dv
+
+    add_wave "-noupdate -hex -label interrupt"        /testbench/interrupt
+}
+
+proc ifc_DMA_CTRL { DMA_CTRL_PATH } {
+    add wave -divider "DMA_CTRL - interface"
+    add_wave "-noupdate      -label CLK" 		            $DMA_CTRL_PATH/CLK
+    add_wave "-noupdate      -label RESET" 		         $DMA_CTRL_PATH/RESET
+    add_wave "-noupdate      -label INTERRUPT" 		      $DMA_CTRL_PATH/INTERRUPT
+    add_wave "-noupdate -hex -label IB_WR_ADDR" 	      $DMA_CTRL_PATH/IB_WR_ADDR
+    add_wave "-noupdate -hex -label IB_WR_DATA" 	      $DMA_CTRL_PATH/IB_WR_DATA
+    add_wave "-noupdate -hex -label IB_WR_BE" 	         $DMA_CTRL_PATH/IB_WR_BE
+    add_wave "-noupdate -hex -label IB_WR_REQ" 	         $DMA_CTRL_PATH/IB_WR_REQ
+    add_wave "-noupdate -hex -label IB_WR_RDY" 	         $DMA_CTRL_PATH/IB_WR_REQ
+
+    add_wave "-noupdate -hex -label IB_RD_ADDR" 	      $DMA_CTRL_PATH/IB_RD_ADDR
+    add_wave "-noupdate -hex -label IB_RD_DATA" 	      $DMA_CTRL_PATH/IB_RD_DATA
+    add_wave "-noupdate -hex -label IB_RD_BE" 	         $DMA_CTRL_PATH/IB_RD_BE
+    add_wave "-noupdate -hex -label IB_RD_REQ" 	         $DMA_CTRL_PATH/IB_RD_REQ
+    add_wave "-noupdate -hex -label IB_RD_ARDY"          $DMA_CTRL_PATH/IB_RD_ARDY
+    add_wave "-noupdate -hex -label IB_RD_SRC_RDY"       $DMA_CTRL_PATH/IB_RD_SRC_RDY
+
+    add_wave "-noupdate -hex -label IB_BM_GADDR"         $DMA_CTRL_PATH/IB_BM_GADDR
+    add_wave "-noupdate -hex -label IB_BM_LADDR"         $DMA_CTRL_PATH/IB_BM_LADDR
+    add_wave "-noupdate -hex -label IB_BM_LENGTH"        $DMA_CTRL_PATH/IB_BM_LENGTH
+    add_wave "-noupdate -hex -label IB_BM_TAG"           $DMA_CTRL_PATH/IB_BM_TAG
+    add_wave "-noupdate -hex -label IB_BM_TTTYPE"        $DMA_CTRL_PATH/IB_BM_TTYPE
+    add_wave "-noupdate -hex -label IB_BM_REQ"           $DMA_CTRL_PATH/IB_BM_REQ
+    add_wave "-noupdate -hex -label IB_BM_ACK"           $DMA_CTRL_PATH/IB_BM_ACK
+    add_wave "-noupdate -hex -label IB_BM_OP_DONE"       $DMA_CTRL_PATH/IB_BM_OP_DONE
+    add_wave "-noupdate -hex -label IB_BM_OP_TAG"        $DMA_CTRL_PATH/IB_BM_OP_TAG
+
+    add_wave "-noupdate -hex -label MI_SW_DWR"           $DMA_CTRL_PATH/MI_SW_DWR
+    add_wave "-noupdate -hex -label MI_SW_ADDR"          $DMA_CTRL_PATH/MI_SW_ADDR
+    add_wave "-noupdate -hex -label MI_SW_RD"            $DMA_CTRL_PATH/MI_SW_RD
+    add_wave "-noupdate -hex -label MI_SW_WR"            $DMA_CTRL_PATH/MI_SW_WR
+    add_wave "-noupdate -hex -label MI_SW_BE"            $DMA_CTRL_PATH/MI_SW_BE
+    add_wave "-noupdate -hex -label MI_SW_DRD"           $DMA_CTRL_PATH/MI_SW_DRD
+    add_wave "-noupdate -hex -label MI_SW_ARDY"          $DMA_CTRL_PATH/MI_SW_ARDY
+    add_wave "-noupdate -hex -label MI_SW_DRDY"          $DMA_CTRL_PATH/MI_SW_DRDY
+
+    add_wave "-noupdate -hex -label RX_NEWLEN"	         $DMA_CTRL_PATH/RX_NEWLEN
+    add_wave "-noupdate -hex -label RX_NEWLEN_DV"        $DMA_CTRL_PATH/RX_NEWLEN_DV
+    add_wave "-noupdate -hex -label RX_NEWLEN_RDY"       $DMA_CTRL_PATH/RX_NEWLEN_RDY
+    add_wave "-noupdate -hex -label RX_RELLEN"           $DMA_CTRL_PATH/RX_RELLEN
+    add_wave "-noupdate -hex -label RX_RELLEN_DV"        $DMA_CTRL_PATH/RX_RELLEN_DV
+
+    add_wave "-noupdate -hex -label TX_NEWLEN"	         $DMA_CTRL_PATH/TX_NEWLEN
+    add_wave "-noupdate -hex -label TX_NEWLEN_DV"        $DMA_CTRL_PATH/TX_NEWLEN_DV
+    add_wave "-noupdate -hex -label TX_NEWLEN_RDY"       $DMA_CTRL_PATH/TX_NEWLEN_RDY
+    add_wave "-noupdate -hex -label TX_RELLEN"           $DMA_CTRL_PATH/TX_RELLEN
+    add_wave "-noupdate -hex -label TX_RELLEN_DV"        $DMA_CTRL_PATH/TX_RELLEN_DV
+
+
+}
+
+
+
+proc blk_DMA_CTRL { PARAM } {
+   global DMA_CTRL_PATH
+
+   if { $PARAM == "SIGS" } {
+	add wave -divider "Signals"
+   }
+
+   if { $PARAM == "REGS" } {
+	add wave -divider "Registers"
+   }
+
+   if { $PARAM == "NFIFO" } {
+	add wave -divider "NFIFOs"
+	add wave -divider "+ rf_nfifo"
+	add_wave "-noupdate -hex -label rf_nfifo_din"			$DMA_CTRL_PATH/ddm_rf_data
+	add_wave "-noupdate -hex -label rf_nfifo_waddr"			$DMA_CTRL_PATH/ddm_rf_addr
+	add_wave "-noupdate -hex -label rf_nfifo_wr"			   $DMA_CTRL_PATH/ddm_rf_data_vld
+	add_wave "-noupdate -hex -label rf_nfifo_full"	      $DMA_CTRL_PATH/ddm_rf_full
+	add_wave "-noupdate -hex -label rf_nfifo_dout"	      $DMA_CTRL_PATH/sum_rf_dout
+	add_wave "-noupdate -hex -label rf_nfifo_dout_vld"    $DMA_CTRL_PATH/sum_rf_dvld
+	add_wave "-noupdate -hex -label rf_nfifo_raddr"       $DMA_CTRL_PATH/sum_rf_raddr
+	add_wave "-noupdate -hex -label rf_nfifo_rd"          $DMA_CTRL_PATH/sum_rf_read
+	add_wave "-noupdate -hex -label rf_nfifo_pipe_en"     $DMA_CTRL_PATH/sum_rf_read
+	add_wave "-noupdate -hex -label rf_nfifo_empty"       $DMA_CTRL_PATH/sum_rf_empty
+	add_wave "-noupdate -hex -label rf_nfifo_status"      $DMA_CTRL_PATH/sum_rf_status
+   }
+
+}
+
+# -------------------------------------------------------------------
+

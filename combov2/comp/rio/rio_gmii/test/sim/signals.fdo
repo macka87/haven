@@ -1,0 +1,430 @@
+# PFIFO_A simulation procedures
+# Author(s): Jan Pazdera <pazdera@liberouter.org>
+#
+# Description:
+#
+#       This file contain only procedures which can be used for signal
+#       addition. This file can be used in every project. Path to the
+#       PFIFO_A component is specified by $PFIFO_A_PATH variable.
+#       All function names should be given by componet hierarchy.
+
+
+# ------------------------------------------------------------------------
+# -------------------------- Procedures ----------------------------------
+# ------------------------------------------------------------------------
+
+
+
+#####################################################################
+# Common signals 
+#####################################################################
+proc ibuf_common {  } {
+    global SFPRO_TOP_PATH
+    add wave -divider "Common"
+    radix -hex
+
+    add wave -label fclk0           $SFPRO_TOP_PATH/fclk0
+    add wave -label lbclk           $SFPRO_TOP_PATH/lbclk
+    add wave -label reset           $SFPRO_TOP_PATH/reset
+}
+
+#####################################################################
+# Interfaces 
+#####################################################################
+
+proc ibuf_gmii {  } {
+    global IBUF_PATH
+    add wave -divider "IBUF<->GMII"
+    radix -hex
+
+    add wave -label rxclk           $IBUF_PATH/rxclk
+    add wave -label rxd             $IBUF_PATH/rxd
+    add wave -label rxdv            $IBUF_PATH/rxdv
+    add wave -label rxer            $IBUF_PATH/rxer
+}
+
+proc ibuf_pacodag {  } {
+    global IBUF_PATH
+    add wave -divider "IBUF<->PACODAG"
+    radix -hex
+
+    add wave -label ctrl_clk        $IBUF_PATH/ctrl_clk
+    add wave -label ctrl_di         $IBUF_PATH/ctrl_di
+    add wave -label ctrl_src_rdy_n  $IBUF_PATH/ctrl_src_rdy_n
+    add wave -label ctrl_rem        $IBUF_PATH/ctrl_rem
+    add wave -label ctrl_sop_n      $IBUF_PATH/ctrl_sop_n
+    add wave -label ctrl_eop_n      $IBUF_PATH/ctrl_eop_n
+    add wave -label ctrl_dst_rdy_n  $IBUF_PATH/ctrl_dst_rdy_n
+    add wave -label ctrl_hdr_en     $IBUF_PATH/ctrl_hdr_en
+    add wave -label ctrl_ftr_en     $IBUF_PATH/ctrl_ftr_en
+
+    add wave -label sop             $IBUF_PATH/sop
+    add wave -label stat            $IBUF_PATH/stat
+    add wave -label stat_dv         $IBUF_PATH/stat_dv
+}
+
+proc ibuf_sau {  } {
+    global IBUF_PATH
+    add wave -divider "IBUF<->SAU"
+    radix -hex
+
+    add wave -label sau_accept      $IBUF_PATH/sau_accept
+    add wave -label sau_dv          $IBUF_PATH/sau_dv
+}
+
+proc ibuf_framelink {  } {
+    global IBUF_PATH
+    add wave -divider "IBUF<->FrameLink"
+    radix -hex
+
+    add wave -label rdclk       $IBUF_PATH/rdclk
+    add wave -label data        $IBUF_PATH/data
+    add wave -label drem        $IBUF_PATH/drem
+    add wave -label src_rdy_n   $IBUF_PATH/src_rdy_n
+    add wave -label sof_n       $IBUF_PATH/sof_n
+    add wave -label sop_n       $IBUF_PATH/sop_n
+    add wave -label eof_n       $IBUF_PATH/eof_n
+    add wave -label eop_n       $IBUF_PATH/eop_n
+    add wave -label dst_rdy_n   $IBUF_PATH/dst_rdy_n
+}
+
+#####################################################################
+# Component signals 
+#####################################################################
+proc blk_phy {  } {
+    global TB_PATH
+    global SFPRO_TOP_PATH
+    add wave -divider "PHY"
+    radix -hex
+
+    add wave -label phy_oper       $TB_PATH/phy_oper
+    add wave -label phy_params     $TB_PATH/phy_params
+    add wave -label phy_strobe     $TB_PATH/phy_strobe
+    add wave -label phy_busy       $TB_PATH/phy_busy
+    add wave -label gmii_txd       $TB_PATH/physim_u0/gmii_txd
+    add wave -label gmii_txen      $TB_PATH/physim_u0/gmii_txen
+    add wave -label gmii_txer      $TB_PATH/physim_u0/gmii_txer
+    add wave -label gmii_rxd       $TB_PATH/physim_u0/gmii_rxd
+    add wave -label gmii_rxdv      $TB_PATH/physim_u0/gmii_rxdv
+    add wave -label gmii_rxer      $TB_PATH/physim_u0/gmii_rxer
+    add wave -label TXP            $TB_PATH/physim_u0/TXP
+    add wave -label TXN            $TB_PATH/physim_u0/TXN
+    add wave -label RXP            $TB_PATH/physim_u0/RXP
+    add wave -label RXN            $TB_PATH/physim_u0/RXN
+    add wave -label rio_dclk       $TB_PATH/physim_u0/rio_dclk
+    add wave -label sfpro_tdp_a    $TB_PATH/sfpro_tdp_a
+    add wave -label sfpro_tdn_a    $TB_PATH/sfpro_tdn_a
+    add wave -label sfpro_rdp_a    $TB_PATH/sfpro_rdp_a
+    add wave -label sfpro_rdn_a    $TB_PATH/sfpro_rdn_a
+    add wave -label usr_clk        $SFPRO_TOP_PATH/usr_clk
+    add wave -label TDP_A          $SFPRO_TOP_PATH/TDP_A
+    add wave -label TDN_A          $SFPRO_TOP_PATH/TDN_A
+    add wave -label RDP_A          $SFPRO_TOP_PATH/RDP_A
+    add wave -label RDN_A          $SFPRO_TOP_PATH/RDN_A
+    add wave -label gmii_rxd0      $SFPRO_TOP_PATH/gmii_rxd0
+    add wave -label gmii_rxdv0     $SFPRO_TOP_PATH/gmii_rxdv0
+    add wave -label gmii_rxer0     $SFPRO_TOP_PATH/gmii_rxer0
+}
+
+proc blk_rio_gmii {  } {
+    global RIO_GMII_PATH
+    add wave -divider "RIO_GMII"
+    radix -hex
+
+    add wave -label monitored_bus       $RIO_GMII_PATH/monitored_bus
+    add wave -label bp_di       $RIO_GMII_PATH/bp_di
+    add wave -label config_present       $RIO_GMII_PATH/config_present
+    add wave -label reg_config_present   $RIO_GMII_PATH/reg_config_present
+    add wave -label LINK_STATUS   $RIO_GMII_PATH/LINK_STATUS
+    add wave -label DUPLEX_MODE   $RIO_GMII_PATH/DUPLEX_MODE
+    add wave -label SPEED   $RIO_GMII_PATH/SPEED
+    add wave -label rio_txdata       $RIO_GMII_PATH/rio_txdata
+    add wave -label rio_txdata_i       $RIO_GMII_PATH/rio_txdata_i
+    add wave -label cnt_sndack       $RIO_GMII_PATH/cnt_sndack
+    add wave -label reg_sndack      $RIO_GMII_PATH/reg_sndack
+    add wave -label cnt_sndack_rst      $RIO_GMII_PATH/cnt_sndack_rst
+    add wave -label sndack_data     $RIO_GMII_PATH/sndack_data
+    add wave -label rxdata_dly      $RIO_GMII_PATH/rxdata_dly
+#    add wave -label reg_phystatus_i     $RIO_GMII_PATH/reg_phystatus_i
+    add wave -label reg_phystatus       $RIO_GMII_PATH/reg_phystatus
+#    add wave -label cnt_phystatus       $RIO_GMII_PATH/cnt_phystatus
+#    add wave -label cnt_phystatus_load      $RIO_GMII_PATH/cnt_phystatus_load
+#    add wave -label cnt_phystatus_ce        $RIO_GMII_PATH/cnt_phystatus_ce
+#    add wave -label send_ack        $RIO_GMII_PATH/send_ack
+    add wave -label bp_wen       $RIO_GMII_PATH/bp_wen
+#    add wave -label lb_en       $RIO_GMII_PATH/lb_en
+#    add wave -label lb_rw       $RIO_GMII_PATH/lb_rw
+#    add wave -label lb_addr     $RIO_GMII_PATH/lb_addr
+#    add wave -label lb_di       $RIO_GMII_PATH/lb_di
+#    add wave -label lb_do       $RIO_GMII_PATH/lb_do
+#    add wave -label lb_drdy     $RIO_GMII_PATH/lb_drdy
+}
+
+proc blk_rio_gmii_bp {  } {
+    global RIO_GMII_PATH
+    add wave -divider "RIO_GMII_BP"
+    radix -hex
+
+    add wave -label adc_data_out $RIO_GMII_PATH/busprobe_u/bp_i/adc_data_out
+    add wave -label adc_addr $RIO_GMII_PATH/busprobe_u/bp_i/adc_addr
+    add wave -label adc_rd $RIO_GMII_PATH/busprobe_u/bp_i/adc_rd
+    add wave -label adc_wr $RIO_GMII_PATH/busprobe_u/bp_i/adc_wr
+    add wave -label adc_drdy $RIO_GMII_PATH/busprobe_u/bp_i/adc_drdy
+    add wave -label sample_clk $RIO_GMII_PATH/busprobe_u/bp_i/sample_clk
+    add wave -label reset $RIO_GMII_PATH/busprobe_u/bp_i/reset
+    add wave -label en $RIO_GMII_PATH/busprobe_u/bp_i/en
+    add wave -label wen $RIO_GMII_PATH/busprobe_u/bp_i/wen
+    add wave -label start_trigger $RIO_GMII_PATH/busprobe_u/bp_i/start_trigger
+    add wave -label stop_trigger $RIO_GMII_PATH/busprobe_u/bp_i/stop_trigger
+    add wave -label toggle_trigger $RIO_GMII_PATH/busprobe_u/bp_i/toggle_trigger
+    add wave -label monitored_bus $RIO_GMII_PATH/busprobe_u/bp_i/monitored_bus
+
+}
+
+proc blk_plx {  } {
+    global PLX_PATH
+    add wave -divider "PLX"
+    radix -hex
+
+    add wave -label lclkf       $PLX_PATH/lclkf
+    add wave -label lad         $PLX_PATH/lad
+    add wave -label lwr         $PLX_PATH/lwr
+    add wave -label ready       $PLX_PATH/ready
+}
+
+proc blk_ibuf_test {  } {
+    global IBUF_TEST_PATH
+    add wave -divider "IBUF_TEST"
+    radix -hex
+
+    add wave -label lbclk       $IBUF_TEST_PATH/lbclk
+    add wave -label fifo_rd     $IBUF_TEST_PATH/fifo_rd
+    add wave -label fifo_wr     $IBUF_TEST_PATH/fifo_wr
+    add wave -label fifo_di     $IBUF_TEST_PATH/fifo_di
+    add wave -label fifo_do     $IBUF_TEST_PATH/fifo_do
+    add wave -label fifo_dv     $IBUF_TEST_PATH/fifo_dv
+    add wave -label fifo_full       $IBUF_TEST_PATH/fifo_full
+    add wave -label reg_fifo_full       $IBUF_TEST_PATH/reg_fifo_full
+    add wave -label fifo_full_rst       $IBUF_TEST_PATH/fifo_full_rst
+    add wave -label reg_status       $IBUF_TEST_PATH/reg_status
+    add wave -label adc_rd      $IBUF_TEST_PATH/adc_rd
+    add wave -label adc_wr      $IBUF_TEST_PATH/adc_wr
+    add wave -label adc_addr        $IBUF_TEST_PATH/adc_addr
+    add wave -label adc_di      $IBUF_TEST_PATH/adc_di
+    add wave -label adc_do      $IBUF_TEST_PATH/adc_do
+    add wave -label adc_drdy        $IBUF_TEST_PATH/adc_drdy
+
+}
+
+proc blk_rx {  } {
+    global IBUF_RX_PATH
+    add wave -divider "RX"
+    radix -hex
+
+    add wave -label crc      $IBUF_RX_PATH/crc
+    add wave -label reg_rxd_i      $IBUF_RX_PATH/reg_rxd_i
+    add wave -label reg_rxdv_i      $IBUF_RX_PATH/reg_rxdv_i
+    add wave -label reg_rxdv_pipe      $IBUF_RX_PATH/reg_rxdv_pipe
+    add wave -label STAT     $IBUF_RX_PATH/STAT
+    add wave -label STAT_DV  $IBUF_RX_PATH/STAT_DV
+}
+
+proc blk_dfifo {  } {
+    global IBUF_BUF_PATH
+    add wave -divider "DFIFO"
+    radix -hex
+
+    add wave -label CLK_WR      $IBUF_BUF_PATH/dfifo_u/CLK_WR
+    add wave -label WR          $IBUF_BUF_PATH/dfifo_u/WR
+    add wave -label DI          $IBUF_BUF_PATH/dfifo_u/DI
+    add wave -label FULL        $IBUF_BUF_PATH/dfifo_u/FULL
+    add wave -label RELEASE     $IBUF_BUF_PATH/dfifo_u/RELEASE
+    add wave -label MARK        $IBUF_BUF_PATH/dfifo_u/MARK
+    add wave -label CLK_RD      $IBUF_BUF_PATH/dfifo_u/CLK_RD
+    add wave -label RD          $IBUF_BUF_PATH/dfifo_u/RD
+    add wave -label DO          $IBUF_BUF_PATH/dfifo_u/DO
+    add wave -label DO_DV       $IBUF_BUF_PATH/dfifo_u/DO_DV
+    add wave -label EMPTY       $IBUF_BUF_PATH/dfifo_u/EMPTY
+}
+
+proc blk_hfifo {  } {
+    global IBUF_BUF_PATH
+    add wave -divider "HFIFO"
+    radix -hex
+
+    add wave -label CLK_WR      $IBUF_BUF_PATH/hfifo_u/CLK_WR
+    add wave -label WR          $IBUF_BUF_PATH/hfifo_u/WR
+    add wave -label DI          $IBUF_BUF_PATH/hfifo_u/DI
+    add wave -label FULL        $IBUF_BUF_PATH/hfifo_u/FULL
+    add wave -label RELEASE     $IBUF_BUF_PATH/hfifo_u/RELEASE
+    add wave -label MARK        $IBUF_BUF_PATH/hfifo_u/MARK
+
+    add wave -label CLK_RD      $IBUF_BUF_PATH/hfifo_u/CLK_RD
+    add wave -label RD          $IBUF_BUF_PATH/hfifo_u/RD
+    add wave -label DO          $IBUF_BUF_PATH/hfifo_u/DO
+    add wave -label DO_DV       $IBUF_BUF_PATH/hfifo_u/DO_DV
+    add wave -label EMPTY       $IBUF_BUF_PATH/hfifo_u/EMPTY
+}
+
+proc blk_buf_fsm {  } {
+    global IBUF_BUF_FSM
+    add wave -divider "BUF_FSM"
+    radix -hex
+
+    add wave -label present_state      $IBUF_BUF_FSM/present_state
+    add wave -label start              $IBUF_BUF_FSM/start
+    add wave -label received           $IBUF_BUF_FSM/received
+    add wave -label drop               $IBUF_BUF_FSM/drop
+    add wave -label dv                 $IBUF_BUF_FSM/dv
+    add wave -label release            $IBUF_BUF_FSM/release
+    add wave -label init               $IBUF_BUF_FSM/init
+}
+
+proc blk_buf_adc {  } {
+    global IBUF_BUF_PATH
+    global IBUF_TOP4_PATH 
+    add wave -divider "BUF_ADC"
+    radix -hex
+
+    add wave -label ADC_RD       $IBUF_BUF_PATH/ADC_RD
+    add wave -label ADC_WR       $IBUF_BUF_PATH/ADC_WR
+    add wave -label ADC_ADDR     $IBUF_BUF_PATH/ADC_ADDR
+    add wave -label ADC_DI       $IBUF_BUF_PATH/ADC_DI
+    add wave -label ADC_DO       $IBUF_BUF_PATH/ADC_DO
+    add wave -label ADC_DRDY     $IBUF_BUF_PATH/ADC_DRDY
+    add wave -label cs_cnt_packets      $IBUF_BUF_PATH/cs_cnt_packets
+    add wave -label cs_cnt_recv         $IBUF_BUF_PATH/cs_cnt_recv
+    add wave -label cs_cnt_recverr      $IBUF_BUF_PATH/cs_cnt_recverr
+    add wave -label cs_reg_enable       $IBUF_BUF_PATH/cs_reg_enable
+    add wave -label cs_reg_errmask      $IBUF_BUF_PATH/cs_reg_errmask
+    add wave -label cs_reg_ibuf_status  $IBUF_BUF_PATH/cs_reg_ibuf_status
+    add wave -label cs_reg_min_len      $IBUF_BUF_PATH/cs_reg_min_len
+    add wave -label cs_reg_mtu   $IBUF_BUF_PATH/cs_reg_mtu
+    add wave -label lb_do        $IBUF_TOP4_PATH/lb_do
+    add wave -label lb_di        $IBUF_TOP4_PATH/lb_di
+    add wave -label lb_addr      $IBUF_TOP4_PATH/lb_addr
+    add wave -label lb_en        $IBUF_TOP4_PATH/lb_en
+    add wave -label lb_rw        $IBUF_TOP4_PATH/lb_rw
+    add wave -label lb_drdy      $IBUF_TOP4_PATH/lb_drdy
+}
+    
+proc blk_buf_cnt {  } {
+    global IBUF_BUF_PATH
+    add wave -divider "BUF_Counters"
+    radix -hex
+
+    add wave -label cnt_packets     $IBUF_BUF_PATH/cnt_packets
+    add wave -label fsm_start       $IBUF_BUF_PATH/fsm_start
+    add wave -label reg_cnt_packets $IBUF_BUF_PATH/reg_cnt_packets
+    add wave -label cnt_recv        $IBUF_BUF_PATH/cnt_recv
+    add wave -label cnt_recv_ce     $IBUF_BUF_PATH/cnt_recv_ce
+    add wave -label reg_cnt_recv    $IBUF_BUF_PATH/reg_cnt_recv
+    add wave -label cnt_recverr     $IBUF_BUF_PATH/cnt_recverr
+    add wave -label fsm_release     $IBUF_BUF_PATH/fsm_release
+    add wave -label reg_cnt_recverr $IBUF_BUF_PATH/reg_cnt_recverr
+
+}
+
+proc blk_mac_check {  } {
+    global IBUF_BUF_PATH
+    global IBUF_MAC_CHECK_PATH
+    add wave -divider "MAC_CHECK"
+    radix -hex
+
+    add wave -label reg_mac_check   $IBUF_BUF_PATH/reg_mac_check
+    add wave -label mac_check_failed $IBUF_BUF_PATH/mac_check_failed
+    add wave -label reg_mac_we      $IBUF_BUF_PATH/reg_mac_we
+    add wave -label reg_mac         $IBUF_BUF_PATH/reg_mac   
+
+    add wave -label cnt_macmem_addr $IBUF_MAC_CHECK_PATH/cnt_macmem_addr
+    add wave -label cmp_cnt_macmem_addr $IBUF_MAC_CHECK_PATH/cmp_cnt_macmem_addr
+    add wave -label reg_check   $IBUF_MAC_CHECK_PATH/reg_check
+    add wave -label reg_check_rst   $IBUF_MAC_CHECK_PATH/reg_check_rst
+    add wave -label reg_check_set   $IBUF_MAC_CHECK_PATH/reg_check_set
+    add wave -label reg_mac_match   $IBUF_MAC_CHECK_PATH/reg_mac_match
+    add wave -label reg_mac_match_rst   $IBUF_MAC_CHECK_PATH/reg_mac_match_rst
+    add wave -label reg_mac_match_set   $IBUF_MAC_CHECK_PATH/reg_mac_match_set
+    add wave -label reg_macmem_item $IBUF_MAC_CHECK_PATH/reg_macmem_item
+    add wave -label reg_macmem_item_we  $IBUF_MAC_CHECK_PATH/reg_macmem_item_we
+    add wave -label macmem_di   $IBUF_MAC_CHECK_PATH/macmem_di
+    add wave -label macmem_wr   $IBUF_MAC_CHECK_PATH/macmem_wr
+    add wave -label macmem_do   $IBUF_MAC_CHECK_PATH/macmem_do
+    add wave -label cmp_mac_match   $IBUF_MAC_CHECK_PATH/cmp_mac_match
+    add wave -label cmp_broadcast   $IBUF_MAC_CHECK_PATH/cmp_broadcast
+    add wave -label reg_broadcast   $IBUF_MAC_CHECK_PATH/reg_broadcast
+    add wave -label reg_broadcast_rst   $IBUF_MAC_CHECK_PATH/reg_broadcast_rst
+    add wave -label reg_broadcast_set   $IBUF_MAC_CHECK_PATH/reg_broadcast_set
+    add wave -label cmp_multicast   $IBUF_MAC_CHECK_PATH/cmp_multicast
+    add wave -label reg_multicast   $IBUF_MAC_CHECK_PATH/reg_multicast
+    add wave -label reg_multicast_rst   $IBUF_MAC_CHECK_PATH/reg_multicast_rst
+    add wave -label reg_multicast_set   $IBUF_MAC_CHECK_PATH/reg_multicast_set
+
+    add wave -label EN          $IBUF_MAC_CHECK_PATH/EN
+
+    add wave -label MAC_IN          $IBUF_MAC_CHECK_PATH/MAC_IN
+    add wave -label CHECK           $IBUF_MAC_CHECK_PATH/CHECK
+
+    add wave -label CHECK_FIN           $IBUF_MAC_CHECK_PATH/CHECK_FIN
+    add wave -label MAC_MATCH           $IBUF_MAC_CHECK_PATH/MAC_MATCH
+    add wave -label MULTICAST           $IBUF_MAC_CHECK_PATH/MULTICAST
+    add wave -label BROADCAST           $IBUF_MAC_CHECK_PATH/BROADCAST
+
+    add wave -label ADC_RD          $IBUF_MAC_CHECK_PATH/ADC_RD
+    add wave -label ADC_WR          $IBUF_MAC_CHECK_PATH/ADC_WR
+    add wave -label ADC_ADDR        $IBUF_MAC_CHECK_PATH/ADC_ADDR
+    add wave -label reg_adc_addr    $IBUF_MAC_CHECK_PATH/reg_adc_addr
+    add wave -label ADC_DI          $IBUF_MAC_CHECK_PATH/ADC_DI
+    add wave -label ADC_DO          $IBUF_MAC_CHECK_PATH/ADC_DO
+    add wave -label ADC_DRDY        $IBUF_MAC_CHECK_PATH/ADC_DRDY
+}
+
+proc blk_buf_control {  } {
+    global IBUF_BUF_PATH
+    add wave -divider "BUF_Control"
+    radix -hex
+
+    add wave -label reg_rx_stat_dv     $IBUF_BUF_PATH/reg_rx_stat_dv
+    add wave -label reg_stat_dv     $IBUF_BUF_PATH/reg_stat_dv
+    add wave -label stat_dv_i     $IBUF_BUF_PATH/stat_dv_i
+    add wave -label reg_sau_acc     $IBUF_BUF_PATH/reg_sau_acc
+    add wave -label reg_sau_dv      $IBUF_BUF_PATH/reg_sau_dv
+    add wave -label reg_stat        $IBUF_BUF_PATH/reg_stat
+    add wave -label cmp_errmask     $IBUF_BUF_PATH/cmp_errmask
+    add wave -label cmp_errmask_match       $IBUF_BUF_PATH/cmp_errmask_match
+    add wave -label recv_allowed        $IBUF_BUF_PATH/recv_allowed
+    add wave -label reg_di_dv       $IBUF_BUF_PATH/reg_di_dv
+    add wave -label last_data       $IBUF_BUF_PATH/last_data
+    add wave -label reg_data_complete       $IBUF_BUF_PATH/reg_data_complete
+    add wave -label dalign_aligned      $IBUF_BUF_PATH/dalign_aligned
+    add wave -label dalign_be       $IBUF_BUF_PATH/dalign_be
+    add wave -label dalign_do       $IBUF_BUF_PATH/dalign_do
+    add wave -label reg_ibuf_status     $IBUF_BUF_PATH/reg_ibuf_status
+    add wave -label reg_errmask     $IBUF_BUF_PATH/reg_errmask
+    add wave -label reg_enable     $IBUF_BUF_PATH/reg_enable
+    add wave -label len_below_min     $IBUF_BUF_PATH/len_below_min
+    add wave -label reg_min_len     $IBUF_BUF_PATH/reg_min_len
+    add wave -label len_over_mtu     $IBUF_BUF_PATH/len_over_mtu
+    add wave -label reg_mtu     $IBUF_BUF_PATH/reg_mtu
+}
+
+proc blk_fl {  } {
+    global IBUF_FL_PATH
+    add wave -divider "FL"
+    radix -hex
+
+    add wave -label fifo_data       $IBUF_FL_PATH/fifo_data
+    add wave -label fifo_rem        $IBUF_FL_PATH/fifo_rem
+    add wave -label fifo_rd         $IBUF_FL_PATH/fifo_rd
+    add wave -label fifo_dv         $IBUF_FL_PATH/fifo_dv
+    add wave -label fifo_empty      $IBUF_FL_PATH/fifo_empty
+
+    add wave -label present_state   $IBUF_FL_PATH/fl_fsm_u/present_state
+    add wave -label last_data       $IBUF_FL_PATH/last_data
+    add wave -label fsm_sof_n       $IBUF_FL_PATH/fsm_sof_n
+    add wave -label fsm_sop_n       $IBUF_FL_PATH/fsm_sop_n
+    add wave -label fsm_eof_n       $IBUF_FL_PATH/fsm_eof_n
+    add wave -label fsm_eop_n       $IBUF_FL_PATH/fsm_eop_n
+    add wave -label fsm_hdf         $IBUF_FL_PATH/fsm_hdf
+}
+
+

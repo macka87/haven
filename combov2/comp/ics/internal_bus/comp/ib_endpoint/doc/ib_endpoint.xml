@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<source>
+   <component>Internal Bus Endpoint</component>
+
+   <authors>
+      <author login="xkobie00">Petr Kobiersky</author>
+   </authors>
+
+   <features>
+      <item>Master and Slave version</item>
+      <item>Optional input and output buffer</item>
+      <item>Optional read reorder buffer</item>
+      <item>400 Slices for Slave</item>
+      <item>535 Slices for Master</item>
+      <item>Frequency up to 130 Mhz</item>
+   </features>
+   
+   <!-- Bugs -->
+   <bugs>
+     <item>Not known bugs</item>
+   </bugs>
+   
+   <!-- What have to be done -->
+   <todo>
+      <item>Test endpoint in HW</item>
+   </todo>
+
+   <description>
+      Component convert internal bus into general 64-bits address decoder interface.
+      Endpoint component support two architectures: (1) Slave: Endpoint have only 
+      interface for Internal Bus. Reading and writing depends on incoming type of
+      IB transactions. (2) Master: component also have another interface. Through this
+      interface a busmaster transactions can be generated. For slow user component is
+      very usefull to connect input and output buffers. Transactions are buffred and
+      don't block internal bus. Read reorder buffer which solves unaligned reading 
+      can be removed, but unaligned transactions wouldn't be supported.
+   </description>
+
+   <interface>
+      <generic_map>
+         <generic name="BASE_ADDR" type="std_logic_vector(31:0)" default="">
+			   Specify Endpoint base address.
+         </generic>
+         
+		   <generic name="ADDR_WIDTH" type="integer" default="">
+			   Specify address width.
+         </generic>
+                  
+		   <generic name="INPUT_BUFFER_SIZE" type="integer" default="0">
+			   Specify size of IB input(downstream) buffer.
+         </generic>
+
+         <generic name="OUTPUT_BUFFER_SIZE" type="integer" default="0">
+			   Specify size of IB output(upstream) buffer.
+         </generic>
+         
+         <generic name="READ_REORDER_BUFFER" type="boolean" default="true">
+			   Reorder buffer (align circuit) is included.
+         </generic>
+                  
+   	   <generic name="STRICT_EN" type="boolean" default="false">
+            Strict behaviour (reading or writing cannot start before
+            previous operation is finished).
+         </generic>
+      </generic_map>
+      
+      <port_map>
+       <divider>Common Interface</divider>
+
+         <port name="IB_RESET" dir="in" width="1">
+            Reset.
+         </port>
+         <port name="IB_CLK" dir="in" width="1">
+            Internal Bus Clock.
+         </port>
+
+       <divider>Internal Bus Interface</divider>
+         
+         <port name="INTERNAL_BUS" dir="inout" width="t_internal_bus64">
+            Internal Bus Port
+         </port> 
+
+
+       <divider>Write Interface</divider>
+         
+         <port name="WR_ADDR" dir="out" width="ADDR_WIDTH">
+            Write address
+         </port> 
+
+         <port name="WR_DATA" dir="out" width="64">
+            Write data
+         </port>
+
+         <port name="WR_BE" dir="out" width="8">
+            Write byte enable
+         </port>
+
+         <port name="WR_REQ" dir="out" width="1">
+            Write request to user component
+         </port> 
+
+         <port name="WR_RDY" dir="in" width="1">
+            User component is ready to write
+         </port> 
+
+         <port name="WR_LENGTH" dir="out" width="12">
+            Write lenght (number of bytes to be writen).
+         </port> 
+        
+         <port name="WR_SOF" dir="out" width="1">
+            Start of write transaction
+         </port> 
+         
+         <port name="WR_EOF" dir="out" width="1">
+            End of write transaction
+         </port>
+   
+      <divider>Read Interface</divider>
+         
+         <port name="RD_ADDR" dir="out" width="ADDR_WIDTH">
+            Read address
+         </port> 
+
+         <port name="RD_BE" dir="out" width="8">
+            Read byte enable
+         </port>
+
+         <port name="RD_REQ" dir="out" width="1">
+            Read request
+         </port> 
+
+         <port name="RD_ARDY" dir="in" width="1">
+            Address ready (RD_ACK)
+         </port> 
+
+         <port name="RD_SOF_IN" dir="out" width="1">
+            Start of read transaction
+         </port> 
+         
+         <port name="RD_EOF_IN" dir="out" width="1">
+            End of read transaction
+         </port>
+
+         <port name="RD_DATA" dir="in" width="64">
+            Data from user component
+         </port> 
+
+         <port name="RD_SRC_RDY" dir="in" width="1">
+            Data from user component valid (DRDY)
+         </port> 
+         
+         <port name="RD_DST_RDY" dir="out" width="1">
+            Endpoint is ready to accept readed data
+         </port>
+
+      <divider>BusMaster Interface</divider>
+         
+         <port name="BM_GLOBAL_ADDR" dir="out" width="ADDR_WIDTH">
+            BusMaster Global Address 
+         </port> 
+
+         <port name="BM_LOCAL_ADDR" dir="out" width="8">
+            BusMaster Local Address
+         </port>
+
+         <port name="BM_LENGTH" dir="out" width="1">
+            BusMaster Length
+         </port> 
+
+         <port name="BM_TAG" dir="in" width="1">
+            BusMaster operation tag
+         </port> 
+
+         <port name="BM_DIR" dir="out" width="1">
+            BusMaster Direction (0 -  Global to Local, 1 - Local to Global)
+         </port> 
+         
+         <port name="BM_REQ" dir="out" width="1">
+            BusMaster reqest
+         </port>
+
+         <port name="BM_ACK" dir="in" width="64">
+            BusMaster ack
+         </port> 
+
+         <port name="BM_OP_TAG" dir="in" width="1">
+            BusMaster operation tag
+         </port> 
+         
+         <port name="BM_OP_DONE" dir="out" width="1">
+            BusMaster operation done
+         </port>
+      </port_map>
+   </interface>
+
+   <body>
+   <p>
+      <obr src="../../../doc/fig/ib_endpoint.fig">Block Schema of Endpoint</obr>
+   </p>
+   <p>
+      <obr src="./fig/ib_endpoint.fig">Detailed Schema</obr>
+   </p>
+   </body>  
+</source>

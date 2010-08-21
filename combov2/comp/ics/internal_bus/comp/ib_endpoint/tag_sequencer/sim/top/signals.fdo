@@ -1,0 +1,67 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2010 CESNET
+# Author: Viktor Pus <pus@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 14291 2010-07-09 13:22:47Z pus $
+#
+
+view wave
+delete wave *
+
+add_wave "-noupdate -label CLK" /testbench/CLK
+add_wave "-noupdate -label RESET" /testbench/RESET
+
+add wave -divider "UP direction"
+add_wave "-noupdate -hex -label usr_tag" /testbench/usr_tag
+add_wave "-noupdate -hex -label usr_req" /testbench/usr_req
+add_wave "-noupdate -hex -label usr_ack" /testbench/usr_ack
+add_wave "-noupdate -hex -label usr_trans_type" /testbench/usr_trans_type
+add_wave "-noupdate -hex -label ep_tag" /testbench/ep_tag
+add_wave "-noupdate -hex -label ep_req" /testbench/ep_req
+add_wave "-noupdate -hex -label ep_ack" /testbench/ep_ack
+add_wave "-noupdate -hex -label ep_trans_type" /testbench/ep_trans_type
+
+add wave -divider "DOWN direction"
+add_wave "-noupdate -hex -label ep_op_tag" /testbench/ep_op_tag
+add_wave "-noupdate -hex -label ep_op_done" /testbench/ep_op_done
+add_wave "-noupdate -hex -label usr_op_tag" /testbench/usr_op_tag
+add_wave "-noupdate -hex -label usr_op_done" /testbench/usr_op_done
+
+add wave -divider "Internal signals"
+add_wave "-noupdate -hex -label wr_ep_ack"   /testbench/uut/wr_ep_ack
+add_wave "-noupdate -hex -label rd_ep_ack"   /testbench/uut/rd_ep_ack
+add_wave "-noupdate -hex -label wr_ep_op_done"   /testbench/uut/wr_ep_op_done
+add_wave "-noupdate -hex -label rd_ep_op_done"   /testbench/uut/rd_ep_op_done
+add_wave "-noupdate -hex -label wr_usr_op_done"   /testbench/uut/wr_usr_op_done
+add_wave "-noupdate -hex -label rd_usr_op_done"   /testbench/uut/rd_usr_op_done
+add_wave "-noupdate -hex -label reg_arbiter"    /testbench/uut/reg_arbiter
+add_wave "-noupdate -hex -label reg_arbiter_en" /testbench/uut/reg_arbiter_en
+add_wave "-noupdate -hex -label rd_pause_in"    /testbench/uut/rd_pause_in
+add_wave "-noupdate -hex -label rd_pause_out"   /testbench/uut/rd_pause_out
+add_wave "-noupdate -hex -label wr_pause_in"    /testbench/uut/wr_pause_in
+add_wave "-noupdate -hex -label wr_pause_out"   /testbench/uut/wr_pause_out

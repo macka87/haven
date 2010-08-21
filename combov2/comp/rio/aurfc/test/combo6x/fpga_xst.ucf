@@ -1,0 +1,44 @@
+#
+# fpga_xst.ucf: UCF add for sfpro - netcope, xst
+# Copyright (C) 2006  CESNET
+# Authors: Jiri Tobola <tobola@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: fpga_xst.ucf 14 2007-07-31 06:44:05Z kosek $
+#
+
+# --------  RIO aurfc ------------------------------------
+INST *lane_0_phase_align_i*ENA_CALIGN_REC AREA_GROUP="PHASE_ALIGN_0_GRP";
+AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X110Y168:SLICE_X111Y169;
+
+INST *lane_1_phase_align_i*ENA_CALIGN_REC AREA_GROUP="PHASE_ALIGN_1_GRP";
+AREA_GROUP "PHASE_ALIGN_1_GRP" RANGE=SLICE_X122Y168:SLICE_X123Y169;
+
+INST *lane_0_mgt_i LOC=GT_X6Y1;
+INST *lane_1_mgt_i LOC=GT_X7Y1;
+
+

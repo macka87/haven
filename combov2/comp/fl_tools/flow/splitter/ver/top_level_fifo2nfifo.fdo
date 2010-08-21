@@ -1,0 +1,60 @@
+# top_level.fdo: Top Level Function simulation file
+# Copyright (C) 2006 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: top_level_fifo2nfifo.fdo 9128 2009-07-03 07:19:21Z xsanta06 $
+#
+
+# For whole design testing
+# TODO: MAIN/FIRMWARE/TRUNK/COMP/BASE
+set FIRMWARE_BASE         "../../../../.."
+set FL_TOOLS_BASE         "$FIRMWARE_BASE/comp/fl_tools"
+
+# TODO: ADRESA KOMPONENTY V SVN, TREBA ZMENIT PODLA KONKRETNEHO UMIESTNENIA                                        
+set FL_DUT_BASE           "$FL_TOOLS_BASE/flow/splitter"
+set FL_DUT_VER_BASE       "$FL_DUT_BASE/ver"
+
+set TB_FILE               "./tbench/testbench.sv"
+set SIG_FILE              "./signals_sig.fdo"
+
+set COMPONENTS [list [list "FL_DUT"      $FL_DUT_BASE      "FIFO2NFIFO"]\
+                     [list "FL_DUT_VER"  $FL_DUT_VER_BASE  "FIFO2NFIFO"]\
+                     ]
+
+# Enable Code Coverage
+set CODE_COVERAGE "true"
+
+# Global include file for compilation
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# File with signals
+source $SIG_FILE

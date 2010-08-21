@@ -1,0 +1,54 @@
+# signals.fdo: Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Jan Kastil <xkasti00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+
+exec make
+view wave
+delete wave *
+
+add wave -divider "TESTBENCH"
+add_wave "-noupdate -hex -label CLK-write" /testbench/clkw
+add_wave "-noupdate -hex -label CLK-read" /testbench/clkr
+add_wave "-noupdate -hex -label reset" /testbench/reset
+add_wave "-noupdate -hex -label Write-EN" /testbench/write_enabled
+add_wave "-noupdate -hex -label Write-Adress" /testbench/writing_adress
+add_wave "-noupdate -hex -label Read-Adress" /testbench/reading_adress
+add_wave "-noupdate -hex -label Data-In" /testbench/datain
+add_wave "-noupdate -hex -label Read-EN" /testbench/read_enable
+add_wave "-noupdate -hex -label Data-Out" /testbench/dataout
+add_wave "-noupdate -hex -label Data-Out-BRAM" /testbench/dataout1
+add_wave "-noupdate -hex -label Data-Valid" /testbench/data_valid
+add_wave "-noupdate -hex -label Data-Valid-BRAM" /testbench/data_valid1
+add_wave "-noupdate -hex -label PIPE_EN-LUT" /testbench/pipe_en
+add_wave "-noupdate -hex -label PIPE_EN-BRAM" /testbench/pipe_en1
+add_wave "-noupdate -hex -label Adress-LUT" /testbench/Adress
+add_wave "-noupdate -hex -label Adress-BRAM" /testbench/Adress1
+
+restart -f
+run 1 us

@@ -1,0 +1,51 @@
+<synthesis>
+   <tool>
+      precision
+   </tool>
+   <tool>
+      xst
+   </tool>
+   <toplevel>
+      fl_watch_ent.vhd
+   </toplevel>
+   <fpga>
+      xc2vp50
+   </fpga>
+   <archgrp>
+      FULL
+   </archgrp>
+   <archgrp>
+      DEBUG
+   </archgrp>
+   <generics>
+      <generic name="INTERFACES">
+         10
+      </generic>
+      <generic name="CNTR_WIDTH">
+         56
+      </generic>
+      <generic name="PIPELINE_LEN">
+         2
+      </generic>
+      <generic name="GUARD">
+         false
+      </generic>
+   </generics>
+   <generics>
+      <generic name="INTERFACES">
+         4
+      </generic>
+      <generic name="CNTR_WIDTH">
+         32
+      </generic>
+      <generic name="PIPELINE_LEN">
+         1
+      </generic>
+      <generic name="GUARD">
+         true
+      </generic>
+   </generics>
+   <frequency clock="CLK">
+      250
+   </frequency>
+</synthesis>

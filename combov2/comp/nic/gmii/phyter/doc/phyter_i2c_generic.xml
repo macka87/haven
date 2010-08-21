@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>Phyter I2C controller - generic version</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="sandin">Martin Louda</author>
+</authors>
+
+
+<!-- Short Block description -->
+<description>
+
+    This component aims to provide a way to communicate with SFP phyters.
+    In general it can be used to control one or more I2C buses at a time.
+    The number of I2C interfaces is set by generic parameter IFC_CNT. I2C
+    buses can be accessed simultaneously or communication with some of them
+    can be masked. This component in fact only provides I2C bridge, the
+    communication itself is handled by software via MI32 interface.
+
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Generic description -->
+	<generic_map>
+		
+		<generic name="IFC_CNT" type="integer" default="4">
+			Number of I2C interfaces
+		</generic>
+		
+	</generic_map>
+
+	<!-- Port description -->
+	<port_map>
+
+		<divider>Common signals</divider>		
+		<port  name="CLK" dir="in" width="1">
+			Global FPGA clock
+		</port>
+		<port  name="RESET" dir="in" width="1">
+			Global reset
+		</port>
+
+		<divider>I2C interfaces</divider> 		
+		<port name="SCL" dir="inout" width="IFC_CNT">
+			I2C clock vector
+		</port>
+		<port name="SDA" dir="inout" width="IFC_CNT">
+			I2C data vector
+		</port>
+		
+		<divider>Phyter disable signals</divider> 		
+		<port name="PHDIS" dir="out" width="IFC_CNT">
+			Phyter disable vector
+		</port>
+
+        <divider>MI32 interface</divider>
+        <port name="MI32" dir="inout" width="32">
+            Interface to software; VHDL type t_mi32
+        </port>
+
+	</port_map>
+
+</interface>
+
+
+<!-- ADDRESS SPACE SECTION ********************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this sections -->
+
+<!-- main address space -->
+<addr_space id ="PHYTER_I2C_GENERIC" name="Phyter I2C controller" main="yes"
+    size="0x2">
+
+    <reg name="Control/data register" id="PHY_I2C_REG" offset="0x00"
+	access="RW" words="1">
+		<bit_vect bits="8">
+		<description_above>
+            The communication with phyters is done using this register. RD
+            bits store values read from phyter. WR bits are sent to phyter
+            when WRITE bit is active.
+		</description_above>
+		<format>
+            <bit from="0" to="0" name="RD_CLK">
+                I2C read clock
+		    </bit>
+            <bit from="1" to="1" name="RD_DATA">
+                I2C read data
+		    </bit>
+            <bit from="2" to="2" name="WRITE">
+                I2C write strobe
+		    </bit>
+            <bit from="3" to="3" name="WR_CLK_Z">
+                I2C write clock Z-buffer (high : third state)
+		    </bit>
+            <bit from="4" to="4" name="WR_CLK">
+                I2C write clock
+		    </bit>
+            <bit from="5" to="5" name="WR_DATA_Z">
+                I2C write data Z-buffer (high : third state)
+		    </bit>
+            <bit from="6" to="6" name="WR_DATA">
+                I2C write data
+		    </bit>
+            <bit from="7" to="7" name="Reserved">
+                Not used
+		    </bit>
+		</format>
+		</bit_vect>
+	</reg>
+
+</addr_space>
+
+
+<!-- SW BODY SECTION **************************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+
+<sw_body>
+
+    <h2>Write operation</h2>
+    <p>
+        Setting I2C X WRITE bit in Control/data register causes the values
+        on appropriate clock and data bits to be sent to I2C bus X. 
+        So the write operation can be restricted only to selected I2C
+        bus(es) by keeping the other WRITE bits low.
+	</p>
+
+    <h2>Control/data registers</h2>
+    <p>
+        Control/data register (within the component) of each I2C bus is
+        eight bits wide. If IFC_CNT is set for instance to 5, all registers
+        reside on MI address 0x0 - register of I2C bus 0 occupies bits 0 to
+        7, register of I2C bus 1 occupies bits 8 to 15 and so on. Register
+        of I2C bus 5 resides on MI address 0x4 and occupies bits 0 to 7.
+    </p>
+
+</sw_body>
+
+
+<!-- HW BODY SECTION **************************************************** -->
+<!-- information for HW designers, structure should be as follow          -->
+<body>
+
+<!--    
+<h1>TC info</h1>
+
+	<p> 
+		features, data flow, usage, input and output protocols,
+		list of subcomponents etc. Use h2-h3, paragraphs, lists, tables,
+		images..
+	</p>
+		
+	<p>
+		You will probably also use ref files and ref comp tags here.
+		Examples of usage:
+		<ul>
+			<li>
+				<ref_file ref="template.version.xml">ref file usage</ref_file>
+			</li>
+			<li>
+				<ref_comp ref="subcomponent_id" tag_id="subcomp_tag">
+					Payload checker - pattern matching
+				</ref_comp>
+			</li>
+		</ul>		
+	</p>
+-->
+
+
+<h1>Frequency and Resources usage</h1>
+
+	<p>
+
+        <!--Resources usage and max. frequency by Precision-->
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Slices (% of C6X slices)</th>
+			</tr>
+			<tr>
+				<td>X(X%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Max.frequency by Precision</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<td>X MHz</td>
+				<td>X MHz</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+	
+  </p> 
+
+<!--
+<h1>Schemes</h1>
+	
+	<p>
+		The block structure of the component is in the following figure.
+		It's composed of data buffer, control block ...
+		<obr src="./fig/block_struct.fig">TC architecture</obr>
+	</p>
+
+	<p>
+		More detailed figures with their description..
+		<obr src="./fig/fig1.fig">Control block</obr>
+		<obr src="./fig/fig2.fig" mag="0.7">Control FSM</obr>
+		<obr src="./fig/fig3.fig">Data buffer</obr>
+    </p>
+-->
+
+
+</body>
+
+</source>

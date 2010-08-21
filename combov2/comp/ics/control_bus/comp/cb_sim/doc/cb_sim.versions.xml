@@ -1,0 +1,6 @@
+<versions>
+
+      <version id="HEAD" name="actual version">
+               <item>generated from HEAD cvs</item>
+      </version>
+</versions>                  

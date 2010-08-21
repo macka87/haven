@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="iso-8859-2"?>
+<source>
+   <component>Asynchronous block FIFO memory</component>
+
+   <authors>
+      <author login="kastil">Jan Kastil</author>
+   </authors>
+
+   <features>
+      <item>Nothing yet</item>
+   </features>
+   
+   <!-- Bugs -->
+   <bugs>
+     <item>Not known bugs</item>
+   </bugs>
+   
+   <!-- What have to be done -->
+   <todo>
+      Implement it
+      write documentation for interface
+   </todo>
+
+
+   <description>
+         Asynchronous block fifo allows asynchronousy writing and reading. Actual status of fifo is shown by signal FULL, EMPTY and STATUS. User may choose to have block of fixed size or size of each block may vary. In this case, fifo will need signal BLK_END to show end of currently writed block. FIFO allow discarding on both interfaces. All signals are active in 1. This component uses FIFO_MEM component and shuld work with each type of memory, which is suported by FIFO_MEM.
+   </description>
+   
+   <interface>
+      <generic_map>
+         <generic name="discard" type="discard_type" default="WriteDiscard">
+		Alowing signal WR_DISCARD and RD_DISCARD
+         </generic>
+         <generic name="mem_type" type="mem_type" default="LUT">
+            Choosing type of which will be FIFO composed. All memoy in FIFO will be this type.
+	</generic>
+         
+		   <generic name="latency" type="integer" default="1">
+			   Latency of memory
+         </generic>
+         
+		   <generic name="items" type="integer" default="10">
+			   Number of items which could be stored in memory
+         </generic>
+         
+         <generic name="item_width" type="integer" default="32">
+		Data width	   
+         </generic>
+         <generic name="block_type" type="block_type" default="fixed_size">
+	      Block could be of vairable or fixed size. Smallest size of block is 1. 
+         </generic>
+         <generic name="block_size" type="integer" default="5">
+		If block_type is set to fixed_size, this is how large block will be. In variable size this setting do not have any influence.
+	</generic>
+         <generic name="prefetch" type="boolean" default="false">
+            Allows prefetch mode
+         </generic>
+      
+      </generic_map>
+      
+      <port_map>
+                
+         <port name="CLKW" dir="in" width="1">
+            Clock for writing.
+         </port>
+           
+         <port name="CLKR" dir="in" width="1">
+            Clock for reading. 
+         </port>
+            
+         <port name="RESET" dir="in" width="1">
+            Reset
+         </port> 
+
+         <port name="WR" dir="in" width="1">
+            Enables writing into memory
+         </port>
+
+         <port name="DI" dir="in" width="item_width">
+            Input data port.
+         </port>
+	<port name="BLK_END" dir="in" width="1">
+            If block_type is set to variable_size. This signal show the end of block. In fixed_size this signal do not have any function.
+        </port>               
+        <port name="WR_DISCARD" dir="in" width="1">
+             If write discarding is enabled. H on this signal will be discard block which is actualy writing.
+        </port>
+         <port name="RD" dir="in" width="1">
+            Enables read from memory
+         </port>
+
+         <port name="DO" dir="out" width="item_width">
+            Output data port.
+         </port>
+	
+	<port name="DO_DV" dir="out" width="1">
+            There will be 1 if data on DO are valid.
+         </port>
+         <port name="RD_DISCARD" dir="in" width='1'>
+	   If discard on read interface is enabled, this signal will discard first block from readded interface.
+         </port>
+         <port name="BLK_READY" dir="out" width="1">
+            This signal is value 1 if full block is prepared to read.
+         </port>
+         <port name="BLK_FINISH" dir="out" width="1">
+             This signal will became active, if last part of block is readed.
+         </port>
+         <port name ="EMPTY" dir="out" width="1">
+             This signal will be active, if the fifo is empty.
+         </port>
+         <port name="FULL" dir="out" width="1">
+             This signal will be active, if the fifo is full.
+         </port>
+        <port name="STATUS" dir="out" width="log2(items)">
+             Show how much data is in fifo at the moment.
+        </port>    
+       </port_map>
+       </interface>  
+
+   
+   <body>
+
+      
+    <!-- Here is description in standard Satrapa format-->
+    <h1> component</h1>
+    <p>
+    </p>
+    </body>  
+</source>

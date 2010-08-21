@@ -1,0 +1,106 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2010 CESNET
+# Author: Marek Santa <santa@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 15016 2010-08-12 12:32:34Z xsanta06 $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+proc misc {NAME PATH} {
+    add wave -divider "$NAME" 
+     add_wave "-noupdate -label RX_INTERRUPT"     $PATH/RX_INTERRUPT
+     add_wave "-noupdate -label TX_INTERRUPT"     $PATH/TX_INTERRUPT
+     add_wave "-noupdate -hex -label RX_BUFFER_STATUS" $PATH/RX_BUFFER_STATUS
+     add_wave "-noupdate -label RX_BUFFER_FULL"   $PATH/RX_BUFFER_FULL
+     add_wave "-noupdate -label RX_BUFFER_EMPTY"  $PATH/RX_BUFFER_EMPTY
+}
+
+proc ib_up {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label UP_DATA"    $PATH/UP_DATA
+     add_wave "-noupdate  -label UP_SOP_N"        $PATH/UP_SOF_N
+     add_wave "-noupdate  -label UP_EOP_N"        $PATH/UP_EOF_N
+     add_wave "-noupdate  -label UP_SRC_RDY_N"    $PATH/UP_SRC_RDY_N
+     add_wave "-noupdate  -label UP_DST_RDY_N"    $PATH/UP_DST_RDY_N
+}
+
+proc ib_down {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label DOWN_DATA"  $PATH/DOWN_DATA
+     add_wave "-noupdate  -label DOWN_SOP_N"      $PATH/DOWN_SOF_N
+     add_wave "-noupdate  -label DOWN_EOP_N"      $PATH/DOWN_EOF_N
+     add_wave "-noupdate  -label DOWN_SRC_RDY_N"  $PATH/DOWN_SRC_RDY_N
+     add_wave "-noupdate  -label DOWN_DST_RDY_N"  $PATH/DOWN_DST_RDY_N
+}
+
+proc fl_tx {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label TX_DATA"    $PATH/TX_DATA
+     add_wave "-noupdate  -label TX_REM"          $PATH/TX_REM
+     add_wave "-noupdate  -label TX_SOF_N"        $PATH/TX_SOF_N
+     add_wave "-noupdate  -label TX_EOF_N"        $PATH/TX_EOF_N
+     add_wave "-noupdate  -label TX_SOP_N"        $PATH/TX_SOP_N
+     add_wave "-noupdate  -label TX_EOP_N"        $PATH/TX_EOP_N
+     add_wave "-noupdate  -label TX_SRC_RDY_N"    $PATH/TX_SRC_RDY_N
+     add_wave "-noupdate  -label TX_DST_RDY_N"    $PATH/TX_DST_RDY_N
+}
+
+proc fl_rx {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label RX_DATA"    $PATH/RX_DATA
+     add_wave "-noupdate  -label RX_REM"          $PATH/RX_REM
+     add_wave "-noupdate  -label RX_SOF_N"        $PATH/RX_SOF_N
+     add_wave "-noupdate  -label RX_EOF_N"        $PATH/RX_EOF_N
+     add_wave "-noupdate  -label RX_SOP_N"        $PATH/RX_SOP_N
+     add_wave "-noupdate  -label RX_EOP_N"        $PATH/RX_EOP_N
+     add_wave "-noupdate  -label RX_SRC_RDY_N"    $PATH/RX_SRC_RDY_N
+     add_wave "-noupdate  -label RX_DST_RDY_N"    $PATH/RX_DST_RDY_N
+     add_wave "-noupdate  -label RX_ADDR"         $PATH/RX_ADDR
+}
+
+proc fl_rxi {NAME PATH} {
+    add wave -group "FL_RX_0" {sim:/testbench/TX_MUX[0]/*}
+    add wave -group "FL_RX_1" {sim:/testbench/TX_MUX[1]/*}
+    add wave -group "FL_RX_2" {sim:/testbench/TX_MUX[2]/*}
+    add wave -group "FL_RX_3" {sim:/testbench/TX_MUX[3]/*}
+}
+
+proc mi32 {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label MI_DWR"     $PATH/MI32_DWR
+     add_wave "-noupdate  -hex -label MI_ADDR"    $PATH/MI32_ADDR
+     add_wave "-noupdate  -hex -label MI_BE"      $PATH/MI32_BE
+     add_wave "-noupdate  -label MI_RD"           $PATH/MI32_RD
+     add_wave "-noupdate  -label MI_WR"           $PATH/MI32_WR
+     add_wave "-noupdate  -label MI_DRDY"         $PATH/MI32_DRDY
+     add_wave "-noupdate  -label MI_ARDY"         $PATH/MI32_ARDY
+     add_wave "-noupdate  -hex -label MI_DRD"     $PATH/MI32_DRD
+}

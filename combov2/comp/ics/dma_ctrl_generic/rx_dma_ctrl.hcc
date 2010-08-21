@@ -1,0 +1,529 @@
+/* rx_dma_ctrl.hcc: Generic DMA controller - RX part
+ * Copyright (C) 2009 CESNET
+ * Author(s): Martin Spinler <xspinl00@stud.fit.vutbr.cz>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ * 3. Neither the name of the Company nor the names of its contributors
+ *    may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
+ *
+ * This software is provided ``as is'', and any express or implied
+ * warranties, including, but not limited to, the implied warranties of
+ * merchantability and fitness for a particular purpose are disclaimed.
+ * In no event shall the company or contributors be liable for any
+ * direct, indirect, incidental, special, exemplary, or consequential
+ * damages (including, but not limited to, procurement of substitute
+ * goods or services; loss of use, data, or profits; or business
+ * interruption) however caused and on any theory of liability, whether
+ * in contract, strict liability, or tort (including negligence or
+ * otherwise) arising in any way out of the use of this software, even
+ * if advised of the possibility of such damage.
+ *
+ * $Id: rx_dma_ctrl.hcc 14904 2010-08-06 10:47:46Z xspinl00 $
+ *
+ */
+
+#include <stdlib.hch>
+#include "common.hch"
+
+/* ---------------------------- SIGNALS --------------------------- */
+/*     + receive buffer interface */
+signal unsigned 16                  ifc_buf_rellen;
+signal unsigned 1                   ifc_buf_rellen_dv = 0;
+signal unsigned IFC_WIDTH           ifc_buf_rellen_ifc;
+
+#if __VHDL__
+/*     + receive buffer interface */
+interface port_in                   (unsigned int 16              BUF_NEWLEN)       buf_newlen()        with { vhdl_type = "std_logic_vector" };
+interface port_in                   (unsigned int 1               BUF_NEWLEN_DV)    buf_newlen_dv();
+interface port_out() buf_rellen     (unsigned int 16              BUF_RELLEN      = ifc_buf_rellen)     with { vhdl_type = "std_logic_vector" };
+interface port_out() buf_rellen_dv  (unsigned int 1               BUF_RELLEN_DV   = ifc_buf_rellen_dv);
+#if IFC_COUNT != 1
+interface port_in                   (unsigned int IFC_WIDTH       BUF_NEWLEN_IFC)   buf_newlen_ifc()    with { vhdl_type = "std_logic_vector" };
+interface port_out() buf_rellen_ifc (unsigned int IFC_WIDTH       BUF_RELLEN_IFC  = ifc_buf_rellen_ifc) with { vhdl_type = "std_logic_vector" };
+
+/*     + input ports renaming */
+#define ifc_buf_newlen_ifc          buf_newlen_ifc.BUF_NEWLEN_IFC
+#else
+#define ifc_buf_newlen_ifc          0
+interface port_in                   (unsigned int 1               BUF_NEWLEN_IFC)   buf_newlen_ifc()    with { vhdl_type = "std_logic_vector" };
+interface port_out() buf_rellen_ifc (unsigned int 1               BUF_RELLEN_IFC  = helper)             with { vhdl_type = "std_logic_vector" };
+#endif
+
+#define ifc_buf_newlen              buf_newlen.BUF_NEWLEN
+#define ifc_buf_newlen_dv           buf_newlen_dv.BUF_NEWLEN_DV
+#endif
+
+/* ----------------------- GLOBAL REGISTERS ----------------------- */
+mpram { ram unsigned 3           W[IFC_COUNT]; rom unsigned 3           R[IFC_COUNT]; } controlRegister with { block = "SelectRAM" };
+mpram { ram unsigned 3           W[IFC_COUNT]; rom unsigned 3           R[IFC_COUNT]; } statusRegister  with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } timeout         with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } intMonitor      with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } intEndPtr       with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } swEndPtr        with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } localSwEndPtr   with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } swStrPtr        with { block = "SelectRAM" };
+mpram { ram unsigned HW_PTR_SIZE W[IFC_COUNT]; rom unsigned HW_PTR_SIZE R[IFC_COUNT]; } hwEndPtr        with { block = "SelectRAM" };
+ram unsigned SW_PTR_SIZE                         timeoutMon[IFC_COUNT]                                  with { block = "SelectRAM" };
+ram unsigned HW_PTR_SIZE                         hwStrPtr[IFC_COUNT]                                    with { block = "SelectRAM" };
+ram unsigned DESC_WIDTH                          descriptor[IFC_COUNT]                                  with { block = "SelectRAM" };
+unsigned int 1                                   descriptorReady[IFC_COUNT];
+unsigned int 1                                   intReset[IFC_COUNT];
+unsigned int 1                                   intEnable[IFC_COUNT];
+unsigned int 1                                   timeoutReset[IFC_COUNT];
+unsigned int 1                                   timeoutEnable[IFC_COUNT];
+unsigned int 1                                   dataFlow[IFC_COUNT];
+unsigned int 1                                   swEndPtrEqual[IFC_COUNT];
+unsigned int 1                                   swEndPtrReset1[IFC_COUNT];
+unsigned int 1                                   swEndPtrReset2[IFC_COUNT];
+unsigned int DMAREQ_WIDTH                        DMARequest[DMA_PARTS];
+
+#ifdef SELECTRAM
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } swEndPtrValue1  with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } swEndPtrValue2  with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } swBufferMask1   with { block = "SelectRAM" };
+mpram { ram unsigned SW_PTR_SIZE W[IFC_COUNT]; rom unsigned SW_PTR_SIZE R[IFC_COUNT]; } swBufferMask2   with { block = "SelectRAM" };
+#else
+unsigned int SW_PTR_SIZE                         swBufferMask[IFC_COUNT];
+unsigned int SW_PTR_SIZE                         swEndPtrValue[IFC_COUNT];
+#endif
+
+signal unsigned 1                                dma_done_release = 0;
+unsigned (log2ceil(PENDING_FIFO_LENGTH))         dma_done_cnt = 0;
+chan unsigned (PENDING_FIFO_WIDTH + 1)           DMAPendingRequests_Fifo with { fifolength = PENDING_FIFO_LENGTH };
+
+
+/* ------------------------ NEW DATA PROCESS --------------------- */
+/* --------------- new data arrival ---------------- */
+void main(void)
+{
+   // Registers for better timing
+   unsigned IFC_WIDTH i;
+   unsigned (HW_PTR_SIZE) newlen;
+   unsigned 1 dv;
+
+   while (1) par
+   {
+      dv = ifc_buf_newlen_dv;
+      i = ifc_buf_newlen_ifc;
+      newlen = ifc_buf_newlen[HW_PTR_SIZE-1:0];
+      if(dv == 1) par
+      {
+         timeoutReset[i] = 1;
+         hwEndPtr.W[i] += newlen;
+      }
+   }
+}
+
+/* ----------------- main process ------------------ */
+unsigned 3                 cr;
+unsigned HW_PTR_SIZE       hwStr;
+unsigned HW_PTR_SIZE       hwEnd; 
+unsigned HW_PTR_SIZE       length;
+unsigned (PAGE_WIDTH+1)    pageSpace;
+unsigned (HW_PTR_SIZE-1)   dataLength;
+unsigned DESC_WIDTH        newDescriptor;
+unsigned 1                 dataLengthMSB;
+unsigned 1                 pageBreakFlag = 0;
+
+unsigned SW_PTR_SIZE       swStr, swEnd, swFreeSpace;
+unsigned IFC_WIDTH         newData_activeIfc = 0;
+
+void main(void) 
+{
+   seq (j = 0; j < IFC_COUNT; ++j)
+   {
+      par
+      {
+         swEndPtrEqual[j] = 1;
+         descriptorReady[j] = 0;
+         statusRegister.W[j] = STATUS_STOPPED;
+         controlRegister.W[j] = 1 << CONTROL_STOP;
+         swEndPtrReset1[j] = 0;
+         swEndPtrReset2[j] = 0;
+      }
+   }
+
+   while(1)
+   {
+      #if IFC_COUNT == 1
+      macro expr i = 0;
+      cr = controlRegister.R[i];
+      #else
+      macro expr i = newData_activeIfc;
+      par
+      {
+         i = i + 1;
+         cr = controlRegister.R[i+1];
+      }
+      #endif
+
+      if(cr[CONTROL_STOP] == 1 && swEndPtrEqual[i] == 1) par
+      {
+         #if IFC_COUNT == 1
+         ifc_enable = 0;
+         #else
+         ifc_enable &= ~decode(i);
+         #endif
+         intEnable[i] = 0;
+         timeoutEnable[i] = 0;
+         descriptorReady[i] = 0;
+         statusRegister.W[i] = STATUS_STOPPED;
+      }
+      else if(cr[CONTROL_RUN] == 1) do
+      {
+         macro expr hwLength = hwEnd[HW_PTR_SIZE-2:0] - hwStr[HW_PTR_SIZE-2:0];
+         delay;
+         par
+         {
+            #if IFC_COUNT == 1
+            ifc_enable = 1;
+            #else
+            ifc_enable |= decode(i);
+            #endif
+            if(pageBreakFlag == 0)
+               hwEnd = hwEndPtr.R[i];
+            hwStr = hwStrPtr[i];
+            ifc_desc_ifc = i;
+            statusRegister.W[i] = STATUS_RUNNING;
+         }
+         if(descriptorReady[i] == 0 && ifc_desc_empty == 0) 
+         {
+            ifc_desc_read = 1;
+            while(ifc_desc_dv != 1) delay;
+            par
+            {
+               descriptor[i] = ifc_desc_data;
+               descriptorReady[i] = 1;
+            }
+         }
+         else
+            delay;
+         if(hwEnd != hwStr && descriptorReady[i] == 1 && (pageBreakFlag == 1 || ifc_desc_empty == 0))
+         {
+            delay;
+            par
+            {
+               pageSpace = PAGE_SIZE - adju(descriptor[i][PAGE_WIDTH-1:0], PAGE_WIDTH+1);
+               dataLength = hwLength;
+               dataLengthMSB = (hwLength == 0);     // data length is 0x1000
+               swStr = swStrPtr.R[i];
+               if(swEndPtrReset1[i] == 1) par
+               {
+                  swEndPtrReset1[i] = 0;
+                  swEnd = swEndPtrValue1R[i];
+                  localSwEndPtr.W[i] = swEndPtrValue1R[i];
+               }
+               else
+                  swEnd = localSwEndPtr.W[i];
+            }
+            par
+            {
+               if(dataLengthMSB @ dataLength <= 0x0 @ pageSpace) par
+               {
+                  length = dataLengthMSB @ dataLength;
+                  pageBreakFlag = 0;
+               }
+               else par 
+               {
+                  length = 0x0 @ pageSpace;
+                  pageBreakFlag = 1;
+               }
+               swFreeSpace = (swStr - swEnd - 1) & swBufferMask1R[i];
+            }
+            if(swFreeSpace >= adju(dataLengthMSB @ dataLength, SW_PTR_SIZE))
+            {               
+               #if DMAREQ_WIDTH == 32
+               par
+               {
+                  DMARequest[3] = descriptor[i][63:32];
+                  DMARequest[2] = descriptor[i][31:0];
+                  #if IFC_COUNT == 1
+                  DMARequest[1] = BUFFER_ADDR + adju(hwStr[HW_PTR_SIZE-2:0], 32);
+                  DMARequest[0] = TAG_RX <- 16 @ length[PAGE_WIDTH-1:0] @ TYPE_FPGA2RAM <- 4;
+                  #else
+                  DMARequest[1] = BUFFER_ADDR + adju(i @ adju(hwStr[HW_PTR_SIZE-2:0], log2ceil(BUFFER_AREA)), 32);
+                  DMARequest[0] = adju(i, 15) @ TAG_RX <- 1 @ length[PAGE_WIDTH-1:0] @ TYPE_FPGA2RAM <- 4;
+                  #endif
+
+                  swStr = swEnd + adju(length, 32);
+                  newDescriptor = descriptor[i][63:PAGE_WIDTH] @ (length[PAGE_WIDTH-1:0] + descriptor[i][PAGE_WIDTH-1:0]);
+               }
+               #else
+                  #error "This DMAREQ_WIDTH is unimplemented. Add a few lines here."
+               #endif
+               par
+               {
+
+                  ifc_dma_req = 1;
+                  while (ifc_dma_ack == 0)
+                     ifc_dma_dout = DMARequest[ifc_dma_addr];
+
+                  DMAPendingRequests_Fifo ! (i @ pageBreakFlag @ length);               
+                  if(newDescriptor[PAGE_WIDTH-1:0] == 0)
+                     descriptorReady[i] = 0;
+                  descriptor[i] = newDescriptor;
+                  hwStrPtr[i] = hwStr + adju(length, HW_PTR_SIZE);
+                  localSwEndPtr.W[i] = swStr & swBufferMask1R[i];  // (localSwEndPtr + length) & swMask
+                  swEndPtrEqual[i] = 0;
+               }
+            }
+            else
+               pageBreakFlag = 0;            // end with actual interface
+         }
+      } while(pageBreakFlag == 1);
+      else                                      // STATUS_IDLE and STATUS_UNDEFINED
+         delay;
+   }
+}
+
+/* --------------------- RELEASE DATA PROCESS --------------------- */
+unsigned (PENDING_FIFO_WIDTH + 1) DMAPendingRequest;
+unsigned SW_PTR_SIZE endPtr;
+unsigned SW_PTR_SIZE monitor;
+unsigned 1 prevPB = 0;
+
+void main(void) 
+{
+   while(1) par
+   {
+      if     (ifc_dma_done == 1 && dma_done_release == 0 ) dma_done_cnt++;
+      else if(ifc_dma_done == 0 && dma_done_release == 1 ) dma_done_cnt--;
+      else delay;
+   }
+}
+
+void main(void) 
+{
+   while (1) 
+   {
+      if(dma_done_cnt != 0)
+      {
+         #if IFC_COUNT == 1
+         macro expr i = 0;
+         #else
+         macro expr i = DMAPendingRequest[PENDING_FIFO_WIDTH:HW_PTR_SIZE+1];
+         #endif
+
+         macro expr length = DMAPendingRequest[HW_PTR_SIZE-1:0];
+         par
+         {
+            DMAPendingRequests_Fifo ? DMAPendingRequest;
+            dma_done_release = 1;
+         }
+         par
+         {
+            dataFlow[i] = 1;
+            ifc_buf_rellen = adju(length, width(ifc_buf_rellen));
+            ifc_buf_rellen_dv = 1;
+            ifc_buf_rellen_ifc = i;
+
+            if(prevPB == 0)
+            {
+               if(swEndPtrReset2[i] == 1)
+                  endPtr = swEndPtrValue2R[i];
+               else
+                  endPtr = swEndPtr.W[i];
+            }
+         }
+         par
+         {
+            prevPB = DMAPendingRequest[HW_PTR_SIZE];
+            endPtr = (endPtr + adju(length, SW_PTR_SIZE)) & swBufferMask2R[i];
+            monitor = intMonitor.W[i]; // Helper:    monitor = intMonitor.W[i]; intMonitor.W[i] = monitor + length Cannot be in same cycle !!!
+         }
+         if(prevPB == 0) par
+         {
+            swEndPtrReset2[i] = 0;
+            swEndPtr.W[i] = endPtr;
+
+            if(endPtr == localSwEndPtr.R[i])
+               swEndPtrEqual[i] = 1;
+            else
+               swEndPtrEqual[i] = 0;
+
+            if(intReset[i] == 1) par
+            {
+               intReset[i] = 0;
+               intMonitor.W[i]  = adju(length, 32);
+            }
+            else
+               intMonitor.W[i] = monitor + adju(length, 32);
+         }
+         else
+            delay;
+      }
+      else 
+         delay;
+   }
+}
+
+/* ----------------------- INTERRUPT PROCESS ---------------------- */
+unsigned 32 intReg;
+unsigned 32 timeoutReg;
+unsigned 1  compare;
+
+void main(void) 
+{
+   while (1) 
+   {
+      #if IFC_COUNT == 1
+      macro expr i = 0;
+      delay;      // Synchronize
+      #else
+      macro expr i = ifc_interrupt_ifc;
+      i = i + 1;
+      #endif
+      par
+      {
+         intReg = intEndPtr.R[i];
+         timeoutReg = timeoutMon[i];
+      }
+
+      if(intMonitor.R[i] >= (intReg & ~3))
+         compare = 1;
+      else
+         compare = 0;
+
+      if(compare && intEnable[i] == 1 && intReg[1] == 1 && intReset[i] == 0) par
+      {
+         ifc_interrupt = 0x1;
+         timeoutEnable[i] = 0;
+         intEnable[i] = 0;
+      }
+      else if(dataFlow[i] == 1 && intReg[0] == 1 && timeoutEnable[i] == 1) par
+      {
+         if(timeoutReset[i] == 1) par
+         {
+            timeoutReset[i] = 0;
+            timeoutMon[i] = timeout.R[i];
+         }
+         else if(timeoutReg < IFC_COUNT*4) par
+         {
+            intEnable[i] = 0;
+            timeoutEnable[i] = 0;
+            ifc_interrupt = 0x2;
+         }
+         else
+            timeoutMon[i] = timeoutReg - IFC_COUNT*4;
+      }
+      else
+         delay;
+   }
+}
+
+/* ------------------------ Address decoder ----------------------- 
+ *
+ * Offset  Hex   Description
+ *     00  0x00  Control Register
+ *     04  0x04  Status Register
+ *     08  0x08  Start Pointer
+ *     12  0x0C  End Pointer
+ *     16  0x10  Buffer Size Mask Register
+ *     20  0x14  Interrupt Register
+ *     24  0x18  Timeout Register
+ */
+void main(void)
+{
+   while (1) par 
+   {
+      #if IFC_COUNT == 1
+      macro expr i = 0;
+      #else
+      macro expr i = ifc_sw_addr[7+IFC_WIDTH-1:7];
+      #endif
+      ifc_sw_ardy = ifc_sw_wr | ifc_sw_rd;
+      ifc_sw_drdy = ifc_sw_rd;
+      if(ifc_sw_wr == 1) 
+      {
+         switch (ifc_sw_addr[5:0])
+         {
+         case 0x00:
+            controlRegister.W[i] = ifc_sw_dwr[2:0];
+            break;
+         case 0x04:
+            delay;         // statusRegister is read only
+            break;
+         case 0x08:
+            swStrPtr.W[i] = ifc_sw_dwr;
+            break;
+         case 0x0C: par
+            {
+               swEndPtrValue1W[i] = ifc_sw_dwr;
+               swEndPtrValue2W[i] = ifc_sw_dwr;
+               swEndPtrReset1[i] = 1;
+               swEndPtrReset2[i] = 1;
+            }
+            break;
+         case 0x10: par
+            {
+               swBufferMask1W[i] = ifc_sw_dwr;
+               swBufferMask2W[i] = ifc_sw_dwr;
+            }
+            break;
+         case 0x14: par
+            {
+               intReset[i] = 1;
+               intEndPtr.W[i] = ifc_sw_dwr;
+               intEnable[i] = ifc_sw_dwr[1];
+               timeoutEnable[i] = ifc_sw_dwr[0];
+               timeoutReset[i] = 1;
+               dataFlow[i] = 0;
+            }
+            break;
+         case 0x18: par
+            {
+               timeout.W[i] = ifc_sw_dwr;
+               timeoutReset[i] = 1;
+            }
+            break;
+         default:
+            delay;
+            break;
+         }
+      }
+      else if(ifc_sw_rd == 1) 
+      {
+         switch (ifc_sw_addr[5:0]) 
+         {
+         case 0x00:
+            ifc_sw_drd = adju(controlRegister.W[i], width(ifc_sw_drd));
+            break;
+         case 0x04:
+            ifc_sw_drd = adju(statusRegister.R[i], width(ifc_sw_drd));
+            break;
+         case 0x08:
+            ifc_sw_drd = swStrPtr.W[i];
+            break;
+         case 0x0C:
+            if(swEndPtrReset2[i] == 0)
+              ifc_sw_drd = swEndPtr.R[i];
+            else
+              ifc_sw_drd = swEndPtrValue1W[i];
+            break;
+         case 0x10: 
+            ifc_sw_drd = swBufferMask1W[i];
+            break;
+         case 0x14: 
+            ifc_sw_drd = intEndPtr.W[i];
+            break;
+         case 0x18: 
+            ifc_sw_drd = timeout.W[i];
+            break;
+         default: 
+            ifc_sw_drd = 0x0;
+            break; 
+         } 
+      }
+      else 
+         delay;
+   }
+}

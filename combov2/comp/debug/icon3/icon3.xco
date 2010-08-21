@@ -1,0 +1,48 @@
+##############################################################
+#
+# Xilinx Core Generator version K.39
+# Date: Thu Apr 30 18:17:14 2009
+#
+##############################################################
+#
+#  This file contains the customisation parameters for a
+#  Xilinx CORE Generator IP GUI. It is strongly recommended
+#  that you do not manually alter this file as it may cause
+#  unexpected and unsupported behavior.
+#
+##############################################################
+#
+# BEGIN Project Options
+NEWPROJECT .
+SET addpads = False
+SET asysymbol = False
+SET busformat = BusFormatParenNotRipped
+SET createndf = False
+SET designentry = VHDL
+SET device = xc5vlx110t
+SET devicefamily = virtex5
+SET flowvendor = MentorHDL
+SET formalverification = False
+SET foundationsym = False
+SET implementationfiletype = ngc
+SET package = ff1136
+SET removerpms = False
+SET simulationfiles = Structural
+SET speedgrade = -1
+SET verilogsim = False
+SET vhdlsim = True
+# END Project Options
+# BEGIN Select
+SELECT ICON_(ChipScope_Pro_-_Integrated_Controller) family Xilinx,_Inc. 1.03.a
+# END Select
+# BEGIN Parameters
+CSET component_name=icon3
+CSET enable_jtag_bufg=true
+CSET number_control_ports=3
+CSET use_ext_bscan=false
+CSET use_unused_bscan=false
+CSET user_scan_chain=USER1
+# END Parameters
+GENERATE
+# CRC: bb92b701
+

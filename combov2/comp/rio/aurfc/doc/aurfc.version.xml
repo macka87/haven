@@ -1,0 +1,25 @@
+<versions>
+    
+    <version id="HEAD" name="ACTUAL_VERSION">
+        <item>TX and/or RX logic can be omited.</item>
+    </version>
+ 
+    <version id="AURFC_01_04" name="01_04">
+        <item>TX and/or RX logic can be omited.</item>
+    </version>
+
+    <version id="AURFC_01_03" name="01_03">
+        <item>Several SOF/EOF generation bugs removed</item>
+    </version>
+<!--
+    <version id="AURFC_01_02" name="01_02">
+        <item>LocalLink interface has been replaced by FrameLink interface</item>
+    </version>
+    <version id="AURFC_01_01" name="01_01">
+        <item>Status of TX and RX fifo has been added to the interface. Several bug fixes.</item>
+    </version>
+    <version id="AURFC_01_00" name="01_00">
+        <item>First version has been released.</item>
+    </version>
+-->
+</versions>

@@ -1,0 +1,5 @@
+Module: qp_distmem
+Author: Jakub Sochor <xsocho06@stud.fit.vutbr.cz>
+
+Distributed quad port RAM. Behavioral design.
+XST synthetize into DPRAM32 primitives. Tested in ISE.

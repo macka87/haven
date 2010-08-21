@@ -1,0 +1,181 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author: Libor Polcak <polcak_l@liberouter.org>
+#         Jiri Matousek <xmaotu06@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 6134 2008-10-28 14:09:51Z xmatou06 $
+
+   view wave
+   delete wave *
+
+proc blk_comp { TB COMP } {
+   add wave -divider "MI_INT"
+   add_wave "-noupdate -hex -label ibuf_clk" $TB/ibuf_clk
+   add_wave "-noupdate -hex -label mi_clk" $TB/mi_clk
+   add_wave "-noupdate -hex -label reset" $TB/reset
+      
+
+   add wave -divider "IBUF_signals"
+   add_wave "-noupdate -label IBUF_CLK -hex" $COMP/IBUF_CLK
+   add_wave "-noupdate -label RESET -hex" $COMP/RESET
+
+
+   add wave -divider "MI32_interface"
+   add_wave "-noupdate -label MI_CLK -hex" $COMP/MI_CLK
+   add_wave "-noupdate -label MI_DWR -hex" $COMP/MI_DWR
+   add_wave "-noupdate -label MI_ADDR -hex" $COMP/MI_ADDR
+   add_wave "-noupdate -label MI_RD -hex" $COMP/MI_RD
+   add_wave "-noupdate -label MI_WR -hex" $COMP/MI_WR
+   add_wave "-noupdate -label MI_BE -hex" $COMP/MI_BE
+   add_wave "-noupdate -label MI_DRD -hex" $COMP/MI_DRD
+   add_wave "-noupdate -label MI_ARDY -hex" $COMP/MI_ARDY
+   add_wave "-noupdate -label MI_DRDY -hex" $COMP/MI_DRDY
+
+
+   add wave -divider "Check_interface"
+   add_wave "-noupdate -label MI2CHECK -hex" $COMP/MI2CHECK
+
+   add wave -divider "Buf_interface"
+   add_wave "-noupdate -label MI2BUF -hex" $COMP/MI2BUF
+   add_wave "-noupdate -label BUF2MI -hex" $COMP/BUF2MI
+
+   add wave -divider "CAM_interface"
+   add_wave "-noupdate -label CAM_DI -hex" $COMP/CAM_DI
+   add_wave "-noupdate -label CAM_MATCH_EN -hex" $COMP/CAM_MATCH_EN
+   add_wave "-noupdate -label CAM_MATCH_RST -hex" $COMP/CAM_MATCH_RST
+   add_wave "-noupdate -label CAM_MATCH_BUS -hex" $COMP/CAM_MATCH_BUS
+   add_wave "-noupdate -label CAM_MATCH_BUS_VLD -hex" $COMP/CAM_MATCH_BUS_VLD
+
+   add wave -divider "Internal_MI32_Interface"
+   add_wave "-noupdate -label mi_int_dwr -hex" $COMP/mi_int_dwr
+   add_wave "-noupdate -label mi_int_addr -hex" $COMP/mi_int_addr
+   add_wave "-noupdate -label mi_int_rd -hex" $COMP/mi_int_rd
+   add_wave "-noupdate -label mi_int_wr -hex" $COMP/mi_int_wr
+   add_wave "-noupdate -label mi_int_be -hex" $COMP/mi_int_be
+   add_wave "-noupdate -label mi_int_drd -hex" $COMP/mi_int_drd
+   add_wave "-noupdate -label mi_int_ardy -hex" $COMP/mi_int_ardy
+   add_wave "-noupdate -label mi_int_drdy -hex" $COMP/mi_int_drdy
+
+
+   add wave -divider "Registers"
+   add_wave "-noupdate -label cnt_reg_we -hex" $COMP/cnt_reg_we
+   add_wave "-noupdate -label reg_trfc -hex" $COMP/reg_trfc
+   add_wave "-noupdate -label reg_cfc -hex" $COMP/reg_cfc
+   add_wave "-noupdate -label reg_dfc -hex" $COMP/reg_dfc
+   add_wave "-noupdate -label reg_bodfc -hex" $COMP/reg_bodfc
+   add_wave "-noupdate -label reg_ibuf_en -hex" $COMP/reg_ibuf_en
+   add_wave "-noupdate -label reg_ibuf_en_we -hex" $COMP/reg_ibuf_en_we
+   add_wave "-noupdate -label reg_error_mask -hex" $COMP/reg_error_mask
+   add_wave "-noupdate -label reg_error_mask_we -hex" $COMP/reg_error_mask_we
+   add_wave "-noupdate -label reg_status_in -hex" $COMP/reg_status_in
+   add_wave "-noupdate -label buf_fifo_data -hex" $COMP/buf_fifo_data
+   add_wave "-noupdate -label reg_status -hex" $COMP/reg_status
+   add_wave "-noupdate -label reg_status_we -hex" $COMP/reg_status_we
+   add_wave "-noupdate -label reg_cmd -hex" $COMP/reg_cmd
+   add_wave "-noupdate -label reg_cmd_we -hex" $COMP/reg_cmd_we
+   add_wave "-noupdate -label reg_min_frame_len -hex" $COMP/reg_min_frame_len
+   add_wave "-noupdate -label reg_min_frame_len_we -hex" $COMP/reg_min_frame_len_we
+   add_wave "-noupdate -label reg_max_frame_len -hex" $COMP/reg_max_frame_len
+   add_wave "-noupdate -label reg_max_frame_len_we -hex" $COMP/reg_max_frame_len_we
+   add_wave "-noupdate -label reg_mac_check_mode -hex" $COMP/reg_mac_check_mode
+   add_wave "-noupdate -label reg_mac_check_mode_we -hex" $COMP/reg_mac_check_mode_we
+
+   add wave -divider "32-bit_readable_registers"
+   add_wave "-noupdate -label reg_ibuf_en32 -hex" $COMP/reg_ibuf_en32
+   add_wave "-noupdate -label reg_error_mask32 -hex" $COMP/reg_error_mask32
+   add_wave "-noupdate -label reg_status32 -hex" $COMP/reg_status32
+   add_wave "-noupdate -label reg_min_frame_len32 -hex" $COMP/reg_min_frame_len32
+   add_wave "-noupdate -label reg_max_frame_len32 -hex" $COMP/reg_max_frame_len32
+   add_wave "-noupdate -label reg_mac_check_mode32 -hex" $COMP/reg_mac_check_mode32
+
+   add wave -divider "Command_part"
+   add_wave "-noupdate -label reset_counters -hex" $COMP/reset_counters
+
+   add wave -divider "CAM"
+   add_wave "-noupdate -label CLK -hex" $COMP/cami/CLK
+   add_wave "-noupdate -label RESET -hex" $COMP/cami/RESET
+   add_wave "-noupdate -label ADDR -hex" $COMP/cami/ADDR
+   add_wave "-noupdate -label CAM_BUSY -hex" $COMP/cami/CAM_BUSY
+   add_wave "-noupdate -label DATA_IN -hex" $COMP/cami/DATA_IN
+   add_wave "-noupdate -label WRITE_EN -hex" $COMP/cami/WRITE_EN
+   add_wave "-noupdate -label READ_EN -hex" $COMP/cami/READ_EN
+   add_wave "-noupdate -label DATA_OUT -hex" $COMP/cami/DATA_OUT
+   add_wave "-noupdate -label DATA_OUT_VLD -hex" $COMP/cami/DATA_OUT_VLD
+   add_wave "-noupdate -label MATCH_EN -hex" $COMP/cami/MATCH_EN
+   add_wave "-noupdate -label MATCH_RST -hex" $COMP/cami/MATCH_RST
+   add_wave "-noupdate -label MATCH_BUS -hex" $COMP/cami/MATCH_BUS
+   add_wave "-noupdate -label MATCH_BUS_VLD -hex" $COMP/cami/MATCH_BUS_VLD
+
+   add wave -divider "CAM_part_signals"
+   add_wave "-noupdate -label cami_addr -hex" $COMP/cami_addr
+   add_wave "-noupdate -label cami_data_in -hex" $COMP/cami_data_in
+   add_wave "-noupdate -label cami_write_en -hex" $COMP/cami_write_en
+   add_wave "-noupdate -label cami_match_en -hex" $COMP/cami_match_en
+   add_wave "-noupdate -label cami_busy -hex" $COMP/cami_busy
+   add_wave "-noupdate -label cami_read_en -hex" $COMP/cami_read_en
+   add_wave "-noupdate -label cami_data_out -hex" $COMP/cami_data_out
+   add_wave "-noupdate -label cami_data_out_vld -hex" $COMP/cami_data_out_vld
+   add_wave "-noupdate -label cam_ins_addr_eq -hex" $COMP/cam_ins_addr_eq
+   add_wave "-noupdate -label reg_cam_ins_data -hex" $COMP/reg_cam_ins_data
+   add_wave "-noupdate -label reg_cam_ins_data_low -hex" $COMP/reg_cam_ins_data_low
+   add_wave "-noupdate -label reg_cam_ins_data_high -hex" $COMP/reg_cam_ins_data_high
+   add_wave "-noupdate -label reg_cam_ins_data_low_cs -hex" $COMP/reg_cam_ins_data_low_cs
+   add_wave "-noupdate -label reg_cam_ins_data_high_cs -hex" $COMP/reg_cam_ins_data_high_cs
+   add_wave "-noupdate -label reg_cam_ins_data_low_we -hex" $COMP/reg_cam_ins_data_low_we
+   add_wave "-noupdate -label reg_cam_ins_data_high_we -hex" $COMP/reg_cam_ins_data_high_we
+   add_wave "-noupdate -label reg_cam_ins_in -hex" $COMP/reg_cam_ins_in
+   add_wave "-noupdate -label reg_cam_ins -hex" $COMP/reg_cam_ins
+   add_wave "-noupdate -label reg_cam_addr -hex" $COMP/reg_cam_addr
+   add_wave "-noupdate -label mx_cam_addr_1 -hex" $COMP/mx_cam_addr_1
+   add_wave "-noupdate -label mx_cam_addr -hex" $COMP/mx_cam_addr
+   add_wave "-noupdate -label mx_cam_addr_sel -hex" $COMP/mx_cam_addr_sel
+   add_wave "-noupdate -label reg_read_part -hex" $COMP/reg_read_part
+   add_wave "-noupdate -label reg_read_part_we -hex" $COMP/reg_read_part_we
+   add_wave "-noupdate -label cam_read -hex" $COMP/cam_read
+   add_wave "-noupdate -label reg_cam_read -hex" $COMP/reg_cam_read
+
+
+   add wave -divider "Decoder_part"
+   add_wave "-noupdate -label reg_ibuf_en_cs -hex" $COMP/reg_ibuf_en_cs
+   add_wave "-noupdate -label reg_error_mask_cs -hex" $COMP/reg_error_mask_cs
+   add_wave "-noupdate -label reg_status_cs -hex" $COMP/reg_status_cs
+   add_wave "-noupdate -label reg_cmd_cs -hex" $COMP/reg_cmd_cs
+   add_wave "-noupdate -label reg_min_frame_len_cs -hex" $COMP/reg_min_frame_len_cs
+   add_wave "-noupdate -label reg_max_frame_len_cs -hex" $COMP/reg_max_frame_len_cs
+   add_wave "-noupdate -label reg_mac_check_mode_cs -hex" $COMP/reg_mac_check_mode_cs
+   add_wave "-noupdate -label mx_mi_drdy -hex" $COMP/mx_mi_drdy
+   add_wave "-noupdate -label mx_mi_drdy_sel -hex" $COMP/mx_mi_drdy_sel
+
+   add wave -divider "MI32_Output_multiplexers"
+   add_wave "-noupdate -label mx_decoder_data_out -hex" $COMP/mx_decoder_data_out
+   add_wave "-noupdate -label mx_cam_do -hex" $COMP/mx_cam_do
+   add_wave "-noupdate -label mx_cam_do_sel -hex" $COMP/mx_cam_do_sel
+   add_wave "-noupdate -label mx_decoder_mi_rd -hex" $COMP/mx_decoder_mi_rd
+   add_wave "-noupdate -label mx_decoder_mi_rd_sel -hex" $COMP/mx_decoder_mi_rd_sel
+
+}

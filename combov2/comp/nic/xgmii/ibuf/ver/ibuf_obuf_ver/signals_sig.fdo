@@ -1,0 +1,83 @@
+# top_level_sig.fdo : Include file with signals 
+# Copyright (C) 2003 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals_sig.fdo 12199 2009-12-04 21:05:28Z xsanta06 $
+#
+
+# Global file with signals
+
+set IBUF_TOP_PATH      "/testbench/DUT_U/VHDL_DUT_U/ibuf"
+set IBUF_PATH      	  "$IBUF_TOP_PATH/IBUF_XGMII_NORECi/IBUF_XGMII_SDR_NORECi"
+set OBUF_TOP_PATH      "/testbench/DUT_U/VHDL_DUT_U/obuf"
+set OBUF_PATH          "$OBUF_TOP_PATH/sdrobufi"
+
+source "./signals.fdo"
+source "../../sim/signals.fdo"
+source "../../../obuf/sim/signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+# TODO: ZMENA NAZVU TESTOVANEJ KOMPONENTY
+add wave -divider "IBUF"
+add_wave "-noupdate -color yellow -label RESET"   /testbench/RESET
+add_wave "-noupdate -color yellow -label CLK"     /testbench/CLK
+
+rx   RX  /testbench/DUT_U/VHDL_DUT_U
+tx   TX  /testbench/DUT_U/VHDL_DUT_U
+
+xgmii_obuf_ifc "$OBUF_TOP_PATH"
+xgmii_obuf_int "$OBUF_PATH"
+xgmii_obuf_fl_ifc "$OBUF_PATH"
+#xgmii_obuf_fl_sig "$OBUF_PATH"
+xgmii_obuf_buf_ifc "$OBUF_PATH"
+#xgmii_obuf_buf_sig "$OBUF_PATH"
+xgmii_obuf_process_ifc "$OBUF_PATH"
+#xgmii_obuf_process_sig "$OBUF_PATH"
+xgmii_obuf_xgmii_enc_ifc "$OBUF_PATH"
+xgmii_obuf_xgmii_enc_sig "$OBUF_PATH"
+
+XGMII_IBUF_IFC "$IBUF_TOP_PATH"
+#XGMII_IBUF_DDR2SDR "$IBUF_TOP_PATH"
+XGMII_IBUF_ALIGN "$IBUF_PATH"
+XGMII_IBUF_XGMII_DEC "$IBUF_PATH"
+XGMII_IBUF_CHECK "$IBUF_PATH"
+XGMII_IBUF_BUF_IFC "$IBUF_PATH"
+XGMII_IBUF_BUF_INPUT "$IBUF_PATH"
+#XGMII_IBUF_BUF_TRANSFORM "$IBUF_PATH"
+XGMII_IBUF_BUF_FSM "$IBUF_PATH"
+XGMII_IBUF_BUF_FIFOS "$IBUF_PATH"
+XGMII_IBUF_BUF_CNTRS "$IBUF_PATH"
+#XGMII_IBUF_FL_COMPOSER "$IBUF_PATH"
+#XGMII_IBUF_MI_INT "$IBUF_PATH"
+#XGMII_IBUF_TB_SIGNALS "$TB_BASE"
+
+restart -f
+run -all

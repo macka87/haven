@@ -1,0 +1,368 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author: Martin Kosek   <kosek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 6432 2008-11-30 14:24:26Z xmatou06 $
+#
+
+# -----------------------------------------------------------------------------
+#                            Signals of interfaces
+# -----------------------------------------------------------------------------
+
+proc ifc_COMBOV2_NETCOPE { } {
+   global COMBOV2_NETCOPE_PATH
+   add wave -divider "COMBOV2 NETCOPE"
+
+   add_wave "-label clk" $COMBOV2_NETCOPE_PATH/clk
+   add_wave "-label reset" $COMBOV2_NETCOPE_PATH/reset
+   add_wave "-label busreset" $COMBOV2_NETCOPE_PATH/busreset
+
+   add wave -divider "Internal Bus"
+   add_wave "-label internal_bus_down_data -hex" $COMBOV2_NETCOPE_PATH/internal_bus_down_data
+   add_wave "-label internal_bus_down_sop_n" $COMBOV2_NETCOPE_PATH/internal_bus_down_sop_n
+   add_wave "-label internal_bus_down_eop_n" $COMBOV2_NETCOPE_PATH/internal_bus_down_eop_n
+   add_wave "-label internal_bus_down_src_rdy_n" $COMBOV2_NETCOPE_PATH/internal_bus_down_src_rdy_n
+   add_wave "-label internal_bus_down_dst_rdy_n" $COMBOV2_NETCOPE_PATH/internal_bus_down_dst_rdy_n
+   add_wave "-label internal_bus_up_data -hex" $COMBOV2_NETCOPE_PATH/internal_bus_up_data
+   add_wave "-label internal_bus_up_sop_n" $COMBOV2_NETCOPE_PATH/internal_bus_up_sop_n
+   add_wave "-label internal_bus_up_eop_n" $COMBOV2_NETCOPE_PATH/internal_bus_up_eop_n
+   add_wave "-label internal_bus_up_src_rdy_n" $COMBOV2_NETCOPE_PATH/internal_bus_up_src_rdy_n
+   add_wave "-label internal_bus_up_dst_rdy_n" $COMBOV2_NETCOPE_PATH/internal_bus_up_dst_rdy_n
+   
+   add wave -divider "Simulation signals"
+   add_wave "-label emac0_rxclk" $COMBOV2_NETCOPE_PATH/emac0_rxclk
+   add_wave "-label emac0_rxce" $COMBOV2_NETCOPE_PATH/emac0_rxce
+   add_wave "-label emac0_rx" $COMBOV2_NETCOPE_PATH/emac0_rx
+   add_wave "-label emac1_rxclk" $COMBOV2_NETCOPE_PATH/emac1_rxclk
+   add_wave "-label emac1_rxce" $COMBOV2_NETCOPE_PATH/emac1_rxce
+   add_wave "-label emac1_rx" $COMBOV2_NETCOPE_PATH/emac1_rx
+   add_wave "-label emac2_rxclk" $COMBOV2_NETCOPE_PATH/emac2_rxclk
+   add_wave "-label emac2_rxce" $COMBOV2_NETCOPE_PATH/emac2_rxce
+   add_wave "-label emac2_rx" $COMBOV2_NETCOPE_PATH/emac2_rx
+   add_wave "-label emac3_rxclk" $COMBOV2_NETCOPE_PATH/emac3_rxclk
+   add_wave "-label emac3_rxce" $COMBOV2_NETCOPE_PATH/emac3_rxce
+   add_wave "-label emac3_rx" $COMBOV2_NETCOPE_PATH/emac3_rx
+}
+
+# -------------- COMBOV2 ICS system -------------------------------------------
+proc blk_COMBOV2_ICS { } {
+   global COMBOV2_NETCOPE_PATH
+   add wave -divider "COMBOV2 ICS system"
+
+   add_wave "-noupdate -label user_clk" $COMBOV2_NETCOPE_PATH/user_clk
+   add_wave "-noupdate -label busreset" $COMBOV2_NETCOPE_PATH/busreset
+   
+   add wave -divider "Internal bus"
+   add_wave "-label ibus1" $COMBOV2_NETCOPE_PATH/ibus1
+   add_wave "-label ibus2" $COMBOV2_NETCOPE_PATH/ibus2
+
+   add wave -divider "Local bus"
+   add_wave "-label lbus0" $COMBOV2_NETCOPE_PATH/lbus0
+   add_wave "-label lbus1" $COMBOV2_NETCOPE_PATH/lbus1
+   add_wave "-label lbus2" $COMBOV2_NETCOPE_PATH/lbus2
+
+   add wave -divider "LB Endpoints"
+   add_wave "-label mi32_id" $COMBOV2_NETCOPE_PATH/mi32_id
+}
+
+# -------------- COMBOV2_CORE entity ------------------------------------------
+proc ifc_COMBOV2_CORE { } {
+   global COMBOV2_NETCOPE_PATH
+   add wave -divider "COMBOV2 CORE"
+
+   add_wave "-label clk" $COMBOV2_NETCOPE_PATH/combov2_core_i/clk
+   add_wave "-label reset" $COMBOV2_NETCOPE_PATH/combov2_core_i/reset
+   add_wave "-label busreset" $COMBOV2_NETCOPE_PATH/combov2_core_i/busreset
+   add_wave "-label internal_bus_down_data -hex" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_down_data
+   add_wave "-label internal_bus_down_sop_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_down_sop_n
+   add_wave "-label internal_bus_down_eop_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_down_eop_n
+   add_wave "-label internal_bus_down_src_rdy_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_down_src_rdy_n
+   add_wave "-label internal_bus_down_dst_rdy_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_down_dst_rdy_n
+   add_wave "-label internal_bus_up_data -hex" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_up_data
+   add_wave "-label internal_bus_up_sop_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_up_sop_n
+   add_wave "-label internal_bus_up_eop_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_up_eop_n
+   add_wave "-label internal_bus_up_src_rdy_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_up_src_rdy_n
+   add_wave "-label internal_bus_up_dst_rdy_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/internal_bus_up_dst_rdy_n
+   add_wave "-label local_bus_dwr -hex" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_dwr
+   add_wave "-label local_bus_be" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_be
+   add_wave "-label local_bus_ads_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_ads_n
+   add_wave "-label local_bus_rd_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_rd_n
+   add_wave "-label local_bus_wr_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_wr_n
+   add_wave "-label local_bus_drd -hex" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_drd
+   add_wave "-label local_bus_rdy_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_rdy_n
+   add_wave "-label local_bus_err_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_err_n
+   add_wave "-label local_bus_abort_n" $COMBOV2_NETCOPE_PATH/combov2_core_i/local_bus_abort_n
+}
+
+# -------------- COMBOV2_CORE entity ------------------------------------------
+proc ifc_NETWORK_MOD_1G4 { i0 i1 i2 i3 } {
+   global NETWORK_MOD_1G4_PATH
+   add wave -divider "NETWORK MOD 1G4"
+
+   add_wave "-label clk" $NETWORK_MOD_1G4_PATH/clk
+   add_wave "-label reset" $NETWORK_MOD_1G4_PATH/reset
+   add_wave "-label busreset" $NETWORK_MOD_1G4_PATH/busreset
+   
+   add wave -divider "Combov2 connectors"
+   add_wave "-label gtp_refclk_p" $NETWORK_MOD_1G4_PATH/gtp_refclk_p
+   add_wave "-label gtp_refclk_n" $NETWORK_MOD_1G4_PATH/gtp_refclk_n
+   add_wave "-label ifc1_gtp_tx_p" $NETWORK_MOD_1G4_PATH/ifc1_gtp_tx_p
+   add_wave "-label ifc1_gtp_tx_n" $NETWORK_MOD_1G4_PATH/ifc1_gtp_tx_n
+   add_wave "-label ifc1_gtp_rx_p" $NETWORK_MOD_1G4_PATH/ifc1_gtp_rx_p
+   add_wave "-label ifc1_gtp_rx_n" $NETWORK_MOD_1G4_PATH/ifc1_gtp_rx_n
+
+   add wave -divider "EMAC Simulation input"
+   add_wave "-label emacsim0_rxclk" $NETWORK_MOD_1G4_PATH/emacsim0_rxclk
+   add_wave "-label emacsim0_rxce" $NETWORK_MOD_1G4_PATH/emacsim0_rxce
+   add_wave "-label emacsim0_rx" $NETWORK_MOD_1G4_PATH/emacsim0_rx
+   add_wave "-label emacsim1_rxclk" $NETWORK_MOD_1G4_PATH/emacsim1_rxclk
+   add_wave "-label emacsim1_rxce" $NETWORK_MOD_1G4_PATH/emacsim1_rxce
+   add_wave "-label emacsim1_rx" $NETWORK_MOD_1G4_PATH/emacsim1_rx
+   add_wave "-label emacsim2_rxclk" $NETWORK_MOD_1G4_PATH/emacsim2_rxclk
+   add_wave "-label emacsim2_rxce" $NETWORK_MOD_1G4_PATH/emacsim2_rxce
+   add_wave "-label emacsim2_rx" $NETWORK_MOD_1G4_PATH/emacsim2_rx
+   add_wave "-label emacsim3_rxclk" $NETWORK_MOD_1G4_PATH/emacsim3_rxclk
+   add_wave "-label emacsim3_rxce" $NETWORK_MOD_1G4_PATH/emacsim3_rxce
+   add_wave "-label emacsim3_rx" $NETWORK_MOD_1G4_PATH/emacsim3_rx
+   
+   add wave -divider "EMAC0 CORE"
+   add_wave "-label clk125_out" $NETWORK_MOD_1G4_PATH/emac0_i/clk125_out
+   add_wave "-label clk125" $NETWORK_MOD_1G4_PATH/emac0_i/clk125
+
+   add wave -divider "emac0 rx"
+   add_wave "-label emac0_rx_d -hex" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_rx_d
+   add_wave "-label emac0_rx_dvld" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_rx_dvld
+   add_wave "-label emac0_rx_goodframe" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_rx_goodframe
+   add_wave "-label emac0_rx_badframe" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_rx_badframe
+   add_wave "-label emac0_rx_framedrop" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_rx_framedrop
+   add_wave "-label emac0_rx_stats" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_rx_stats
+   add_wave "-label emac0_rx_statsvld" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_rx_statsvld
+   add_wave "-label emac0_rx_statsbytevld" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_rx_statsbytevld
+   add_wave "-label resetdone_0" $NETWORK_MOD_1G4_PATH/emac0_i/resetdone_0
+   add_wave "-label emac0_control_syncacqstatus" $NETWORK_MOD_1G4_PATH/emac0_i/emac0_control_syncacqstatus
+   add_wave "-label clk_ds" $NETWORK_MOD_1G4_PATH/emac0_i/clk_ds
+   add_wave "-label rxn_0" $NETWORK_MOD_1G4_PATH/emac0_i/rxn_0
+   add_wave "-label rxp_0" $NETWORK_MOD_1G4_PATH/emac0_i/rxp_0
+   add_wave "-label reset" $NETWORK_MOD_1G4_PATH/emac0_i/reset
+
+   add wave -divider "EMAC1 CORE"
+   add_wave "-label clk125_out" $NETWORK_MOD_1G4_PATH/emac1_i/clk125_out
+   add_wave "-label clk125" $NETWORK_MOD_1G4_PATH/emac1_i/clk125
+   add_wave "-label emac2_rx_d" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_rx_d
+   add_wave "-label emac2_rx_dvld" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_rx_dvld
+   add_wave "-label emac2_rx_goodframe" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_rx_goodframe
+   add_wave "-label emac2_rx_badframe" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_rx_badframe
+   add_wave "-label emac2_rx_framedrop" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_rx_framedrop
+   add_wave "-label emac2_rx_stats" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_rx_stats
+   add_wave "-label emac2_rx_statsvld" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_rx_statsvld
+   add_wave "-label emac2_rx_statsbytevld" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_rx_statsbytevld
+   add_wave "-label resetdone_2" $NETWORK_MOD_1G4_PATH/emac1_i/resetdone_0
+   add_wave "-label emac2_control_syncacqstatus" $NETWORK_MOD_1G4_PATH/emac1_i/emac0_control_syncacqstatus
+   add_wave "-label clk_ds" $NETWORK_MOD_1G4_PATH/emac1_i/clk_ds
+   add_wave "-label rxn_2" $NETWORK_MOD_1G4_PATH/emac1_i/rxn_0
+   add_wave "-label rxp_2" $NETWORK_MOD_1G4_PATH/emac1_i/rxp_0
+   add_wave "-label reset" $NETWORK_MOD_1G4_PATH/emac1_i/reset
+
+   if { $i0 == "TRUE" } {
+      add wave -divider "IBUF0 data output"
+      add_wave "-label ibuf0_tx_sof_n" $NETWORK_MOD_1G4_PATH/ibuf0_tx_sof_n
+      add_wave "-label ibuf0_tx_sop_n" $NETWORK_MOD_1G4_PATH/ibuf0_tx_sop_n
+      add_wave "-label ibuf0_tx_eop_n" $NETWORK_MOD_1G4_PATH/ibuf0_tx_eop_n
+      add_wave "-label ibuf0_tx_eof_n" $NETWORK_MOD_1G4_PATH/ibuf0_tx_eof_n
+      add_wave "-label ibuf0_tx_src_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf0_tx_src_rdy_n
+      add_wave "-label ibuf0_tx_dst_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf0_tx_dst_rdy_n
+      add_wave "-label ibuf0_tx_data -hex" $NETWORK_MOD_1G4_PATH/ibuf0_tx_data
+      add_wave "-label ibuf0_tx_rem -hex" $NETWORK_MOD_1G4_PATH/ibuf0_tx_rem
+
+      add wave -divider "IBUF0 PACODAG ifc"
+      add_wave "-label ibuf0_ctrl_clk" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_clk
+      add_wave "-label ibuf0_ctrl_data -hex" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_data
+      add_wave "-label ibuf0_ctrl_rem -hex" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_rem
+      add_wave "-label ibuf0_ctrl_src_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_src_rdy_n
+      add_wave "-label ibuf0_ctrl_sop_n" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_sop_n
+      add_wave "-label ibuf0_ctrl_eop_n" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_eop_n
+      add_wave "-label ibuf0_ctrl_dst_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_dst_rdy_n
+      add_wave "-label ibuf0_ctrl_hdr_en" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_hdr_en
+      add_wave "-label ibuf0_ctrl_ftr_en" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_ftr_en
+      add_wave "-label ibuf0_ctrl_rdy" $NETWORK_MOD_1G4_PATH/ibuf0_ctrl_rdy
+      add_wave "-label ibuf0_sop" $NETWORK_MOD_1G4_PATH/ibuf0_sop
+      add_wave "-label ibuf0_stat" $NETWORK_MOD_1G4_PATH/ibuf0_stat
+      add_wave "-label ibuf0_stat_dv" $NETWORK_MOD_1G4_PATH/ibuf0_stat_dv
+
+      add wave -divider "IBUF0 SAU"
+      add_wave "-label ibuf0_sau_accept" $NETWORK_MOD_1G4_PATH/ibuf0_sau_accept
+      add_wave "-label ibuf0_sau_dv" $NETWORK_MOD_1G4_PATH/ibuf0_sau_dv
+
+      add wave -divider "OBUF0 data input"
+      add_wave "-label obuf0_rx_sof_n" $NETWORK_MOD_1G4_PATH/obuf0_rx_sof_n
+      add_wave "-label obuf0_rx_sop_n" $NETWORK_MOD_1G4_PATH/obuf0_rx_sop_n
+      add_wave "-label obuf0_rx_eop_n" $NETWORK_MOD_1G4_PATH/obuf0_rx_eop_n
+      add_wave "-label obuf0_rx_eof_n" $NETWORK_MOD_1G4_PATH/obuf0_rx_eof_n
+      add_wave "-label obuf0_rx_src_rdy_n" $NETWORK_MOD_1G4_PATH/obuf0_rx_src_rdy_n
+      add_wave "-label obuf0_rx_dst_rdy_n" $NETWORK_MOD_1G4_PATH/obuf0_rx_dst_rdy_n
+      add_wave "-label obuf0_rx_data -hex" $NETWORK_MOD_1G4_PATH/obuf0_rx_data
+      add_wave "-label obuf0_rx_rem -hex" $NETWORK_MOD_1G4_PATH/obuf0_rx_rem
+   }
+
+   if { $i1 == "TRUE" } {
+      add wave -divider "IBUF1 data output"
+      add_wave "-label ibuf1_tx_sof_n" $NETWORK_MOD_1G4_PATH/ibuf1_tx_sof_n
+      add_wave "-label ibuf1_tx_sop_n" $NETWORK_MOD_1G4_PATH/ibuf1_tx_sop_n
+      add_wave "-label ibuf1_tx_eop_n" $NETWORK_MOD_1G4_PATH/ibuf1_tx_eop_n
+      add_wave "-label ibuf1_tx_eof_n" $NETWORK_MOD_1G4_PATH/ibuf1_tx_eof_n
+      add_wave "-label ibuf1_tx_src_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf1_tx_src_rdy_n
+      add_wave "-label ibuf1_tx_dst_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf1_tx_dst_rdy_n
+      add_wave "-label ibuf1_tx_data -hex" $NETWORK_MOD_1G4_PATH/ibuf1_tx_data
+      add_wave "-label ibuf1_tx_rem -hex" $NETWORK_MOD_1G4_PATH/ibuf1_tx_rem
+
+      add wave -divider "IBUF1 PACODAG ifc"
+      add_wave "-label ibuf1_ctrl_clk" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_clk
+      add_wave "-label ibuf1_ctrl_data -hex" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_data
+      add_wave "-label ibuf1_ctrl_rem -hex" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_rem
+      add_wave "-label ibuf1_ctrl_src_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_src_rdy_n
+      add_wave "-label ibuf1_ctrl_sop_n" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_sop_n
+      add_wave "-label ibuf1_ctrl_eop_n" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_eop_n
+      add_wave "-label ibuf1_ctrl_dst_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_dst_rdy_n
+      add_wave "-label ibuf1_ctrl_hdr_en" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_hdr_en
+      add_wave "-label ibuf1_ctrl_ftr_en" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_ftr_en
+      add_wave "-label ibuf1_ctrl_rdy" $NETWORK_MOD_1G4_PATH/ibuf1_ctrl_rdy
+      add_wave "-label ibuf1_sop" $NETWORK_MOD_1G4_PATH/ibuf1_sop
+      add_wave "-label ibuf1_stat" $NETWORK_MOD_1G4_PATH/ibuf1_stat
+      add_wave "-label ibuf1_stat_dv" $NETWORK_MOD_1G4_PATH/ibuf1_stat_dv
+
+      add wave -divider "IBUF1 SAU"
+      add_wave "-label ibuf1_sau_accept" $NETWORK_MOD_1G4_PATH/ibuf1_sau_accept
+      add_wave "-label ibuf1_sau_dv" $NETWORK_MOD_1G4_PATH/ibuf1_sau_dv
+
+      add wave -divider "OBUF1 data input"
+      add_wave "-label obuf1_rx_sof_n" $NETWORK_MOD_1G4_PATH/obuf1_rx_sof_n
+      add_wave "-label obuf1_rx_sop_n" $NETWORK_MOD_1G4_PATH/obuf1_rx_sop_n
+      add_wave "-label obuf1_rx_eop_n" $NETWORK_MOD_1G4_PATH/obuf1_rx_eop_n
+      add_wave "-label obuf1_rx_eof_n" $NETWORK_MOD_1G4_PATH/obuf1_rx_eof_n
+      add_wave "-label obuf1_rx_src_rdy_n" $NETWORK_MOD_1G4_PATH/obuf1_rx_src_rdy_n
+      add_wave "-label obuf1_rx_dst_rdy_n" $NETWORK_MOD_1G4_PATH/obuf1_rx_dst_rdy_n
+      add_wave "-label obuf1_rx_data -hex" $NETWORK_MOD_1G4_PATH/obuf1_rx_data
+      add_wave "-label obuf1_rx_rem -hex" $NETWORK_MOD_1G4_PATH/obuf1_rx_rem
+   }
+
+   if { $i2 == "TRUE" } {
+      add wave -divider "IBUF2 data output"
+      add_wave "-label ibuf2_tx_sof_n" $NETWORK_MOD_1G4_PATH/ibuf2_tx_sof_n
+      add_wave "-label ibuf2_tx_sop_n" $NETWORK_MOD_1G4_PATH/ibuf2_tx_sop_n
+      add_wave "-label ibuf2_tx_eop_n" $NETWORK_MOD_1G4_PATH/ibuf2_tx_eop_n
+      add_wave "-label ibuf2_tx_eof_n" $NETWORK_MOD_1G4_PATH/ibuf2_tx_eof_n
+      add_wave "-label ibuf2_tx_src_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf2_tx_src_rdy_n
+      add_wave "-label ibuf2_tx_dst_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf2_tx_dst_rdy_n
+      add_wave "-label ibuf2_tx_data -hex" $NETWORK_MOD_1G4_PATH/ibuf2_tx_data
+      add_wave "-label ibuf2_tx_rem -hex" $NETWORK_MOD_1G4_PATH/ibuf2_tx_rem
+
+      add wave -divider "IBUF2 PACODAG ifc"
+      add_wave "-label ibuf2_ctrl_clk" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_clk
+      add_wave "-label ibuf2_ctrl_data -hex" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_data
+      add_wave "-label ibuf2_ctrl_rem -hex" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_rem
+      add_wave "-label ibuf2_ctrl_src_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_src_rdy_n
+      add_wave "-label ibuf2_ctrl_sop_n" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_sop_n
+      add_wave "-label ibuf2_ctrl_eop_n" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_eop_n
+      add_wave "-label ibuf2_ctrl_dst_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_dst_rdy_n
+      add_wave "-label ibuf2_ctrl_hdr_en" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_hdr_en
+      add_wave "-label ibuf2_ctrl_ftr_en" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_ftr_en
+      add_wave "-label ibuf2_ctrl_rdy" $NETWORK_MOD_1G4_PATH/ibuf2_ctrl_rdy
+      add_wave "-label ibuf2_sop" $NETWORK_MOD_1G4_PATH/ibuf2_sop
+      add_wave "-label ibuf2_stat" $NETWORK_MOD_1G4_PATH/ibuf2_stat
+      add_wave "-label ibuf2_stat_dv" $NETWORK_MOD_1G4_PATH/ibuf2_stat_dv
+
+      add wave -divider "IBUF2 SAU"
+      add_wave "-label ibuf2_sau_accept" $NETWORK_MOD_1G4_PATH/ibuf2_sau_accept
+      add_wave "-label ibuf2_sau_dv" $NETWORK_MOD_1G4_PATH/ibuf2_sau_dv
+
+      add wave -divider "OBUF2 data input"
+      add_wave "-label obuf2_rx_sof_n" $NETWORK_MOD_1G4_PATH/obuf2_rx_sof_n
+      add_wave "-label obuf2_rx_sop_n" $NETWORK_MOD_1G4_PATH/obuf2_rx_sop_n
+      add_wave "-label obuf2_rx_eop_n" $NETWORK_MOD_1G4_PATH/obuf2_rx_eop_n
+      add_wave "-label obuf2_rx_eof_n" $NETWORK_MOD_1G4_PATH/obuf2_rx_eof_n
+      add_wave "-label obuf2_rx_src_rdy_n" $NETWORK_MOD_1G4_PATH/obuf2_rx_src_rdy_n
+      add_wave "-label obuf2_rx_dst_rdy_n" $NETWORK_MOD_1G4_PATH/obuf2_rx_dst_rdy_n
+      add_wave "-label obuf2_rx_data -hex" $NETWORK_MOD_1G4_PATH/obuf2_rx_data
+      add_wave "-label obuf2_rx_rem -hex" $NETWORK_MOD_1G4_PATH/obuf2_rx_rem
+   }
+
+   if { $i3 == "TRUE" } {
+      add wave -divider "IBUF3 data output"
+      add_wave "-label ibuf3_tx_sof_n" $NETWORK_MOD_1G4_PATH/ibuf3_tx_sof_n
+      add_wave "-label ibuf3_tx_sop_n" $NETWORK_MOD_1G4_PATH/ibuf3_tx_sop_n
+      add_wave "-label ibuf3_tx_eop_n" $NETWORK_MOD_1G4_PATH/ibuf3_tx_eop_n
+      add_wave "-label ibuf3_tx_eof_n" $NETWORK_MOD_1G4_PATH/ibuf3_tx_eof_n
+      add_wave "-label ibuf3_tx_src_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf3_tx_src_rdy_n
+      add_wave "-label ibuf3_tx_dst_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf3_tx_dst_rdy_n
+      add_wave "-label ibuf3_tx_data -hex" $NETWORK_MOD_1G4_PATH/ibuf3_tx_data
+      add_wave "-label ibuf3_tx_rem -hex" $NETWORK_MOD_1G4_PATH/ibuf3_tx_rem
+
+      add wave -divider "IBUF3 PACODAG ifc"
+      add_wave "-label ibuf3_ctrl_clk" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_clk
+      add_wave "-label ibuf3_ctrl_data -hex" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_data
+      add_wave "-label ibuf3_ctrl_rem -hex" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_rem
+      add_wave "-label ibuf3_ctrl_src_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_src_rdy_n
+      add_wave "-label ibuf3_ctrl_sop_n" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_sop_n
+      add_wave "-label ibuf3_ctrl_eop_n" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_eop_n
+      add_wave "-label ibuf3_ctrl_dst_rdy_n" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_dst_rdy_n
+      add_wave "-label ibuf3_ctrl_hdr_en" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_hdr_en
+      add_wave "-label ibuf3_ctrl_ftr_en" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_ftr_en
+      add_wave "-label ibuf3_ctrl_rdy" $NETWORK_MOD_1G4_PATH/ibuf3_ctrl_rdy
+      add_wave "-label ibuf3_sop" $NETWORK_MOD_1G4_PATH/ibuf3_sop
+      add_wave "-label ibuf3_stat" $NETWORK_MOD_1G4_PATH/ibuf3_stat
+      add_wave "-label ibuf3_stat_dv" $NETWORK_MOD_1G4_PATH/ibuf3_stat_dv
+
+      add wave -divider "IBUF3 SAU"
+      add_wave "-label ibuf3_sau_accept" $NETWORK_MOD_1G4_PATH/ibuf3_sau_accept
+      add_wave "-label ibuf3_sau_dv" $NETWORK_MOD_1G4_PATH/ibuf3_sau_dv
+
+      add wave -divider "OBUF3 data input"
+      add_wave "-label obuf3_rx_sof_n" $NETWORK_MOD_1G4_PATH/obuf3_rx_sof_n
+      add_wave "-label obuf3_rx_sop_n" $NETWORK_MOD_1G4_PATH/obuf3_rx_sop_n
+      add_wave "-label obuf3_rx_eop_n" $NETWORK_MOD_1G4_PATH/obuf3_rx_eop_n
+      add_wave "-label obuf3_rx_eof_n" $NETWORK_MOD_1G4_PATH/obuf3_rx_eof_n
+      add_wave "-label obuf3_rx_src_rdy_n" $NETWORK_MOD_1G4_PATH/obuf3_rx_src_rdy_n
+      add_wave "-label obuf3_rx_dst_rdy_n" $NETWORK_MOD_1G4_PATH/obuf3_rx_dst_rdy_n
+      add_wave "-label obuf3_rx_data -hex" $NETWORK_MOD_1G4_PATH/obuf3_rx_data
+      add_wave "-label obuf3_rx_rem -hex" $NETWORK_MOD_1G4_PATH/obuf3_rx_rem
+   }
+   
+   add wave -divider "Local Bus connection"
+   add_wave "-label local_bus_dwr" $NETWORK_MOD_1G4_PATH/local_bus_dwr
+   add_wave "-label local_bus_be" $NETWORK_MOD_1G4_PATH/local_bus_be
+   add_wave "-label local_bus_ads_n" $NETWORK_MOD_1G4_PATH/local_bus_ads_n
+   add_wave "-label local_bus_rd_n" $NETWORK_MOD_1G4_PATH/local_bus_rd_n
+   add_wave "-label local_bus_wr_n" $NETWORK_MOD_1G4_PATH/local_bus_wr_n
+   add_wave "-label local_bus_drd" $NETWORK_MOD_1G4_PATH/local_bus_drd
+   add_wave "-label local_bus_rdy_n" $NETWORK_MOD_1G4_PATH/local_bus_rdy_n
+   add_wave "-label local_bus_err_n" $NETWORK_MOD_1G4_PATH/local_bus_err_n
+   add_wave "-label local_bus_abort_n" $NETWORK_MOD_1G4_PATH/local_bus_abort_n
+   
+   add wave -divider "IBUF memory interface"
+   add_wave "-label ibuf_mi32" $NETWORK_MOD_1G4_PATH/ibuf_mi32
+}

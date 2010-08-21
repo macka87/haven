@@ -1,0 +1,60 @@
+# top_level_sig.fdo : Include file with signals 
+# Copyright (C) 2008 CESNET
+# Author: Vaclav Bartos <xbarto11@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals_sig.fdo 11501 2009-10-06 12:13:46Z washek $
+#
+
+# Global file with signals
+
+
+source "./signals.fdo"
+exec make
+view wave
+delete wave *
+
+ib_endpoint     ENDPOINT      /testbench/genblk1/DUT/IB_ENDPOINT_INST
+#down_buf        DOWN_BUF      /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_down_buf
+#ib_buf          INPUT_BUFFER  /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_down_buf/INPUT_BUFFER_GEN/U_input_buffer
+#swapper         SWAPPER       /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_down_buf/u_swapper
+#wr_fetch_marker    WR_FETCH_MARKER  /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_write_ctrl/u_fetch_marker
+#unpacker        WR_UNPACKER      /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_write_ctrl/u_unpacker
+#read_ctrl       READ_CTRL     /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl
+#cpl_buf         CPL_BUFFER    /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl/u_cpl_buf
+#cpl_fsm         CPL_FSM       /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl/u_cpl_fsm
+#align_unit_fake ALIGN_UNIT_FAKE /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl/DATA_REORDER_NO/u_align_unit_fake
+#sh_fifo         UNPCK_HBUF    /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl/U_unpck_hbuf/HEADER_NUM_GT_1/U_ib_endpoint_unpck_hbuf_sh_fifo
+#sh_fifo         PCK_HBUF      /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl/U_pck_hbuf/U_ib_endpoint_pck_hbuf_sh_fifo
+#rd_fetch_marker RD_FETCH_MARKER  /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl/u_fetch_marker
+#unpacker        RD_UNPACKER      /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl/u_unpacker
+#be_gen          RD_BE_GEN        /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_read_ctrl/be_gen_yes/u_be_gen
+#unpacker        WR_UNPACKER      /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_write_ctrl/u_unpacker
+#be_gen          WR_BE_GEN        /testbench/genblk1/DUT/IB_ENDPOINT_INST/u_write_ctrl/be_gen_yes/u_be_gen
+
+restart -f
+run -all

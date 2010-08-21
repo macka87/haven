@@ -1,0 +1,167 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 10045 2009-08-04 11:02:05Z xstour03 $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+
+proc lb_root {NAME PATH} {
+   add wave -divider "$NAME"   
+      add_wave "-noupdate -color yellow -label RESET"   $PATH/RESET
+      add_wave "-noupdate -color yellow -label IB_CLK"  $PATH/IB_CLK
+      add_wave "-noupdate -hex -label INTERNAL_BUS"     $PATH/INTERNAL_BUS
+      add_wave "-noupdate -hex -label LOCAL_BUS"        $PATH/LOCAL_BUS
+}
+
+proc blk_lb_root_endpoint {NAME PATH} {
+    add wave -divider "$NAME"      
+      add_wave "-noupdate -color yellow -label RESET"   $PATH/IB_ENDPOINT_U/IB_RESET
+      add_wave "-noupdate -color yellow -label IB_CLK"  $PATH/IB_ENDPOINT_U/IB_CLK
+      add_wave "-noupdate -hex -label INTERNAL_BUS"     $PATH/IB_ENDPOINT_U/INTERNAL_BUS
+    add wave -divider "  Write Interface"
+      add_wave "-noupdate -hex -label WR_ADDR"          $PATH/IB_ENDPOINT_U/WR_ADDR
+      add_wave "-noupdate -hex -label WR_DATA"          $PATH/IB_ENDPOINT_U/WR_DATA
+      add_wave "-noupdate -label WR_BE"                 $PATH/IB_ENDPOINT_U/WR_BE
+      add_wave "-noupdate -label WR_REQ"                $PATH/IB_ENDPOINT_U/WR_REQ
+      add_wave "-noupdate -label WR_RDY"                $PATH/IB_ENDPOINT_U/WR_RDY
+      add_wave "-noupdate -label WR_SOF"                $PATH/IB_ENDPOINT_U/WR_SOF
+      add_wave "-noupdate -label WR_EOF"                $PATH/IB_ENDPOINT_U/WR_EOF
+    add wave -divider "  Read Interface" 
+      add_wave "-noupdate -hex -label RD_ADDR"          $PATH/IB_ENDPOINT_U/RD_ADDR
+      add_wave "-noupdate -label RD_BE"                 $PATH/IB_ENDPOINT_U/RD_BE
+      add_wave "-noupdate -label RD_REQ"                $PATH/IB_ENDPOINT_U/RD_REQ
+      add_wave "-noupdate -label RD_ARDY"               $PATH/IB_ENDPOINT_U/RD_ARDY
+      add_wave "-noupdate -label RD_SOF_IN"             $PATH/IB_ENDPOINT_U/RD_SOF_IN
+      add_wave "-noupdate -label RD_EOF_IN"             $PATH/IB_ENDPOINT_U/RD_EOF_IN
+      add_wave "-noupdate -hex -label RD_DATA"          $PATH/IB_ENDPOINT_U/RD_DATA
+      add_wave "-noupdate -label RD_SRC_RDY"            $PATH/IB_ENDPOINT_U/RD_SRC_RDY
+      add_wave "-noupdate -label RD_DST_RDY"            $PATH/IB_ENDPOINT_U/RD_DST_RDY
+}
+
+proc blk_lb_root_core {NAME PATH} {
+    add wave -divider "$NAME"      
+      add_wave "-noupdate -color yellow -label RESET"   $PATH/LB_ROOT_CORE_U/RESET
+      add_wave "-noupdate -color yellow -label IB_CLK"  $PATH/LB_ROOT_CORE_U/CLK
+      
+      add_wave "-noupdate -hex -label BUFFER_ADDR"      $PATH/LB_ROOT_CORE_U/BUFFER_ADDR
+      add_wave "-noupdate -label BUFFER_SOF"            $PATH/LB_ROOT_CORE_U/BUFFER_SOF
+      add_wave "-noupdate -label BUFFER_EOF"            $PATH/LB_ROOT_CORE_U/BUFFER_EOF
+      add_wave "-noupdate -hex -label BUFFER_DATA"      $PATH/LB_ROOT_CORE_U/BUFFER_DATA
+      add_wave "-noupdate -label BUFFER_BE"             $PATH/LB_ROOT_CORE_U/BUFFER_BE
+      add_wave "-noupdate -label BUFFER_RD"             $PATH/LB_ROOT_CORE_U/BUFFER_RD
+      add_wave "-noupdate -label BUFFER_WR"             $PATH/LB_ROOT_CORE_U/BUFFER_WR
+      add_wave "-noupdate -label BUFFER_VLD"            $PATH/LB_ROOT_CORE_U/BUFFER_VLD
+      add_wave "-noupdate -label BUFFER_NEXT"           $PATH/LB_ROOT_CORE_U/BUFFER_NEXT
+      add_wave "-noupdate -hex -label BUFFER_DRD"       $PATH/LB_ROOT_CORE_U/BUFFER_DRD
+      add_wave "-noupdate -label BUFFER_DRDY"           $PATH/LB_ROOT_CORE_U/BUFFER_DRDY
+      add_wave "-noupdate -label BUFFER_DRD_LAST"       $PATH/LB_ROOT_CORE_U/BUFFER_DRD_LAST
+      
+      add_wave "-noupdate -hex -label LB_DWR"           $PATH/LB_ROOT_CORE_U/LB_DWR
+      add_wave "-noupdate -label LB_BE"                 $PATH/LB_ROOT_CORE_U/LB_BE
+      add_wave "-noupdate -hex -label LB_ADS"           $PATH/LB_ROOT_CORE_U/LB_ADS
+      add_wave "-noupdate -label LB_RD"                 $PATH/LB_ROOT_CORE_U/LB_RD
+      add_wave "-noupdate -label LB_WR"                 $PATH/LB_ROOT_CORE_U/LB_WR
+      add_wave "-noupdate -hex -label LB_DRD"           $PATH/LB_ROOT_CORE_U/LB_DRD
+      add_wave "-noupdate -label LB_RDY"                $PATH/LB_ROOT_CORE_U/LB_RDY
+      add_wave "-noupdate -label LB_ERR"                $PATH/LB_ROOT_CORE_U/LB_ERR
+      add_wave "-noupdate -label LB_ABORT"              $PATH/LB_ROOT_CORE_U/LB_ABORT
+}
+
+proc blk_lb_root_core_fsm {NAME PATH} {
+    add wave -divider "$NAME"   
+      add_wave "-noupdate -color yellow -label RESET"   $PATH/LB_ROOT_CORE_U/RESET
+      add_wave "-noupdate -color yellow -label CLK"     $PATH/LB_ROOT_CORE_U/CLK
+
+      add_wave "-noupdate -label present_state"         $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/present_state
+      add_wave "-noupdate -label BUFFER_SOF"            $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/BUFFER_SOF
+      add_wave "-noupdate -label BUFFER_EOF"            $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/BUFFER_EOF
+      add_wave "-noupdate -label BUFFER_RD"             $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/BUFFER_RD
+      add_wave "-noupdate -label BUFFER_WR"             $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/BUFFER_WR
+      add_wave "-noupdate -label BUFFER_VLD"            $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/BUFFER_VLD
+      add_wave "-noupdate -label BUFFER_NEXT"           $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/BUFFER_NEXT
+
+      add_wave "-noupdate -label INIT_COUNTERS"         $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/INIT_COUNTERS
+      add_wave "-noupdate -label ADDR_DATA_MUX_SEL"     $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/ADDR_DATA_MUX_SEL
+      add_wave "-noupdate -label DATA_OUT_CNT_CE"       $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/DATA_OUT_CNT_CE
+      add_wave "-noupdate -label READING_FLAG"          $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/READING_FLAG
+
+      add_wave "-noupdate -label GEN_ABORT_FLAG"        $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/GEN_ABORT_FLAG
+      add_wave "-noupdate -label WAIT_FOR_ALL_RDY"      $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/WAIT_FOR_ALL_RDY
+      add_wave "-noupdate -label DATA_OUT_CNT"          $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/DATA_OUT_CNT
+      add_wave "-noupdate -label PENDING_CNT"           $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/PENDING_CNT
+      add_wave "-noupdate -label LAST_REQ"              $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/LAST_REQ
+
+      add_wave "-noupdate -label LB_ADS"                $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/LB_ADS
+      add_wave "-noupdate -label LB_RD"                 $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/LB_RD
+      add_wave "-noupdate -label LB_WR"                 $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/LB_WR
+      add_wave "-noupdate -label LB_ABORT"              $PATH/LB_ROOT_CORE_U/LB_ROOT_CORE_FSM_U/LB_ABORT
+}
+
+proc lb_switch {NAME PATH} {
+       add wave -divider "$NAME"
+        add_wave "-noupdate -hex -label LB_RESET"     $PATH/LB_RESET
+        add_wave "-noupdate -hex -label LB_CLK"       $PATH/LB_CLK
+
+       add wave -divider "Upstream interface"
+        add_wave "-noupdate -hex -label port0_dwr"     $PATH/port0_dwr
+        add_wave "-noupdate -hex -label port0_be"      $PATH/port0_be
+        add_wave "-noupdate -hex -label port0_ads_n"   $PATH/port0_ads_n
+        add_wave "-noupdate -hex -label port0_rd_n"    $PATH/port0_rd_n
+        add_wave "-noupdate -hex -label port0_wr_n"    $PATH/port0_wr_n
+        add_wave "-noupdate -hex -label port0_drd"     $PATH/port0_drd
+        add_wave "-noupdate -hex -label port0_rdy_n"   $PATH/port0_rdy_n
+        add_wave "-noupdate -hex -label port0_err_n"   $PATH/port0_err_n
+        add_wave "-noupdate -hex -label port0_abort_n" $PATH/port0_abort_n
+
+       add wave -divider "Downstream interface 1"
+        add_wave "-noupdate -hex -label port1_dwr"     $PATH/dwr
+        add_wave "-noupdate -hex -label port1_be"      $PATH/be
+        add_wave "-noupdate -hex -label port1_ads_n"   $PATH/ads_n
+        add_wave "-noupdate -hex -label port1_rd_n"    $PATH/rd_n
+        add_wave "-noupdate -hex -label port1_wr_n"    $PATH/wr_n
+        add_wave "-noupdate -hex -label port1_drd"     $PATH/drd
+        add_wave "-noupdate -hex -label port1_rdy_n"   $PATH/rdy_n
+        add_wave "-noupdate -hex -label port1_err_n"   $PATH/err_n
+        add_wave "-noupdate -hex -label port1_abort_n" $PATH/abort_n
+
+       add wave -divider "Downstream interface 2"
+        add_wave "-noupdate -hex -label port2_dwr"     $PATH/dwr
+        add_wave "-noupdate -hex -label port2_be"      $PATH/be
+        add_wave "-noupdate -hex -label port2_ads_n"   $PATH/ads_n
+        add_wave "-noupdate -hex -label port2_rd_n"    $PATH/rd_n
+        add_wave "-noupdate -hex -label port2_wr_n"    $PATH/wr_n
+        add_wave "-noupdate -hex -label port2_drd"     $PATH/drd
+        add_wave "-noupdate -hex -label port2_rdy_n"   $PATH/rdy_n
+        add_wave "-noupdate -hex -label port2_err_n"   $PATH/err_n
+        add_wave "-noupdate -hex -label port2_abort_n" $PATH/abort_n
+}

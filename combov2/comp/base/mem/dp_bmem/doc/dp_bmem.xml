@@ -1,0 +1,188 @@
+<source>
+
+<component>dp_bmem</component>
+
+<authors>
+   	<author login="pus">Viktor Pus</author>
+   	<author login="xkobie00">Petr Kobiersky</author>
+</authors>
+
+<features>
+   <item>Generic data width</item>
+   <item>Generic depth</item>
+   <item>Optional output register</item>
+   <item>Optional pipe enable functionality</item>
+</features>
+
+
+<description>
+   This generic component allows easily to build memory composed
+   of specified type of BRAMs.
+</description>
+
+<interface>
+	<generic_map>
+		<generic name="DATA_WIDTH" type="integer" default="">
+			Component data width.
+		</generic>
+
+		<generic name="ITEMS" type="integer" default="">
+			Size of memory.
+		</generic>
+
+		<generic name="BRAM_TYPE" type="integer" default="4">
+			Specify type of building blocks. It allows values:
+                        1, 2, 4, 9, 18, 36 bits. Component is compounded of this
+                        types of Block Rams.
+		</generic>
+
+		<generic name="OUTPUT_REG" type="TOUTPUT_REG" default="auto">
+			Places register to the output of component. Register is placed
+			after multiplexor. It allows TRUE, FALSE and AUTO. When is parameter
+			set to AUTO, register is placed only when is component compounded
+			of more than one column.
+		</generic>
+
+		<generic name="DEBUG" type="boolean" default="false">
+			Prints debug information (row count, column count,
+			output register...) about component.
+		</generic>
+
+
+	</generic_map>
+
+	<port_map>
+         <divider>Common interface</divider>
+	      <port  name="RESET" dir="in" width="1">
+        	    Reset
+	      </port>
+
+         <divider>Port A</divider>
+	      <port  name="CLKA" dir="in" width="1">
+	            Clock for port A
+	      </port>
+
+	      <port  name="PIPE_ENA" dir="in" width="1">
+	            Pipe enable for port A
+	      </port>
+
+	      <port  name="REA" dir="in" width="1">
+	            Read enable for port A
+	      </port>
+
+	      <port  name="WEA" dir="in" width="1">
+	            Write enable for port A
+	      </port>
+
+	      <port  name="ADDRA" dir="in" width="log2(ITEMS)">
+	            Address for Port A
+	      </port>
+
+	      <port  name="DIA" dir="in" width="DATA_WIDTH">
+	            Data in for port A
+	      </port>
+
+	      <port  name="DOA" dir="out" width="DATA_WIDTH">
+	            Data out from port A
+	      </port>
+
+	      <port  name="DOA_DV" dir="out" width="1">
+	            Data out valid from port A
+	      </port>
+
+         <divider>Port B</divider>
+         <port  name="CLKB" dir="in" width="1">
+	            Clock for port B
+	      </port>
+
+	      <port  name="PIPE_ENB" dir="in" width="1">
+	            Pipe enable for port B
+	      </port>
+
+	      <port  name="REB" dir="in" width="1">
+	            Read enable for port B
+	      </port>
+
+	      <port  name="WEB" dir="in" width="1">
+	            Write enable for port B
+	      </port>
+
+	      <port  name="ADDRB" dir="in" width="log2(ITEMS)">
+	            Address for Port B
+	      </port>
+
+	      <port  name="DIB" dir="in" width="DATA_WIDTH">
+	            Data in for port B
+	      </port>
+
+	      <port  name="DOB" dir="out" width="DATA_WIDTH">
+	            Data out from port B
+	      </port>
+
+	      <port  name="DOB_DV" dir="out" width="1">
+	            Data out valid from port B
+	      </port>
+	</port_map>
+
+</interface>
+
+
+
+
+<!-- BODY ************************************************* -->
+<body> 
+<h1>Info</h1>
+<p>
+   Size of the memory is specified by generic parameter ITEMS.
+   Data width is specified by DATA_WIDTH. Type of Block Ram is specified
+   by BRAM_TYPE. Be careful with choosig BRAM_TYPE - it has influence
+   on rows and column count of composed memory. You can get information about
+   structure with DEBUG set to true. When memory is composed of more
+   than one column so the output multiplexor is used, it is very useful
+   to use output register. In this configuration signal PIPE_EN have sense.
+   When you read data using RE=1 and PIPE_EN = 1 data goes to output in second
+   period. When you stop reading RE=0 and PIPE_EN = 0 data from last period
+   are stocked in second pipe level. When is PIPE_EN set to 1 data goes to
+   memory output.
+</p>
+<p>
+      <obr src="./fig/block_struct.fig">
+         Component structure.
+      </obr>
+</p>
+
+<h1>Frequency and Resources</h1>
+<p>
+   If no output multiplexer is needed, then only BlockRAMs are used.
+   For example, generics DATA_WIDTH=36 and ITEMS=512 will result in only
+   one BRAM used.
+</p>
+<p>
+   <tab sloupce="ccc">
+   <tr>
+	   <th>Generic settings</th>
+	   <th>Slices</th>
+	   <th>BlockRAMs</th>
+   </tr>
+   <tr>
+      <th>ITEMS=1024, DATA_WIDTH=36, BRAM_TYPE=36, OUTPUT_REG=false</th>
+      <th>39</th>
+      <th>2</th>
+   </tr>
+   <tr>
+      <th>ITEMS=2048, DATA_WIDTH=72, BRAM_TYPE=18, OUTPUT_REG=true</th>
+      <th>75</th>
+      <th>8</th>
+   </tr>
+   <nazev>Chip utilization</nazev>
+   </tab>
+</p>
+<p>
+   These values have been obtained after synthesis with Precision at C6X.
+   Maximal frequency is typically over 150 MHz at C6X card.
+</p>
+
+</body>
+
+</source>
+

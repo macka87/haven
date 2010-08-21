@@ -1,0 +1,77 @@
+# simul.tdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Tomas Martinek <martinek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: simul.tdo 14 2007-07-31 06:44:05Z kosek $
+#
+
+# For whole design testing
+set VHDL_BASE     "../../../.."
+set UNIT_BASE        "$VHDL_BASE/units"
+set COMMON_BASE      "$VHDL_BASE/units/common"
+set MODELS_BASE      "$VHDL_BASE/models"
+set TSU2PCI_BASE      "$UNIT_BASE/tsu/tsu2pci"
+
+# Modules definition
+set PACKAGES      "$MODELS_BASE/plx_9054/plx_oper.vhd \
+                   $MODELS_BASE/plx_9054/plx_sim.vhd"
+set TOP_LEVEL     "$VHDL_BASE/combo6/chips/fpga.vhd \
+                   $TSU2PCI_BASE/tsu2pci.sim.vhd"
+set SDF_FILE      "$TSU2PCI_BASE/tsu2pci.sim.sdf"
+
+set TB_FILE       "tsu2pci_tb.vhd"
+set SIG_FILE      "signals.tdo"
+
+# Global include file for compilation
+source "$VHDL_BASE/base/Modelsim.inc.tdo"
+
+# File with signals
+source $SIG_FILE
+
+# show window
+view wave
+
+# Start waveform with no signal
+delete wave *
+
+# ------------- Calling procedures ------------------------------
+
+tsu_clk
+tsu_lb
+tsuadd_stuff
+tsu2pci_stuff
+tsu_ptmifc
+tsu_ad2sd_tsadd_dv
+tsu_ad2sd_tsadd
+tsu_all
+
+# ------------- Run ---------------------------------------------
+restart -f
+run 20 us
+
+

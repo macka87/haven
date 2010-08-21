@@ -1,0 +1,60 @@
+# top_level.fdo: Top Level Function simulation file
+# Copyright (C) 2006 CESNET
+# Author: Jan Viktorin <xvikto03@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: top_level.fdo 13917 2010-06-02 17:32:04Z xvikto03 $
+#
+
+# For whole design testing
+set FIRMWARE_BASE   "../../../../.."
+set COMP_BASE       "$FIRMWARE_BASE/comp"
+set COMMON_BASE     "$COMP_BASE/common"
+set CLKGEN_BASE     "$COMP_BASE/base/misc/clk_gen"
+set MI32_SIM_BASE   "$COMP_BASE/ics/local_bus/comp/mi32_sim"
+
+set TB_FILE           "./testbench.vhd"
+set SIG_FILE          "./signals_sig.fdo"
+
+set SIM_COMPONENTS [list \
+   [list "CLKGEN"      $CLKGEN_BASE      "FULL"] \
+   [list "MI32_SIM"    $MI32_SIM_BASE    "FULL"] \
+   [list "XGMII_CROSSBAR" ".." "FULL"] \
+]
+
+set COMPONENTS $SIM_COMPONENTS
+
+
+# Global include file for compilation
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# File with signals
+source $SIG_FILE

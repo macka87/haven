@@ -1,0 +1,39 @@
+Status update:
+-----------------
+Sync flags:
+	- necessary information is channel index for which the flag will be
+	cleared
+	- there are two ways of detecting the moment when the flag should be
+	cleared
+		+ monitoring of read transaction and detecting its end (on my
+		own)
+			* channel index could be obtained from read address
+			* problem with detecting the end of read transaction
+		+ wait for DMA done
+			* channel index has to be stored somewhere and
+			obtained when DMA done arrives
+				# store in fifo - have to keep full signal in
+				mind
+				# store in DMA tag - exhausts some of DMA tag
+				data space - don`t mind as it will otherwise
+				stay unused
+
+DMA tag format
+--------------
++0000.0000+0000.0000+
+|       ||       |\|
+ \     /  \    	/  |
+  \   /    \   /   determine to which DMA capable component it belongs to
+   \ /      \ /    00 - DDM
+    |        |     01 - SUM
+    |        |     10 - Rx ctrl
+    |        |     11 - Tx ctrl
+    |        |
+    |        7 bits reserved for channel index (as well as in IB and LB
+    |        address space)
+    |      	xxx xxx0 Rx (even index)  
+    |      	xxx xxx1 Tx (odd  index) (tx is grouped into one status
+    | 					upload channel, so it is enough to
+    | 					check only the lowest bit)
+    |
+    7 bits unused

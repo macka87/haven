@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>Input Buffer for XGMII interface</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="polcak_l">Libor Polcak</author>
+       <author login="solanka">Lukas Solanka</author>
+</authors>
+
+
+<!-- Features -->
+<features>
+    <item>Frame length control</item>
+    <item>Destination MAC address matching</item>
+    <item>Frame check sum control</item>
+    <item>Optional check sum removing</item>
+    <item>Sampling of incoming flow</item>
+    <item>Option to change data width of frames up</item>
+</features>
+
+<!-- Bugs -->
+<!--
+<bugs>
+	<item></item>
+</bugs>
+-->
+
+
+<!-- Things to do -->
+<todo>
+		<item>Tests</item>
+</todo>
+
+
+<!-- Short Block description -->
+<description>
+	Input packets come from standard XGMII interfce (32-bits, 156MHz) and then
+	the data are transformed from double data rate to signle data rate
+  (64-bits, 156 MHz). Next, data is aligned to 64b boundary and XGMII protocol
+	is decoded. The data flow together with decoded protocol serves as a starting
+	point for several checks (XGMII error, MAC addresses, MTU, CRC and possibly
+	others). Only frames that pass these monitoring are stored into the buffer
+	and passed to the output FrameLink interface.
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Generic description -->
+	<generic_map>
+		
+		<generic name="DFIFO_SIZE" type="integer" default="1024">
+			Number of items in Data FIFO (FL_WIDTH_TX + control signals wide).
+			Must be 2^n, n>=2!
+		</generic>
+		<generic name="HFIFO_SIZE" type="integer" default="128">
+			Number of items in Header and Footer FIFO
+			(FL_WIDTH_TX + control signals wide)
+		</generic>
+		<generic name="HFIFO_MEMTYPE" type="mem_type" default="LUT">
+       Type of the memory used in HFIFO
+		</generic>
+		<generic name="CTRL_HDR_EN" type="boolean" default="true">
+			Enables frame headers
+		</generic>
+		<generic name="CTRL_FTR_EN" type="boolean" default="false">
+			Enables frame footers
+		</generic>
+		<generic name="MACS" type="integer" default="16">
+			Number of supported MAC addresses (up to 16)
+		</generic>
+		<generic name="INBANDFCS"  type="boolean"    default="true">
+            Determines whether the frame contains FCS field (true) or not
+            (false)
+      </generic>
+		<generic name="CNT_ERROR_SIZE" type="integer" default="5">
+			Determines the length of the counter which guards the link for errors.
+			When any XGMII error do not occur in 2^CNT_ERROR_SIZE cycles the link
+			is declared to be up and the inpit is being processed.
+		</generic>
+		<generic name="FL_WIDTH_TX" type="integer" default="64">
+			FrameLink output width (at least 64)
+		</generic>
+		<generic name="FL_RELAY" type="boolean" default="true">
+			Put <ref_comp ref="relay" tag_id="HEAD">FL Relay</ref_comp> component
+			to the FL output
+		</generic>
+		
+	</generic_map>
+
+	<!-- Port description -->
+	<port_map>
+
+		<divider>Common signals</divider>		
+		<port  name="RESET" dir="in" width="1">
+			Global reset
+		</port>
+
+
+		<divider>XGMII interface</divider> 		
+        <port name="XGMII_RXCLK" dir="in" width="1">
+            XGMII Receive Clock
+        </port>
+        <port name="XGMII_RXD" dir="in" width="32">
+            XGMII Receive Data
+        </port>
+        <port name="XGMII_RXC" dir="in" width="4">
+            XGMII Receive Control
+        </port>
+
+
+		<divider>Internal clock</divider> 		
+        <port name="INT_CLK" dir="out" width="1">
+            Clock for SAU and PACODAG component
+        </port>
+
+
+		<divider>Sampling unit interface</divider> 		
+        <port name="SAU_REQ" dir="out" width="1">
+            Request for sampling information
+        </port>
+        <port name="SAU_ACCEPT" dir="in" width="1">
+            Accept incoming frame
+        </port>
+        <port name="SAU_DV" dir="in" width="1">
+            Sampling information valid
+        </port>
+
+
+		<divider>Control data generator interface</divider> 
+        <port name="CTRL_CLK" dir="out" width="1">
+            Control clock
+        </port>
+        <port name="CTRL_DATA" dir="in" width="FL_WIDTH_TX">
+            Control data
+        </port>
+        <port name="CTRL_REM" dir="in" width="log2(FL_WIDTH_TX/8)">
+            Specifies the number of valid bytes in the last CTRL_DATA beat;
+            valid only when CTRL_EOP is asserted
+        </port>
+        <port name="CTRL_SRC_RDY_N" dir="in" width="1">
+            Asserted when the input signals from control data generator are
+            valid
+        </port>
+        <port name="CTRL_SOP_N" dir="in" width="1">
+            Signals the start of the incoming control data.
+        </port>
+        <port name="CTRL_EOP_N" dir="in" width="1">
+            Signals the end of the incoming control data.
+        </port>
+        <port name="CTRL_DST_RDY_N" dir="out" width="1">
+            Asserted when data from control data generator will be accepted
+        </port>
+        <port name="CTRL_REQ" dir="out" width="1">
+            New frame is being received; prepare to generate new control data
+        </port>
+        <port name="CTRL_SEND" dir="out" width="1">
+            Send control data
+        </port>
+        <port name="CTRL_RELEASE" dir="out" width="1">
+            Discard control data
+        </port>
+        <port name="CTRL_RDY" dir="in" width="1">
+            Control data generator is ready to receive new request
+        </port>
+
+
+		<divider>Statistic data, active in '1'</divider> 
+        <port name="MAC_ERR" dir="out" width="1">
+      			MAC address is not accepted
+				</port>
+        <port name="MINTU_ERR" dir="out" width="1">
+      			Frame does not have minimal length
+				</port>
+        <port name="MTU_ERR" dir="out" width="1">
+      			Frame is longer than maximal length
+				</port>
+        <port name="XGMII_ERR" dir="out" width="1">
+      			XGMII error occured
+				</port>
+        <port name="CRC_ERR" dir="out" width="1">
+      			CRC check failed
+				</port>
+        <port name="STAT_VLD" dir="out" width="1">
+      			Statistic is valid
+				</port>
+
+
+		<divider>Output FrameLink inteface</divider> 
+		<port name="FL" dir="in/out" width="64">
+			Output 64b wide FrameLink
+		</port>
+		<port name="FL_CLK" dir="in" width="1">
+			Clock for FrameLink interface. Might be asynchronous to IBUF clock
+		</port>
+		
+		<divider>MI32 interface</divider> 
+		<port name="MI" dir="in/out" width="32">
+			MI32 interface
+		</port>
+		<port name="MI_CLK" dir="in" width="1">
+			Clock for MI32 interface
+		</port>
+		
+		
+	</port_map>
+
+</interface>
+
+
+<!-- CONSTANTS SECTION *************************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+<!--
+<constant>
+	
+
+</constant>
+-->
+
+<!-- OPERATIONS SECTION ************************************************* -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+<!--
+<operations>
+
+
+
+</operations>
+-->
+
+<!-- ADDRESS SPACE SECTION ********************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this sections -->
+
+<!-- main address space -->
+
+<addr_space id ="IBUF" name="IBUF Address space" main="yes" size="0x100">
+	<instantion ref_comp="xgmii_ibuf_mi_int" offset="0x000000">
+		MI Int Address Space
+	</instantion>
+</addr_space>
+
+<!-- SW BODY SECTION **************************************************** -->
+<!-- use if the component has a SW interface, otherwise delete this section -->
+
+<sw_body>
+
+	<p>
+		You should read <ref_comp ref="xgmii_ibuf_mi_int">MI_INT</ref_comp>
+		documentation for more information.
+	</p>
+
+</sw_body>
+
+<!-- HW BODY SECTION **************************************************** -->
+<!-- information for HW designers, structure should be as follow          -->
+<body>
+
+	<h1> XGMII IBUF information </h1>
+
+	<h2> General info </h2>
+	<p>
+		XGMII IBUF consists of several components shown below. It was designed not only as
+		modular as possible, but also with used resources in mind.
+	</p>
+	<p>
+		Because the component has to be synthesizable in XST and XST can not guarantee that
+		CRC module can work on 156.25 MHz it has to be instanced as black box. This suppose
+		that this module will be added manualy. 
+	</p>
+
+	<h2> Components </h2>
+	<p>
+		The block structure of the IBUF is in the following figure.
+		<obr src="./fig/ibuf_block_structure.fig">IBUF architecture</obr>
+	</p>
+
+	<p>
+		List of components
+		<ul>
+			<li>DDR2SDR (made by Xilinx, converts 32-bit DDR flow into 64-bit SDR)</li>
+			<li><ref_comp ref="xgmii_ibuf_align">ALIGN</ref_comp></li>
+			<li><ref_comp ref="xgmii_ibuf_dec">XGMII_DEC</ref_comp></li>
+			<li><ref_comp ref="xgmii_ibuf_check">CHECK</ref_comp></li>
+			<li><ref_comp ref="xgmii_ibuf_buf">BUF</ref_comp></li>
+			<li><ref_comp ref="xgmii_ibuf_fl_composer">FL Composer</ref_comp></li>
+			<li><ref_comp ref="xgmii_ibuf_mi_int">MI_INT</ref_comp></li>
+		</ul>
+	</p>
+
+	<h2> Cooperation with external components </h2>
+
+	<h3> Sampling unit </h3>
+	<p>
+		This unit is connected to the <ref_comp ref="xgmii_ibuf_check">Check</ref_comp>.
+		It is not neccessary to provide sampling information as soon as request
+		is send. You can find accurate number in the HW section of
+		<ref_comp ref="xgmii_ibuf_check">Check</ref_comp> documentation.
+	</p>
+
+	<h3> Control data generator </h3>
+	<p>
+		This unit is neccessary to provide FL headers and footers for incoming
+		frames. There are several demands to this unit.
+	</p>
+	<p>
+		When the request is send the component must be able to guarantee that it
+		is able to generate and save all the information for the frame. The
+		component must not send any data for the frameto IBUF until CTRL_SEND bit
+		is asserted. The control data generator has to be able to discard all
+		generated data when CTRL_DISCARD bit is asserted.
+	</p>
+	<p>
+		Control data generator does not have to be able to discard data for more
+		than one frame, because after request is send another one is not allowed.
+		CTRL_SEND or CTRL_DISCARD bit must be set earlier.
+	</p>
+	<p>
+		If the IBUF was syntesised with CTRL_HDR_EN and CTRL_FTR_EN set to true,
+		it is important that two FL parts are generated for each request.
+		If one of these generics is set to false only one FL part must be generated
+		for each request.
+	</p>
+    <h1>Frequency and Resources usage</h1>
+
+	<p>
+    <!--Resources usage and max. frequency by Precision-->
+	
+		<tab sloupce="ccc">
+			<tr>
+        <th>Generic settings (ibuf_xgmii_ent)</th>
+				<th>Slices (% of SFPRO slices)</th>
+				<th>BlockRams (% of SFPRO BRAMs)</th>
+			</tr>
+			<tr>
+				<th>DFIFO_SIZE=8191, HFIFO_SIZE=128, HFIFO_MEMTYPE = LUT,
+				    CTRL_HDR_EN = true, CTRL_FTR_EN = false, MACS = 16,
+					  FL_WIDTH_TX = 64, FL_RELAY = true
+				</th> 
+        <td>2629(11.13%)</td>
+				<td>8(3.45%)</td>
+			</tr>
+		<nazev>Chip utilization (Precision)</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings (ibuf_top4_fl16)</th>
+				<th>Max.frequency</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<th>DFIFO_SIZE=8191, HFIFO_SIZE=128, HFIFO_MEMTYPE = LUT,
+				    CTRL_HDR_EN = true, CTRL_FTR_EN = false, MACS = 16,
+					  FL_WIDTH_TX = 64, FL_RELAY = true
+				</th> 
+				<td>160.411MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Maximal frequency by Precision</nazev>
+		</tab> 
+	
+  </p> 
+	<p>
+    <!--Resources usage and max. frequency by XST-->
+	
+		<tab sloupce="ccc">
+			<tr>
+        <th>Generic settings (ibuf_xgmii_ent)</th>
+				<th>Slices (% of SFPRO slices)</th>
+				<th>BlockRams (% of SFPRO BRAMs)</th>
+			</tr>
+			<tr>
+				<th>DFIFO_SIZE=8191, HFIFO_SIZE=128, HFIFO_MEMTYPE = LUT,
+				    CTRL_HDR_EN = true, CTRL_FTR_EN = false, MACS = 16,
+					  FL_WIDTH_TX = 64, FL_RELAY = true
+				</th> 
+        <td>2485(10%)</td>
+				<td>4(1%)</td>
+			</tr>
+		<nazev>Chip utilization (XST)</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings (ibuf_top4_fl16)</th>
+				<th>Max.frequency</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<th>DFIFO_SIZE=8191, HFIFO_SIZE=128, HFIFO_MEMTYPE = LUT,
+				    CTRL_HDR_EN = true, CTRL_FTR_EN = false, MACS = 16,
+					  FL_WIDTH_TX = 64, FL_RELAY = true
+				</th> 
+				<td>162.57MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Maximal frequency by XST</nazev>
+		</tab> 
+	
+  </p> 
+</body>
+
+</source>

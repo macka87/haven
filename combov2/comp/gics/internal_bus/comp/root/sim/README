@@ -1,0 +1,4 @@
+Old simulation model removed. This model 
+wasn't used to simulate PCI Express bridge.
+There are verifications for it in ../ver directory.
+

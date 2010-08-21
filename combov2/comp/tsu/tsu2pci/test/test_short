@@ -1,0 +1,52 @@
+echo " "
+echo "TSU design testing script"
+echo "-------------------------"
+echo " "
+echo "PTM initialization..."
+csbus -d /dev/combosix1 10 0     #PTM driven by PCI
+
+csbus -d /dev/combosix1 0 $1
+csbus -d /dev/combosix1 4 $2
+csbus -d /dev/combosix1 8 0
+csbus -d /dev/combosix1 C 0      # write value from command line into INCR
+csbus -d /dev/combosix1 0 abababab
+csbus -d /dev/combosix1 4 bcbcbcbc
+csbus -d /dev/combosix1 8 dededede
+csbus -d /dev/combosix1 C 1      # set RTR register
+
+csbus -d /dev/combosix1 14 1     # set INTA register
+
+echo " "
+echo "TSU init request:"
+echo "-----------------"
+csbus -d /dev/combosix0 8 0      # clear init request
+csbus -d /dev/combosix0 8 1	 # TSU_ADD set init request
+echo "PTM-TSR register content:"
+csbus -d /dev/combosix1 C 6      # TSR reg -> PCI_TMP
+csbus -d /dev/combosix1 -c 2 4   # read PCI_TMP
+echo "TSU_ADD TS register:"
+csbus -d /dev/combosix0 -c 2 0   # read TS register
+echo "TSU_ADD TS_F register:"
+csbus -d /dev/combosix0 -c 2 10  # read TS_F register
+echo "PTM-RTR register content:"
+csbus -d /dev/combosix1 C 5      # RTR reg -> PCI_TMP
+csbus -d /dev/combosix1 -c 2 4   # read PCI_TMP
+
+while true ; do
+	echo " "
+	echo "TSU short request:"
+	echo "-----------------"
+	csbus -d /dev/combosix0 c 0	 # clear short request
+	csbus -d /dev/combosix0 c 1	 # TSU_ADD set short request
+	echo "PTM-TSR register content:"
+	csbus -d /dev/combosix1 C 6      # TSR reg -> PCI_TMP
+	csbus -d /dev/combosix1 -c 2 4   # read PCI_TMP
+	echo "TSU_ADD TS register:"
+	csbus -d /dev/combosix0 -c 2 0   # read TS register
+	echo "TSU_ADD TS_F register:"
+	csbus -d /dev/combosix0 -c 2 10  # read TS_F register
+	echo "PTM-RTR register content:"
+	csbus -d /dev/combosix1 C 5      # RTR reg -> PCI_TMP
+	csbus -d /dev/combosix1 -c 2 4   # read PCI_TMP
+	sleep 1
+done

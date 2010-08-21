@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+
+        <component>Control Bus Root</component>
+
+<authors>
+   <author login="pus">Viktor Pus</author>
+</authors>
+
+<bugs>
+</bugs>
+
+<description>
+   This component is interface between PPC and a Control Bus 
+   interface. Up to 16 endpoints may be connected to Control Bus.
+   Main purpose is to accomodate various communication protocols and
+   throughputs.
+</description>
+
+<interface>
+   <generic_map>
+      <generic name="QADDR_WIDTH" type="integer" default="10">
+         Defines RX and TX memories sizes. 10 corresponds to 2048 items
+         in each memory, i.e. 128 per queue. Maximum is 11.
+      </generic>
+   </generic_map>
+   <port_map>
+      <divider>Common Interface</divider>
+      <port name="CB_CLK" dir="in" width="1">
+         Clock input
+      </port>
+      <port name="CB_RESET" dir="in" width="">
+         Reset input
+      </port>
+      <divider>RX, TX queues interface</divider>
+      <port name="QADDR" dir="in" width="QADDR_WIDTH">
+         Address
+      </port>
+      <port name="QWR" dir="in" width="1">
+         Write Request
+      </port>
+      <port name="QRD" dir="in" width="1">
+         Read Request
+      </port>
+      <port name="QDWR" dir="in" width="64">
+         Data Write
+      </port>
+      <port name="QBE" dir="in" width="8">
+         Byte Enable. Byte enabling works only in 32bit manner, so lower
+         4 bits of this signal should always be equal, as well as higher
+         4 bits.
+      </port>
+      <port name="QDRD" dir="out" width="64">
+         Data Read
+      </port>
+      <port name="QDRDY" dir="out" width="1">
+         Data Ready
+      </port>
+      <divider>Control and status interface</divider>
+      <port name="CADDR" dir="in" width="8">
+         Address
+      </port>
+      <port name="CWR" dir="in" width="1">
+         Write Request
+      </port>
+      <port name="CRD" dir="in" width="1">
+         Read Request
+      </port>
+      <port name="CDWR" dir="in" width="32">
+         Data Write
+      </port>
+      <port name="CBE" dir="in" width="4">
+         Byte Enable
+      </port>
+      <port name="CDRD" dir="out" width="32">
+         Data Read
+      </port>
+      <port name="CDRDY" dir="out" width="1">
+         Data Ready
+      </port>
+      <divider>Control Bus Interface</divider>
+      <port name="CB" dir="inout" width="">
+         Control Bus Interface
+      </port>
+   </port_map>
+</interface>
+
+<operations>
+   <op name="Flow Control Init" id="flow_control_init">
+      Write 1 to LSB of Command Register.
+   </op>
+</operations>
+
+<addr_space id="cb_root_space" name="cb_root address space" main="yes">
+   <reg name="RX_COUNTERS" id="cb_root_rx_counters" 
+        offset="0x0000" access="RW" words="16">
+      Array of counters, number of items in each RX queue.
+      <bit_vect bits="8">
+      <description_above>
+         Be careful, number of valid bits depends on the size of 
+         RX and TX queues.
+      </description_above>
+      <format>
+         <bit from="0" to="7" name="RX_COUNTER" access="RW"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="RX_STRPTR" id="cb_root_rx_strptr" 
+        offset="0x0010" access="R" words="16">
+      Array of pointers to start of each RX queue.
+      <bit_vect bits="8">
+      <description_above>
+      </description_above>
+      <format>
+         <bit from="0" to="7" name="RX_STRPTR" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="RX_ENDPTR" id="cb_root_rx_endptr" 
+        offset="0x0020" access="R" words="16">
+      Array of pointers to end of each RX queue.
+      <bit_vect bits="8">
+      <description_above>
+      </description_above>
+      <format>
+         <bit from="0" to="7" name="RX_ENDPTR" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="ENDBUFSIZE" id="cb_root_endbufsize" 
+        offset="0x0030" access="R" words="16">
+      Array of counters, each holds information about one endpoint's RX
+      buffer free space.
+      <bit_vect bits="8">
+      <description_above>
+      </description_above>
+      <format>
+         <bit from="0" to="7" name="ENDBUFSIZE" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+
+   <reg name="TX_COUNTERS" id="cb_root_tx_counters" 
+        offset="0x0040" access="RW" words="16">
+      Array of counters, number of items in each TX queue.
+      <bit_vect bits="8">
+      <description_above>
+         Be careful, number of valid bits depends on the size of 
+         RX and TX queues.
+      </description_above>
+      <format>
+         <bit from="0" to="7" name="TX_COUNTER" access="RW"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="TX_STRPTR" id="cb_root_tx_strptr" 
+        offset="0x0050" access="R" words="16">
+      Array of pointers to start of each TX queue.
+      <bit_vect bits="8">
+      <description_above>
+      </description_above>
+      <format>
+         <bit from="0" to="7" name="TX_STRPTR" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="TX_ENDPTR" id="cb_root_tx_endptr" 
+        offset="0x0060" access="R" words="16">
+      Array of pointers to end of each TX queue.
+      <bit_vect bits="8">
+      <description_above>
+      </description_above>
+      <format>
+         <bit from="0" to="7" name="TX_ENDPTR" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="ROOTBUFSIZE" id="cb_root_rootbufsize" 
+        offset="0x0070" access="R" words="16">
+      Array of counters, each holds information about root's RX
+      buffer free space.
+      <bit_vect bits="8">
+      <description_above>
+      </description_above>
+      <format>
+         <bit from="0" to="7" name="ROOTBUFSIZE" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+
+   <reg name="RX_MASK" id="cb_root_rx_mask" 
+        offset="0x0080" access="R" words="1">
+      Mask of RX queues fullness.
+      <bit_vect bits="16">
+      <description_above>
+         Each bit corresponds to one RX queue. If it is in 1, then there
+         is message in that queue.
+      </description_above>
+      <format>
+         <bit from="0" to="15" name="RX_MASK" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="TX_MASK" id="cb_root_tx_mask" 
+        offset="0x0081" access="R" words="1">
+      Mask of TX queues fullness.
+      <bit_vect bits="16">
+      <description_above>
+         Each bit corresponds to one TX queue. If it is in 1, then there
+         is mesasge in that queue.
+      </description_above>
+      <format>
+         <bit from="0" to="15" name="TX_MASK" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="COMMAND" id="cb_root_command" 
+        offset="0x0082" access="W" words="1">
+      Command register.
+      <bit_vect bits="32">
+      <description_above>
+         Write 1 to LSB of this register to perform Flow Control Init 
+         operation.
+      </description_above>
+      <format>
+         <bit from="0" to="0" name="Flow Control Init" access="W"></bit>
+         <bit from="1" to="31" name="Reserved" access="W"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+   <reg name="QUEUE_FULL" id="cb_root_qfull" 
+        offset="0x0083" access="R" words="1">
+      Conunter of RX buffers overflows.
+      <bit_vect bits="16">
+      <description_above>
+         This register is detection of traffic errors of the type
+         Write to full RX queue.
+      </description_above>
+      <format>
+         <bit from="0" to="15" name="QUEUE_FULL" access="R"></bit>
+      </format>
+      </bit_vect>
+   </reg>
+</addr_space>
+
+<body>
+
+    <h1>Specification</h1>
+    <p>
+      Two BRAM-composed memories are used to store RX and TX data.
+      Each of them is addressed as 16 smaller FIFOs. PPC may access
+      to that memories via Q interface. DistRAMs are used to store
+      pointers to that memories. These pointers and further status 
+      informations are accesible via C interface.
+    </p>
+    <p>
+      <obr src="../../../doc/fig/cb_queues.fig">
+         cb_root idea.
+      </obr>
+    </p>
+    <h1>Behaviour</h1>
+    <p>
+      Arbiter counter periodically searches for nonempty TX queue and
+      when it finds one, that message is sent via Control Bus interface. Also,
+      when PPC releases greater amount of data from RX queue, empty message
+      (header only) is sent to corresponding endpoint.
+    </p>
+    <p>
+      After design boot, PPC should send "Flow Control Init" command. This
+      command will make Root component send one empty message to each 
+      endpoint.
+    </p>
+    <h1>Detailed specification</h1>
+    <h2>Address spaces</h2>
+    <h3>Q Address Space</h3>
+    <p>
+      This address space is used to access messages data. Lower half of this
+      address space is RX data (read only access), higher half is TX data 
+      (read and write access). Each of these two halves is further divided
+      into 16 standalone buffers organized as queues. Size of one queue is
+      determined by QADDR_WIDTH generic. Addressed items are 64-bit words.
+    </p>
+    <h3>C Address Space</h3>
+    <p>
+      This address space is fixed and provides access to various counters
+      and address pointers, as well as to the command register. Detailed
+      description is in the Address Space part of this documentation.
+    </p>
+    <h1>Component structure</h1>
+    <p>
+      <obr src="../../../doc/fig/cb_root.fig">
+         cb_root detailed structure.
+      </obr>
+    </p>
+    <p>
+      For more information, see Liberouter project Wiki page.
+      (Private access)
+    </p>
+    <h1>Component characteristics</h1>
+    <p>
+    These are values after synthesis with Precision and PaR. Target card was
+    Combo6X, QADDR_WIDTH generic was set to defalt value 10.
+    <ul>
+      <li>Device utilization: 558 Slices, 4 BlockRams</li>
+      <li>Maximal frequency: at least 130 MHz</li>
+    </ul>
+    </p>
+</body>
+</source>

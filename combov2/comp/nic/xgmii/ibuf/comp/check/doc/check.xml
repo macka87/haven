@@ -1,0 +1,275 @@
+<source>
+
+<component>Check</component>
+
+<authors>
+    <author login="solanka">Lukas Solanka</author>
+    <author login="polcak_l">Libor Polcak</author>
+	 <author login="xmatou06">Jiri Matousek</author>
+</authors>
+
+<features>
+    <item>Provides several checks for each frame</item>
+    <item>Optionally removes CRC from the frame</item>
+</features>
+
+<!--
+<bugs>
+</bugs>
+-->
+
+<todo>
+   <item>CRC check</item>
+   <item>HW tests</item>
+</todo>
+
+<description>
+	This component checks every incoming frame for length, CRC and destination
+	MAC address. Sampling unit can also mark packet to be discarded or not. There
+	is signal that is holding the information about the result
+	of each test in the statistics at the output of the component. Removing
+	frame's CRC is optional.
+</description>
+
+<interface>
+    <generic_map>
+       <generic name="MAC_COUNT" type="integer" default="">
+          Number of supported MAC addresses
+       </generic>
+       <generic name="INBANDFCS" type="boolean" default="false">
+			 Determines when FCS is removed (true) or not (false).
+		 </generic>
+    </generic_map>
+
+
+    <port_map>
+      <divider> Common signals </divider>
+      <port name="CLK" dir="in" width="1">
+         Clock sigal
+      </port>
+      <port name="RESET" dir="in" width="1">
+         Asynchronous reset, active in '1'
+      </port>
+
+      <divider> Input </divider>
+      <port name="DATA_RX" dir="in" width="64">
+         Packet data
+      </port>
+      <port name="SOP_RX" dir="in" width="1">
+         Start of the packet, active in '1'
+      </port>
+      <port name="EOP_RX" dir="in" width="1">
+         End of the packet, active in '1'.
+      </port>
+      <port name="EOP_POS_RX" dir="in" width="3">
+         Position of the end of the packet, valid only if EOP is set to '1'.
+      </port>
+      <port name="ERR_RX" dir="in" width="1">
+         Error inside the packet was detected, active in '1'.
+      </port>
+
+      <divider> Output </divider>
+      <port name="DATA_TX" dir="out" width="64">
+         Packet data
+      </port>
+      <port name="SOP_TX" dir="out" width="1">
+         Start of the packet, active in '1'
+      </port>
+      <port name="EOP_TX" dir="out" width="1">
+         End of the packet, active in '1'.
+      </port>
+      <port name="EOP_POS_TX" dir="out" width="3">
+         Position of the end of the packet, valid only if EOP is set to '1'.
+      </port>
+      <port name="ERR_TX" dir="out" width="1">
+         Error inside the packet was detected, active in '1'.
+      </port>
+
+      <divider> Statistics </divider>
+      <port name="STATS" dir="out" width="1">
+          Statistics created for the frame, valid only if EOP is set to '1'.
+      </port>
+
+      <divider> CAM connection </divider>
+      <port name="CAM_DI" dir="out" width="64">
+         MAC address to be searched
+      </port>
+      <port name="CAM_MATCH_EN" dir="out" width="1">
+         MAC address search enable
+      </port>
+      <port name="CAM_MATCH_RST" dir="out" width="1">
+         CAM match reset
+      </port>
+      <port name="CAM_MATCH_BUS" dir="in" width="MAC_COUNT">
+         Addresses found in CAM
+      </port>
+      <port name="CAM_MATCH_BUS_VLD" dir="in" width="1">
+         CAM_MATCH_BUS is valid, active in '1'
+      </port>
+
+      <divider> Data from MI_INT </divider>
+      <port name="MI2CHECK" dir="in" width="1">
+         Data provided by MI_INT
+      </port>
+
+      <divider> Sampling unit signals </divider>
+      <port name="SAU_REQ" dir="out" width="1">
+         Request for sampling information, active in '1'
+      </port>
+      <port name="SAU_ACCEPT" dir="in" width="1">
+         Accept incoming frame, active in '1'
+      </port>
+      <port name="SAU_DV" dir="in" width="1">
+         SAU_ACCEPT is valid, active in '1'
+      </port>
+
+    </port_map>
+
+</interface>
+
+
+<body>
+
+	<h1>Check information</h1>
+	<p>
+		The MAC Check part provides frame MAC address matching. The valid MAC
+		addresses are stored in MAC memory in the
+		<ref_comp ref="xgmii_ibuf_mi_int">MI Int</ref_comp>. There are
+		three modes of MAC checking. 
+
+    <ul>
+       <li>
+          MODE 0: no checking (promiscuous mode)
+       </li>
+       <li>
+          MODE 1: only frames with MAC addresses matching valid MAC memory items can pass
+       </li>
+       <li>
+          MODE 2: MODE 1 + all broadcast frames can pass
+       </li>
+       <li>
+          MODE 3: MODE 2 + all multicast frames can pass
+       </li>
+    </ul>
+  </p>
+
+	<p>
+		The minTU and MTU part counts the length of each frame. After the last part
+		of the frame is reveived it is compared to the values provided by
+		<ref_comp ref="xgmii_ibuf_mi_int">MI Int</ref_comp>.
+	</p>
+
+	<p>
+		Sampling unit provides information whether the packet should be processed
+		in next part of IBUF or not. The used sampling unit have to be able to
+		provide the information in 3 clock periods.
+	</p>
+
+	<p>
+		CRC unit is used to compute CRC of the incoming frame and compare it to the
+		one inside the frame.
+	</p>
+	
+	<p>
+		CRC removing is supported. When it is enabled (generic INBANDFCS is set
+		to true), CRC is removed before other processing of the frame. This
+		removing does not affect frame's CRC checking.
+	</p>
+
+
+	<h1>Frequency and Resources usage by Precision</h1>
+	<h2>Precision</h2>
+
+	<p>
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 16</th> 
+				<td>84 (0.36%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 8</th> 
+				<td>82 (0.35%)</td>
+				<td>0 (0.00%)</td>
+			</tr>
+		<nazev>Chip utilization (Precision)</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by Precision</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 16</th> 
+				<td>224 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 8</th> 
+				<td>224 MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Maximal frequency (Precision)</nazev>
+		</tab> 
+  </p> 
+
+	<h2>XST</h2>
+  <p> 
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 16</th> 
+				<td>91 (0%)</td>
+				<td>0 (0%)</td>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 8</th> 
+				<td>90 (0%)</td>
+				<td>0 (0%)</td>
+			</tr>
+		<nazev>Chip utilization (XST)</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by XST</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 16</th> 
+				<td>211 MHz</td>
+				<td>None</td>
+			</tr>
+			<tr>
+				<th>MAC_COUNT = 8</th> 
+				<td>211 MHz</td>
+				<td>None</td>
+			</tr>
+		<nazev>Maximal frequency (XST)</nazev>
+		</tab>	
+  </p> 
+
+
+
+	<h1>Schemes</h1>
+	<p>
+		The block structure of the component is in the following figure.
+		<obr src="./fig/check.fig">Check architecture</obr>
+	</p>
+
+
+</body>
+
+</source>

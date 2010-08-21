@@ -1,0 +1,221 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Viktor Pus <pus@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 14 2007-07-31 06:44:05Z kosek $
+
+proc blk_CB_ROOT { PARAM } {
+   global CB_ROOT_PATH
+   set BASE $CB_ROOT_PATH
+
+   if { $PARAM == "QIFC" } {
+   add wave -divider "CB_ROOT: RX, TX queues interface"
+   add_wave "-noupdate -hex -label CB_RESET"   /$BASE/CB_RESET
+   add_wave "-noupdate -hex -label CB_CLK"   /$BASE/CB_CLK
+   add_wave "-noupdate -hex -label QADDR"   /$BASE/QADDR
+   add_wave "-noupdate -hex -label QWR"   /$BASE/QWR
+   add_wave "-noupdate -hex -label QRD"   /$BASE/QRD
+   add_wave "-noupdate -hex -label QDWR"   /$BASE/QDWR
+   add_wave "-noupdate -hex -label QBE"   /$BASE/QBE
+   add_wave "-noupdate -hex -label QDRD"   /$BASE/QDRD
+   add_wave "-noupdate -hex -label QDRDY"   /$BASE/QDRDY
+   }
+   
+   if { $PARAM == "CIFC" } {
+   add wave -divider "CB_ROOT: Control interface"
+   add_wave "-noupdate -hex -label CADDR"   /$BASE/CADDR
+   add_wave "-noupdate -hex -label CWR"   /$BASE/CWR
+   add_wave "-noupdate -hex -label CRD"   /$BASE/CRD
+   add_wave "-noupdate -hex -label CDWR"   /$BASE/CDWR
+   add_wave "-noupdate -hex -label CBE"   /$BASE/CBE
+   add_wave "-noupdate -hex -label CDRD"   /$BASE/CDRD
+   add_wave "-noupdate -hex -label CDRDY"   /$BASE/CDRDY
+   }
+   
+   if { $PARAM == "CBIFC" } {
+   add wave -divider "CB_ROOT: Control Bus interface"
+   add_wave "-noupdate -hex -label CB"   /$BASE/CB
+   }
+   
+   if { $PARAM == "QINT" } {
+   add wave -divider "CB_ROOT: TX_QUEUES signals"
+   add_wave "-noupdate -hex -label REA"   /$BASE/QRD
+   add_wave "-noupdate -hex -label txq_WEA"   /$BASE/txq_wea
+   add_wave "-noupdate -hex -label ADDRA(8d0)" /$BASE/QADDR
+   add_wave "-noupdate -hex -label txq_DOA_DV"   /$BASE/txq_doa_dv
+   add_wave "-noupdate -hex -label txq_DOA"   /$BASE/txq_doa
+   
+   add_wave "-noupdate -hex -label txq_reb"   /$BASE/txq_reb
+   add_wave "-noupdate -hex -label txq_addrb"   /$BASE/txq_addrb
+   add_wave "-noupdate -hex -label txq_dob"   /$BASE/txq_dob
+   add_wave "-noupdate -hex -label txq_dob_dv"   /$BASE/txq_dob_dv
+   
+   add wave -divider "CB_ROOT: RX_QUEUES signals"
+   add_wave "-noupdate -hex -label REA"   /$BASE/QRD
+   add_wave "-noupdate -hex -label ADDRA(8d0)" /$BASE/QADDR
+   add_wave "-noupdate -hex -label rxq_DOA_DV"   /$BASE/rxq_doa_dv
+   add_wave "-noupdate -hex -label rxq_DOA"   /$BASE/rxq_doa
+   add_wave "-noupdate -hex -label rxq_web"   /$BASE/rxq_web
+   add_wave "-noupdate -hex -label rxq_addrb"   /$BASE/rxq_addrb
+   add_wave "-noupdate -hex -label rxq_dib"   /$BASE/rxq_dib
+   }
+
+   if { $PARAM == "ALLINT" } {
+   add wave -divider "CB_ROOT internal signals:"
+   add wave -divider "RX_STARTP signals"
+   add_wave "-noupdate -hex -label rxsp_di"  /$BASE/rxsp_di
+   add_wave "-noupdate -hex -label rxsp_we"  /$BASE/rxsp_we
+   add_wave "-noupdate -hex -label rxsp_doa"  /$BASE/rxsp_doa
+   add_wave "-noupdate -hex -label rxsp_addra(3d0)"  /$BASE/CADDR
+   add_wave "-noupdate -hex -label rxsp_addrb"  /$BASE/rxsp_addrb
+   add_wave "-noupdate -hex -label rxsp_dob"  /$BASE/rxsp_dob
+
+   add wave -divider "RX_ENDP signals"
+   add_wave "-noupdate -hex -label rxep_di"  /$BASE/rxep_di
+   add_wave "-noupdate -hex -label rxep_we"  /$BASE/rxep_we
+   add_wave "-noupdate -hex -label rxep_addra(10d7)"  /$BASE/rxq_addrb
+   add_wave "-noupdate -hex -label rxep_doa"  /$BASE/rxep_doa
+   add_wave "-noupdate -hex -label rxep_addrb(3d0)"  /$BASE/CADDR
+   add_wave "-noupdate -hex -label rxep_dob"  /$BASE/rxep_dob
+
+   add wave -divider "TX_STARTP signals"
+   add_wave "-noupdate -hex -label txsp_di"  /$BASE/txsp_di
+   add_wave "-noupdate -hex -label txsp_we"  /$BASE/txsp_we
+   add_wave "-noupdate -hex -label txsp_addra(10d7)"  /$BASE/txq_addrb
+   add_wave "-noupdate -hex -label txsp_doa"  /$BASE/txsp_doa
+   add_wave "-noupdate -hex -label txsp_addrb(3d0)"  /$BASE/CADDR
+   add_wave "-noupdate -hex -label txsp_dob"  /$BASE/txsp_dob
+
+   add wave -divider "TX_ENDP signals"
+   add_wave "-noupdate -hex -label txep_di"  /$BASE/txep_di
+   add_wave "-noupdate -hex -label txep_we"  /$BASE/txep_we
+   add_wave "-noupdate -hex -label txep_addra(3d0)"  /$BASE/CADDR
+   add_wave "-noupdate -hex -label txep_doa"  /$BASE/txep_doa
+   add_wave "-noupdate -hex -label txep_addrb"  /$BASE/txep_addrb
+   add_wave "-noupdate -hex -label txep_dob"  /$BASE/txep_dob
+
+   add wave -divider "RX_COUNTER signals"
+   add_wave "-noupdate -hex -label rxcnt_vrd"  /$BASE/rxcnt_vrd
+   add_wave "-noupdate -hex -label rxcnt_addr_rd(3d0)"  /$BASE/CADDR
+   add_wave "-noupdate -hex -label rxcnt_addr_sub(3d0)"  /$BASE/CADDR
+   add_wave "-noupdate -hex -label rxcnt_value_sub(6d0)"  /$BASE/CDWR
+   add_wave "-noupdate -hex -label rxcnt_outsub"  /$BASE/rxcnt_outsub
+   add_wave "-noupdate -hex -label rxcnt_vldsub"  /$BASE/rxcnt_vldsub
+   add_wave "-noupdate -hex -label addr_add"   /$BASE/src_id
+   add_wave "-noupdate -hex -label rxcnt_vldadd(+1)"  /$BASE/rxcnt_vldadd
+   add_wave "-noupdate -hex -label rxcnt_fulladd"  /$BASE/rxcnt_fulladd
+   add_wave "-noupdate -hex -label rxcnt_mask"  /$BASE/rxcnt_mask
+
+   add wave -divider "ENDPOINT_DIFF_BUF signals"
+   add_wave "-noupdate -hex -label edbuf_vrd"  /$BASE/edbuf_vrd
+   add_wave "-noupdate -hex -label addr_rd(3d0)"  /$BASE/CADDR
+   add_wave "-noupdate -hex -label addr_sub"  /$BASE/dst_id
+   add_wave "-noupdate -hex -label edbuf_valsub"  /$BASE/edbuf_valsub
+   add_wave "-noupdate -hex -label edbuf_vldsub"  /$BASE/edbuf_vldsub
+   add_wave "-noupdate -hex -label edbuf_outsub"  /$BASE/edbuf_outsub
+   add_wave "-noupdate -hex -label edbuf_addradd"  /$BASE/edbuf_addradd
+   add_wave "-noupdate -hex -label value_add"  /$BASE/endpoint_freed
+   add_wave "-noupdate -hex -label edbuf_vldadd"  /$BASE/edbuf_vldadd
+   add_wave "-noupdate -hex -label edbuf_fulladd"  /$BASE/edbuf_fulladd
+   add_wave "-noupdate -hex -label edbuf_mask"  /$BASE/edbuf_mask
+   
+   add wave -divider "ROOT_DIFF_BUF signals"
+   add_wave "-noupdate -hex -label rdbuf_vrd"   /$BASE/rdbuf_vrd
+   add_wave "-noupdate -hex -label rdbuf_addr_rd"   /$BASE/rdbuf_addr_rd
+   add_wave "-noupdate -hex -label addr_rd(3d0)"   /$BASE/CADDR
+   add_wave "-noupdate -hex -label rdbuf_addr_sub"   /$BASE/rdbuf_addr_sub
+   add_wave "-noupdate -hex -label rdb/reg_addr"   /$BASE/root_diff_buf/reg_addr
+   add_wave "-noupdate -hex -label rdbuf_value_sub"   /$BASE/rdbuf_value_sub
+   add_wave "-noupdate -hex -label rdbuf_vld_sub"   /$BASE/rdbuf_vld_sub
+   add_wave "-noupdate -hex -label rdbuf_out_sub"   /$BASE/rdbuf_out_sub
+   add_wave "-noupdate -hex -label addr_add(3d0)"   /$BASE/CADDR
+   add_wave "-noupdate -hex -label value_add(6d0)"   /$BASE/CDWR
+   add_wave "-noupdate -hex -label rdbuf_vld_add"   /$BASE/rdbuf_vld_add
+   add_wave "-noupdate -hex -label rdbuf_mask"   /$BASE/rdbuf_mask
+   add_wave "-noupdate -hex -label rdbuf_pend"   /$BASE/rdbuf_pend
+   
+   add wave -divider "TX_COUNTER signals"
+   add_wave "-noupdate -hex -label txcnt_vrd"   /$BASE/txcnt_vrd
+   add_wave "-noupdate -hex -label addr_rd(3d0)"   /$BASE/CADDR
+   add_wave "-noupdate -hex -label addr_sub"   /$BASE/reg_tx_addr
+   add_wave "-noupdate -hex -label txcnt_valsub"   /$BASE/txcnt_valsub
+   add_wave "-noupdate -hex -label txcnt_vldsub"   /$BASE/txcnt_vldsub
+   add_wave "-noupdate -hex -label addr_add(3d0)"   /$BASE/CADDR
+   add_wave "-noupdate -hex -label value_add(6d0)"   /$BASE/CDWR
+   add_wave "-noupdate -hex -label txcnt_vldadd"   /$BASE/txcnt_vldadd
+   add_wave "-noupdate -hex -label txcnt_mask"   /$BASE/txcnt_mask
+   add_wave "-noupdate -hex -label txcnt_pend"   /$BASE/txcnt_pend
+
+   add wave -divider "Various RX signals"
+   add_wave "-noupdate -hex -label reg_rx_even"   /$BASE/reg_rx_even
+   add_wave "-noupdate -hex -label src_id"   /$BASE/src_id
+   
+   add wave -divider "Various Q interface signals"
+   add_wave "-noupdate -hex -label qdrd_mux_in"   /$BASE/qdrd_mux_in
+   add_wave "-noupdate -hex -label reg_qaddr"   /$BASE/reg_qaddr
+   add_wave "-noupdate -hex -label qdrd_mux_out"   /$BASE/qdrd_mux_out
+   add_wave "-noupdate -hex -label reg_qdrd"   /$BASE/reg_qdrd
+   add_wave "-noupdate -hex -label reg_qdrdy"   /$BASE/reg_qdrdy
+   
+   add wave -divider "Various C interface signals"
+   add_wave "-noupdate -hex -label cmux1_in"   /$BASE/cmux1_in
+   add_wave "-noupdate -hex -label cmux1_out"   /$BASE/cmux1_out
+   add_wave "-noupdate -hex -label reg_cdrd"   /$BASE/reg_cdrd
+   add_wave "-noupdate -hex -label reg_cdrdy"   /$BASE/reg_cdrdy
+   add_wave "-noupdate -hex -label reg_caddr_msb"   /$BASE/reg_caddr_msb
+   add_wave "-noupdate -hex -label cmux2_in"   /$BASE/cmux2_in
+   add_wave "-noupdate -hex -label cmux2_out"   /$BASE/cmux2_out
+   add_wave "-noupdate -hex -label cmuxm_out"   /$BASE/cmuxm_out
+   add_wave "-noupdate -hex -label reg_cmuxm_out"   /$BASE/reg_cmuxm_out
+   }
+
+   if { $PARAM == "FSM" } {
+   add wave -divider "CB_ROOT: RX signals"
+   add_wave "-noupdate -hex -label reg_tx_even"   /$BASE/reg_tx_even
+   add_wave "-noupdate -hex -label arbiter_vector"  /$BASE/arbiter_vector
+   add_wave "-noupdate -hex -label arbiter_step"  /$BASE/arbiter_step
+   add_wave "-noupdate -hex -label arbiter_addr"  /$BASE/arbiter_addr
+   add_wave "-noupdate -hex -label arbiter_vld"  /$BASE/arbiter_vld
+   add_wave "-noupdate -hex -label f_arbiter_vector"  /$BASE/f_arbiter_vector
+   add_wave "-noupdate -hex -label f_arbiter_step"  /$BASE/f_arbiter_step
+   add_wave "-noupdate -hex -label f_arbiter_addr"  /$BASE/f_arbiter_addr
+   add_wave "-noupdate -hex -label f_arbiter_vld"  /$BASE/f_arbiter_vld
+   
+   add_wave "-noupdate -hex -label tx_fsm"  /$BASE/tx_fsm
+   add_wave "-noupdate -hex -label reg_tx_addr"  /$BASE/reg_tx_addr
+   add_wave "-noupdate -hex -label cnt_msg_len"  /$BASE/cnt_msg_len
+   add_wave "-noupdate -hex -label reg_msg_len"  /$BASE/reg_msg_len
+   add_wave "-noupdate -hex -label reg_len_ok"  /$BASE/reg_len_ok
+   add_wave "-noupdate -hex -label reg_rdy"  /$BASE/reg_rdy
+   add_wave "-noupdate -hex -label reg_cbout"  /$BASE/reg_cbout
+   add_wave "-noupdate -hex -label cbmux_in"  /$BASE/cbmux_in
+   add_wave "-noupdate -hex -label cbmux_sel"  /$BASE/cbmux_sel
+   add_wave "-noupdate -hex -label cnt_send_init"  /$BASE/cnt_send_init
+   add_wave "-noupdate -hex -label cnt_send_empty"  /$BASE/cnt_send_empty
+   }
+}

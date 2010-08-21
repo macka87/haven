@@ -1,0 +1,61 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2009 CESNET
+# Author: Jan Stourac <xstour03@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 10849 2009-08-27 14:56:17Z xstour03 $
+#
+
+# -------------------------------------------------------------------------
+#                       Waveform Definition 
+# -------------------------------------------------------------------------
+
+proc blk_FL_STAT { PARAM } {
+   global FL_STAT_PATH
+
+   add wave -divider "### MI32 interface ###"
+   add_wave "-noupdate -hex -label DWR"            /uut/DWR
+   add_wave "-noupdate -hex -label ADDR"           /uut/ADDR
+   add_wave "-noupdate -hex -label RD"             /uut/RD
+   add_wave "-noupdate -hex -label WR"             /uut/WR
+   add_wave "-noupdate -hex -label BE"             /uut/BE
+   add_wave "-noupdate -hex -label DRD"            /uut/DRD
+   add_wave "-noupdate -hex -label ARDY"	   /uut/ARDY
+   add_wave "-noupdate -hex -label DRDY"	   /uut/DRDY
+
+   add wave -divider "### FL src_rdy_n devices pairs ###"
+   add_wave "-noupdate -hex -label SRC_RDY_N"      /uut/SRC_RDY_N
+   add_wave "-noupdate -hex -label DST_RDY_N"      /uut/DST_RDY_N
+
+   add wave -divider "### Internal signals ###"
+   add wave -divider "Internal signals"
+   add_wave "-noupdate -hex -label state"          /uut/state
+   add_wave "-noupdate -hex -label clk_cnt"        /uut/clk_cnt
+   add_wave "-noupdate -hex -label src_cnt"        /uut/src_cnt
+   add_wave "-noupdate -hex -label dst_cnt"        /uut/dst_cnt
+   add_wave "-noupdate -hex -label both_cnt"       /uut/both_cnt
+}

@@ -1,0 +1,66 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Vlastimil Kosar <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 924 2007-12-06 12:36:22Z xkosar02 $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+proc fl_sim {NAME PATH} {
+    add wave -divider "$NAME"       
+      add_wave "-noupdate -color yellow -label RESET" $PATH/RESET
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/FL_CLK
+      add_wave "-noupdate -hex -label FL_BUS_FL_BFM_0"   $PATH/FL_BUS
+      #add_wave "-noupdate -label CTRL"   $PATH/fl_sim_ctrl
+      #add_wave "-noupdate -label STROBE"   $PATH/fl_sim_strobe
+      #add_wave "-noupdate -label BUSY"   $PATH/fl_sim_busy
+      #add_wave "-noupdate -hex -label Command"   /testbench/FL_BFM_U/test
+      #add_wave "-noupdate -hex -label Command1"   /testbench/FL_BFM_U1/test
+      #add wave -divider "$NAME - IN BUS"
+      #add_wave "-noupdate -hex -label FRAME_LINK_BUS"   /testbench/FL_SIM_U/AUX_FL_BUS2
+      #add wave -divider "$NAME - LOGGING"
+      #add_wave "-noupdate -hex -label RX_DATA" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/RX_DATA
+      #add_wave "-noupdate -label RX_SOF_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/RX_SOF_N
+      #add_wave "-noupdate -label RX_SOP_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/RX_SOP_N
+      #add_wave "-noupdate -label RX_EOP_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/RX_EOP_N
+      #add_wave "-noupdate -label RX_EOF_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/RX_EOF_N
+      #add_wave "-noupdate -label RX_SRC_RDY_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/RX_SRC_RDY_N
+      #add_wave "-noupdate -label RX_DST_RDY_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/RX_DST_RDY_N
+      #add_wave "-noupdate -hex -label INBUS_DATA" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/INBUS_DATA
+      #add_wave "-noupdate -label INBUS_SOF_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/INBUS_SOF_N
+      #add_wave "-noupdate -label INBUS_SOP_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/INBUS_SOP_N
+      #add_wave "-noupdate -label INBUS_EOP_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/INBUS_EOP_N
+      #add_wave "-noupdate -label INBUS_EOF_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/INBUS_EOF_N
+      #add_wave "-noupdate -label INBUS_SRC_RDY_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/INBUS_SRC_RDY_N
+      #add_wave "-noupdate -label INBUS_DST_RDY_N" /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/INBUS_DST_RDY_N
+      #add_wave "-noupdate -hex -label AUX_FL_BUS"   /testbench/FL_SIM_U/FL_SIM_LOGGING_TX_U/AUX_FL_BUS
+      add_wave "-noupdate -hex -label FL_BUS_FL_BFM_11"   $PATH/FL_BUS3
+}

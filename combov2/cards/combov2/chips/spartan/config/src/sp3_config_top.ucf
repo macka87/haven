@@ -1,0 +1,142 @@
+#
+# sp3_config_top.ucf: UCF for FPGA in design sp3_config_top (Spartan3E)
+# Copyright (C) 2008  CESNET
+# Authors: Milan Malich <malich@mail.muni.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: sp3_config_top.ucf 6162 2008-10-29 16:49:48Z kulich $
+#
+
+#------------------------------------
+# Oscilator (U17)
+#------------------------------------
+  NET "CCLK"  LOC = "D9" | IOSTANDARD = LVCMOS33 ;
+  Net "CCLK" TNM_NET = "CCLK";
+  TIMESPEC TS_CCLK = PERIOD "CCLK" 10 ns;
+
+#------------------------------------
+# Led
+#------------------------------------
+  NET "CLED<0>"  LOC = "F8" | IOSTANDARD = LVCMOS33 ; 
+  NET "CLED<1>"  LOC = "A8" | IOSTANDARD = LVCMOS33 ; 
+  NET "CLED<2>"  LOC = "C7" | IOSTANDARD = LVCMOS33 ; 
+  NET "CLED<3>"  LOC = "D7" | IOSTANDARD = LVCMOS33 ; 
+
+#------------------------------------
+# PSRAM & Flash (U13 & U14)
+#------------------------------------
+  # Adress
+  NET "FA<0>"  LOC = "J13" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<10>"  LOC = "L15" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<11>"  LOC = "L16" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<12>"  LOC = "T18" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<13>"  LOC = "R18" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<14>"  LOC = "T17" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<15>"  LOC = "U18" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<16>"  LOC = "T16" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<17>"  LOC = "U15" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<18>"  LOC = "V15" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<19>"  LOC = "R14" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<1>"  LOC = "J12" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<20>"  LOC = "T14" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<21>"  LOC = "R13" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<22>"  LOC = "P13" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<23>"  LOC = "R12" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<24>"  LOC = "T12" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<25>"  LOC = "V13" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<2>"  LOC = "J14" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<3>"  LOC = "J15" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<4>"  LOC = "J16" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<5>"  LOC = "J17" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<6>"  LOC = "K14" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<7>"  LOC = "K15" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<8>"  LOC = "K12" | IOSTANDARD = LVCMOS25 ; 
+  NET "FA<9>"  LOC = "K13" | IOSTANDARD = LVCMOS25 ; 
+  # Data
+  NET "FD<0>"  LOC = "N10" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<10>"  LOC = "F18" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<11>"  LOC = "G16" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<12>"  LOC = "G15" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<13>"  LOC = "H15" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<14>"  LOC = "H14" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<15>"  LOC = "H17" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<1>"  LOC = "P10" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<2>"  LOC = "R10" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<3>"  LOC = "V9" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<4>"  LOC = "U9" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<5>"  LOC = "R9" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<6>"  LOC = "M9" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<7>"  LOC = "N9" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<8>"  LOC = "G14" | IOSTANDARD = LVCMOS25 ; 
+  NET "FD<9>"  LOC = "F17" | IOSTANDARD = LVCMOS25 ; 
+  # Control
+  NET "FBYTE_N"  LOC = "C17" | IOSTANDARD = LVCMOS25 ; 
+  NET "FCSFLASH_N"  LOC = "D16" | IOSTANDARD = LVCMOS25 ; 
+  NET "FCSRAM_N"  LOC = "F14" | IOSTANDARD = LVCMOS25 ; 
+  NET "FOE_N"  LOC = "C18" | IOSTANDARD = LVCMOS25 ; 
+  NET "FRY"  LOC = "U6" | IOSTANDARD = LVCMOS25 ; 
+  NET "FLB_N"  LOC = "L17" | IOSTANDARD = LVCMOS25 ; 
+  NET "FUB_N"  LOC = "H16" | IOSTANDARD = LVCMOS25 ; 
+  NET "FWE_N"  LOC = "D17" | IOSTANDARD = LVCMOS25 ; 
+  NET "FZZ_N"  LOC = "T15" | IOSTANDARD = LVCMOS25 ; 
+
+#------------------------------------
+# Reset (BT1)
+#------------------------------------
+  NET "RESET_N"  LOC = "A3" | IOSTANDARD = LVCMOS33 ; 
+  # Config
+  NET "XDONE"  LOC = "R16" | IOSTANDARD = LVCMOS25 ; 
+  NET "XM0"  LOC = "M13" | IOSTANDARD = LVCMOS25 ; 
+  NET "XPROGRAM_N"  LOC = "M14" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRCCLK"  LOC = "R15" | IOSTANDARD = LVCMOS25 | DRIVE = 12; 
+  NET "XRCS_N"  LOC = "M18" | IOSTANDARD = LVCMOS25 ;
+  NET "XINIT_N"  LOC = "L18" | IOSTANDARD = LVCMOS25 ;
+  #
+  NET "XRD<0>"  LOC = "V12" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRD<1>"  LOC = "R11" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRD<2>"  LOC = "N11" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRD<3>"  LOC = "P11" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRD<4>"  LOC = "T8" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRD<5>"  LOC = "R8" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRD<6>"  LOC = "P9" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRD<7>"  LOC = "N8" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRDIN"  LOC = "N18" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRDOUT"  LOC = "H13" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<0>"  LOC = "P8" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<10>"  LOC = "F15" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<11>"  LOC = "G13" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<1>"  LOC = "P7" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<2>"  LOC = "N7" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<3>"  LOC = "P6" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<4>"  LOC = "R6" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<5>"  LOC = "T5" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<6>"  LOC = "R5" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<7>"  LOC = "U5" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<8>"  LOC = "U16" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRHSH<9>"  LOC = "U3" | IOSTANDARD = LVCMOS25 ; 
+  NET "XRRDWR_N"  LOC = "M16" | IOSTANDARD = LVCMOS25 ;
+

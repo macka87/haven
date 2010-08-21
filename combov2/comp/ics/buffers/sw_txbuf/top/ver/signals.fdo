@@ -1,0 +1,63 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 4568 2008-08-08 13:35:00Z solanka $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+
+proc writeBuff {NAME PATH} {
+     add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label WR_ADDR"     $PATH/WR_ADDR
+     add_wave "-noupdate  -label WR_BE"            $PATH/WR_BE
+     add_wave "-noupdate  -label WR_REQ"           $PATH/WR_REQ
+     add_wave "-noupdate  -hex -label WR_DATA"     $PATH/WR_DATA
+     add_wave "-noupdate  -label WR_RDY"           $PATH/WR_RDY
+     add_wave "-noupdate  -hex -label TX_NEWLEN"   $PATH/TX_NEWLEN
+     add_wave "-noupdate  -label TX_NEWLEN_DV"     $PATH/TX_NEWLEN_DV
+     add_wave "-noupdate  -label TX_NEWLEN_RDY"    $PATH/TX_NEWLEN_RDY   
+     add_wave "-noupdate  -hex -label TX_RELLEN"   $PATH/TX_RELLEN
+     add_wave "-noupdate  -label TX_RELLEN_DV"     $PATH/TX_RELLEN_DV       
+}
+
+proc readBuff {NAME PATH} {
+     add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label TX_DATA"     $PATH/TX_DATA
+     add_wave "-noupdate  -hex -label TX_REM"      $PATH/TX_REM
+     add_wave "-noupdate  -label TX_SOF_N"         $PATH/TX_SOF_N
+     add_wave "-noupdate  -label TX_EOF_N"         $PATH/TX_EOF_N
+     add_wave "-noupdate  -label TX_SOP_N"         $PATH/TX_SOP_N
+     add_wave "-noupdate  -label TX_EOP_N"         $PATH/TX_EOP_N
+     add_wave "-noupdate  -label TX_SRC_RDY_N"     $PATH/TX_SRC_RDY_N
+     add_wave "-noupdate  -label TX_DST_RDY_N"     $PATH/TX_DST_RDY_N
+     
+}     

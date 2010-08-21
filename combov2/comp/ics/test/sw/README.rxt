@@ -1,0 +1,53 @@
+=========
+ICS tests
+=========
+:Version: $Id: README.rxt 4749 2008-08-13 13:36:50Z xhanka00 $
+:Author: Andrej Hank <xhanka00@liberouter.org>
+
+1. Description
+==============
+
+TODO 
+
+2. Command-line options
+=======================
+
+::
+ usage: ics_test [-c cmd] [-d device] [-D level] [-f file] [-l count] [-o offset]
+ [-s size]  [-h]
+ -d s            path to device file to use
+ -D level        debug level
+ -f file         file with data pattern
+ -l count        how many times to perform operation
+ -o offset       address for operation
+ -s size         lenght of data for operation
+ -h              show this text
+ -c cmd
+ write    - many write-in operations
+ g2lr     - BM operations G2L READ
+ l2gw     - BM operations L2G WRITE
+
+3. Examples of usage
+====================
+ 
+The command::
+
+  %  ics_test -o 0x0 -s 16 -c write -f data -D 2
+
+Reads file ``data`` for 16 bytes. Writes read data at offset 0x0 to fpga memory.
+Provides debug printings.
+
+The command::
+
+  %  ics_test -o 0x0 -s 16 -c l2gw -f data
+
+Reads file ``data`` for 16 bytes. Writes read data at offset 0x0 to fpga memory,
+then calls l2gw transaction.
+
+The command::
+
+  %  ics_test -o 0x0 -s 16 -c g2lr -f data
+
+Reads file ``data`` for 16 bytes. Writes read data at offset 0x0 to RAM,
+then calls g2lr transaction.
+

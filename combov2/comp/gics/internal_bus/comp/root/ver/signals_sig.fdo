@@ -1,0 +1,103 @@
+#
+# top_level_sig.fdo : Include file with signals 
+# Copyright (C) 2007 CESNET
+# Author(s): Tomas Malek <tomalek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals_sig.fdo 5056 2008-08-19 16:55:05Z xkobie00 $
+#
+
+# Global file with signals
+
+source "./signals.fdo"
+view wave
+delete wave *
+
+#add wave -divider "               "
+#add wave -divider "== DEBUG TX GENERATOR =="
+#add wave -divider "               "
+
+#add_wave "-group {AUX TXGEN} -noupdate -hex -label low_mux_dec_in"   /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/low_mux_dec_in
+#add_wave "-group {AUX TXGEN} -noupdate -hex -label low_trn_data_out_mux_sel"   /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/low_trn_data_out_mux_sel
+#add_wave "-group {AUX TXGEN} -noupdate -hex -label low_trn_data_out_mux"   /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/low_trn_data_out_mux
+#add_wave "-group {AUX TXGEN} -noupdate -hex -label high_trn_data_out_sel"   /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/high_trn_data_out_sel
+#add_wave "-group {AUX TXGEN} -noupdate -hex -label high_trn_data_out"   /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/high_trn_data_out
+    
+
+#tx_generator                 TX_GENERATOR       /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U
+#tx_generator_in_fsm          IN_FSM             /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/PCIE_TX_IN_FSM_U
+#tx_spliter                   SPLITER            /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/PCIE_TX_DATA_REALIGN_U/PCIE_SPLITER_U
+#tx_generator_out_fsm         OUT_FSM            /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/PCIE_TX_OUT_FSM_U
+#tx_generator_len_decoder     LEN_DEC            /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/PCIE_TX_LEN_DECODER_U
+#tx_generator_addr_decoder    ADDR_DEC           /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/PCIE_TX_ADDR_DECODER_U
+#tx_generator_realign         REALIGN            /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U/PCIE_TX_DATA_REALIGN_U
+#add wave -divider "== DEBUG TX GENERATOR =="
+
+blk_rx_align_unit            RX_ALIGN_UNIT      /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_IB_GENERATOR_U/GEN_ALIGN_UNIT/RX_ALIGN_UNIT_U
+
+
+add wave -divider "               "
+add wave -divider "== TOP LEVEL =="
+add wave -divider "               "
+pcie_bridge                  PCIE_BRIDGE        /testbench/UUT/PCIE2IB_BRIDGE_U
+add wave -divider "== TOP LEVEL =="
+
+add wave -divider "               "
+add wave -divider "== PCIE RX PART =="
+add wave -divider "               "
+rx_decoder                   RX_DECODER         /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_RX_DECODER_U
+ib_generator                 IB_GENERATOR       /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_IB_GENERATOR_U
+add wave -divider "== PCIE RX PART =="
+
+add wave -divider "               "
+add wave -divider "== PCIE TX PART =="
+add wave -divider "               "
+ib_decoder                   IB_DECODER         /testbench/UUT/PCIE2IB_BRIDGE_U/IB_DECODER_U
+tx_generator                 TX_GENERATOR       /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_TX_GENERATOR_U
+add wave -divider "== PCIE TX PART =="
+
+add wave -divider "               "
+add wave -divider "== BUFFERS =="
+local_compl_buf          LOCAL_COMPL_BUF    /testbench/UUT/PCIE2IB_BRIDGE_U/LOCAL_COMPL_BUF_U
+global_compl_buf         GLOBAL_COMPL_BUF   /testbench/UUT/PCIE2IB_BRIDGE_U/GLOBAL_COMPL_BUF_U
+add wave -divider "== BUFFERS =="
+
+
+
+
+#blk_align_unit               ALIGN_UNIT         /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_IB_GENERATOR_U/GEN_ALIGN_UNIT/RX_ALIGN_UNIT_U/ALIGN_UNIT_U
+#blk_global_compl_buf         GLOBAL_COMPL_BUF   /testbench/UUT/PCIE2IB_BRIDGE_U/GLOBAL_COMPL_BUF_U   
+#ib_decoder                   IB_DECODER         /testbench/UUT/PCIE2IB_BRIDGE_U/IB_DECODER_U
+#blk_rx_decoder_fsm           RX_DECODER_FSM     /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_RX_DECODER_U/PCIE_RX_DECODER_FSM_U
+#blk_rx_decoder               RX_DECODER_SIGNALS /testbench/UUT/PCIE2IB_BRIDGE_U/PCIE_RX_DECODER_U
+
+
+restart -f
+run -all
+
+
+

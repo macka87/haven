@@ -1,0 +1,175 @@
+#!/bin/sh
+
+COMBO6_DEVICE="/dev/combosix/0"
+PORT_ID="0"                   #which port for monitoring? 0 or 1
+
+
+COMBO=""		     # combo6 or combo6x
+CARD_ID=""                   # card id - xcv1000, xcv2000, xc2vp20
+CHIP_ID=""                   # chip id - sfp, mtx2, xfp
+DIR="./"
+
+#
+# Check design identificator.
+#
+detect_card_id()
+{
+  for CSID_VALUE in `csid`
+   do
+    case "$CSID_VALUE" in
+
+     "sfp" )
+      CARD_ID="sfp"
+     ;;
+
+     "mtx2" )
+      CARD_ID="mtx"
+     ;;
+
+     "xfp" | "xfpro")
+      echo "Unsupported add-on card - \"$CSID_VALUE\" detected!"
+      exit 1
+     ;;
+
+     "sfpro" )
+      CARD_ID="sfpro"
+     ;;
+
+     "combo6" )
+      COMBO="combo6"
+     ;;
+
+     "combo6x" )
+      COMBO="combo6x"
+     ;;
+
+     "ptm" )
+      echo "Unsupported mother card - \"$CSID_VALUE\" detected!"
+      exit 1
+     ;;
+
+     "xcv1000" )
+      CHIP_ID="1"
+     ;;
+
+     "xcv2000" )
+      CHIP_ID="2"
+     ;;
+
+     "xc2vp20" )
+      CHIP_ID="1"
+     ;;
+
+      "xc2vpx20" )
+      echo "Unsupported chip - \"$CSID_VALUE\" detected!"
+      exit 1
+     ;;
+
+     *)
+      echo "Unsupported csid value - \"$CSID_VALUE\" detected!"
+     ;;
+    esac
+   done
+
+  DESIGN_ID=$CARD_ID$CHIP_ID$PORT_ID
+}
+
+
+#
+# Boot design
+#
+boot_card()
+{
+  if [ "$DESIGN_ID" = "mtx20" ]; then
+    FPGA8=mtx-1-2v2000-fpga0.mcs
+    FPGA9=mtx-1-2v2000-fpga1.mcs
+  elif [ "$DESIGN_ID" = "mtx21" ]; then
+    FPGA8=mtx-1-2v2000-fpga0_ifc1.mcs
+    FPGA9=mtx-1-2v2000-fpga1.mcs
+  elif [ "$DESIGN_ID" = "mtx10" ]; then
+    FPGA8=mtx-1-2v1000-fpga0.mcs
+    FPGA9=mtx-1-2v1000-fpga1.mcs
+  elif [ "$DESIGN_ID" = "mtx11" ]; then
+    FPGA8=mtx-1-2v1000-fpga0_ifc1.mcs
+    FPGA9=mtx-1-2v1000-fpga1.mcs
+  elif [ "$DESIGN_ID" = "sfp20" ]; then
+    FPGA8=sfp-1-2v2000-fpga0.mcs
+    FPGA9=sfp-1-2v2000-fpga1.mcs
+  elif [ "$DESIGN_ID" = "sfp21" ]; then
+    FPGA8=sfp-1-2v2000-fpga0_ifc1.mcs
+    FPGA9=sfp-1-2v2000-fpga1.mcs
+  elif [ "$DESIGN_ID" = "sfp10" ]; then
+    FPGA8=sfp-1-2v1000-fpga0.mcs
+    FPGA9=sfp-1-2v1000-fpga1.mcs
+  elif [ "$DESIGN_ID" = "sfp11" ]; then
+    FPGA8=sfp-1-2v1000-fpga0_ifc1.mcs
+    FPGA9=sfp-1-2v1000-fpga1.mcs
+  elif [ "$DESIGN_ID" = "sfpro10" ]; then
+    FPGA8=sfpro-1-2vp20.mcs
+    FPGA9=
+  else
+    echo "Unsupported HW configuration \"$DESIGN_ID\"!"
+    exit 1
+  fi
+
+  if [ "$COMBO" = "combo6" ]; then
+    FPGA0=combo6-1-2v3000.mcs  # Combo6 main FPGA
+  elif [ "$COMBO" = "combo6x" ]; then
+    FPGA0=combo6x-1-2vp50.mcs  #Combo6x main FPGA
+  else
+    echo "Unsupported HW configuration \"$DESIGN_ID\"!"
+    exit 1
+  fi
+
+  if [ "$COMBO" = "combo6" ]; then
+    csboot -d $COMBO6_DEVICE -v -f 8 $DIR$FPGA8 -f 9 $DIR$FPGA9 -f 0 $DIR$FPGA0
+  elif [ "$COMBO" = "combo6x" ]; then
+    csboot -d $COMBO6_DEVICE -v -f 8 $DIR$FPGA8 -f 0 $DIR$FPGA0 
+  else
+    echo "Unsupported combo card \"$COMBO\"!"
+    exit 1
+  fi
+
+  if [ 0 -ne $? ]; then
+    echo "Failed to boot \"$COMBO6_DEVICE\" device!"
+    exit 1
+  fi
+}
+
+#
+# Display program help.
+#
+print_help()
+{
+  echo "NetFlow boot script"
+  echo
+  echo "Usage: `basename $0` [options]"
+  echo " -p dir_path"
+  echo "Example: `basename $0` -p release/"
+  exit 1
+}
+
+
+#main
+#
+# Parse command line parameters.
+#
+if [ -z "$1" ]; then
+   print_help
+else
+ while getopts "p:" options; do
+  case $options in
+    h ) print_help;;
+    p ) DIR=$OPTARG;;
+    * ) print_help;;
+  esac
+ done
+fi
+
+
+detect_card_id                     # detect hw configuration
+boot_card                          # boot card firmware
+
+echo 
+csid -s
+

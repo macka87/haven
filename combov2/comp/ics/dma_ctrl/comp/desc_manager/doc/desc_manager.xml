@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<source>
+	
+<!-- MAIN INFO ********************************************************** -->
+
+
+<!-- Component name -->
+<component>desc_manager</component>
+
+
+<!-- Authors -->
+<authors>
+       <author login="korcek">Pavol Korcek</author>
+</authors>
+
+
+<!-- Features -->
+<features>
+    <item>Generic number of data flows.</item>
+    <item>Generic data width on DMA interface.</item>
+	<item>Generic number of descriptors stored in fifo memory.</item>
+</features>
+
+
+<!-- Bugs -->
+<bugs>
+	<item>No known bugs.</item>
+</bugs>
+
+
+<!-- Things to do -->
+<todo>
+    <item>Nothing.</item>
+</todo>
+
+
+<!-- Short Block description -->
+<description>
+
+	<!-- THE MOST IMPORTANT PART!!! There should be about 8 rows which
+	     fully describe the component and its main functions -->
+
+         Data into descriptor manager component are written via Internal Bus 
+    (see info in HW section for address meaning). These are data descriptors
+    for connected TX and RX DMA controllers. Descriptors are stored separately depends 
+    on type (type 0 and type 1 -> pointer to next descriptor) and DMA channel 
+    address decoded from some bits of whole descriptor (see more info in trac 
+    documentation). Descriptor manager start to download descriptors with bus 
+    master (BM) request when there is no more than BLOCK_SIZE available decriptors 
+    for selected and correctly enabled (via ENABLE signal) channel. After this,
+    DMA controlers downloads descriptors from descriptor manager memory interface.
+
+</description>
+
+
+<!-- COMPONENT INTERFACE ************************************************ -->
+<interface>
+
+	<!-- Generic description -->
+	<generic_map>
+		
+		<generic name="BASE_ADDR" type="std_logic_vector(31 downto 0)">
+			Local base address on Internal Bus.
+		</generic>
+		<generic name="FLOWS" type="integer" default="8">
+			Number of connected DMA controllers (TX + RX). Can also be 1.
+		</generic>
+		<generic name="BLOCK_SIZE" type="integer" default="4">
+			Number of downloaded descriptors. Fifo store 2*BLOCK_SIZE of descriptors!
+		</generic>
+		<generic name="DMA_DATA_WIDTH" type="integer" default="64">
+			Data width of DMA memory interface.
+		</generic>
+		
+	</generic_map>
+
+	<!-- Port description -->
+	<port_map>
+
+		<divider>Common signals</divider>		
+		<port  name="CLK" dir="in" width="1">
+			Global FPGA clock.
+		</port>
+		<port  name="RESET" dir="in" width="1">
+			Global synchronous reset.
+		</port>
+
+		<divider>Input interface (Internal bus)</divider> 
+		<port name="WR_ADDR" dir="in" width="32">
+			Internal bus write address (see description for meaning).
+        </port>
+        <port name="WR_DATA" dir="in" width="64">
+			Internal bus input data.
+		</port>
+		<port name="WR_BE" dir="in" width="8">
+			Internal bus byte enable.
+		</port>
+		<port name="WR_REQ" dir="in" width="1">
+			Internal bus write request.
+		</port>
+		<port name="WR_RDY" dir="out" width="1">
+			Internal bus ready. Always set to '1'.
+		</port>
+
+		<divider>Output DMA interface (P1)</divider> 		
+		<port name="DMA_ADDR" dir="in" width="log2(128/DMA_DATA_WIDTH)">
+			Address of DMA request part.
+		</port>
+		<port name="DMA_DOUT" dir="out" width="DMA_DATA_WIDTH">
+			DMA request data of selected part.
+		</port>
+		<port name="DMA_REQ" dir="out" width="1">
+			Involve DMA request.
+		</port>
+		<port name="DMA_ACK" dir="in" width="1">
+			Reply for request. DMA acknowledgement.
+		</port>
+		<port name="DMA_DONE" dir="in" width="1">
+			DMA operation done.
+		</port>
+		<port name="DMA_TAG" dir="in" width="15">
+			Input DMA tag.
+		</port>
+
+		<divider>DMA ctrl interface</divider> 
+		<port name="DATA_OUT" dir="out" width="64">
+            DMA data for whole controllers.
+        </port>
+		<port name="EMPTY" dir="out" width="FLOWS">
+			"Valid" signal for selected DMA channel. One bit for each flow.
+		</port>
+		<port name="READ" dir="in" width="FLOWS">
+			Read signal from controller. One bit for each flow.
+		</port>
+		<port name="ENABLE" dir="in" width="FLOWS">
+			Enables selected channel to download descriptors for them. One bit for each flow. Set after init phase!
+		</port>
+
+	</port_map>
+
+</interface>
+
+--WONTFIX
+<!-- HW BODY SECTION **************************************************** -->
+<!-- information for HW designers, structure should be as follow          -->
+<body>
+
+<h1>Descriptor manager</h1>
+
+    <p>
+        More informations at: www.liberouter.org/trac....
+    </p>
+  		
+<h1>Schemes</h1>
+	
+	<p>
+		<obr src="./fig/desc_manager_main.fig">Descriptor manager architecture</obr>
+	</p>			
+
+<h1>Frequency and resources usage</h1>
+
+<p>
+   <tab sloupce="ccccc">
+   <tr>
+      <th>FPGA</th>
+      <th>Architecture</th>
+      <th>Generic settings</th>
+      <th>Slices</th>
+      <th>Max. Frequency</th>
+  </tr>
+
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=1 BLOCK_SIZE=16 DMA_DATA_WIDTH=64</td>
+         <td>225</td>
+         <td>140.622</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=1 BLOCK_SIZE=64 DMA_DATA_WIDTH=64</td>
+         <td>232</td>
+         <td>167.771</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=1 BLOCK_SIZE=128 DMA_DATA_WIDTH=64</td>
+         <td>234</td>
+         <td>165.433</td>
+     </tr>
+
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=2 BLOCK_SIZE=16 DMA_DATA_WIDTH=64</td>
+         <td>450</td>
+         <td>139.742</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=2 BLOCK_SIZE=64 DMA_DATA_WIDTH=64</td>
+         <td>466</td>
+         <td>136.583</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=2 BLOCK_SIZE=128 DMA_DATA_WIDTH=64</td>
+         <td>471</td>
+         <td>134.484</td>
+     </tr>
+
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=4 BLOCK_SIZE=16 DMA_DATA_WIDTH=64</td>
+         <td>598</td>
+         <td>139.158</td>
+     </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=4 BLOCK_SIZE=64 DMA_DATA_WIDTH=64</td>
+         <td>646</td>
+         <td>139.873</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=4 BLOCK_SIZE=128 DMA_DATA_WIDTH=64</td>
+         <td>662</td>
+         <td>133.526</td>
+     </tr>
+
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=8 BLOCK_SIZE=16 DMA_DATA_WIDTH=64</td>
+         <td>1030</td>
+         <td>127.175</td>
+     </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=8 BLOCK_SIZE=64 DMA_DATA_WIDTH=64</td>
+         <td>1139</td>
+         <td>131.805</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=8 BLOCK_SIZE=128 DMA_DATA_WIDTH=64</td>
+         <td>1190</td>
+         <td>130.400</td>
+     </tr>
+
+<nazev>Chip utilization and maximal frequency with xst tool.</nazev>
+</tab> 
+
+ <tab sloupce="ccccc">
+   <tr>
+      <th>FPGA</th>
+      <th>Architecture</th>
+      <th>Generic settings</th>
+      <th>Slices</th>
+      <th>Max. Frequency</th>
+  </tr>
+
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=1 BLOCK_SIZE=16 DMA_DATA_WIDTH=64</td>
+         <td>212</td>
+         <td>209.468</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=1 BLOCK_SIZE=64 DMA_DATA_WIDTH=64</td>
+         <td>219</td>
+         <td>142.328</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=1 BLOCK_SIZE=128 DMA_DATA_WIDTH=64</td>
+         <td>219</td>
+         <td>140.944</td>
+     </tr>
+
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=2 BLOCK_SIZE=16 DMA_DATA_WIDTH=64</td>
+         <td>365</td>
+         <td>161.082</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=2 BLOCK_SIZE=64 DMA_DATA_WIDTH=64</td>
+         <td>371</td>
+         <td>156.666</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=2 BLOCK_SIZE=128 DMA_DATA_WIDTH=64</td>
+         <td>379</td>
+         <td>154.392</td>
+     </tr>
+
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=4 BLOCK_SIZE=16 DMA_DATA_WIDTH=64</td>
+         <td>523</td>
+         <td>130.174</td>
+     </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=4 BLOCK_SIZE=64 DMA_DATA_WIDTH=64</td>
+         <td>566</td>
+         <td>125.282</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=4 BLOCK_SIZE=128 DMA_DATA_WIDTH=64</td>
+         <td>569</td>
+         <td>122.926</td>
+     </tr>
+
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=8 BLOCK_SIZE=16 DMA_DATA_WIDTH=64</td>
+         <td>914</td>
+         <td>108.767</td>
+     </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=8 BLOCK_SIZE=64 DMA_DATA_WIDTH=64</td>
+         <td>1005</td>
+         <td>106.872</td>
+      </tr>
+      <tr>
+         <td>xc5vlx110</td>
+         <td>FULL</td>
+         <td>FLOWS=8 BLOCK_SIZE=128 DMA_DATA_WIDTH=64</td>
+         <td>1067</td>
+         <td>105.809</td>
+     </tr>
+
+<nazev>Chip utilization and maximal frequency with precision tool.</nazev>
+</tab> 
+
+</p>
+
+</body>
+
+</source>

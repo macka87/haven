@@ -1,0 +1,6 @@
+<versions>
+   <version id="HEAD" name="Actual version">
+      <item>Successfully tested in functional simulations</item> 
+      <item>Successfully tested in hardware</item> 
+   </version>
+</versions>

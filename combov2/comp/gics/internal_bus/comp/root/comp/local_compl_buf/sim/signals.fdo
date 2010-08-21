@@ -1,0 +1,88 @@
+# signals.fdo: Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Pavol Korcek <korcek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+
+exec make
+view wave
+delete wave *
+
+	add wave -divider "COMMON"
+	add_wave "-noupdate -color blue -label CLK" 	/testbench/clk
+	add_wave "-noupdate -color blue -label RESET" 	/testbench/reset
+
+	add wave -divider "WRITE_INTERFACE"
+	add wave -divider "Input"
+	add_wave "-noupdate -hex -label RX_TAG"			/testbench/uut/rx_tag
+	add_wave "-noupdate -hex -label RX_WR_O" 		/testbench/uut/rx_wr_0
+	add_wave "-noupdate -hex -label RX_REQ_ID" 		/testbench/uut/rx_req_id
+	add_wave "-noupdate -hex -label RX_WR_1"		/testbench/uut/rx_wr_1
+	add wave -divider "Output"
+	add_wave "-noupdate -hex -label RX_ALLOW"		/testbench/uut/rx_allow
+	add_wave "-noupdate -hex -label RX_LOCAL_TAG" 	/testbench/uut/rx_local_tag
+	add_wave "-noupdate -hex -label RX_FULL" 		/testbench/uut/rx_full
+
+	add wave -divider "READ_INTERFACE"
+	add wave -divider "Output"
+	add_wave "-noupdate -hex -label TX_TAG"			/testbench/uut/tx_tag
+	add_wave "-noupdate -hex -label TX_REQ_ID" 		/testbench/uut/tx_req_id
+	add wave -divider "Input"
+	add_wave "-noupdate -hex -label TX_RD" 			/testbench/uut/tx_rd
+	add_wave "-noupdate -hex -label TX_RTAG" 		/testbench/uut/tx_rtag
+
+	add wave -divider "Status"
+	add_wave "-noupdate -hex -label STATUS" 		/testbench/uut/status
+	add_wave "-noupdate -hex -label TRANS_EN_N"		/testbench/uut/trans_en_n
+	
+	add wave -divider "ADDR_COUNTER"
+	add_wave "-noupdate -hex -label local_cnt" 		/testbench/uut/local_cnt
+	add_wave "-noupdate -hex -label local_cnt_en"   /testbench/uut/local_cnt_en
+
+	add wave -divider "FULL_COUNTER"
+	add_wave "-noupdate -hex -label full_reg" 		/testbench/uut/full_reg
+
+	add wave -divider "CLEAR_ADDRESS"
+	add_wave "-noupdate -hex -label clr_addr" 		/testbench/uut/clr_addr
+    add_wave "-noupdate -hex -label init" 		    /testbench/uut/init
+    add_wave "-noupdate -hex -label init_done" 		/testbench/uut/init_done
+
+	add wave -divider "DATA_VALID_MEMORY"
+	add wave -divider "Port_A"
+	add_wave "-noupdate -hex -label DI" 			/testbench/uut/flag_mem_in
+	add_wave "-noupdate -hex -label WE"			    /testbench/uut/flag_mem_we	
+	add_wave "-noupdate -hex -label ADDR_A"			/testbench/uut/flag_mem_addr_a
+#	add_wave "-noupdate -hex -label DO_A" 			/testbench/uut/
+	add wave -divider "Port_B"
+	add_wave "-noupdate -hex -label ADDR_B" 		/testbench/uut/local_cnt
+	add_wave "-noupdate -hex -label DO_B" 			/testbench/uut/flag_mem_do_b
+
+
+restart -f
+run 1 us
+
+wave zoomrange 0 100ns

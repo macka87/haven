@@ -1,0 +1,26 @@
+# RIO2CMD simulation procedures
+# Author(s): Jan Pazdera <pazdera@liberouter.org>
+#
+
+# Set basic paths
+set TOPLEVEL_PATH "sim:/testbench/uut" 
+set OBUF0_PATH "$TOPLEVEL_PATH/obuf_gmii_top4_mi32_i/obuf0_u"
+set OBUF1_PATH "$TOPLEVEL_PATH/obuf_gmii_top4_mi32_i/obuf1_u"
+set OBUF2_PATH "$TOPLEVEL_PATH/obuf_gmii_top4_mi32_i/obuf2_u"
+set OBUF3_PATH "$TOPLEVEL_PATH/obuf_gmii_top4_mi32_i/obuf3_u"
+exec make
+view wave
+delete wave *
+
+source "signals.fdo"
+
+obuf_fl TRUE FALSE FALSE FALSE 
+obuf_buf_cnt
+obuf_buf
+obuf_buf_fsm
+obuf_tx
+obuf_gmii TRUE FALSE FALSE FALSE
+
+restart -f
+run 50 us
+

@@ -1,0 +1,101 @@
+# top_level_sig.fdo : Functional simulation file.
+# Copyright (C) 2003 CESNET
+# Author: Lukas Solanka <solanka@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: top_level_discard_sig.fdo 14 2007-07-31 06:44:05Z kosek $
+#
+
+# Components base directories
+
+# Components paths
+set TB_PATH             "/testbench"
+set UUT_PATH            "/testbench/uut"
+
+# Global file with signals
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label reset /testbench/uut/reset
+add wave -noupdate -label clk /testbench/uut/clk
+
+add wave -divider "Write part"
+add wave -noupdate -label wr /testbench/uut/wr
+add wave -noupdate -label eob /testbench/uut/eob
+add wave -noupdate -hex -label di /testbench/uut/di
+add wave -noupdate -label full /testbench/uut/full
+add wave -noupdate -label lstblk /testbench/uut/lstblk
+add wave -noupdate -hex -label status /testbench/uut/status
+
+add wave -divider "Read part"
+add wave -noupdate -label rd /testbench/uut/rd
+add wave -noupdate -label discard /testbench/uut/discard
+add wave -noupdate -hex -label do /testbench/uut/do
+add wave -noupdate -label dv /testbench/uut/dv
+add wave -noupdate -label empty /testbench/uut/empty
+add wave -noupdate -label frame_rdy /testbench/uut/frame_rdy
+
+add wave -divider "Internal signals"
+add wave -noupdate -hex -label reg_read_addr /testbench/uut/reg_read_addr
+add wave -noupdate -hex -label reg_write_addr /testbench/uut/reg_write_addr
+#add wave -noupdate -hex -label cnt_read_addr /testbench/uut/cnt_read_addr
+add wave -noupdate -hex -label reg_cnt_read /testbench/uut/reg_cnt_read
+add wave -noupdate -label write_allow /testbench/uut/write_allow
+add wave -noupdate -label read_allow /testbench/uut/read_allow
+add wave -noupdate -hex -label mux_reg_read_addr /testbench/uut/mux_reg_read_addr
+add wave -noupdate -hex -label mem_pipe_enb /testbench/uut/mem_pipe_enb
+add wave -noupdate -hex -label reg_mem_pipe_enb /testbench/uut/reg_mem_pipe_enb
+add wave -noupdate -hex -label reg_discard /testbench/uut/reg_discard
+
+#add wave -noupdate -label lstblk_minus_one /testbench/uut/lstblk_minus_one
+#add wave -noupdate -label lstblk_plus_one /testbench/uut/lstblk_plus_one
+#add wave -noupdate -label lstblk_discard /testbench/uut/lstblk_discard
+#add wave -noupdate -hex -label sig_diff /testbench/uut/sig_diff
+#add wave -noupdate -hex -label cnt_diff /testbench/uut/cnt_diff
+add wave -noupdate -hex -label empty_int /testbench/uut/empty_int
+add wave -noupdate -hex -label sig_updn /testbench/uut/sig_updn
+add wave -noupdate -hex -label mux_diff /testbench/uut/mux_diff
+
+#add wave -noupdate -hex -label data_out /testbench/uut/data_out
+#add wave -noupdate -hex -label data_valid /testbench/uut/data_valid
+#add wave -noupdate -hex -label latch_do_dv /testbench/uut/latch_do_dv
+
+
+add wave -divider "Block FIFO signals"
+add wave -noupdate -hex -label block_fifo_read_req  /testbench/uut/block_fifo_read_req
+add wave -noupdate -hex -label block_fifo_full      /testbench/uut/block_fifo_full 
+add wave -noupdate -hex -label block_fifo_data_out  /testbench/uut/block_fifo_data_out 
+add wave -noupdate -hex -label block_fifo_empty     /testbench/uut/block_fifo_empty 
+add wave -noupdate -hex -label block_fifo_write_req /testbench/uut/block_fifo_write_req 
+
+
+
+
+restart -f
+run 4 us

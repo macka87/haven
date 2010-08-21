@@ -1,0 +1,5 @@
+<versions>
+  <version id="HEAD" name="actual version">
+    <item>nfifo2mem</item>
+  </version>
+</versions>

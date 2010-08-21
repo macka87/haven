@@ -1,0 +1,88 @@
+# signals.fdo: Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Bronislav Pribyl <xpriby12@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+
+exec make
+view wave
+delete wave *
+
+add wave -divider "TESTBENCH"
+add_wave "-noupdate -hex -label RESET" /testbench/reset
+
+add wave -divider "INPUT"
+add_wave "-noupdate -hex -label WR_CLK" /testbench/clk_w
+add_wave "-noupdate -hex -label WR" /testbench/WriteEn
+add_wave "-noupdate -hex -label DI" /testbench/DataIn
+
+add wave -divider "OUTPUT"
+add_wave "-noupdate -hex -label RD_CLK" /testbench/clk_r
+add_wave "-noupdate -hex -label RD" /testbench/ReadEn
+add_wave "-noupdate -hex -label DO" /testbench/DataOut
+add_wave "-noupdate -hex -label DO_DV" /testbench/DataValid
+
+add wave -divider "STATUS"
+add_wave "-noupdate -hex -label EMPTY" /testbench/Empty
+add_wave "-noupdate -hex -label FULL" /testbench/Full
+add_wave "-noupdate -hex -label STATUS" /testbench/Status
+
+add wave -divider "Internal signals"
+add_wave "-noupdate -hex -label sig_prefetch" /testbench/uut/sig_prefetch
+add_wave "-noupdate -hex -label read_allow" /testbench/uut/read_allow
+add_wave "-noupdate -hex -label regasync_empty" /testbench/uut/regasync_empty
+add_wave "-noupdate -hex -label reg_mem_data_valid" /testbench/uut/reg_mem_data_valid
+add_wave "-noupdate -hex -label was_prefetch" /testbench/uut/was_prefetch
+add_wave "-noupdate -hex -label mem_pipe_en" /testbench/uut/mem_pipe_en
+add_wave "-noupdate -hex -label was_prefetch" /testbench/uut/was_prefetch
+add_wave "-noupdate -hex -label mem/Data" /testbench/uut/memory/Data
+add_wave "-noupdate -hex -label mem/Data_Ready" /testbench/uut/memory/Data_Ready
+add_wave "-noupdate -hex -label mem/LatencyRegData(0)" /testbench/uut/memory/LatencyRegData(0)
+add_wave "-noupdate -hex -label mem/LatencyRegValid(0)" /testbench/uut/memory/LatencyRegValid(0)
+add_wave "-noupdate -hex -label mem_out" /testbench/uut/mem_out
+add_wave "-noupdate -hex -label mem_data_valid" /testbench/uut/mem_data_valid
+add_wave "-noupdate -hex -label reg_mem_out" /testbench/uut/reg_mem_out
+add_wave "-noupdate -hex -label reg_mem_data_valid" /testbench/uut/reg_mem_data_valid
+add_wave "-noupdate -hex -label read_allow" /testbench/uut/read_allow
+add_wave "-noupdate -hex -label cnt_read_addr" /testbench/uut/cnt_read_addr
+add_wave "-noupdate -hex -label write_allow" /testbench/uut/write_allow
+add_wave "-noupdate -hex -label cnt_write_addr" /testbench/uut/cnt_write_addr
+add_wave "-noupdate -hex -label regasync_empty" /testbench/uut/regasync_empty
+
+add wave -divider "FIFO MEM interface"
+add_wave "-noupdate -hex -label WRITE_EN" /testbench/uut/memory/WRITE_EN
+add_wave "-noupdate -hex -label WRITE_ADDR" /testbench/uut/memory/WRITE_ADDR
+add_wave "-noupdate -hex -label DI" /testbench/uut/memory/DI
+add_wave "-noupdate -hex -label PIPE_EN" /testbench/uut/memory/PIPE_EN
+add_wave "-noupdate -hex -label READ_EN" /testbench/uut/memory/READ_EN
+add_wave "-noupdate -hex -label RE_ADDR" /testbench/uut/memory/RE_ADDR
+add_wave "-noupdate -hex -label DO" /testbench/uut/memory/DO
+add_wave "-noupdate -hex -label DO_DV" /testbench/uut/memory/DO_DV
+add_wave "-noupdate -hex -label ADDR_OUT" /testbench/uut/memory/ADDR_OUT
+
+restart -f
+run 2400 ns

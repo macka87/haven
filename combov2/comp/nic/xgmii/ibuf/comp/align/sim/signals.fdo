@@ -1,0 +1,68 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author: Libor Polcak <polcak_l@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 225 2007-08-21 22:14:37Z polcak_l $
+
+   view wave
+   delete wave *
+
+proc blk_comp { TB COMP } {
+   add wave -divider "ALIGN"
+   add_wave "-noupdate -hex -label clk" $TB/clk
+   add_wave "-noupdate -hex -label reset" $TB/reset
+      
+   add wave -divider "Input interface"
+   add_wave "-noupdate -label RXD -hex" $COMP/RXD
+   add_wave "-noupdate -label RXC -hex" $COMP/RXC
+
+   add wave -divider "Output interface"
+   add_wave "-noupdate -label RXD_ALIGNED -hex" $COMP/RXD_ALIGNED
+   add_wave "-noupdate -label RXC_ALIGNED -hex" $COMP/RXC_ALIGNED
+   add_wave "-noupdate -label SOP_ALIGNED -hex" $COMP/SOP_ALIGNED
+
+	 add wave -divider "Level 1"
+	 add_wave "-noupdate -label mask_sop -hex" $COMP/mask_sop
+	 add_wave "-noupdate -label sop_active1 -hex" $COMP/sop_active1
+	 add_wave "-noupdate -label reg1_sop_active -hex" $COMP/reg1_sop_active
+	 add_wave "-noupdate -label reg1_rxd -hex" $COMP/reg1_rxd
+	 add_wave "-noupdate -label reg1_rxc -hex" $COMP/reg1_rxc
+
+	 add wave -divider "Level 2"
+	 add_wave "-noupdate -label sop_aligned2 -hex" $COMP/sop_aligned2
+	 add_wave "-noupdate -label sop_active2 -hex" $COMP/sop_active2
+	 add_wave "-noupdate -label reg2_sop_aligned -hex" $COMP/reg2_sop_aligned
+	 add_wave "-noupdate -label reg2_rxd -hex" $COMP/reg2_rxd
+	 add_wave "-noupdate -label reg2_rxc -hex" $COMP/reg2_rxc
+	 add_wave "-noupdate -label reg2_sop_align -hex" $COMP/reg2_sop_align
+
+	 add wave -divider "Level 3"
+	 add_wave "-noupdate -label reg_rxd_align -hex" $COMP/reg_rxd_align
+	 add_wave "-noupdate -label reg_rxc_align -hex" $COMP/reg_rxc_align
+	 add_wave "-noupdate -label reg_sop_align -hex" $COMP/reg_sop_align
+}

@@ -1,0 +1,20 @@
+digraph finite_state_machine {
+	rankdir=LR;
+	size="8,5"
+	node [shape = circle];
+	
+	{rank=same; st_idle;}
+	{rank=same; st_transmit st_end;}
+	{rank=same; st_pause;}
+
+	st_idle -> st_transmit [ label = "SOF = '1' and SRC_RDY = '1' and DST_RDY = '1'" ];
+	st_idle -> st_idle;
+	st_transmit -> st_pause [ label = "SRC_RDY = '0' or DST_RDY = '0'" ];
+	st_transmit -> st_end [ label = "EOF = '1'" ];
+	st_transmit -> st_transmit;
+	st_pause -> st_end [ label = "EOF = '1' and SRC_RDY = '1' and DST_RDY = '1'" ];
+	st_pause -> st_transmit [ label = "SRC_RDY = '1' and DST_RDY = '1'" ];
+	st_pause -> st_pause;
+	st_end -> st_transmit [ label = "SOF = '1' and SRC_RDY = '1' and DST_RDY = '1'" ];
+	st_end -> st_idle;
+}

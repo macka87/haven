@@ -1,0 +1,7 @@
+<versions>
+   <version id="HEAD" name="01.00" system="3">
+      <item>Initial version of Control Bus Root</item>
+      <item>16 RX and 16 TX queues</item>
+      <item>Queues sizes generic up to 256 items</item>
+	</version>
+</versions>

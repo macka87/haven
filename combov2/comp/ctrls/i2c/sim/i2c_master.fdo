@@ -1,0 +1,107 @@
+# i2c_master.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Authors: Martin Mikusek <martin.mikusek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: i2c_master.fdo 31 2007-07-31 13:01:36Z kosek $
+#
+
+vlib work
+vdel -all work
+vlib work
+
+vcom -93 -explicit -work work ../i2c_master_fsm.vhd
+vcom -93 -explicit -work work ../i2c_master.vhd
+vcom -93 -explicit -work work i2c_master_tb.vhd
+vsim -t 1ps  -L xilinxcorelib  -lib work i2c_master_tb
+
+view wave
+delete wave *
+
+add wave -divider "Unit signals*********************"
+add wave -noupdate -label reset   /i2c_master_tb/uut/reset
+add wave -noupdate -label clk     /i2c_master_tb/uut/clk
+
+add wave -noupdate -label dev     /i2c_master_tb/uut/dev
+add wave -noupdate -label addr    /i2c_master_tb/uut/addr
+add wave -noupdate -label rw      /i2c_master_tb/uut/rw
+add wave -noupdate -label en      /i2c_master_tb/uut/en
+
+add wave -noupdate -label di      /i2c_master_tb/uut/di
+add wave -noupdate -label do      /i2c_master_tb/uut/do
+
+add wave -noupdate -label op_ok   /i2c_master_tb/uut/do
+add wave -noupdate -label op_done /i2c_master_tb/uut/do
+
+add wave -divider "i2c interface"
+add wave -noupdate -label scl     /i2c_master_tb/uut/scl_i
+add wave -noupdate -label sda     /i2c_master_tb/uut/sda_i
+add wave -noupdate -label scl_m   /i2c_master_tb/uut/scl_o
+add wave -noupdate -label sda_m   /i2c_master_tb/uut/sda_o
+add wave -noupdate -label scl_s   /i2c_master_tb/scl_s
+add wave -noupdate -label sda_s   /i2c_master_tb/sda_s
+
+add wave -divider "FSM signals****************************"
+add wave -noupdate -label clk       /i2c_master_tb/uut/fsm_u/clk
+
+add wave -noupdate -label state     /i2c_master_tb/uut/fsm_u/present_state
+
+add wave -noupdate -label en        /i2c_master_tb/uut/fsm_u/en
+add wave -noupdate -label done      /i2c_master_tb/uut/fsm_u/done
+add wave -noupdate -label ack       /i2c_master_tb/uut/fsm_u/ack
+add wave -noupdate -label rw        /i2c_master_tb/uut/fsm_u/rw
+add wave -noupdate -label hip        /i2c_master_tb/uut/fsm_u/hip
+add wave -noupdate -label lop        /i2c_master_tb/uut/fsm_u/lop
+
+add wave -noupdate -label op_ok     /i2c_master_tb/uut/fsm_u/op_ok
+add wave -noupdate -label op_done   /i2c_master_tb/uut/fsm_u/op_done
+add wave -noupdate -label busy      /i2c_master_tb/uut/fsm_u/busy
+
+add wave -noupdate -label start_cmd /i2c_master_tb/uut/fsm_u/start_cmd
+add wave -noupdate -label stop_cmd  /i2c_master_tb/uut/fsm_u/stop_cmd
+add wave -noupdate -label dev_rw    /i2c_master_tb/uut/fsm_u/dev_rw
+add wave -noupdate -label cnt_clr   /i2c_master_tb/uut/fsm_u/cnt_clr
+
+add wave -noupdate -label dev       /i2c_master_tb/uut/fsm_u/dev
+add wave -noupdate -label addr      /i2c_master_tb/uut/fsm_u/addr
+add wave -noupdate -label wr_data   /i2c_master_tb/uut/fsm_u/wr_data
+add wave -noupdate -label rd_data   /i2c_master_tb/uut/fsm_u/rd_data
+
+add wave -divider "internal signals*******************************"
+add wave -noupdate -label test   /i2c_master_tb/test
+add wave -noupdate -unsigned -label cnt_clk   /i2c_master_tb/uut/cnt_clk
+add wave -noupdate -unsigned -label cnt   /i2c_master_tb/uut/cnt
+add wave -noupdate -label mx_addr   /i2c_master_tb/uut/mx_addr
+add wave -noupdate -label reg_addr   /i2c_master_tb/uut/reg_addr
+add wave -noupdate -label mx_dev   /i2c_master_tb/uut/mx_dev
+add wave -noupdate -label reg_dev   /i2c_master_tb/uut/reg_dev
+add wave -noupdate -label clk_i2c_en   /i2c_master_tb/uut/clk_i2c_en
+
+#add wave *
+
+restart -f
+run 1 ms

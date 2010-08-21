@@ -1,0 +1,26 @@
+$Id: README 7410 2009-03-07 19:12:27Z kastovsky $
+                              =========
+                               Rx Ctrl
+                              =========
+
+Abstract:
+~~~~~~~~~
+Rx ctrl is a controller that generates DMA transfer request for incoming
+packets. These are transfered from on-card memory to host RAM. Memory locations
+in host RAM are described by descriptors supplied by descriptor download
+manager. Informations about packet transfer are sent to status update manager.
+
+Author:
+~~~~~~~
+Petr Kastovsky <kastosky@liberouter.org>
+
+
+Documentation:
+~~~~~~~~~~~~~~
+http://
+
+
+Verification:
+~~~~~~~~~~~~~
+ * status: not verified
+

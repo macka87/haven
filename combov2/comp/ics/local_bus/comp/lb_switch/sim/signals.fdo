@@ -1,0 +1,92 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2003 CESNET
+# Author: Petr Kobiersky <xkobie00@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 10040 2009-08-04 09:01:40Z xstour03 $
+#
+
+proc lb_switch {NAME PATH} {
+       add wave -divider "$NAME"
+	add_wave "-noupdate -hex -label LB_RESET"     $PATH/LB_RESET
+	add_wave "-noupdate -hex -label LB_CLK"       $PATH/LB_CLK
+
+       add wave -divider "Upstream interface"
+	add_wave "-noupdate -hex -label port0_dwr"     $PATH/port0_dwr    
+	add_wave "-noupdate -hex -label port0_be"      $PATH/port0_be     
+	add_wave "-noupdate -hex -label port0_ads_n"   $PATH/port0_ads_n  
+	add_wave "-noupdate -hex -label port0_rd_n"    $PATH/port0_rd_n   
+	add_wave "-noupdate -hex -label port0_wr_n"    $PATH/port0_wr_n   
+	add_wave "-noupdate -hex -label port0_drd"     $PATH/port0_drd    
+	add_wave "-noupdate -hex -label port0_rdy_n"   $PATH/port0_rdy_n  
+	add_wave "-noupdate -hex -label port0_err_n"   $PATH/port0_err_n  
+	add_wave "-noupdate -hex -label port0_abort_n" $PATH/port0_abort_n
+
+       add wave -divider "Downstream interface 1"
+	add_wave "-noupdate -hex -label port1_dwr"     $PATH/port1_dwr    
+	add_wave "-noupdate -hex -label port1_be"      $PATH/port1_be     
+	add_wave "-noupdate -hex -label port1_ads_n"   $PATH/port1_ads_n  
+	add_wave "-noupdate -hex -label port1_rd_n"    $PATH/port1_rd_n   
+	add_wave "-noupdate -hex -label port1_wr_n"    $PATH/port1_wr_n   
+	add_wave "-noupdate -hex -label port1_drd"     $PATH/port1_drd    
+	add_wave "-noupdate -hex -label port1_rdy_n"   $PATH/port1_rdy_n  
+	add_wave "-noupdate -hex -label port1_err_n"   $PATH/port1_err_n  
+	add_wave "-noupdate -hex -label port1_abort_n" $PATH/port1_abort_n
+
+       add wave -divider "Downstream interface 2"
+	add_wave "-noupdate -hex -label port2_dwr"     $PATH/port2_dwr    
+	add_wave "-noupdate -hex -label port2_be"      $PATH/port2_be     
+	add_wave "-noupdate -hex -label port2_ads_n"   $PATH/port2_ads_n  
+	add_wave "-noupdate -hex -label port2_rd_n"    $PATH/port2_rd_n   
+	add_wave "-noupdate -hex -label port2_wr_n"    $PATH/port2_wr_n   
+	add_wave "-noupdate -hex -label port2_drd"     $PATH/port2_drd    
+	add_wave "-noupdate -hex -label port2_rdy_n"   $PATH/port2_rdy_n  
+	add_wave "-noupdate -hex -label port2_err_n"   $PATH/port2_err_n  
+	add_wave "-noupdate -hex -label port2_abort_n" $PATH/port2_abort_n
+
+       add wave -divider "Downstream interface 3"
+	add_wave "-noupdate -hex -label port3_dwr"     $PATH/port3_dwr    
+	add_wave "-noupdate -hex -label port3_be"      $PATH/port3_be     
+	add_wave "-noupdate -hex -label port3_ads_n"   $PATH/port3_ads_n  
+	add_wave "-noupdate -hex -label port3_rd_n"    $PATH/port3_rd_n   
+	add_wave "-noupdate -hex -label port3_wr_n"    $PATH/port3_wr_n   
+	add_wave "-noupdate -hex -label port3_drd"     $PATH/port3_drd    
+	add_wave "-noupdate -hex -label port3_rdy_n"   $PATH/port3_rdy_n  
+	add_wave "-noupdate -hex -label port3_err_n"   $PATH/port3_err_n  
+	add_wave "-noupdate -hex -label port3_abort_n" $PATH/port3_abort_n
+
+       add wave -divider "Internal signals"
+	add_wave "-noupdate -hex -label dwr_pipe" $PATH/uut/dwr_pipe    
+	add_wave "-noupdate -label be_pipe"       $PATH/uut/be_pipe     
+	add_wave "-noupdate -label ads_n_pipe"    $PATH/uut/ads_n_pipe  
+	add_wave "-noupdate -label rd_n_pipe"     $PATH/uut/rd_n_pipe   
+	add_wave "-noupdate -label wr_n_pipe"     $PATH/uut/wr_n_pipe   
+	add_wave "-noupdate -hex -label drd_pipe" $PATH/uut/drd_pipe    
+	add_wave "-noupdate -label rdy_n_pipe"    $PATH/uut/rdy_n_pipe  
+	add_wave "-noupdate -label err_n_pipe"    $PATH/uut/err_n_pipe  
+	add_wave "-noupdate -label abort_n_pipe"  $PATH/uut/abort_n_pipe
+}

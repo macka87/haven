@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<source>
+
+    <component>
+        FrameLink to Command Protocol conversion component
+    </component>
+
+    <authors>
+        <author login="sandin">
+            Martin Louda
+        </author>
+    </authors>
+
+    <features>
+        <item>
+            Supports FrameLink/CMD data bus width of 8, 16, 32, 64 and
+            128 bits.
+        </item>
+        <item>
+            Optional header and footer data presence.
+        </item>
+    </features>
+
+    <description>
+        FL2CMD component converts FrameLink protocol frames into Command
+        Protocol frames. It's designed to provide communication between
+        component with FrameLink output interface and component with
+        Command Protocol input interface.
+    </description>
+
+    <interface>
+
+        <generic_map>
+            <generic name="DATA_WIDTH" type="integer" default="">
+                FrameLink/CMD data bus width.
+            </generic>
+            <generic name="HEADER" type="boolean" default="True">
+                Header data present.
+            </generic>
+            <generic name="FOOTER" type="boolean" default="True">
+                Footer data present.
+            </generic>
+        </generic_map>
+
+        <port_map>
+            <port name="CLK" dir="in" width="1">
+                Clock input.
+            </port>
+            <port name="RESET" dir="in" width="1">
+                Global reset.
+            </port>
+
+            <divider>
+                FrameLink interface (in)
+            </divider>
+            <port name="FL_DATA" dir="in" width="DATA_WIDTH">
+                FrameLink data.
+            </port>
+            <port name="FL_REM" dir="in" width="log2(DATA_WIDTH/8)">
+                FrameLink data remainder.
+            </port>
+            <port name="FL_SOF_N" dir="in" width="1">
+                FrameLink start of frame.
+            </port>
+            <port name="FL_EOF_N" dir="in" width="1">
+                FrameLink end of frame.
+            </port>
+            <port name="FL_SOP_N" dir="in" width="1">
+                FrameLink start of packet (segment).
+            </port>
+            <port name="FL_EOP_N" dir="in" width="1">
+                FrameLink end of packet (segment).
+            </port>
+            <port name="FL_SRC_RDY_N" dir="in" width="1">
+                FrameLink source ready.
+            </port>
+            <port name="FL_DST_RDY_N" dir="out" width="1">
+                FrameLink destination ready.
+            </port>
+
+            <divider>
+                Command Protocol interface (out)
+            </divider>
+            <port name="CMD_DATA" dir="out" width="DATA_WIDTH">
+                CMD data/command.
+            </port>
+            <port name="CMD_COMMAND" dir="out" width="DATA_WIDTH/8">
+                CMD data/command indicator.
+            </port>
+            <port name="CMD_SRC_RDY" dir="out" width="1">
+                CMD source ready.
+            </port>
+            <port name="CMD_DST_RDY" dir="in" width="1">
+                CMD destination ready.
+            </port>
+        </port_map>
+
+    </interface>
+
+    <body>
+
+        <h1>Command transformation</h1>
+        <p>
+            FrameLink payload is always converted into CMD SOP command.
+            FrameLink header and footer (if present) are converted into CMD
+            SOC command.
+        </p>
+
+        <h1>Bus utilization</h1>
+        <p>
+            Because of various density of used protocols, forced wait
+            cycles are inserted into FrameLink communication from the side
+            of FL2CMD component. However, Command Protocol interface
+            utilization can be maximal.
+        </p>
+
+    <h1>Frequency and Resources usage</h1>
+    <p>
+        
+        <!--Resources usage and max. frequency by Precision-->
+	
+		<tab sloupce="cc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+			</tr>
+			<tr>
+				<th>Bus width = 16</th> 
+				<td>116(1%)</td>
+			</tr>
+			<tr>
+				<th>Bus width = 32</th> 
+				<td>191(1%)</td>
+			</tr>
+			<tr>
+				<th>Bus width = 64</th> 
+				<td>348(1.6%)</td>
+			</tr>
+			<tr>
+				<th>Bus width = 128</th> 
+				<td>663(3.0%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Max.frequency by Precision</th>
+				<th>Frequency tested in HW</th>
+			</tr>
+			<tr>
+				<th>Bus width = 16</th> 
+				<td>200 MHz</td>
+				<td>x</td>
+			</tr>
+			<tr>
+				<th>Bus width = 32</th> 
+				<td>200 MHz</td>
+				<td>x</td>
+			</tr>
+			<tr>
+				<th>Bus width = 64</th> 
+				<td>200 MHz</td>
+				<td>x</td>
+			</tr>
+			<tr>
+				<th>Bus width = 128</th> 
+				<td>200 MHz</td>
+				<td>x</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+    
+    </p> 
+
+    </body>
+
+</source>

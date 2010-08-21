@@ -1,0 +1,53 @@
+# top_level dp_bmem behavioral simulation
+# Author(s) : Petr Kobierský <xkobie00@stud.fit.vutbr.cz>
+# $Id: top_level.fdo 14 2007-07-31 06:44:05Z kosek $
+
+vlib work
+
+vcom -93 ../../../../models/plx_9054/plx_oper.vhd \
+         ../../../../models/plx_9054/plx_sim.vhd \
+         ../../../../units/lb/local_bus.vhd \
+         ../../../../units/lb/lbconn_mem.vhd \
+         ../bmem_func.vhd ../dp_bmem_bram.vhd \
+         ../dp_bmem.vhd \
+         ../top_level_ent.vhd ../top_level.vhd \
+         top_level_tb.vhd
+
+vsim -t 1ps  -L xilinxcorelib  -lib work testbench
+
+#view wave
+#view structure
+#view signals
+
+# Insert signals here...
+add wave -divider "GenMem interface"
+add wave -divider "   Clock and Reset"
+add wave -label CLKA  -color "yellow" sim:/testbench/uut/genmem_dp_map/clka
+add wave -label CLKB  -color "yellow" sim:/testbench/uut/genmem_dp_map/clkb
+add wave -label RESET -color "yellow" sim:/testbench/uut/genmem_dp_map/reset
+add wave -divider "   Read Enable and Write Enable"
+add wave -label WEA -color "Magenta" sim:/testbench/uut/genmem_dp_map/wea
+add wave -label REA -color "Magenta" sim:/testbench/uut/genmem_dp_map/rea
+add wave -label WEB -color "Magenta" sim:/testbench/uut/genmem_dp_map/web
+add wave -label REB -color "Magenta" sim:/testbench/uut/genmem_dp_map/reb
+add wave -divider "   Address A, Data IN A, Data OUT A, Data Valid"
+add wave -label ADDRA -unsigned sim:/testbench/uut/genmem_dp_map/addra
+add wave -label DIA -unsigned sim:/testbench/uut/genmem_dp_map/dia
+add wave -label DOA -unsigned sim:/testbench/uut/genmem_dp_map/doa
+#add wave -label DOA_DV sim:/testbench/uut/genmem_dp_map/doa_dv
+add wave -divider "   Address B, Data IN B, Data OUT B, Data Valid"
+add wave -label ADDRB -unsigned sim:/testbench/uut/genmem_dp_map/addrb
+#add wave -label DIB -unsigned sim:/testbench/uut/genmem_dp_map/dib
+add wave -label DOB -unsigned sim:/testbench/uut/genmem_dp_map/dob
+add wave -label DOB_DV -color "Magenta" sim:/testbench/uut/genmem_dp_map/dob_dv
+add wave -divider "LB Conmem"
+add wave -label ADDR -unsigned sim:/testbench/uut/lbconn_mem_u/addr
+add wave -label DATA_IN -unsigned sim:/testbench/uut/lbconn_mem_u/data_in
+add wave -label DRDY sim:/testbench/uut/lbconn_mem_u/drdy
+add wave -label EN sim:/testbench/uut/lbconn_mem_u/en
+add wave -divider "Local bus"
+add wave -label LBCLK sim:/testbench/uut/lbclk
+add wave -label LBAD -unsigned sim:/testbench/uut/lbad
+add wave -label LBRW sim:/testbench/uut/lbrw
+
+run 14 us

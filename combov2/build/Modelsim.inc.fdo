@@ -1,0 +1,257 @@
+# Modelsim.inc.tcl: Modelsim global include tcl script to compille all design
+# Copyright (C) 2003 CESNET
+# Author: Tomas Martinek <martinek@liberouter.org>
+#         Viktor Pus     <pus@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: Modelsim.inc.fdo 13186 2010-03-10 12:59:56Z pus $
+#
+
+source $FIRMWARE_BASE/build/Shared.tcl
+
+# ---------------------------------------------------------------------
+#                     Procedures and Functions
+# ---------------------------------------------------------------------
+
+# Decide which command should be used for particular file
+proc CompileMod {MODULE} {
+   global CODE_COVERAGE
+   global VLOG_SV_FLAGS
+
+   # check modelsim version (6.3? doesn't know "-vmake" parameter)
+   set MODELSIM_VERSION [exec vsim -version]
+   set VMAKE_OPT "-vmake"
+   
+   if {[regexp "6.3" $MODELSIM_VERSION]} {
+      set VMAKE_OPT ""
+   }
+
+   if { [llength $MODULE] == 2 } {
+      set FNAME [lindex $MODULE 1]
+      set LIB [lindex $MODULE 0]
+      vlib $LIB
+   } else {
+      set FNAME $MODULE
+      set LIB "work"
+   }
+
+   # Code Coverage compiling
+  if { [info exist CODE_COVERAGE] } {
+     if { [regexp {^.*\.v$} $FNAME] } {
+        vlog -cover sbce -work $LIB $FNAME
+     } elseif { [regexp {^.*\.sv$} $FNAME] } {
+        regsub "/\[^/\]+\$" $FNAME "/" DIR
+        vlog $VMAKE_OPT -cover sbce -sv -work $LIB $FNAME +incdir+$DIR $VLOG_SV_FLAGS
+     } else {
+        vcom -93 -explicit -cover sbce -work $LIB $FNAME
+     }
+  }
+
+  # No Code Coverage compiling
+  if { ![info exist CODE_COVERAGE] } {
+     if { [regexp {^.*\.v$} $FNAME] } {
+        vlog -work $LIB $FNAME
+     } elseif { [regexp {^.*\.sv$} $FNAME] } {
+        regsub "/\[^/\]+\$" $FNAME "/" DIR
+        vlog $VMAKE_OPT -sv -work $LIB $FNAME +incdir+$DIR $VLOG_SV_FLAGS
+     } else {
+        vcom -93 -explicit -work $LIB $FNAME
+     }
+  }
+
+}
+
+# Generate libraries by calling makefiles, then check if they were created,
+# if OK, then add them to the list of vsim flags.
+proc GenSVLibs {SV_LIBS} {
+
+   set SV_FLAGS ""
+
+   foreach i $SV_LIBS {
+      regsub "/\[^/\]+\$" $i "" DIR
+      exec make -C $DIR
+
+      if { [file exist "$i.so"] || [file exist "$i.dll"] } {
+         append SV_FLAGS "-sv_lib $i"
+      } else {
+         puts "Warning: SystemVerilog dynamic library $i was not found nor compiled."
+      }
+   }
+
+   return $SV_FLAGS
+}
+
+
+# -------------------------------------------------------------------
+#                       Simulation procedures
+# -------------------------------------------------------------------
+
+# add_wave procedure cheks if a signals does exist before it is added
+# into the wave window
+proc add_wave { FLAGS NAME } {
+   set result [find signals $NAME]
+   if { $result == "" } {
+      puts "WARNING : I can't find signal $NAME"
+   } else {
+      set command "add wave $FLAGS $NAME"
+      eval $command
+   }
+}
+
+# ---------------------------------------------------------------------
+#                         Compilation
+# ---------------------------------------------------------------------
+
+# Add:solanka:Quit simulation
+quit -sim
+
+# Clears old work directory and creates new one
+vlib work
+vdel -all
+vlib work
+
+# If we need to generate testbench
+if { [info exist MACROS] } {
+
+   # Default testbench filename setting
+   if { ! [info exist TB_GENERATED] } {
+      regsub ".vhd" $TB_FILE ".gen.vhd" TB_GENERATED
+   }
+
+   PrintLabel "Testbench generation: $TB_FILE -> $TB_GENERATED"
+   ProcessMacros $TB_FILE $TB_GENERATED $MACROS
+} else {
+   set TB_GENERATED $TB_FILE
+}
+
+set FILES [list ]
+set SV_LIBS [list ]
+
+# Saves MOD variable - Components have to be compiled first
+if { [info exist MOD] } {
+   set MOD_SAVE $MOD
+}
+
+if { ![info exist VLOG_SV_FLAGS] } {
+   set VLOG_SV_FLAGS ""
+}
+
+# Compile PACKAGES - if they was defined
+if { [info exist PACKAGES] } {
+   PrintLabel "Packages Compilation"
+   ApplyToMods $PACKAGES "CompileMod" FILES
+}
+
+# Compile components
+if { [info exist COMPONENTS] } {
+   ApplyToComponents $COMPONENTS "CompileMod" FILES SV_LIBS
+}
+
+# Compile MODs - if they were defined
+if { [info exist MOD_SAVE] } {
+   PrintLabel "MODs Compilation"
+   puts $MOD_SAVE
+   ApplyToMods $MOD_SAVE "CompileMod" FILES
+}
+
+# Read top level vhdl files
+if { [info exist TOP_LEVEL] } {
+   PrintLabel "Top Level"
+   ApplyToMods $TOP_LEVEL "CompileMod" FILES
+}
+
+# Read top level vhdl files
+if { [info exist DPI_LIB] } {
+   PrintLabel "System Verilog DPI Libraries"
+}
+
+# Read testbench file
+PrintLabel "Testbench"
+
+   # Code Coverage compiling
+  if { [info exist CODE_COVERAGE] } {
+     if { [regexp {^.*\.v$} $TB_GENERATED] } {
+        vlog -cover sbce -work work $TB_GENERATED
+     } elseif { [regexp {^.*\.sv$} $TB_GENERATED] } {
+        vlog -cover sbce -sv -work work $TB_GENERATED $VLOG_SV_FLAGS
+     } else {
+        vcom -93 -explicit -cover sbce -work work $TB_GENERATED
+     }
+  }
+
+  # No Code Coverage compiling
+  if { ![info exist CODE_COVERAGE] } {
+     if { [regexp {^.*\.v$} $TB_GENERATED] } {
+        vlog -work work $TB_GENERATED
+     } elseif { [regexp {^.*\.sv$} $TB_GENERATED] } {
+        vlog -sv -work work $TB_GENERATED $VLOG_SV_FLAGS
+     } else {
+        vcom -93 -explicit -work work $TB_GENERATED
+     }
+  }
+
+# Read configuration file
+if { [info exist CONFIG] } {
+   puts "-------------------------------"
+   puts $CONFIG
+   vcom -93 -explicit -work work $CONFIG
+}
+
+# Makefile creation
+exec vmake > Makefile
+# ---------------------------------------------------------------------
+#                           Simulation
+# ---------------------------------------------------------------------
+
+# Default vsim parameters setting
+if { ! [info exist VSIM_FLAGS] } {
+   if { [info exist CODE_COVERAGE] } {
+     set VSIM_FLAGS "-coverage -t 1ps -L xilinxcorelib -lib work"
+   }
+   if { ![info exist CODE_COVERAGE] } {
+     set VSIM_FLAGS "-t 1ps -L xilinxcorelib -lib work"
+   }
+}
+
+# Default simulation module setting
+if { ! [info exist SIM_MODULE] } {
+   set SIM_MODULE "testbench"
+}
+
+
+set SV_FLAGS [GenSVLibs $SV_LIBS]
+
+set vsim_command "vsim $VSIM_FLAGS $SV_FLAGS $SIM_MODULE"
+eval $vsim_command
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# ---------------------------------------------------------------------
+# Remove used variables
+RemoveVars "MOD MOD_SAVE COMPONENTS TOP_LEVEL CONFIG VSIM_FLAGS SW_FLAGS SW_LIBS SIM_MODULE"

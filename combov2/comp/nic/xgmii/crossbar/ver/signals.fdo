@@ -1,0 +1,71 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author: Marek Santa <xsanta06@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 13934 2010-06-03 15:48:48Z xvikto03 $
+#
+
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+proc xgmii {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label XGMII_RXD"  $PATH/XGMII_RXD
+     add_wave "-noupdate  -hex -label XGMII_TXD"  $PATH/XGMII_TXD
+    add wave -divider "$NAME by words"      
+     add_wave "-noupdate  -hex -label XGMII_RXD_A"  $PATH/XGMII_RXD(63:0)
+     add_wave "-noupdate  -hex -label XGMII_RXD_B"  $PATH/XGMII_RXD(127:64)
+     add_wave "-noupdate  -hex -label XGMII_RXD_C"  $PATH/XGMII_RXD(191:128)
+     add_wave "-noupdate  -hex -label XGMII_RXD_D"  $PATH/XGMII_RXD(255:192)
+     add_wave "-noupdate  -hex -label XGMII_RXD_E"  $PATH/XGMII_RXD(319:256)
+     add_wave "-noupdate  -hex -label XGMII_RXD_F"  $PATH/XGMII_RXD(383:320)
+     add_wave "-noupdate  -label XGMII_RXC"       $PATH/XGMII_RXC
+     add_wave "-noupdate  -hex -label XGMII_TXD_A"  $PATH/XGMII_TXD(63:0)
+     add_wave "-noupdate  -hex -label XGMII_TXD_B"  $PATH/XGMII_TXD(127:64)
+     add_wave "-noupdate  -hex -label XGMII_TXD_C"  $PATH/XGMII_TXD(191:128)
+     add_wave "-noupdate  -hex -label XGMII_TXD_D"  $PATH/XGMII_TXD(255:192)
+     add_wave "-noupdate  -hex -label XGMII_TXD_E"  $PATH/XGMII_TXD(319:256)
+     add_wave "-noupdate  -hex -label XGMII_TXD_F"  $PATH/XGMII_TXD(383:320)
+     add_wave "-noupdate  -label XGMII_TXC"       $PATH/XGMII_TXC
+     add_wave "-noupdate  -bin -label MAPPING"  $PATH/mapping
+}
+
+proc mi32 {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -label CLK"          $PATH/CLK
+     add_wave "-noupdate  -hex -label DWR"     $PATH/DWR
+     add_wave "-noupdate  -hex -label ADDR"    $PATH/ADDR
+     add_wave "-noupdate  -label RD"           $PATH/RD
+     add_wave "-noupdate  -label WR"           $PATH/WR
+     add_wave "-noupdate  -label BE"           $PATH/BE
+     add_wave "-noupdate  -hex -label DRD"     $PATH/DRD
+     add_wave "-noupdate  -label ARDY"         $PATH/ARDY
+     add_wave "-noupdate  -label DRDY"         $PATH/DRDY
+}
+

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<source>
+
+    <!-- Page name -->
+    <component>Command Protocol over Aurora Transceiver (Aur2cmd)</component>
+
+
+    <!-- Authors worked on -->
+    <authors>
+        <author login="pazdera">Jan Pazdera</author>
+    </authors>
+
+
+    <!-- Versions list -->
+    <versions>
+        <version id="AUR2CMD_01_00">
+            <item>First version has been released.</item>
+        </version>
+        <version id="AUR2CMD_02_00">
+            <item>Based on aurfc component now. Message passing interface
+                removed. Generic width of data.</item>
+        </version>
+    </versions>
+
+
+    <!-- Bugs -->
+    <bugs>
+    </bugs>
+
+    <!-- What have to be done -->
+    <todo>
+    </todo>
+
+
+    <!-- Short Block description -->
+    <description>
+
+        This component provides Command protocol transport via Aurora. 
+        It implements configurable flow controller (XON/XOFF) and message passing.
+
+    </description>
+
+    <!-- COMPONENT INTERFACE ************************************************* -->
+    <interface>
+
+        <generic_map>
+            <generic name="TX_FIFO_ITEMS"      type="integer" default="512">
+                TX buffer size
+            </generic>
+            <generic name="RX_FIFO_ITEMS"      type="integer" default="512">
+                RX buffer size
+            </generic>
+            <generic name="XON_LIMIT"          type="std_logic_vector(2 downto 0)" default="011">
+                Level of RX buffer filling to generate XON message.
+            </generic>
+            <generic name="XOFF_LIMIT"         type="std_logic_vector(2 downto 0)" default="110">
+                Level of RX buffer filling to generate XOFF message.
+            </generic>
+            <generic name="DATA_WIDTH"         type="integer" default="64">
+                Size of transported data. It can only take values 32, 64, 128 ...
+            </generic>
+            <generic name="LOOPBACK" type="std_logic_vector" default="00">
+                "00": no loopback (standart mode), "01": parallel loopbach, "10": serial loopback
+            </generic>
+        </generic_map>
+
+        <port_map>
+
+            <!-- Port description -->
+            <port   name="RESET" dir="in" width="1">
+                Design reset
+            </port>
+            <port   name="REFCLK" dir="in" width="1">
+                RocketIO clock (connected to xtal directly - no DCMs)
+            </port>
+            <port   name="USRCLK" dir="in" width="1">
+                Clock to clock transmit and receive logic - must be the same frequency as REFCLK
+            </port>
+            <port   name="USRCLK2" dir="in" width="1">
+                Clock to clock transmit and receive logic (USRCLK halfrated and shifted)
+            </port>
+            <port   name="CMDCLK" dir="in" width="1">
+                Clock to clock command protocol interface
+            </port>
+
+            <port   name="DATA_IN"  dir="in"    width="DATA_WIDTH">
+                Data
+            </port>
+            <port   name="CMD_IN"   dir="in"    width="DATA_WIDTH/8">
+                Byte-mapped command flag
+            </port>
+            <port   name="SRC_RDY_IN"   dir="in"    width="1">
+                Source ready flag
+            </port>
+            <port   name="DST_RDY_IN"   dir="out"   width="1">
+                Transmit buffer full flag
+            </port>
+
+            <port   name="DATA_OUT" dir="out"   width="DATA_WIDTH">
+                Data
+            </port>
+            <port   name="CMD_OUT"  dir="out"   width="DATA_WIDTH/8">
+                Byte-mapped command flag
+            </port>
+            <port   name="SRC_RDY_OUT"  dir="out"   width="1">
+                DATA_OUT valid flag
+            </port>
+            <port   name="DST_RDY_OUT"  dir="in"    width="1">
+                Destination ready flag
+            </port>
+
+            <port   name="HARD_ERROR"   dir="out"   width="1">
+                Hard error detected (Active-high, asserted until Aurora core resets)
+            </port>
+            <port   name="SOFT_ERROR"   dir="out"   width="1">
+                Soft error detected in the incoming serial stream (Active-high, asserted for a single clock)
+            </port>
+            <port   name="FRAME_ERROR"  dir="out"   width="1">
+                Channel frame/protocol error detected (Active-high, asserted for a single clock)
+            </port>
+
+            <port   name="RXN" dir="in" width="DATA_WIDTH/32">
+                Receive MGT port
+            </port>
+            <port   name="RXP" dir="in" width="DATA_WIDTH/32">
+                Receive MGT port
+            </port>
+            <port   name="TXN" dir="out" width="DATA_WIDTH/32">
+                Transmit MGT port
+            </port>
+            <port   name="TXP" dir="out" width="DATA_WIDTH/32">
+                Transmit MGT port
+            </port>
+
+        </port_map>
+
+    </interface>
+
+    <!-- BODY ************************************************* -->
+    <body>
+        <p>
+            Component is designated to transport data encapsulated by Command Protocol
+            via Aurora interface (LocalLink) supporting configurable flow control (XON/XOFF). Flow control can be configured
+            by XON_LIMIT and XOFF_LIMIT generics which corresponds to 3-bit-wide status of RX buffer.
+        </p>
+
+        <h1>Architectures</h1>
+        <p>
+            Aur2cmd design must include the right Aurora core for current data width and other options. So, you
+            must specify the right Aur2cmd architecture option in your Modules.tcl.
+        </p>
+
+        <p>
+            List of available architectures:
+
+            <ul>
+                <li>
+                    4BYTE - For DATA_WIDTH = 32
+                </li>
+                <li>
+                    8BYTE - For DATA_WIDTH = 64 (two RIO lanes bonded)
+                </li>
+            </ul>
+        </p>
+        
+        <p>
+            Aur2cmd component is based on Aurfc component. For this reason, see the Aurfc documentation for more information.
+        </p>
+
+    </body>
+
+</source>

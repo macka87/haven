@@ -1,0 +1,53 @@
+# agregator_sig.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author: Jan Koritak <jenda@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: test_sp_distmem_sig.fdo 9780 2009-07-27 14:25:25Z xplese01 $
+#
+
+# Paths
+set TB_PATH "/testbench"
+
+exec make
+view wave
+delete wave *
+
+add wave -divider "Clock and Reset"
+add wave -color "yellow" -hex -label "RESET"   $TB_PATH/reset
+add wave -color "yellow" -hex -label "CLK"     $TB_PATH/wclk
+add wave -divider "Write Enable, Data IN"
+add wave -color "Magenta" -hex -label "WE"     $TB_PATH/we
+add wave -unsigned -color "Magenta" -hex -label "Data IN" $TB_PATH/di
+add wave -divider "Address, Data OUT"
+add wave -unsigned -hex -label "ADDR"          $TB_PATH/addr
+add wave -unsigned -hex -label "Data OUT"      $TB_PATH/do
+
+restart -f
+run 5700 ns
+
+wave zoomrange 0 400ns

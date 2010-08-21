@@ -1,0 +1,118 @@
+# RIO2CMD simulation procedures
+# Author(s): Jan Pazdera <pazdera@liberouter.org>
+#
+
+
+# ------------------------------------------------------------------------
+# -------------------------- Procedures ----------------------------------
+# ------------------------------------------------------------------------
+
+
+
+#####################################################################
+# Sub-components 
+#####################################################################
+
+proc rio_aurfcrx {  } {
+    global AURFCRX_PATH
+    add wave -divider "AURFC_RECEIVER"
+    radix -hex
+
+    add wave -label rx_d_rev       $AURFCRX_PATH/rx_d_rev
+    add wave -label rx_d_i       $AURFCRX_PATH/rx_d_i
+    add wave -label rx_d       $AURFCRX_PATH/RX_D
+    add wave -label rxu_d       $AURFCRX_PATH/receiver_u/RXU_D
+    add wave -label rx_rem_rev         $AURFCRX_PATH/RX_REM_rev
+    add wave -label rxu_rem         $AURFCRX_PATH/receiver_u/RXU_REM
+    add wave -label rxu_src_rdy_n       $AURFCRX_PATH/receiver_u/RXU_SRC_RDY_N
+    add wave -label rxu_sop_n       $AURFCRX_PATH/receiver_u/RXU_SOP_N
+    add wave -label rxu_eop_n       $AURFCRX_PATH/receiver_u/RXU_EOP_N
+    add wave -label rxu_dst_rdy_n       $AURFCRX_PATH/receiver_u/RXU_DST_RDY_N
+    add wave -label rxa_d       $AURFCRX_PATH/receiver_u/RXA_D
+    add wave -label rxa_rem         $AURFCRX_PATH/receiver_u/RXA_REM
+    add wave -label rxa_src_rdy_n       $AURFCRX_PATH/receiver_u/RXA_SRC_RDY_N
+    add wave -label rxa_sop_n       $AURFCRX_PATH/receiver_u/RXA_SOP_N
+    add wave -label rxa_eop_n       $AURFCRX_PATH/receiver_u/RXA_EOP_N
+
+    add wave -label nfc_req_n       $AURFCRX_PATH/receiver_u/NFC_REQ_N
+    add wave -label nfc_nb      $AURFCRX_PATH/receiver_u/NFC_NB
+    add wave -label nfc_ack_n       $AURFCRX_PATH/receiver_u/NFC_ACK_N
+
+    add wave -label hard_error       $AURFCRX_PATH/hard_error
+    add wave -label soft_error       $AURFCRX_PATH/soft_error
+    add wave -label frame_error       $AURFCRX_PATH/frame_error
+}
+
+proc rio_aurfcrx_asfifo_release {  } {
+    global AURFCRX_PATH
+    add wave -divider "AURFC_ASFIFO_RELEASE"
+    radix -hex
+
+    add wave -label RESET       $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/RESET
+
+    add wave -label CLK_WR      $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/CLK_WR
+    add wave -label WR      $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/WR
+    add wave -label DI      $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/DI
+    add wave -label FULL        $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/FULL
+    add wave -label STATUS      $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/STATUS
+    add wave -label MARK        $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/MARK
+    add wave -label RELEASE     $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/RELEASE
+
+    add wave -label CLK_RD      $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/CLK_RD
+    add wave -label RD      $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/RD
+    add wave -label DO      $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/DO
+    add wave -label DO_DV       $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/DO_DV
+    add wave -label EMPTY       $AURFCRX_PATH/receiver_u/release_gen/asfifo_bram_release_u/EMPTY
+}
+
+proc rio_aurfcrx_sofeofgen {  } {
+    global AURFCRX_PATH
+    add wave -divider "AURFC_SOF_EOF_GENERATOR"
+    radix -hex
+
+    add wave -label clk         $AURFCRX_PATH/sof_eof_generator_u/clk
+    add wave -label cnt_ovf         $AURFCRX_PATH/sof_eof_generator_u/cnt_ovf
+    add wave -label cnt_pckt        $AURFCRX_PATH/sof_eof_generator_u/cnt_pckt
+    add wave -label cnt_pckt_ce         $AURFCRX_PATH/sof_eof_generator_u/cnt_pckt_ce
+    add wave -label cnt_pckt_load       $AURFCRX_PATH/sof_eof_generator_u/cnt_pckt_load
+    add wave -label cnt_zero        $AURFCRX_PATH/sof_eof_generator_u/cnt_zero
+    add wave -label en      $AURFCRX_PATH/sof_eof_generator_u/en
+    add wave -label ftr_i       $AURFCRX_PATH/sof_eof_generator_u/ftr_i
+    add wave -label hdr_i       $AURFCRX_PATH/sof_eof_generator_u/hdr_i
+    add wave -label hf_st       $AURFCRX_PATH/sof_eof_generator_u/hf_st
+    add wave -label reset       $AURFCRX_PATH/sof_eof_generator_u/reset
+    add wave -label rx_eof_n        $AURFCRX_PATH/sof_eof_generator_u/rx_eof_n
+    add wave -label rx_eop_n        $AURFCRX_PATH/sof_eof_generator_u/rx_eop_n
+    add wave -label rx_is_footer        $AURFCRX_PATH/sof_eof_generator_u/rx_is_footer
+    add wave -label rx_is_header        $AURFCRX_PATH/sof_eof_generator_u/rx_is_header
+    add wave -label rx_sof_n        $AURFCRX_PATH/sof_eof_generator_u/rx_sof_n
+    add wave -label rx_sop_n        $AURFCRX_PATH/sof_eof_generator_u/rx_sop_n
+
+}
+
+proc rio_aurfctx {  } {
+    global AURFCTX_PATH
+    add wave -divider "AURFC_TRANSMITTER"
+    radix -hex
+
+    add wave -label tx_d       $AURFCTX_PATH/TX_D
+    add wave -label tx_d_i       $AURFCTX_PATH/tx_d_i
+    add wave -label tx_d_rev       $AURFCTX_PATH/tx_d_rev
+    add wave -label txu_d       $AURFCTX_PATH/transmitter_u/TXU_D
+    add wave -label tx_rem         $AURFCTX_PATH/TX_REM
+    add wave -label tx_rem_rev        $AURFCTX_PATH/tx_rem_rev
+    add wave -label txu_rem         $AURFCTX_PATH/transmitter_u/TXU_REM
+    add wave -label txu_src_rdy_n       $AURFCTX_PATH/transmitter_u/TXU_SRC_RDY_N
+    add wave -label txu_sof_n       $AURFCTX_PATH/transmitter_u/TXU_SOP_N
+    add wave -label txu_eof_n       $AURFCTX_PATH/transmitter_u/TXU_EOP_N
+    add wave -label txu_dst_rdy_n       $AURFCTX_PATH/transmitter_u/TXU_DST_RDY_N
+
+    add wave -label txa_d       $AURFCTX_PATH/transmitter_u/TXA_D
+    add wave -label txa_rem         $AURFCTX_PATH/transmitter_u/TXA_REM
+    add wave -label txa_src_rdy_n       $AURFCTX_PATH/transmitter_u/TXA_SRC_RDY_N
+    add wave -label txa_sof_n       $AURFCTX_PATH/transmitter_u/TXA_SOP_N
+    add wave -label txa_eof_n       $AURFCTX_PATH/transmitter_u/TXA_EOP_N
+    add wave -label txa_dst_rdy_n       $AURFCTX_PATH/transmitter_u/TXA_DST_RDY_N
+
+} 
+

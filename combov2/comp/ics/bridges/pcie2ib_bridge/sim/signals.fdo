@@ -1,0 +1,332 @@
+#
+# signals.fdo : Include file with signals
+# Copyright (C) 2007 CESNET
+# Author(s): Tomas Malek <tomalek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 852 2007-11-15 23:30:09Z tomalek $
+#  
+
+# -------------------------------------------------------------------
+#                       Signals of interfaces
+# -------------------------------------------------------------------
+
+proc pcie2ib_bridge {PATH} {
+    add wave -divider "PCIE2IB_BRIDGE"
+      add_wave "-noupdate -color yellow -label RESET" $PATH/reset
+      add_wave "-noupdate -color yellow -label CLK"   $PATH/clk
+   add wave -divider "  PCIE RX Interface"
+      add_wave "-noupdate -hex -label PCIERX_SOF_N    "             $PATH/U_trans_buf/PCIERX_SOF_N    
+      add_wave "-noupdate -hex -label PCIERX_EOF_N    "             $PATH/U_trans_buf/PCIERX_EOF_N                                                                                                          
+      add_wave "-noupdate -hex -label PCIERX_DATA     "             $PATH/U_trans_buf/PCIERX_DATA     
+      add_wave "-noupdate -hex -label PCIERX_REM_N    "             $PATH/U_trans_buf/PCIERX_REM_N                                                                                                          
+      add_wave "-noupdate -hex -label PCIERX_SRC_RDY_N"             $PATH/U_trans_buf/PCIERX_SRC_RDY_N
+      add_wave "-noupdate -hex -label PCIERX_DST_RDY_N"             $PATH/U_trans_buf/PCIERX_DST_RDY_N                                                                                                      
+      add_wave "-noupdate -hex -label PCIERX_SRC_DSC_N"             $PATH/U_trans_buf/PCIERX_SRC_DSC_N
+      add_wave "-noupdate -hex -label PCIERX_ERR_FWD_N"             $PATH/U_trans_buf/PCIERX_ERR_FWD_N
+      add_wave "-noupdate -hex -label PCIERX_NP_OK_N  "             $PATH/U_trans_buf/PCIERX_NP_OK_N                                             
+      add_wave "-noupdate -hex -label PCIERX_BAR_HIT_N"             $PATH/U_trans_buf/PCIERX_BAR_HIT_N            
+   add wave -divider "  IB DOWN Interface"
+      add_wave "-noupdate -hex -label IB_DOWN"        $PATH/IB.DOWN
+    add wave -divider "  IB UP Interface"
+      add_wave "-noupdate -hex -label IB_UP"          $PATH/IB.UP
+    add wave -divider " PCIE TX Interface"
+      add_wave "-noupdate -hex -label PCIETX_SOF_N    "             $PATH/U_trans_buf/PCIETX_SOF_N    
+      add_wave "-noupdate -hex -label PCIETX_EOF_N    "             $PATH/U_trans_buf/PCIETX_EOF_N                                                                                                          
+      add_wave "-noupdate -hex -label PCIETX_DATA     "             $PATH/U_trans_buf/PCIETX_DATA     
+      add_wave "-noupdate -hex -label PCIETX_REM_N    "             $PATH/U_trans_buf/PCIETX_REM_N                                                                                                          
+      add_wave "-noupdate -hex -label PCIETX_SRC_RDY_N"             $PATH/U_trans_buf/PCIETX_SRC_RDY_N
+      add_wave "-noupdate -hex -label PCIETX_DST_RDY_N"             $PATH/U_trans_buf/PCIETX_DST_RDY_N                                                                                                      
+      add_wave "-noupdate -hex -label PCIETX_SRC_DSC_N"             $PATH/U_trans_buf/PCIETX_SRC_DSC_N
+      add_wave "-noupdate -hex -label PCIETX_DST_DCS_N"             $PATH/U_trans_buf/PCIETX_DST_DCS_N    
+    add wave -divider "  BM Interface"
+      add_wave "-noupdate -hex -label BM"             $PATH/BM      
+} 
+
+# -------------------------------------------------------------------
+
+proc xilinx_pcie_serial {PATH} {
+    add wave -divider "PCIE serial"       
+      add_wave "-noupdate -hex -label sys_reset_n" $PATH/sys_reset_n
+      add_wave "-noupdate -hex -label sys_clk_p  " $PATH/sys_clk_p
+      add_wave "-noupdate -hex -label sys_clk_n  " $PATH/sys_clk_n
+      add_wave "-noupdate -hex -label pci_exp_txn" $PATH/pci_exp_txn
+      add_wave "-noupdate -hex -label pci_exp_txp" $PATH/pci_exp_txp
+      add_wave "-noupdate -hex -label pci_exp_rxn" $PATH/pci_exp_rxn
+      add_wave "-noupdate -hex -label pci_exp_rxp" $PATH/pci_exp_rxp
+}
+
+# -------------------------------------------------------------------
+
+proc tlp_dec_gen {DECPATH GENPATH} {
+    add wave -divider "TLPDEC"       
+      add_wave "-noupdate -hex -label RX_COMMAND  "      $DECPATH/rxcommand
+      add_wave "-noupdate -hex -label RX_SRCID  "        $DECPATH/rxsrcdevid
+      add_wave "-noupdate -hex -label RX_TAG  "          $DECPATH/rxtag      
+      add_wave "-noupdate -hex -label RX_ADDR  "         $DECPATH/rxaddress
+      add_wave "-noupdate -hex -label RX_LENGTH  "       $DECPATH/rxlength      
+      add_wave "-noupdate -hex -label RX_BYTECOUNT  "    $DECPATH/rxcplbcount            
+    add wave -divider "TLPGEN"       
+      add_wave "-noupdate -hex -label TX_COMMAND  "      $GENPATH/txcommand
+      add_wave "-noupdate -hex -label TX_SRCID  "        $GENPATH/txsrcdevid
+      add_wave "-noupdate -hex -label TX_DSTID  "        $GENPATH/txdstdevid      
+      add_wave "-noupdate -hex -label TX_TAG  "          $GENPATH/txtag      
+      add_wave "-noupdate -hex -label TX_ADDR  "         $GENPATH/txaddress
+      add_wave "-noupdate -hex -label TX_LENGTH  "       $GENPATH/txlength      
+      add_wave "-noupdate -hex -label TX_BYTECOUNT  "    $GENPATH/txcplbcount                
+}
+
+# -------------------------------------------------------------------
+
+proc bm_buf {PATH} {
+    add wave -divider "BM BUF"       
+      add_wave "-noupdate -hex -label present_state"        $PATH/present_state
+      add_wave "-noupdate -hex -label next_state"           $PATH/next_state          
+      add_wave "-noupdate -hex -label BM "                  $PATH/BM
+      add_wave "-noupdate -hex -label BM_GLOBAL_ADDR "      $PATH/BM_GLOBAL_ADDR
+      add_wave "-noupdate -hex -label BM_LOCAL_ADDR  "      $PATH/BM_LOCAL_ADDR 
+      add_wave "-noupdate -hex -label BM_LENGTH     "       $PATH/BM_LENGTH     
+      add_wave "-noupdate -hex -label BM_TAG        "       $PATH/BM_TAG        
+      add_wave "-noupdate -hex -label BM_REQ_R  "           $PATH/BM_REQ_R
+      add_wave "-noupdate -hex -label BM_REQ_W "            $PATH/BM_REQ_W
+      add_wave "-noupdate -hex -label BM_ACK_R "            $PATH/BM_ACK_R
+      add_wave "-noupdate -hex -label BM_ACK_W  "           $PATH/BM_ACK_W
+      add_wave "-noupdate -hex -label BM_OP_TAG_R  "        $PATH/BM_OP_TAG_R
+      add_wave "-noupdate -hex -label BM_OP_TAG_W "         $PATH/BM_OP_TAG_W
+      add_wave "-noupdate -hex -label BM_OP_DONE_R "        $PATH/BM_OP_DONE_R
+      add_wave "-noupdate -hex -label BM_OP_DONE_W        " $PATH/BM_OP_DONE_W      
+      add_wave "-noupdate -hex -label op_done_r_reg "        $PATH/op_done_r_reg
+      add_wave "-noupdate -hex -label op_done_w_reg        " $PATH/op_done_w_reg
+}
+
+# -------------------------------------------------------------------
+
+proc ib_ifc {PATH} {
+    add wave -divider "Internal Bus"       
+      add_wave "-noupdate -color yellow -label CLK"      $PATH/CLK
+      add_wave "-noupdate -color yellow -label RESET"    $PATH/RESET
+      add_wave "-noupdate -hex -label IB"                $PATH/IB
+}
+
+# -------------------------------------------------------------------
+
+proc trans_buf {PATH} {
+    add wave -divider "TRANSBUFFER - RX"       
+      add_wave "-noupdate -hex -label present_state"             $PATH/present_state
+      add_wave "-noupdate -hex -label next_state"                $PATH/next_state      
+      add_wave "-noupdate -hex -label TLPRX_REQ  "                  $PATH/TLPRX_REQ  
+      add_wave "-noupdate -hex -label TLPRX_ACK  "                  $PATH/TLPRX_ACK  
+      add_wave "-noupdate -hex -label TLPRX_WAIT "                  $PATH/TLPRX_WAIT 
+      add_wave "-noupdate -hex -label TLPRX_READY"                  $PATH/TLPRX_READY
+      add_wave "-noupdate -hex -label TLPRX_CORE "                  $PATH/TLPRX_CORE 
+      add_wave "-noupdate -hex -label TLPRX_DATA "                  $PATH/TLPRX_DATA 
+      add_wave "-noupdate -hex -label TLPRX_DWE  "                  $PATH/TLPRX_DWE  
+    add wave -divider "TRANSBUFFER - TX"             
+      add_wave "-noupdate -hex -label present_state"             $PATH/tx_present_state
+      add_wave "-noupdate -hex -label next_state"                $PATH/tx_next_state        
+      add_wave "-noupdate -hex -label TLPTX_REQ     "                  $PATH/TLPTX_REQ     
+      add_wave "-noupdate -hex -label TLPTX_ACK     "                  $PATH/TLPTX_ACK     
+      add_wave "-noupdate -hex -label TLPTX_WAIT    "                  $PATH/TLPTX_WAIT    
+      add_wave "-noupdate -hex -label TLPTX_DATA    "                  $PATH/TLPTX_DATA    
+      add_wave "-noupdate -hex -label TLPTX_DWE     "                  $PATH/TLPTX_DWE     
+      add_wave "-noupdate -hex -label reg_write     "                  $PATH/reg_write    
+      add_wave "-noupdate -hex -label tlprx_req_rst "                  $PATH/tlprx_req_rst
+      add_wave "-noupdate -hex -label tlprx_req_en  "                  $PATH/tlprx_req_en       
+}
+
+# -------------------------------------------------------------------
+
+proc rx_buf {PATH} {
+    add wave -divider "RX TLP DEC"             
+      add_wave "-noupdate -hex -label tpd_state_r"               $PATH/U_TLPDEC/tpd_state_r
+      add_wave "-noupdate -hex -label tlprxack_r"                $PATH/U_TLPDEC/tlprxack_r    
+      add_wave "-noupdate -hex -label tlpwdata   "               $PATH/U_TLPDEC/tlpwdata 
+      add_wave "-noupdate -hex -label tlp4dwh    "               $PATH/U_TLPDEC/tlp4dwh  
+      add_wave "-noupdate -hex -label rxready    "               $PATH/U_TLPDEC/rxready  
+      add_wave "-noupdate -hex -label dwwr0_r    "               $PATH/U_TLPDEC/dwwr0_r  
+      add_wave "-noupdate -hex -label dwwr1_r    "               $PATH/U_TLPDEC/dwwr1_r  
+      add_wave "-noupdate -hex -label rxcount_r  "               $PATH/U_TLPDEC/rxcount_r
+      add_wave "-noupdate -hex -label rxlast_r   "               $PATH/U_TLPDEC/rxlast_r 
+      add_wave "-noupdate -hex -label RXDONE     "               $PATH/U_TLPDEC/RXDONE   
+      
+    add wave -divider "RX BUFFER"       
+      add_wave "-noupdate -hex -label present_state"             $PATH/present_state
+      add_wave "-noupdate -hex -label next_state"                $PATH/next_state      
+      add_wave "-noupdate -hex -label rx_start"                  $PATH/rx_start      
+      add_wave "-noupdate -hex -label length_B_cpl "             $PATH/length_B_cpl
+      add_wave "-noupdate -hex -label length_B_rw  "             $PATH/length_B_rw 
+      add_wave "-noupdate -hex -label rx_address   "             $PATH/rx_address  
+      add_wave "-noupdate -hex -label len_aux2     "             $PATH/len_aux2    
+      add_wave "-noupdate -hex -label compl_last   "             $PATH/compl_last  
+      add_wave "-noupdate -hex -label rx_last      "             $PATH/rx_last     
+      add_wave "-noupdate -hex -label align_en     "             $PATH/align_en    
+      add_wave "-noupdate -hex -label rx_valid     "             $PATH/rx_valid    
+      add_wave "-noupdate -hex -label command_dec  "             $PATH/command_dec 
+      add_wave "-noupdate -hex -label bm_result  "               $PATH/bm_result
+      add_wave "-noupdate -hex -label mx_ib  "                   $PATH/mx_ib      
+                                                                 
+}
+
+# -------------------------------------------------------------------
+
+proc tx_buf {PATH} {
+    add wave -divider "TX BUFFER"       
+      add_wave "-noupdate -hex -label present_state"             $PATH/present_state
+      add_wave "-noupdate -hex -label next_state"                $PATH/next_state      
+      add_wave "-noupdate -hex -label data_write"                $PATH/data_write    
+      add_wave "-noupdate -hex -label data_read"                 $PATH/data_read
+      add_wave "-noupdate -hex -label tx_dwr0"                   $PATH/tx_dwrd0
+      add_wave "-noupdate -hex -label tx_dwr1"                   $PATH/tx_dwrd1
+      add_wave "-noupdate -hex -label data_payload"              $PATH/data_payload      
+      add_wave "-noupdate -hex -label cnt_data"                  $PATH/cnt_data      
+      add_wave "-noupdate -hex -label limit"                     $PATH/limit                  
+      add_wave "-noupdate -hex -label mpx_ib_up_data"            $PATH/mpx_ib_up_data
+      add_wave "-noupdate -hex -label mpx_ib_up_data_low"        $PATH/mpx_ib_up_data_low
+      add_wave "-noupdate -hex -label mpx_ib_up_data_high"       $PATH/mpx_ib_up_data_high
+      add_wave "-noupdate -hex -label switch_3HD_1st_odd"        $PATH/switch_3HD_1st_odd
+      add_wave "-noupdate -hex -label ib_up_data_switch"         $PATH/ib_up_data_switch
+      add_wave "-noupdate -hex -label cnt_data_rst"              $PATH/cnt_data_rst      
+      add_wave "-noupdate -hex -label first_fragment"            $PATH/first_fragment
+      add_wave "-noupdate -hex -label first_transfer"            $PATH/first_transfer
+      add_wave "-noupdate -hex -label first_len_odd"             $PATH/first_len_odd
+      add_wave "-noupdate -hex -label reg_ibaddr_primar"         $PATH/reg_ibaddr_primar
+      add_wave "-noupdate -hex -label reg_globaddr"              $PATH/reg_globaddr
+      add_wave "-noupdate -hex -label first_rw"                  $PATH/first_rw
+      add_wave "-noupdate -hex -label mpx_A"                     $PATH/mpx_A      
+      add_wave "-noupdate -hex -label mpx_B"                     $PATH/mpx_B      
+      add_wave "-noupdate -hex -label add_addr"                  $PATH/add_addr      
+      add_wave "-noupdate -hex -label mpx_address"               $PATH/mpx_address       
+      add_wave "-noupdate -hex -label tx_start"                  $PATH/tx_start
+      add_wave "-noupdate -hex -label tx_done"                   $PATH/tx_done       
+      add_wave "-noupdate -hex -label reg_length"                $PATH/reg_length
+      add_wave "-noupdate -hex -label reg_length_DW"             $PATH/reg_length_DW
+      add_wave "-noupdate -hex -label bm_result"                 $PATH/bm_result
+      add_wave "-noupdate -hex -label bm_result_reg"             $PATH/bm_result_reg
+      add_wave "-noupdate -hex -label bm_result_rst"             $PATH/bm_result_rst
+      add_wave "-noupdate -hex -label bm_req"                    $PATH/bm_req
+      add_wave "-noupdate -hex -label reg_bmaddr"                $PATH/reg_bmaddr
+      add_wave "-noupdate -hex -label TXVLD"                     $PATH/TXVLD
+
+      add_wave "-noupdate -hex -label recount_len  "                              $PATH/recount_len                             
+      add_wave "-noupdate -hex -label recount_bc    "                             $PATH/recount_bc                              
+      add_wave "-noupdate -hex -label reg_bytecount  "                            $PATH/reg_bytecount                           
+      add_wave "-noupdate -hex -label REG_BYTECOUNT_11_DOWNTO_LOG2_TLP_MAX_LEN"   $PATH/REG_BYTECOUNT_11_DOWNTO_LOG2_TLP_MAX_LEN
+      add_wave "-noupdate -hex -label compare_condition "                         $PATH/compare_condition                       
+      add_wave "-noupdate -hex -label reg_do_firstparse  "                        $PATH/reg_do_firstparse                       
+      add_wave "-noupdate -hex -label first_recount       "                       $PATH/first_recount                           
+      add_wave "-noupdate -hex -label TLP_MAX_LEN_12_MINUS_2"                     $PATH/TLP_MAX_LEN_12_MINUS_2                  
+      add_wave "-noupdate -hex -label TLP_MAX_LEN_12_MINUS_1 "                    $PATH/TLP_MAX_LEN_12_MINUS_1                  
+      add_wave "-noupdate -hex -label TLP_MAX_LEN_12          "                   $PATH/TLP_MAX_LEN_12                          
+      add_wave "-noupdate -hex -label mpx_rlen                 "                  $PATH/mpx_rlen                                
+      add_wave "-noupdate -hex -label mpx_length                "                 $PATH/mpx_length                              
+      add_wave "-noupdate -hex -label reg_length                 "                $PATH/reg_length                              
+      add_wave "-noupdate -hex -label reg_length_DW_aux           "               $PATH/reg_length_DW_aux                       
+      add_wave "-noupdate -hex -label reg_length_DW                "              $PATH/reg_length_DW                           
+}
+
+# -------------------------------------------------------------------
+
+proc compl_buf {PATH} {
+    add wave -divider "COMPLETION BUFFER"       
+      add_wave "-noupdate -hex -label RD"             $PATH/RXRD
+      add_wave "-noupdate -hex -label ADDR"             $PATH/RXRTAG
+      add_wave "-noupdate -hex -label VLD"             $PATH/RXVLD
+      add_wave "-noupdate -hex -label DATA"             $PATH/RX_GRADDR_OUT
+}
+
+# -------------------------------------------------------------------
+
+proc ib_endpoint {PATH} {
+    add wave -divider "IB ENDPOINT MASTER"       
+      add_wave "-noupdate -hex -label IB"                $PATH/INTERNAL_BUS
+      add_wave "-noupdate -hex -label WR"                $PATH/WR
+      add_wave "-noupdate -hex -label RD"                $PATH/RD      
+      add_wave "-noupdate -hex -label BM"                $PATH/BM      
+}
+
+# -------------------------------------------------------------------
+
+proc dp_bmem {PATH} {
+    add wave -divider "DP_BMEM"       
+      add_wave "-noupdate -hex -label WR"                $PATH/WEA
+      add_wave "-noupdate -hex -label WDATA"                $PATH/DIA      
+      add_wave "-noupdate -hex -label WADDR"                $PATH/ADDRA            
+      add wave -divider " "       
+      add_wave "-noupdate -hex -label RD"                $PATH/REB
+      add_wave "-noupdate -hex -label RADDR"                $PATH/ADDRB      
+      add_wave "-noupdate -hex -label VLD"                $PATH/DOB_DV
+      add_wave "-noupdate -hex -label RDATA"                $PATH/DOB            
+}
+
+# -------------------------------------------------------------------
+
+proc bm_signals {PATH} {
+    add wave -divider "BM SIGNALS"       
+      #add_wave "-noupdate -hex -label WR"                   $PATH/WEA
+      #add_wave "-noupdate -hex -label WDATA"                $PATH/DIA      
+      #add_wave "-noupdate -hex -label WADDR"                $PATH/ADDRA            
+      #add_wave "-noupdate -hex -label RDATA"                $PATH/DOB            
+}
+
+# -------------------------------------------------------------------
+
+proc blk_ib_endpoint_read_shift_reg {PATH} {
+   add wave -divider "READ_SHIFT_REG"
+      add_wave "-noupdate -label clk"              $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/clk
+      add_wave "-noupdate -hex -label rd_data_in"  $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_DATA_IN
+      add_wave "-noupdate -label rd_src_rdy_in"    $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_SRC_RDY_IN
+      add_wave "-noupdate -label rd_dst_rdy_in"    $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_DST_RDY_IN
+      add_wave "-noupdate -hex -label rd_data_out" $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_DATA_OUT
+      add_wave "-noupdate -label rd_src_rdy_out"   $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_SRC_RDY_OUT
+      add_wave "-noupdate -label rd_dst_rdy_out"   $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/RD_DST_RDY_OUT
+      add_wave "-noupdate -label counter"          $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/counter
+      add_wave "-noupdate -label cntr_reg_up"      $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/cntr_reg_up
+      add_wave "-noupdate -label cntr_reg_down"    $PATH/IB_ENDPOINT_CORE_U/IB_ENDPOINT_READ_SHR_U/cntr_reg_down
+}
+
+# -------------------------------------------------------------------
+
+proc cast_ifc {PATH} {
+    add wave -divider "Common interface"       
+      add_wave "-noupdate -color yellow -label CLK"      $PATH/CLK
+      add_wave "-noupdate -color yellow -label RESET"    $PATH/RESET
+    add wave -divider "TLPRX"       
+      add_wave "-noupdate -hex -label TLPRX_REQ    "     $PATH/TLPRX_REQ   
+      add_wave "-noupdate -hex -label TLPRX_ACK    "     $PATH/TLPRX_ACK   
+      add_wave "-noupdate -hex -label TLPRX_WAIT   "     $PATH/TLPRX_WAIT  
+      add_wave "-noupdate -hex -label TLPRX_DATA   "     $PATH/TLPRX_DATA              
+      add_wave "-noupdate -hex -label TLPRX_DWE    "     $PATH/TLPRX_DWE   
+      add_wave "-noupdate -hex -label TLPRX_BARHIT "     $PATH/TLPRX_BARHIT
+    add wave -divider "TLPTX"       
+      add_wave "-noupdate -hex -label TLPTX_REQ  "      $PATH/TLPTX_REQ 
+      add_wave "-noupdate -hex -label TLPTX_ACK  "      $PATH/TLPTX_ACK 
+      add_wave "-noupdate -hex -label TLPTX_WAIT "      $PATH/TLPTX_WAIT
+      add_wave "-noupdate -hex -label TLPTX_DATA "      $PATH/TLPTX_DATA
+      add_wave "-noupdate -hex -label TLPTX_DWE  "      $PATH/TLPTX_DWE 
+}
+ 
+

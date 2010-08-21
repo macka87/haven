@@ -1,0 +1,3 @@
+#! /bin/bash
+
+csboot -f 0 ../c6x_top.mcs

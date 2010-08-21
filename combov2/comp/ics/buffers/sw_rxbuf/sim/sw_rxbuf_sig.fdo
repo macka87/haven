@@ -1,0 +1,60 @@
+# sw_rxbuf_sig.fdo : Include file with signals
+# Copyright (C) 2006 CESNET
+# Author: Martin Kosek <kosek@liberouter.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: sw_rxbuf_sig.fdo 320 2007-09-03 14:06:44Z kosek $
+#
+
+# Paths
+set TB_BASE                "/testbench"
+set SW_RXBUF_PATH          "$TB_BASE/uut"
+set SWR_CB_MGMT_PATH       "$TB_BASE/swr_cb_mgmt_i"
+set FL_DEC_BASE            "$SW_RXBUF_PATH/swr_cu_i/fl_dec_i"
+
+source      "signals.fdo"
+source      "$FIRMWARE_BASE/comp/fl_tools/misc/decoder/sim/signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label reset $TB_BASE/reset
+add wave -noupdate -label base_clk $TB_BASE/clk
+
+blk_SW_RXBUF IFC
+blk_SWR_CB_MGMT IFC
+#blk_SWR_CB_MGMT MISC
+blk_SW_RXBUF MISC
+blk_SW_RXBUF CU
+blk_SW_RXBUF BMEM_CTRL
+blk_SW_RXBUF BMEM
+blk_SW_RXBUF CTRL_MEM
+#blk_FL_DEC IFC
+
+restart -f
+run 2 us

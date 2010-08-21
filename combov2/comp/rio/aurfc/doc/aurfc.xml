@@ -1,0 +1,677 @@
+<source>
+
+<component>Aurora with Flow Control (Aurfc)</component>
+
+<authors>
+        <author login="pazdera">Jan Pazdera</author>
+    </authors>
+
+<features>
+    <item> 
+        TX and/or RX logic is optional (resource saving).
+    </item>
+    <item> 
+        Optional data width.
+    </item>
+    <item> 
+        Equipped with flow control logic to overcome the RX buffer overflow
+    </item>
+</features>
+
+<description>
+
+    This component implements FrameLink comunication protocol via Auroroa extended with 
+    configurable flow controller (XON/XOFF).
+
+</description>
+
+<interface>
+    <generic_map>
+        <generic name="RX_IS_HEADER"      type="boolean" default="true">
+            This generic is necassary for correct Frame reconstruction on receive side.
+            It determines whether the frame contains a header or not.
+        </generic>
+        <generic name="RX_IS_FOOTER"      type="boolean" default="true">
+            This generic is necassary for correct Frame reconstruction on receive side.
+            It determines whether the frame contains a footer or not.
+        </generic>
+        <generic name="TX_FIFO_ITEMS"      type="integer" default="512">
+            TX buffer size. If TX_FIFO_ITEMS = 0 then TX logic is not used (resource saving).
+        </generic>
+        <generic name="TX_STATUS_WIDTH"    type="integer" default="3">
+            TX STATUS port width
+        </generic>
+        <generic name="RX_FIFO_ITEMS"      type="integer" default="512">
+            RX buffer size. If RX_FIFO_ITEMS = 0 then RX logic is not used (resource saving).
+        </generic>
+        <generic name="RX_STATUS_WIDTH"    type="integer" default="3">
+            RX STATUS port width
+        </generic>
+        <generic name="XON_LIMIT"          type="std_logic_vector(2 downto 0)" default="011">
+            Level of RX buffer filling to generate XON message.
+        </generic>
+        <generic name="XOFF_LIMIT"         type="std_logic_vector(2 downto 0)" default="110">
+            Level of RX buffer filling to generate XOFF message.
+        </generic>
+        <generic name="LANES"         type="integer" default="-">
+            Number of Aurora lanes. The values can be 1, 2.
+        </generic>
+        <generic name="DATA_PATHS"         type="integer" default="-">
+            Number of data paths. The values can be 2, 4, 8.
+        </generic>
+        <generic name="LOOPBACK" type="std_logic_vector(1 downto 0)" default="00">
+            "00": no loopback (standart mode), "01": parallel loopbach, "10": serial loopback
+        </generic>
+    </generic_map>
+
+
+    <port_map>
+
+        <divider> Reset and clocks </divider>
+        <port name="RESET" dir="in" width="1">
+            Design reset
+        </port>
+        <port name="REFCLK" dir="in" width="1">
+            RocketIO clock (connected to xtal directly - no BUFGs or DCMs). It is necessary to insert the BUFG buffer.
+        </port>
+        <port name="USRCLK" dir="in" width="1">
+            Clock to clock transmit and receive logic
+        </port>
+        <port name="USRCLK2" dir="in" width="1">
+            Clock to clock transmit and receive logic (USRCLK halfrated and shifted)
+        </port>
+        <port name="CMDCLK" dir="in" width="1">
+            Clock to clock command protocol interface 
+        </port>
+
+
+        <divider> FrameLink TX interface </divider>
+        <port name="TX_D" dir="in" width="DATA_WIDTH">
+            Outgoing data (Ascending bit order).
+        </port>
+        <port name="TX_REM" dir="in" width="log2(DATA_WIDTH/8)">
+            Specifies the number of valid bytes in the last data beat; valid only when RX_EOF_N is asserted.
+        </port>
+        <port name="TX_SRC_RDY_N" dir="in" width="1">
+            Asserted (low) when LocalLink signals from the source are valid.
+        </port>
+        <port name="TX_SOF_N" dir="in" width="1">
+            Signals the start of the incoming frame (Active-low, asserted for a single user clock cycle).
+        </port>
+        <port name="TX_SOP_N" dir="in" width="1">
+            Signals the start of the incoming packet (the frame's sub-block) (Active-low, asserted for a single user clock cycle).
+        </port>
+        <port name="TX_EOF_N" dir="in" width="1">
+            Signals the end of the incoming frame (Active-low, asserted for a single user clock cycle).
+        </port>
+        <port name="TX_EOP_N" dir="in" width="1">
+            Signals the end of the incoming packet (the frame's sub-block) (Active-low, asserted for a single user clock cycle).
+        </port>
+        <port name="TX_DST_RDY_N" dir="out" width="1">
+            Asserted (low) during clock edges when signals from the source will be accepted (if TX_SRC_RDY_N is also asserted).
+        </port>
+
+        <divider> FrameLink RX interface </divider>
+        <port name="RX_D" dir="out" width="DATA_WIDTH">
+            Incoming data from channel partner (Ascending bit order).
+        </port>
+        <port name="RX_REM" dir="out" width="log2(DATA_WIDTH/8)">
+            Specifies the number of valid bytes in the last data beat; valid only when RX_EOF_N is asserted.
+        </port>
+        <port name="RX_SRC_RDY_N" dir="out" width="1">
+            Asserted (low) when data and control signals from an Aurora core are valid.
+        </port>
+        <port name="RX_SOF_N" dir="out" width="1">
+            Signals the start of the incoming frame (Active-low, asserted for a single user clock cycle).
+        </port>
+        <port name="RX_SOP_N" dir="in" width="1">
+            Signals the start of the incoming packet (the frame's sub-block) (Active-low, asserted for a single user clock cycle).
+        </port>
+        <port name="RX_EOF_N" dir="out" width="1">
+            Signals the end of the incoming frame (Active-low, asserted for a single user clock cycle).
+        </port>
+        <port name="RX_EOP_N" dir="in" width="1">
+            Signals the end of the incoming packet (the frame's sub-block) (Active-low, asserted for a single user clock cycle).
+        </port>
+        <port name="RX_DST_RDY_N" dir="in" width="1">
+            Asserted (low) when the destination logic is ready to receive data.
+        </port>
+
+        <divider> Status interface </divider>
+        <port name="HARD_ERROR" dir="out" width="1">
+            Hard error detected. (Active-high, asserted until Aurora core resets).
+        </port>
+        <port name="SOFT_ERROR" dir="out" width="1">
+            Soft error detected in the incoming serial stream. (Active-high, asserted for a single clock).
+        </port>
+        <port name="FRAME_ERROR" dir="out" width="1">
+            Channel frame/protocol error detected. This port is active-high and is asserted for a single clock.
+        </port>
+
+        <port name="TX_STATUS" dir="out" width="TX_STATUS_WIDTH">
+            TX fifo status.
+        </port>
+        <port name="RX_STATUS" dir="out" width="RX_STATUS_WIDTH">
+            RX fifo status.
+        </port>
+        <port name="CHANNEL_UP" dir="out" width="1">
+            Signals whether Aurora channel is up. Channel is up when asserted.
+        </port>
+
+        <divider> RocketIO pins </divider>
+        <port name="RXN" dir="in" width="LANES">
+            Negative differential serial data input pin.
+        </port>
+        <port name="RXP" dir="in" width="LANES">
+            Positive differential serial data input pin.
+        </port>
+        <port name="TXN" dir="out" width="LANES">
+            Negative differential serial data output pin.
+        </port>
+        <port name="TXP" dir="out" width="LANES">
+            Positive differential serial data output pin.
+        </port>
+
+    </port_map>
+
+</interface>
+
+<body>
+    <p>
+        This component is designated to transport data via Aurora interface supporting configurable flow 
+        control (XON/XOFF). Flow control can be configured
+        by XON_LIMIT and XOFF_LIMIT generics which corresponds to 3-bit-wide status of RX buffer.
+    </p>
+
+        <h1>Channel Flow Control</h1>
+        <p>
+
+            The AURFC provides configurable flow control (XON/XOFF). When the RX Buffer is becoming full (the full status overreach the
+            XOFF_LIMIT), the flow control logic will send the XOFF message via Aurora to the joint AURFC that provides the transmition. Upon
+            the XOFF reception, the joint AURFC stops transmition. When the full status of RX Buffer is equal to the XON_LIMIT, the flow
+            control logic will send the XON message to the joint AURFC the resume transmition. You can specify the XON_LIMIT and XOFF_LIMIT
+            by the XON_LIMIT and XOFF_LIMIT generics which correspond to the 3-bit-wide status of RX Buffer. To get the proper value for the
+            XOFF_LIMIT generic you must take into account the Aurora Framing Latency. You must assure yourself that the RX Buffer can not
+            overflow until the transmition is stopped (the 'Stopping Time'). You can calculate the Stopping Time this way:
+
+
+            <pre>
+           Stopping Time = XOFF Message Transmition Latency + Frame Transmition Latency
+            </pre>
+
+        </p>
+
+        <p>
+
+            <ul>
+                <li>
+                    XON/XOFF Message Transmition Latency - the time it takes to transmit the XOFF message to the joint AURFC
+                </li>
+                <li>
+                    Frame Transmition Latency - the time it takes the frame to get from the TX Buffer to the RX Buffer
+                </li>
+            </ul>
+
+            Please, see the Aurora Framing Interface Latency section to find out the maximum Aurora latencies.
+            
+        </p>
+
+        <p>
+            The value of the XON_LIMIT generic must be less than the XOFF_LIMIT! Recommended value is:
+
+            <pre>
+           XON_LIMIT = XOFF_LIMIT - 1
+            </pre>
+        </p>
+
+        <h1>Aurora Framing Interface Latency</h1>
+        <p>
+
+            This section outlines expected latency for the Aurora interface in terms of USER_CLK cycles for 2-Byte Architectures, 4-Byte
+            Architectures and 8-Byte Architectures. Note that these figures do not include the latency incurred due to the length of the
+            serial connection between each side of the Aurora channel. The USER_CLK cycle frequency is 125MHz for 2BYTE architecture and
+            62.5MHz for other architectures.
+
+        </p>
+        
+        <p>
+            <tab sloupce="lcc">
+                <tr>
+                    <th>AURVC architecture</th>
+                    <th>Min Latency Time</th>
+                    <th>Max Latency Time</th>
+                </tr>
+                <tr>
+                    <td>2-Byte</td>
+                    <td>54.5</td>
+                    <td>57.5</td>
+                </tr>
+                <tr>
+                    <td>4-Byte</td>
+                    <td>57.5</td>
+                    <td>60.5</td>
+                </tr>
+                <tr>
+                    <td>8-Byte</td>
+                    <td>57.5</td>
+                    <td>60.5</td>
+                </tr>
+                <nazev>Frame Transmition Latency</nazev>
+            </tab>
+
+            <tab sloupce="lcc">
+                <tr>
+                    <th>AURVC architecture</th>
+                    <th>Min Latency Time</th>
+                    <th>Max Latency Time</th>
+                </tr>
+                <tr>
+                    <td>2-Byte</td>
+                    <td>46.5</td>
+                    <td>49.5</td>
+                </tr>
+                <tr>
+                    <td>4-Byte</td>
+                    <td>49.5</td>
+                    <td>52.5</td>
+                </tr>
+                <tr>
+                    <td>8-Byte</td>
+                    <td>49.5</td>
+                    <td>52.5</td>
+                </tr>
+                <nazev>XON/XOFF Message Transmition Latency</nazev>
+            </tab>
+
+        </p>
+
+    <h1>Framing Efficiency</h1>
+    <p>
+        Following table shows the efficiency for an 8-byte, 4-lane channel and illustrates that the efficiency increases as the length
+        of channel frames increases. See the Aurora user guide (ug61.doc) for more information.
+        <pre>
+            User Data Bytes         Efficiency %
+            100                92.92
+            1,000                99.14
+            10,000                99.81
+        </pre>
+    </p>
+
+    <h1>Data Remainder</h1>
+    <p>
+        LocalLink allows the last word of a frame to be a partial word. This lets a frame contain any number of bytes, regardless of the
+        word size. The TX/RX_REM bus is used to indicate the number of valid bytes in the final word of the frame. The bus is only used
+        when TX/RX_EOF_N is asserted. Aurora uses encoded REM values. REM is the binary encoding of the number of valid bytes minus 1. A
+        zero REM value indicates the left-most byte in the TX/RX_D port (the MSB) is the only valid byte in the word. 
+        Following table shows the mapping between TX/RX_REM values and valid byte counts for the TX/RX_D port.
+        <pre>
+            TX_REM Value        Number of Valid Bytes
+            0                            1
+            1                            2
+            2                            3
+            3                            4
+            .
+            .
+            .
+            .
+            .
+            .
+            n                          n+1
+        </pre>
+    </p>
+
+    <h1>Architectures</h1>
+    <p>
+        Aurfc design must include the right Aurora core for current data width and other options. So, you
+        must specify the right Aurfc architecture option in your Modules.tcl.
+    </p>
+
+    <p>
+        List of available architectures:
+
+        <ul>
+            <li>
+                2BYTE - For DATA_PATHS = 2 and LANES = 1.
+            </li>
+            <li>
+                4BYTE1LANE - For DATA_PATHS = 4 and LANES = 1.
+            </li>
+            <li>
+                4BYTE2LANE - For DATA_PATHS = 4 and LANES = 2.
+            </li>
+            <li>
+                8BYTE - For DATA_PATHS = 8 and LANES = 2.
+            </li>
+        </ul>
+    </p>
+
+    <h1>Frequency and Resources usage</h1>
+    <h2>TX and RX logic (TX/RX_FIFO_ITEMS=512)</h2>
+
+	<p>
+
+        <!--Resources usage and max. frequency by Precision-->
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=2</th> 
+                <td>391(1%)</td>
+				<td>2(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=4</th> 
+				<td>588(2%)</td>
+				<td>2(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=4</th> 
+				<td>656(2%)</td>
+				<td>2(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=8</th> 
+				<td>1088(4%)</td>
+				<td>4(1%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+                <th>Max.frequency by XST (USRCLK/USRCLK2/CMDCLK)</th>
+                <th>Frequency tested in HW (USRCLK/USRCLK2/CMDCLK)</th>
+			</tr>
+			<tr>
+				<th>LANES = 1, DATA_PATHS=2</th> 
+                <td>181/194/194 MHz</td>
+                <td>125/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=4</th> 
+                <td>-/181/194 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=4</th> 
+                <td>181/194/194 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=8</th> 
+                <td>-/174/194 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+	
+    </p> 
+    <h2>TX logic only (TX_FIFO_ITEMS=512, RX_FIFO_ITEMS=0)</h2>
+
+	<p>
+
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=2</th> 
+                <td>269(1%)</td>
+				<td>1(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=4</th> 
+                <td>392(1%)</td>
+				<td>1(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=4</th> 
+				<td>461(1%)</td>
+				<td>1(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=8</th> 
+				<td>722(3%)</td>
+				<td>2(0%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+                <th>Max.frequency by XST (USRCLK/USRCLK2/CMDCLK)</th>
+                <th>Frequency tested in HW (USRCLK/USRCLK2/CMDCLK)</th>
+			</tr>
+			<tr>
+				<th>LANES = 1, DATA_PATHS=2</th> 
+                <td>181/288/194 MHz</td>
+                <td>125/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=4</th> 
+                <td>-/181/194 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=4</th> 
+                <td>181/291/194 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=8</th> 
+                <td>-/181/194 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+	
+  </p> 
+  <h2>RX logic only (TX_FIFO_ITEMS=0, RX_FIFO_ITEMS=512)</h2>
+
+	<p>
+
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+				<th>Slices (% of C6X slices)</th>
+				<th>BlockRams (+ % of C6X BRAMs)</th>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=2</th> 
+                <td>256(1%)</td>
+				<td>1(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=4</th> 
+                <td>403(1%)</td>
+				<td>1(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=4</th> 
+				<td>478(2%)</td>
+				<td>1(0%)</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=8</th> 
+				<td>748(4%)</td>
+				<td>2(0%)</td>
+			</tr>
+		<nazev>Chip utilization</nazev>
+		</tab> 
+	
+		<tab sloupce="ccc">
+			<tr>
+				<th>Generic settings</th>
+                <th>Max.frequency by XST (USRCLK/USRCLK2/CMDCLK)</th>
+                <th>Frequency tested in HW (USRCLK/USRCLK2/CMDCLK)</th>
+			</tr>
+			<tr>
+				<th>LANES = 1, DATA_PATHS=2</th> 
+                <td>181/194/288 MHz</td>
+                <td>125/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 1, DATA_PATHS=4</th> 
+                <td>-/181/291 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=4</th> 
+                <td>181/194/291 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+			<tr>
+                <th>LANES = 2, DATA_PATHS=8</th> 
+                <td>-/174/288 MHz</td>
+                <td>125/62,5/100 MHz</td>
+			</tr>
+		<nazev>Maximal frequency</nazev>
+		</tab> 
+	
+  </p> 
+
+    <h1>Design UCF file constrains (Precision)</h1>
+    <p>
+        It is necassary to include following lines into your design .ucf file (depending on 
+        used platform and RIO port):
+    </p>
+
+    <p>
+        <b>For Combo6X VP50, RIO port 0:</b>
+        <pre>
+       INST *YourInstanceName_lane_0_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_0_GRP";
+       AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X122Y168:SLICE_X123Y169;
+
+       INST YourComponentName_lane_0_mgt_i LOC=GT_X7Y1;
+        </pre>
+    </p>
+
+    <p>
+        <b>For Combo6X VP50, RIO port 1:</b>
+        <pre>
+       INST *YourInstanceName_lane_0_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_0_GRP";
+       AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X110Y168:SLICE_X111Y169;
+
+       INST YourComponentName_lane_0_mgt_i LOC=GT_X6Y1;
+        </pre>
+    </p>
+
+    <p>
+        <b>For SFPRO, RIO port 0:</b>
+        <pre>
+       INST *YourInstanceName_lane_0_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_0_GRP";
+       AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X74Y0:SLICE_X75Y1;
+
+       INST YourComponentName_lane_0_mgt_i LOC=GT_X3Y0;
+        </pre>
+    </p>
+
+    <p>
+        <b>For SFPRO, RIO port 1:</b>
+
+        <pre>
+       INST *YourInstanceName_lane_0_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_0_GRP";
+       AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X50Y0:SLICE_X51Y1;
+
+       INST YourComponentName_lane_0_mgt_i LOC=GT_X2Y0;
+        </pre>
+    </p>
+
+    <p>
+        In case you use 2 lane aurora design, include these lines into your .ucf file:
+    </p>
+
+    <p>
+        <b>For Combo6X, RIO ports 0 and 1:</b>
+
+
+        <pre>
+       INST *YourInstanceName_lane_0_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_0_GRP";
+       AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X110Y168:SLICE_X111Y169;
+
+       INST *YourInstanceName_lane_1_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_1_GRP";
+       AREA_GROUP "PHASE_ALIGN_1_GRP" RANGE=SLICE_X122Y168:SLICE_X123Y169;
+
+       INST *YourInstanceName_lane_0_mgt_i LOC=GT_X6Y1;
+
+       INST *YourInstanceName_lane_1_mgt_i LOC=GT_X7Y1;
+
+        </pre>
+    </p>
+
+    <p>
+        <b>For Combo6X VP50, RIO ports 2 and 3 (lanes to VP7):</b>
+
+        <pre>
+       INST *YourInstanceName_lane_0_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_0_GRP";
+       AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X122Y0:SLICE_X123Y1;
+
+       INST *YourInstanceName_lane_1_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_1_GRP";
+       AREA_GROUP "PHASE_ALIGN_1_GRP" RANGE=SLICE_X110Y0:SLICE_X111Y1;
+
+       INST *YourInstanceName_lane_0_mgt_i LOC=GT_X7Y0;
+
+       INST *YourInstanceName_lane_1_mgt_i LOC=GT_X6Y0;
+        </pre>
+    </p>
+
+    <p>
+        <b>For Combo6X VP7, RIO ports 2 and 3 (lanes to VP50):</b>
+
+        <pre>
+       INST *YourInstanceName_lane_0_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_0_GRP";
+       AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X38Y72:SLICE_X39Y73;
+
+       INST *YourInstanceName_lane_1_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_1_GRP";
+       AREA_GROUP "PHASE_ALIGN_1_GRP" RANGE=SLICE_X26Y72:SLICE_X27Y73;
+
+       INST *YourInstanceName_lane_0_mgt_i LOC=GT_X2Y1;
+
+       INST *YourInstanceName_lane_1_mgt_i LOC=GT_X1Y1;
+        </pre>
+    </p>
+
+    <p>
+        <b>For SFPRO, RIO ports 0 and 1:</b>
+
+        <pre>
+       INST *YourInstanceName_lane_0_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_0_GRP";
+       AREA_GROUP "PHASE_ALIGN_0_GRP" RANGE=SLICE_X50Y0:SLICE_X51Y1;
+
+       INST *YourInstanceName_lane_1_phase_align_i_reg_phase_align_flops_r* AREA_GROUP="PHASE_ALIGN_1_GRP";
+       AREA_GROUP "PHASE_ALIGN_1_GRP" RANGE=SLICE_X74Y0:SLICE_X75Y1;
+
+       INST *YourInstanceName_lane_0_mgt_i LOC=GT_X2Y0;
+       INST *YourInstanceName_lane_1_mgt_i LOC=GT_X3Y0;
+        </pre>
+    </p>
+
+    <h1>Design UCF file constrains (XST)</h1>
+    <p>
+        Constraints for XST are similar. You must use different instance name: 
+    </p>
+
+    <p>
+        <pre>
+       INST *YourInstanceName*lane_0_phase_align_i*ENA_CALIGN_REC AREA_GROUP="PHASE_ALIGN_0_GRP";
+       INST *YourInstanceName*lane_1_phase_align_i*ENA_CALIGN_REC AREA_GROUP="PHASE_ALIGN_1_GRP";
+        </pre>
+    </p>
+
+    <h1>More Auroras in one FPGA</h1>
+    <p>
+        Be careful, that each AREA_GROUP constraint has different name. You can increment the number, e.g. AREA_GROUP="PHASE_ALIGN_3_GRP"
+        etc.
+    </p>
+
+</body>
+
+</source>
