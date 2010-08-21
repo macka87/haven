@@ -56,7 +56,7 @@ architecture full of APPLICATION is
    constant DMA_DATA_WIDTH       : integer := 64;
 
    -- verification core data width
-   constant VER_CORE_DATA_WIDTH  : integer := 128;
+   constant VER_CORE_DATA_WIDTH  : integer := 64;
 
    -- -------------------------------------------------------------------------
    --                                  Signals
@@ -81,6 +81,16 @@ architecture full of APPLICATION is
    signal fl_output_eop_n      : std_logic;
    signal fl_output_src_rdy_n  : std_logic;
    signal fl_output_dst_rdy_n  : std_logic;
+
+   -- output FrameLink pipe input
+   signal fl_output_pipe_data       : std_logic_vector(DMA_DATA_WIDTH-1 downto 0);
+   signal fl_output_pipe_rem        : std_logic_vector(log2(DMA_DATA_WIDTH/8)-1 downto 0);
+   signal fl_output_pipe_sof_n      : std_logic;
+   signal fl_output_pipe_eof_n      : std_logic;
+   signal fl_output_pipe_sop_n      : std_logic;
+   signal fl_output_pipe_eop_n      : std_logic;
+   signal fl_output_pipe_src_rdy_n  : std_logic;
+   signal fl_output_pipe_dst_rdy_n  : std_logic;
 
    -- verification core input FrameLink
    signal fl_ver_in_data       : std_logic_vector(VER_CORE_DATA_WIDTH-1 downto 0);
@@ -146,7 +156,31 @@ architecture full of APPLICATION is
 begin
 
    -- -------------------------------------------------------------------------
-   -- verification core
+   -- Mapping of input signals
+   -- -------------------------------------------------------------------------
+   fl_input_data        <= RX_DATA;
+   fl_input_rem         <= RX_DREM;
+   fl_input_sof_n       <= RX_SOF_N;
+   fl_input_eof_n       <= RX_EOF_N;
+   fl_input_sop_n       <= RX_SOP_N;
+   fl_input_eop_n       <= RX_EOP_N;
+   fl_input_src_rdy_n   <= RX_SRC_RDY_N;
+   RX_DST_RDY_N         <= fl_input_dst_rdy_n;
+
+   -- -------------------------------------------------------------------------
+   -- Mapping of output signals
+   -- -------------------------------------------------------------------------
+   TX_DATA               <= fl_output_data;
+   TX_DREM               <= fl_output_rem;
+   TX_SOF_N              <= fl_output_sof_n;
+   TX_EOF_N              <= fl_output_eof_n;
+   TX_SOP_N              <= fl_output_sop_n;
+   TX_EOP_N              <= fl_output_eop_n;
+   TX_SRC_RDY_N          <= fl_output_src_rdy_n;
+   fl_output_dst_rdy_n   <= TX_DST_RDY_N;
+
+   -- -------------------------------------------------------------------------
+   -- Verification Core
    -- -------------------------------------------------------------------------
    ver_core_i: entity work.verification_core
    generic map(
@@ -249,6 +283,39 @@ begin
       RX_DST_RDY_N   => fl_ver_out_dst_rdy_n,
 
       -- TX interface
+      TX_DATA        => fl_output_pipe_data,
+      TX_REM         => fl_output_pipe_rem,
+      TX_SOF_N       => fl_output_pipe_sof_n,
+      TX_EOF_N       => fl_output_pipe_eof_n,
+      TX_SOP_N       => fl_output_pipe_sop_n,
+      TX_EOP_N       => fl_output_pipe_eop_n,
+      TX_SRC_RDY_N   => fl_output_pipe_src_rdy_n,
+      TX_DST_RDY_N   => fl_output_pipe_dst_rdy_n
+   );
+
+   -- -------------------------------------------------------------------------
+   -- Output FrameLink pipe 
+   -- -------------------------------------------------------------------------
+   fl_pipe_i: entity work.FL_PIPE
+   generic map(
+      DATA_WIDTH  => DMA_DATA_WIDTH,
+      USE_OUTREG  => true
+   )
+   port map(
+      CLK            => CLK,
+      RESET          => RESET,
+
+      -- RX interface
+      RX_DATA        => fl_output_pipe_data,
+      RX_REM         => fl_output_pipe_rem,
+      RX_SOF_N       => fl_output_pipe_sof_n,
+      RX_EOF_N       => fl_output_pipe_eof_n,
+      RX_SOP_N       => fl_output_pipe_sop_n,
+      RX_EOP_N       => fl_output_pipe_eop_n,
+      RX_SRC_RDY_N   => fl_output_pipe_src_rdy_n,
+      RX_DST_RDY_N   => fl_output_pipe_dst_rdy_n,
+
+      -- TX interface
       TX_DATA        => fl_output_data,
       TX_REM         => fl_output_rem,
       TX_SOF_N       => fl_output_sof_n,
@@ -294,12 +361,13 @@ begin
       MI_DRDY        => mi_watch_drdy
    );
 
-   fl_watch_sof_n      <= fl_output_sof_n     & fl_input_sof_n;
-   fl_watch_eof_n      <= fl_output_eof_n     & fl_input_eof_n;
-   fl_watch_sop_n      <= fl_output_sop_n     & fl_input_sop_n;
-   fl_watch_eop_n      <= fl_output_eop_n     & fl_input_eop_n;
-   fl_watch_dst_rdy_n  <= fl_output_dst_rdy_n & fl_input_dst_rdy_n;
-   fl_watch_src_rdy_n  <= fl_output_src_rdy_n & fl_input_src_rdy_n;
+   fl_watch_sof_n      <= fl_output_pipe_sof_n     & fl_input_sof_n;
+   fl_watch_eof_n      <= fl_output_pipe_eof_n     & fl_input_eof_n;
+   fl_watch_sop_n      <= fl_output_pipe_sop_n     & fl_input_sop_n;
+   fl_watch_eop_n      <= fl_output_pipe_eop_n     & fl_input_eop_n;
+   fl_watch_dst_rdy_n  <= fl_output_pipe_dst_rdy_n & fl_input_dst_rdy_n;
+   fl_watch_src_rdy_n  <= fl_output_pipe_src_rdy_n & fl_input_src_rdy_n;
+
 
    -- -------------------------------------------------------------------------
    -- MI Splitter plus

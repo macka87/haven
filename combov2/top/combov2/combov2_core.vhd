@@ -47,150 +47,6 @@ use work.addr_space.all;
 
 architecture full of COMBOV2_CORE is
 
--- ----------------------------------------------------------------------------
---                          Components declaration
--- ----------------------------------------------------------------------------
-component NETWORK_MOD_10G2_64 is
-   port(
-      -- Clock signal for user interface
-      USER_CLK             :  in std_logic;
-      -- FrameLink reset
-      FL_RESET             :  in std_logic;
-      -- ICS reset
-      BUSRESET             :  in std_logic;
-
-      -- 2 XGMII INTERFACES
-      -- RX
-      XGMII_RESET          :  in std_logic_vector(  1 downto 0);
-      XGMII_RXCLK          :  in std_logic_vector(  1 downto 0);
-      XGMII_RXD            :  in std_logic_vector(127 downto 0);
-      XGMII_RXC            :  in std_logic_vector( 15 downto 0);
-      -- TX
-      XGMII_TXCLK          :  in std_logic_vector(  1 downto 0);
-      XGMII_TXD            : out std_logic_vector(127 downto 0);
-      XGMII_TXC            : out std_logic_vector( 15 downto 0);
-
-      -- USER INTERFACE
-      -- Network interface 0
-      IBUF0_TX_SOF_N       : out std_logic;
-      IBUF0_TX_SOP_N       : out std_logic;
-      IBUF0_TX_EOP_N       : out std_logic;
-      IBUF0_TX_EOF_N       : out std_logic;
-      IBUF0_TX_SRC_RDY_N   : out std_logic;
-      IBUF0_TX_DST_RDY_N   :  in std_logic;
-      IBUF0_TX_DATA        : out std_logic_vector(63 downto 0);
-      IBUF0_TX_REM         : out std_logic_vector(2 downto 0);
-
-      -- PACODAG interface
-      IBUF0_CTRL_CLK       : out std_logic;
-      IBUF0_CTRL_DATA      :  in std_logic_vector(63 downto 0);
-      IBUF0_CTRL_REM       :  in std_logic_vector(2 downto 0);
-      IBUF0_CTRL_SRC_RDY_N :  in std_logic;
-      IBUF0_CTRL_SOP_N     :  in std_logic;
-      IBUF0_CTRL_EOP_N     :  in std_logic;
-      IBUF0_CTRL_DST_RDY_N : out std_logic;
-      IBUF0_CTRL_RDY       :  in std_logic;
-
-      -- IBUF status interface
-      IBUF0_SOP            : out std_logic;
-      IBUF0_PAYLOAD_LEN    : out std_logic_vector(15 downto 0);
-      IBUF0_FRAME_ERROR    : out std_logic; -- 0: OK, 1: Error occured
-      IBUF0_CRC_CHECK_FAILED:out std_logic; -- 0: OK, 1: Bad CRC 
-      IBUF0_MAC_CHECK_FAILED:out std_logic; -- 0: OK, 1: Bad MAC
-      IBUF0_LEN_BELOW_MIN  : out std_logic; -- 0: OK, 1: Length is below min
-      IBUF0_LEN_OVER_MTU   : out std_logic; -- 0: OK, 1: Length is over MTU
-      IBUF0_STAT_DV        : out std_logic;
-      -- Signals active in '1' for one cycle for every processed packet
-      IBUF0_FRAME_RECEIVED    : out std_logic;
-      IBUF0_FRAME_DISCARDED   : out std_logic;
-      -- When active in '1' frame was discarded due to buffer overflow. Can be active only together
-      -- with FRAME_DISCARDED
-      IBUF0_BUFFER_OVF        : out std_logic;
-
-      -- Sampling unit interface
-      IBUF0_SAU_ACCEPT     :  in std_logic;
-      IBUF0_SAU_DV         :  in std_logic;
-      
-      -- Output buffer interface
-      OBUF0_RX_SOF_N       :  in std_logic;
-      OBUF0_RX_SOP_N       :  in std_logic;
-      OBUF0_RX_EOP_N       :  in std_logic;
-      OBUF0_RX_EOF_N       :  in std_logic;
-      OBUF0_RX_SRC_RDY_N   :  in std_logic;
-      OBUF0_RX_DST_RDY_N   : out std_logic;
-      OBUF0_RX_DATA        :  in std_logic_vector(63 downto 0);
-      OBUF0_RX_REM         :  in std_logic_vector(2 downto 0);
-      
-      -- Network interface 1 --------------------------------------------------
-      IBUF1_TX_SOF_N       : out std_logic;
-      IBUF1_TX_SOP_N       : out std_logic;
-      IBUF1_TX_EOP_N       : out std_logic;
-      IBUF1_TX_EOF_N       : out std_logic;
-      IBUF1_TX_SRC_RDY_N   : out std_logic;
-      IBUF1_TX_DST_RDY_N   :  in std_logic;
-      IBUF1_TX_DATA        : out std_logic_vector(63 downto 0);
-      IBUF1_TX_REM         : out std_logic_vector(2 downto 0);
-
-      -- PACODAG interface
-      IBUF1_CTRL_CLK       : out std_logic;
-      IBUF1_CTRL_DATA      :  in std_logic_vector(63 downto 0);
-      IBUF1_CTRL_REM       :  in std_logic_vector(2 downto 0);
-      IBUF1_CTRL_SRC_RDY_N :  in std_logic;
-      IBUF1_CTRL_SOP_N     :  in std_logic;
-      IBUF1_CTRL_EOP_N     :  in std_logic;
-      IBUF1_CTRL_DST_RDY_N : out std_logic;
-      IBUF1_CTRL_RDY       :  in std_logic;
-
-      -- IBUF status interface
-      IBUF1_SOP            : out std_logic;
-      IBUF1_PAYLOAD_LEN    : out std_logic_vector(15 downto 0);
-      IBUF1_FRAME_ERROR    : out std_logic; -- 0: OK, 1: Error occured
-      IBUF1_CRC_CHECK_FAILED:out std_logic; -- 0: OK, 1: Bad CRC 
-      IBUF1_MAC_CHECK_FAILED:out std_logic; -- 0: OK, 1: Bad MAC
-      IBUF1_LEN_BELOW_MIN  : out std_logic; -- 0: OK, 1: Length is below min
-      IBUF1_LEN_OVER_MTU   : out std_logic; -- 0: OK, 1: Length is over MTU
-      IBUF1_STAT_DV        : out std_logic;
-      -- Signals active in '1' for one cycle for every processed packet
-      IBUF1_FRAME_RECEIVED    : out std_logic;
-      IBUF1_FRAME_DISCARDED   : out std_logic;
-      -- When active in '1' frame was discarded due to buffer overflow. Can be active only together
-      -- with FRAME_DISCARDED
-      IBUF1_BUFFER_OVF        : out std_logic;
-
-      -- Sampling unit interface
-      IBUF1_SAU_ACCEPT     :  in std_logic;
-      IBUF1_SAU_DV         :  in std_logic;
-
-      -- Output buffer interface
-      OBUF1_RX_SOF_N       :  in std_logic;
-      OBUF1_RX_SOP_N       :  in std_logic;
-      OBUF1_RX_EOP_N       :  in std_logic;
-      OBUF1_RX_EOF_N       :  in std_logic;
-      OBUF1_RX_SRC_RDY_N   :  in std_logic;
-      OBUF1_RX_DST_RDY_N   : out std_logic;
-      OBUF1_RX_DATA        :  in std_logic_vector(63 downto 0);
-      OBUF1_RX_REM         :  in std_logic_vector(2 downto 0);
-
-      -- Led interface
-      IBUF_LED             : out std_logic_vector(1 downto 0);
-      OBUF_LED             : out std_logic_vector(1 downto 0);
-      
-      -- Link presence interface
-      LINK0		   : out std_logic;
-      LINK1		   : out std_logic;
-
-      -- MI32 interface
-      MI32_DWR             : in  std_logic_vector(31 downto 0);
-      MI32_ADDR            : in  std_logic_vector(31 downto 0);
-      MI32_RD              : in  std_logic;
-      MI32_WR              : in  std_logic;
-      MI32_BE              : in  std_logic_vector(3 downto 0);
-      MI32_DRD             : out std_logic_vector(31 downto 0);
-      MI32_ARDY            : out std_logic;
-      MI32_DRDY            : out std_logic
-   );
-end component;
-
 component DMA_MOD_2x64b_RXTX is
    port(
       -- ICS Clock (IB and LB)
@@ -343,137 +199,6 @@ component DMA_MOD_2x64b_RXTX_GEN is
    );
 end component;
 
-component DMA_MOD_2x64b_RXTX_PAC is
-   port(
-      -- ICS Clock and RESET - drives almost whole module, also IB and LB ifcs
-      CLK            : in  std_logic;
-      RESET          : in  std_logic;
-
-      -- USER Clock and RESET - driver FL_ASFIFOs and FL ifcs
-      USER_CLK       : in  std_logic;
-      USER_RESET     : in  std_logic;
-
-      -- Synchronous at CLK (ICS Clock)
-      RX_INTERRUPT   : out std_logic;
-      TX_INTERRUPT   : out std_logic;
-
-      -- network interfaces - USER_CLK
-      -- input interface
-      RX0_DATA       : in  std_logic_vector(63 downto 0);
-      RX0_DREM       : in  std_logic_vector(2 downto 0);
-      RX0_SOF_N      : in  std_logic;
-      RX0_EOF_N      : in  std_logic;
-      RX0_SOP_N      : in  std_logic;
-      RX0_EOP_N      : in  std_logic;
-      RX0_SRC_RDY_N  : in  std_logic;
-      RX0_DST_RDY_N  : out std_logic;
-
-      RX1_DATA       : in  std_logic_vector(63 downto 0);
-      RX1_DREM       : in  std_logic_vector(2 downto 0);
-      RX1_SOF_N      : in  std_logic;
-      RX1_EOF_N      : in  std_logic;
-      RX1_SOP_N      : in  std_logic;
-      RX1_EOP_N      : in  std_logic;
-      RX1_SRC_RDY_N  : in  std_logic;
-      RX1_DST_RDY_N  : out std_logic;
-
-      -- output interfaces
-      TX0_DATA       : out std_logic_vector(63 downto 0);
-      TX0_DREM       : out std_logic_vector(2 downto 0);
-      TX0_SOF_N      : out std_logic;
-      TX0_EOF_N      : out std_logic;
-      TX0_SOP_N      : out std_logic;
-      TX0_EOP_N      : out std_logic;
-      TX0_SRC_RDY_N  : out std_logic;
-      TX0_DST_RDY_N  : in  std_logic;
-
-      TX1_DATA       : out std_logic_vector(63 downto 0);
-      TX1_DREM       : out std_logic_vector(2 downto 0);
-      TX1_SOF_N      : out std_logic;
-      TX1_EOF_N      : out std_logic;
-      TX1_SOP_N      : out std_logic;
-      TX1_EOP_N      : out std_logic;
-      TX1_SRC_RDY_N  : out std_logic;
-      TX1_DST_RDY_N  : in  std_logic;
-
-      -- Internal Bus
-      IB_DOWN_DATA      : in  std_logic_vector(63 downto 0);
-      IB_DOWN_SOF_N     : in  std_logic;
-      IB_DOWN_EOF_N     : in  std_logic;
-      IB_DOWN_SRC_RDY_N : in std_logic;
-      IB_DOWN_DST_RDY_N : out std_logic;
-      IB_UP_DATA        : out std_logic_vector(63 downto 0);
-      IB_UP_SOF_N       : out std_logic;
-      IB_UP_EOF_N       : out std_logic;
-      IB_UP_SRC_RDY_N   : out std_logic;
-      IB_UP_DST_RDY_N   : in  std_logic;
-
-      -- MI32 interface
-      MI32_DWR          : in  std_logic_vector(31 downto 0);
-      MI32_ADDR         : in  std_logic_vector(31 downto 0);
-      MI32_RD           : in  std_logic;
-      MI32_WR           : in  std_logic;
-      MI32_BE           : in  std_logic_vector(3 downto 0);
-      MI32_DRD          : out std_logic_vector(31 downto 0);
-      MI32_ARDY         : out std_logic;
-      MI32_DRDY         : out std_logic
-   );
-end component;
-
---component FL_TRANSFORMER_128TO64 is
---   port(
---      CLK            : in  std_logic;
---      RESET          : in  std_logic;
---
---      -- RX interface
---      RX_DATA        : in  std_logic_vector(127 downto 0);
---      RX_DREM        : in  std_logic_vector(3 downto 0);
---      RX_SOF_N       : in  std_logic;
---      RX_EOF_N       : in  std_logic;
---      RX_SOP_N       : in  std_logic;
---      RX_EOP_N       : in  std_logic;
---      RX_SRC_RDY_N   : in  std_logic;
---      RX_DST_RDY_N   : out std_logic;
---
---      -- TX interface
---      TX_DATA        : out std_logic_vector(63 downto 0);
---      TX_DREM        : out std_logic_vector(2 downto 0);
---      TX_SOF_N       : out std_logic;
---      TX_EOF_N       : out std_logic;
---      TX_SOP_N       : out std_logic;
---      TX_EOP_N       : out std_logic;
---      TX_SRC_RDY_N   : out std_logic;
---      TX_DST_RDY_N   : in  std_logic
---   );
---end component FL_TRANSFORMER_128TO64;
---
---component FL_TRANSFORMER_64TO128 is
---   port(
---      CLK            : in  std_logic;
---      RESET          : in  std_logic;
---
---      -- RX interface
---      RX_DATA        : in  std_logic_vector(63 downto 0);
---      RX_DREM        : in  std_logic_vector(2 downto 0);
---      RX_SOF_N       : in  std_logic;
---      RX_EOF_N       : in  std_logic;
---      RX_SOP_N       : in  std_logic;
---      RX_EOP_N       : in  std_logic;
---      RX_SRC_RDY_N   : in  std_logic;
---      RX_DST_RDY_N   : out std_logic;
---
---      -- TX interface
---      TX_DATA        : out std_logic_vector(127 downto 0);
---      TX_DREM        : out std_logic_vector(3 downto 0);
---      TX_SOF_N       : out std_logic;
---      TX_EOF_N       : out std_logic;
---      TX_SOP_N       : out std_logic;
---      TX_EOP_N       : out std_logic;
---      TX_SRC_RDY_N   : out std_logic;
---      TX_DST_RDY_N   : in  std_logic
---   );
---end component FL_TRANSFORMER_64TO128;
-
 component IB_SWITCH_SLAVE_SYNTH is
 port(
    CLK                  : in  std_logic;
@@ -588,32 +313,6 @@ port (
 );
 end component;
 
--- Chipscope ICON
-component icon3 is
-   port (
-      CONTROL0 : inout std_logic_vector(35 downto 0);
-      CONTROL1 : inout std_logic_vector(35 downto 0);
-      CONTROL2 : inout std_logic_vector(35 downto 0)
-   );
-end component;
-
--- Chipscope ILA (144-bit trigger port)
-component ila144 is
-   port (
-      CONTROL : inout std_logic_vector(35 downto 0);
-      CLK     : in std_logic;
-      TRIG0   : in std_logic_vector(143 downto 0)
-   );
-end component;
-
--- Chipscope ILA (72-bit trigger port)
-component ila72 is
-   port (
-      CONTROL : inout std_logic_vector(35 downto 0);
-      CLK     : in std_logic;
-      TRIG0   : in std_logic_vector(71 downto 0)
-   );
-end component;
 
 -- ----------------------------------------------------------------------------
 --                            Signal declaration
@@ -635,9 +334,6 @@ end component;
    signal sysmon_alarm_pulse  : std_logic;
    signal reg_sysmon_alarm_pulse : std_logic;
 
-   signal link0               : std_logic;
-   signal link1               : std_logic;
-   signal regasync_link0      : std_logic;
    signal regasync_link1      : std_logic;
    signal reg_link0           : std_logic;
    signal reg_link1           : std_logic;
@@ -663,9 +359,6 @@ end component;
    signal MI32_USER_DRD_aux  : std_logic_vector(31 downto 0);
    signal MI32_USER_ARDY_aux : std_logic;
    signal MI32_USER_DRDY_aux : std_logic;
-   signal MI32_NET_DRD_aux   : std_logic_vector(31 downto 0);
-   signal MI32_NET_ARDY_aux  : std_logic;
-   signal MI32_NET_DRDY_aux  : std_logic;
    signal MI32_DMA_DRD_aux   : std_logic_vector(31 downto 0);
    signal MI32_DMA_ARDY_aux  : std_logic;
    signal MI32_DMA_DRDY_aux  : std_logic;
@@ -940,12 +633,6 @@ begin
 
          reg_sysmon_alarm <= SYSMON_ALARM;
          reg_sysmon_alarm_pulse <= sysmon_alarm_pulse;
-
-         regasync_link0 <= link0;
-         regasync_link1 <= link1;
-         reg_link0 <= regasync_link0;
-         reg_link1 <= regasync_link1;
-         reg_link_change <= link0_change or link1_change;
       end if;
    end process;
 
@@ -953,12 +640,8 @@ begin
    sysmon_alarm_pulse <= '1' when (reg_sysmon_alarm='0' and SYSMON_ALARM='1')
                     else '0';
 
-   -- Detect change
-   link0_change <= reg_link0 xor regasync_link0;
-   link1_change <= reg_link1 xor regasync_link1;
-
    interrupts <= X"0000000" & 
-                 reg_link_change &
+                 '0' &
                  reg_sysmon_alarm_pulse &
                  reg_tx_interrupt & reg_rx_interrupt ;
 
