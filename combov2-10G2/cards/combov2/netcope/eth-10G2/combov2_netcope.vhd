@@ -36,6 +36,7 @@
 
 library IEEE;
 use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
 use work.math_pack.all;
 use work.combov2_user_const.all;
 use work.combov2_nc_const.all;

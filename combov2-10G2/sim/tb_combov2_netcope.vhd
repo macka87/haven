@@ -42,7 +42,6 @@ use ieee.numeric_std.all;
 use std.textio.all;
 
 use work.addr_space.all;
-use work.phy_oper.all;
 use work.ib_pkg.all; -- Internal Bus Package
 use work.ib_bfm_pkg.all; -- Internal Bus Simulation Package 
 
@@ -106,36 +105,6 @@ architecture behavioral of testbench is
    signal reset_async               : std_logic;
       
    -- ----------------------------------------------------------------------
-   -- XGMII interface
-   -- ----------------------------------------------------------------------
-   signal combov2_xgmii_rxclk       : std_logic_vector(  1 downto 0);
-   signal combov2_xgmii_rxd         : std_logic_vector(127 downto 0);
-   signal combov2_xgmii_rxc         : std_logic_vector( 15 downto 0);
-   signal combov2_xgmii_rx_lock     : std_logic_vector(  1 downto 0);
-   signal combov2_xgmii_rx_reset    : std_logic_vector(  1 downto 0);
-   signal combov2_xgmii_txclk       : std_logic_vector(  1 downto 0);
-   signal combov2_xgmii_txd         : std_logic_vector(127 downto 0);
-   signal combov2_xgmii_txc         : std_logic_vector( 15 downto 0);
-   signal combov2_xgmii_tx_lock     : std_logic_vector(  1 downto 0);
-   signal combov2_xgmii_tx_reset    : std_logic_vector(  1 downto 0);
-   signal combov2_tx_clk_ref        : std_logic;
-   
-   -- IFC connector 2
-   -- 4x RocketIO RX/TX pairs + 36x LVDS pairs
-      
-   -- LSC connector 1
-   -- 10x LVDS pairs
-
-   -- LSC connector 2
-   -- 10x LVDS pairs
-
-   -- LSC connector 3
-   -- 10x LVDS pairs
-
-   -- LSC connector 4
-   -- 10x LVDS pairs
-
-   -- ----------------------------------------------------------------------
    -- Interconnection system
    -- ----------------------------------------------------------------------
    signal combov2_internal_bus_down_data        : std_logic_vector(63 downto 0);
@@ -152,40 +121,10 @@ architecture behavioral of testbench is
    -- IB SIM
    signal internal_bus        : t_internal_bus64;
 
-   -- phyter simulation signals
-   type t_phyx_oper   is array (0 to (IFC_COUNT - 1)) of t_phy_oper;
-   type t_phyx_params is array (0 to (IFC_COUNT - 1)) of t_phy_params;
-   type t_phyx_strobe is array (0 to (IFC_COUNT - 1)) of std_logic;
-   type t_phyx_busy   is array (0 to (IFC_COUNT - 1)) of std_logic;
-
-   type t_phyx_txclk  is array (0 to (IFC_COUNT - 1)) of std_logic;
-   type t_phyx_txd    is array (0 to (IFC_COUNT - 1)) of std_logic_vector(7 downto 0);
-   type t_phyx_txen   is array (0 to (IFC_COUNT - 1)) of std_logic;
-   type t_phyx_txer   is array (0 to (IFC_COUNT - 1)) of std_logic;
-   type t_phyx_rxclk  is array (0 to (IFC_COUNT - 1)) of std_logic;
-   type t_phyx_rxd    is array (0 to (IFC_COUNT - 1)) of std_logic_vector(7 downto 0);
-   type t_phyx_rxdv   is array (0 to (IFC_COUNT - 1)) of std_logic;
-   type t_phyx_rxer   is array (0 to (IFC_COUNT - 1)) of std_logic;
-
-   signal phy_oper   : t_phyx_oper;
-   signal phy_params : t_phyx_params;
-   signal phy_strobe : t_phyx_strobe;
-   signal phy_busy   : t_phyx_busy;
-   signal phy_ctrl   : t_phy_ctrl;
-
-   signal phy_txclk  : std_logic_vector( 1 downto 0);
-   signal phy_txd    : std_logic_vector(63 downto 0);
-   signal phy_txc    : std_logic_vector( 7 downto 0);
-   signal phy_rxclk  : std_logic_vector( 1 downto 0);
-   signal phy_rxd    : std_logic_vector(63 downto 0);
-   signal phy_rxc    : std_logic_vector( 7 downto 0);
-
    -- -------------------------------------------------------------------------
    alias reset       : std_logic is combov2_reset;
    alias clk         : std_logic is combov2_clk;
    signal gnd        : std_logic;
-
-   signal xgmii_tx_ref_clk : std_logic;
 
 -- ----------------------------------------------------------------------------
 --                      Architecture body
@@ -211,14 +150,14 @@ begin
          -- XGMII interface from IFC1 (2 ports)
          -- ----------------------------------------------------------------------
          -- RX
-         XGMII_RESET    => combov2_xgmii_rx_reset,
-         XGMII_RXCLK    => combov2_xgmii_rxclk,
-         XGMII_RXD      => combov2_xgmii_rxd,
-         XGMII_RXC      => combov2_xgmii_rxc,
+         XGMII_RESET    => (others => '0'),
+         XGMII_RXCLK    => (others => '0'),
+         XGMII_RXD      => (others => '0'),
+         XGMII_RXC      => (others => '0'),
          -- TX
-         XGMII_TXCLK    => combov2_xgmii_txclk,
-         XGMII_TXD      => combov2_xgmii_txd,
-         XGMII_TXC      => combov2_xgmii_txc,
+         XGMII_TXCLK    => (others => '0'),
+         XGMII_TXD      => open,
+         XGMII_TXC      => open,
          
          -- ----------------------------------------------------------------------
          -- Interconnection system
@@ -295,16 +234,14 @@ begin
       XCLK0_N        => '1',
       XCLK1_P        => '1',
       XCLK1_N        => '1',
-      XCLK2_P        => '1',
-      XCLK2_N        => '1',
+      XCLK2          => '1',
       FQTXD          => open,
       FQRXD          => '1',
       FQLED          => open,
 
-      PPS_N          => clk
+      PPS_N          => clk,
+      PTM_CLK        => '1'
       );
-
-   combov2_tx_clk_ref <= xgmii_tx_ref_clk;
 
    -- -------------------------------------------------------------------------
    --                           CLOCKs & RESETs
@@ -325,111 +262,6 @@ begin
       bridge_clk  <= '0';
       wait for halfcycle;
    end process;
-
-   -- XGMII TX reference clock generator
-   xgmii_clk_genp: process
-      variable halfcycle   : time := XGMII_TX_REFCLK_PER/2;
-   begin
-      xgmii_tx_ref_clk  <= '1';
-      wait for halfcycle;
-      xgmii_tx_ref_clk  <= '0';
-      wait for halfcycle;
-   end process;
-
-   -- PHYTTERS SIMULATION -----------------------------------------------------
-   PHY_SIM0_I : entity work.phy_sim_xgmii
-      port map(
-         -- TX interface 
-         TX_CLK       => phy_txclk(0),
-         TXD          => phy_txd(31 downto 0),
-         TXC          => phy_txc( 3 downto 0),
-         -- RX interface 
-         RX_CLK       => phy_rxclk(0),
-         RXD          => phy_rxd(31 downto 0),
-         RXC          => phy_rxc( 3 downto 0),
-         -- Simulation interface 
-         OPER        => phy_oper(0),
-         PARAMS      => phy_params(0),
-         STROBE      => phy_strobe(0),
-         BUSY        => phy_busy(0)
-      );
-
-   PHY_SIM1_I : entity work.phy_sim_xgmii
-      port map(
-         -- TX interface 
-         TX_CLK       => phy_txclk(1),
-         TXD          => phy_txd(63 downto 32),
-         TXC          => phy_txc( 7 downto  4),
-         -- RX interface 
-         RX_CLK       => phy_rxclk(1),
-         RXD          => phy_rxd(63 downto 32),
-         RXC          => phy_rxc( 7 downto  4),
-         -- Simulation interface 
-         OPER        => phy_oper(1),
-         PARAMS      => phy_params(1),
-         STROBE      => phy_strobe(1),
-         BUSY        => phy_busy(1)
-      );
-
-   -- transform DDR to SDR
-   XGMII_RECEIVER0_I: entity work.xgmii_rx
-   port map(
-      XGMII_RX_CLK => phy_txclk(0),
-      XGMII_RXD    => phy_txd(31 downto 0),
-      XGMII_RXC    => phy_txc( 3 downto 0),
-      RESET        => combov2_xgmii_rx_reset(0),
-      RX_CLK_INT   => combov2_xgmii_rxclk(0),
-      RXD_INT      => combov2_xgmii_rxd(63 downto 0),
-      RXC_INT      => combov2_xgmii_rxc( 7 downto 0),
-      RX_DCM_LOCK  => combov2_xgmii_rx_lock(0),
-      RX_DCM_RESET => combov2_reset
-   );
-
-   XGMII_RECEIVER1_I: entity work.xgmii_rx
-   port map(
-      XGMII_RX_CLK => phy_txclk(1),
-      XGMII_RXD    => phy_txd(63 downto 32),
-      XGMII_RXC    => phy_txc( 7 downto 4),
-      RESET        => combov2_xgmii_rx_reset(1),
-      RX_CLK_INT   => combov2_xgmii_rxclk(1),
-      RXD_INT      => combov2_xgmii_rxd(127 downto 64),
-      RXC_INT      => combov2_xgmii_rxc( 15 downto 8),
-      RX_DCM_LOCK  => combov2_xgmii_rx_lock(1),
-      RX_DCM_RESET => combov2_reset
-   );
-
-   combov2_xgmii_rx_reset <= not combov2_xgmii_rx_lock;
-
-   -- transform SDR to DDR
-   XGMII_TRANSMITTER0_I: entity work.xgmii_tx
-   port map(
-      XGMII_TX_CLK => phy_rxclk(0),
-      XGMII_TXD    => phy_rxd(31 downto 0),
-      XGMII_TXC    => phy_rxc( 3 downto 0),
-      RESET        => combov2_xgmii_tx_reset(0),
-      TX_CLK_REF   => combov2_tx_clk_ref,
-      TX_CLK_INT   => combov2_xgmii_txclk(0),
-      TXD_INT      => combov2_xgmii_txd(63 downto 0),
-      TXC_INT      => combov2_xgmii_txd( 7 downto 0),
-      TX_DCM_LOCK  => combov2_xgmii_rx_lock(0),
-      TX_DCM_RESET => combov2_reset
-   );
-
-   XGMII_TRANSMITTER1_I: entity work.xgmii_tx
-   port map(
-      XGMII_TX_CLK => phy_rxclk(1),
-      XGMII_TXD    => phy_rxd(63 downto 32),
-      XGMII_TXC    => phy_rxc( 7 downto 4),
-      RESET        => combov2_xgmii_tx_reset(1),
-      TX_CLK_REF   => combov2_tx_clk_ref,
-      TX_CLK_INT   => combov2_xgmii_txclk(1),
-      TXD_INT      => combov2_xgmii_txd(127 downto 64),
-      TXC_INT      => combov2_xgmii_txd( 15 downto 8),
-      TX_DCM_LOCK  => combov2_xgmii_rx_lock(1),
-      TX_DCM_RESET => combov2_reset
-   );
-
-   combov2_xgmii_tx_reset <= not combov2_xgmii_tx_lock;
 
    -- -------------------------------------------------------------------------
    --                         INTERNAL BUS SIMULATION
@@ -906,65 +738,7 @@ begin
    end if;
 
    wait;
+
 end process;
 -- ----------------------------------------------------------------------------
-phy_sendp: process
-
-procedure phy_op(ctrl : in t_phy_ctrl; id : in integer;
-                 block_wait : in boolean := false) is
-begin
-   --wait until (phy_busy(id) = '0');
-   while (phy_busy(id) /= '0') loop
-      wait for 0.1 ns;
-   end loop;
-   phy_oper(id)   <= ctrl.oper;
-   phy_params(id) <= ctrl.params;
-   phy_strobe(id) <= '1';
-
-   wait until (phy_busy(id) = '1');
-   phy_strobe(id)  <= '0';
-
-   -- block waiting, if required
-   if (block_wait = true) then
-      while (phy_busy(id) /= '0') loop
-         wait for 0.1 ns;
-      end loop;
-   end if;
-end phy_op;
-
-begin
-
-   wait for 30 us;
-   if (TEST = "SZE") then
-
-   --       for i in 0 to NUM_PACKETS-1 loop
-             phy_op(send_tcpdump_nowait("../../data/packets/common/uniform_length_1000000.dump"), 0);
-             wait for 3 us;
-             phy_op(send_tcpdump_nowait("../../data/packets/common/uniform_length_1000000.dump"), 1);
-             phy_op(send_tcpdump_nowait("../../data/packets/common/uniform_length_1000000.dump"), 2);
-             phy_op(send_tcpdump_nowait("../../data/packets/common/uniform_length_1000000.dump"), 3);
-   --       end loop;
-   end if;
-
-   if (TEST = "PAC") then
-      for i in 0 to NUM_PACKETS-1 loop
-         phy_op(send_tcpdump_nowait("../../data/packets/common/jeden_paket"), 0);
---          phy_op(send_tcpdump_nowait("../../data/packets/common/jeden_paket.dump"), 0);
---          wait for 100 ns;
-      end loop;
-      wait for 10 us;
-      for i in 0 to NUM_PACKETS-1 loop
-         phy_op(send_tcpdump_nowait("../../data/packets/common/jeden_paket"), 0);
-      end loop;
-
---              phy_op(send_tcpdump_nowait("../../data/packets/common/uniform_length_1000000.dump"), 0);
---              phy_op(send_tcpdump_nowait("../../data/packets/common/1_packet.dump"), 0);
---       wait for 50 us;
---       phy_op(send_tcpdump_nowait("../../data/packets/common/10_flows.dump"), 0);
-   end if;
-
-   wait;
-end process;
-
-
 end architecture behavioral;

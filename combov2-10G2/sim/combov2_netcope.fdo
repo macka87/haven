@@ -38,7 +38,6 @@ set COMP_BASE        "../comp"
 set COMBOV2_BASE     "$FIRMWARE_BASE/cards/combov2/chips"
 set COMBOV2_NC_BASE  "$FIRMWARE_BASE/cards/combov2/netcope/eth-10G2"
 set NIC_COMBOV2_BASE "$FIRMWARE_BASE/top/combov2"
-set EMAC_SIM_BASE    "$COMP_BASE/nic/emac/sim"
 set EMAC_BASE        "$COMP_BASE/external/ip_cores/emac"
 set CRC_BASE         "$COMP_BASE/nic/crc/crc64"
 
@@ -54,7 +53,6 @@ set RIOSIM_BASE      "$COMP_BASE/models/rio"
 
 set COMPONENTS [list \
    [list "IBSIM"        $IBSIM_BASE          "FULL"    ] \
-   [list "PHYSIM1"      $PHYSIM_BASE         "XGMII"   ] \
    [list "COMBOV2"      $NIC_COMBOV2_BASE    "FULL"    ] \
    [list "CRC32_64B"    $CRC_BASE            "FULL"    ] \
 ]
