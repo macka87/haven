@@ -9,6 +9,9 @@ use ieee.std_logic_1164.all;
 
 library work;
 use work.math_pack.all;
+use work.fl_sim_oper.all;
+use work.fl_bfm_pkg.all;
+use work.fl_bfm_rdy_pkg.all;
 
 entity testbench is
 end entity;
@@ -109,6 +112,55 @@ begin
       MI32_DRDY      => mi32_drdy
    );
 
+
+   -- -------------------------------------------------------------------------
+   --                           Input FL_BFM
+   -- -------------------------------------------------------------------------
+   FL_BFM_I: entity work.FL_BFM
+   generic map (
+      DATA_WIDTH => DATA_WIDTH,
+      FL_BFM_ID => 00
+   )
+   port map (
+      -- Common interface
+      RESET           => reset,
+      CLK             => clk,
+
+      TX_DATA         => rx_data,
+      TX_REM          => rx_rem,
+      TX_SOF_N        => rx_sof_n,
+      TX_EOF_N        => rx_eof_n,
+      TX_SOP_N        => rx_sop_n,
+      TX_EOP_N        => rx_eop_n,
+      TX_SRC_RDY_N    => rx_src_rdy_n,
+      TX_DST_RDY_N    => rx_dst_rdy_n
+   ); 
+
+   -- -------------------------------------------------------------------------
+   --                           Output FL_MONITOR
+   -- -------------------------------------------------------------------------
+   FL_MONITOR_I : entity work.MONITOR
+   generic map (
+      RX_TX_DATA_WIDTH => DATA_WIDTH,
+      FILE_NAME  => "./monitor.txt",
+      FRAME_PARTS => 1,
+      RDY_DRIVER => RND
+   )
+   port map (
+      -- Common interface
+      FL_RESET        => reset,
+      FL_CLK          => clk,
+
+      RX_DATA         => tx_data,
+      RX_REM          => tx_rem,
+      RX_SOF_N        => tx_sof_n,
+      RX_EOF_N        => tx_eof_n,
+      RX_SOP_N        => tx_sop_n,
+      RX_EOP_N        => tx_eop_n,
+      RX_SRC_RDY_N    => tx_src_rdy_n,
+      RX_DST_RDY_N    => tx_dst_rdy_n
+   ); 
+
    -- -------------------------------------------------------------------------
    --                           CLOCKs & RESETs
    -- -------------------------------------------------------------------------
@@ -135,5 +187,20 @@ begin
    mi32_rd       <= '0';
    mi32_wr       <= '0';
    mi32_be       <= (others => '0');
+
+
+   -- -----------------------------------------------------------------------
+   --                                 Test
+   -- -----------------------------------------------------------------------
+   tb : process
+   begin
+
+      wait for RESET_TIME;
+
+      SendWriteFile("./input.txt", RND, flCmd_0, 0);
+
+      wait;
+   end process;
+
 
 end architecture;
