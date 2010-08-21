@@ -1,6 +1,0 @@
-<versions>
-   <version id="HEAD" name="actual version">
-      <item>Optional RX buffer.</item>
-      <item>Buffers sizes 16 - 256 items</item>
-	</version>
-</versions>

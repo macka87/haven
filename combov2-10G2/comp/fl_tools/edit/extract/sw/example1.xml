@@ -1,9 +1,0 @@
-<!DOCTYPE fl_extract SYSTEM "fl_extract_xml.dtd">
-
-<fl_extract fl_width="16" fl_pipeline="true">
-  <fields>
-    <field  packet_no="1" offset="10" size="16">OUT_PORT_1</field>
-    <field  packet_no="2" offset="5" size="8">OUT_PORT_2</field>
-    <field  packet_no="2" offset="15" size="32">OUT_PORT_3</field>
-  </fields>
-</fl_extract>

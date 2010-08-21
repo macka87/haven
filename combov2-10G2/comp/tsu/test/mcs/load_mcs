@@ -1,8 +1,0 @@
-#! /bin/bash
-
-cp ../combo6x/*.mcs ./
-cp ../sfpro/*.mcs ./
-cp ../../../../ptm/projects/time_stamp/tsu_ptm.mcs ./
-./rename
-./load_design .
-csboot -d /dev/combosix/1 -f 0 tsu_ptm.mcs

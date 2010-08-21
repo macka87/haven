@@ -1,3 +1,0 @@
-Module for communication with Virtex5 Embedded EMAC via MDIO (Host Bus used to transfer MDIO frames easily). This module also provides support for accessing MAC Configuration Registers via Host Bus.
-Use the top/mdio_emac_mi32_norec.vhd wrapper.
-Documentation: https://www.liberouter.org/trac/netcope/wiki/emac_mdio

@@ -1,5 +1,0 @@
-echo "Loading PTM design..."
-csboot -d /dev/combosix1 -v -f 0 tsu_ptm.mcs
-echo "Loading TSU_ADD design..."
-csboot -d /dev/combosix0 -v -f 0 tsu2pci.mcs
-echo "Both designs have been loaded."

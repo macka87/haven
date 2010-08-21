@@ -1,6 +1,0 @@
-<versions>
-   <version  id="HEAD" name="01.00" system="3">
-      <item>Initial version of FrameLink Extract Component</item>
-      <item>Data width 16, 32, 64, or 128 bits</item>
-   </version>
-</versions>

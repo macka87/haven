@@ -1,6 +1,0 @@
-#! /bin/bash
-
-cp ../combo6x/*.mcs ./
-cp ../sfpro/*.mcs ./
-./rename
-./load_design .

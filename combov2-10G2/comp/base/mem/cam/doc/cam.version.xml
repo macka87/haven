@@ -1,8 +1,0 @@
-<versions>
-   <version id="HEAD" name="actual version" system="2">
-      <item>Fully functional version of On-Chip CAM component</item>
-      <item>Succesfuly tested in hardware</item>
-	</version>
-</versions>
-
-

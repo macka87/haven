@@ -1,8 +1,0 @@
-*****************************************************************
-*			WARNING	 !!!				*
-*****************************************************************
- This is definitely NOT used PCI Express bridge !
-It's only very old (and prehistoric) version not fully testet in HW. 
-For PCI Express bridge (or IB Root) go to /comp/gics/internal_bus/comp/root/...
-
-

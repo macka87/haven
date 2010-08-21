@@ -1,9 +1,0 @@
-digraph finite_state_machine {
-	rankdir=LR;
-	size="8,5"
-	node [shape = doublecircle]; sv_done;
-	node [shape = circle];
-	sv_invalid -> sv_valid   [ label = "cut_extracted = '1'" ];
-	sv_invalid -> sv_invalid [ label = "cut_extracted = '0'" ];
-	sv_valid   -> sv_done;
-}
