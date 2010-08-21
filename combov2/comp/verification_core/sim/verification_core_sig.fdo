@@ -1,0 +1,24 @@
+# verification_cre_sig.fdo : Include file with signals
+# Author: Ondrej Lengal <lengal@liberouter.org>
+#
+# $Id: frame_meter_sig.fdo 1333 2008-02-14 22:20:10Z korcek $
+#
+
+# Paths
+set TB_PATH                  "/testbench"
+set VERIFICATION_CORE_PATH   "/testbench/uut"
+
+# include signals
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add_wave "-noupdate -label RESET -color yellow"  $TB_PATH/reset
+add_wave "-noupdate -label CLK   -color yellow"  $TB_PATH/clk
+
+blk_VER_CORE     $VERIFICATION_CORE_PATH
+
+restart -f
+run 500 ns
