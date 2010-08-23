@@ -34,6 +34,11 @@
 # -----------------------------------------------------------------------------
 
 if { $ARCHGRP == "FULL" } {
-  set MOD "$MOD $ENTITY_BASE/srl_reg16.vhd" 
-  set MOD "$MOD $ENTITY_BASE/pipe_ib.vhd"  
+  set IB_PIPE_BASE "$ENTITY_BASE/../../../../../internal_bus/comp/base/pipe"
+
+  set COMPONENTS [list \
+     [list "IB_PIPE" $IB_PIPE_BASE "FULL"] \
+  ]
+
+  set MOD "$MOD $ENTITY_BASE/srl_reg16.vhd"
 }
