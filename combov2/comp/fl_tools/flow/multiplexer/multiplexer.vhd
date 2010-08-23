@@ -195,7 +195,14 @@ begin
    TX_SRC_RDY_N<= not output_enable;
    TX_CHANNEL  <= sel;
 
-   RX_DST_RDY_N<= not rx_dst_rdy;
+   rx_dst_rdy_n_p : process(rx_dst_rdy, output_enable, TX_DST_RDY_N)
+   begin
+      if output_enable = '1' then
+         RX_DST_RDY_N<= not rx_dst_rdy;
+      else
+         RX_DST_RDY_N <= TX_DST_RDY_N;
+      end if;
+   end process;
 
 end fl_multiplexer_arch;
 
