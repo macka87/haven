@@ -73,7 +73,6 @@ set IB            "FULL"
 set IB_ASYNC      "FULL"
 set MI_ASYNC      "FULL"
 set TRANSFORMER   "FULL"
-set PIPE          "FULL"
 set SPLITTER      "FULL"
 set NETWORK_MOD   "10G2_64"
 set TS_ASYNC      "FULL"
@@ -87,7 +86,6 @@ set IB_BASE             "$COMP_BASE/gics/internal_bus"
 set IB_ASYNC_BASE       "$COMP_BASE/ics/internal_bus/comp/ib_async"
 set MI_ASYNC_BASE       "$COMP_BASE/ics/local_bus/comp/lb_endpoint/comp/mi32_async"
 set TRANSFORMER_BASE    "$COMP_BASE/fl_tools/flow/transformer"
-set PIPE_BASE           "$COMP_BASE/fl_tools/flow/pipe"
 set SPLITTER_BASE       "$COMP_BASE/fl_tools/flow/splitter"
 set NETWORK_MOD_BASE    "$NETCOPE_BASE/comp/network_mod" 
 set DMA_MOD_BASE        "$COMP_BASE/proc/dma_mod/dma_mod_$DMA_MOD" 
@@ -102,7 +100,6 @@ set IB_INST          [list [list "IB*_I"               "FULL"]]
 set IB_ASYNC_INST    [list [list "IB_ASFIFO*"          "FULL"]]
 set MI_ASYNC_INST    [list [list "MI_ASYNC*"           "FULL"]] 
 set TRANSFORMER_INST [list [list "FL_TRANSFORMER_I"    "FULL"]]
-set PIPE_INST        [list [list "FL_PIPE_I"           "FULL"]]
 set SPLITTER_INST    [list [list "FL_SPLITTER_I"       "FULL"]]
 set NETWORK_MOD_INST [list [list "NETWORK_MOD*_I"      "FULL"]] 
 set DMA_MOD_INST     [list [list "DMA_MOD*_I"          "FULL"]] 
@@ -120,7 +117,6 @@ if { $ARCHGRP == "FULL" } {
       [list "MI_ASYNC"    $MI_ASYNC_BASE    $MI_ASYNC    $MI_ASYNC_INST    ] \
       [list "TS_ASYNC"    $TS_ASYNC_BASE    $TS_ASYNC    $TS_ASYNC_INST    ] \
       [list "FL_TRANSFORMER" $TRANSFORMER_BASE $TRANSFORMER $TRANSFORMER_INST ] \
-      [list "FL_PIPE"     $PIPE_BASE        $PIPE        $PIPE_INST        ] \
       [list "FL_SPLITTER" $SPLITTER_BASE    $SPLITTER    $SPLITTER_INST    ] \
       [list "NETWORK_MOD" $NETWORK_MOD_BASE $NETWORK_MOD $NETWORK_MOD_INST ] \
       [list "DMA_MOD"     $DMA_MOD_BASE     $DMA_MOD     $DMA_MOD_INST     ] \
@@ -135,7 +131,8 @@ if { $ARCHGRP == "EDIF" } {
       [list "IB"          $IB_BASE          $IB          $IB_INST          ] \
       [list "IB_ASYNC"    $IB_ASYNC_BASE    $IB_ASYNC    $IB_ASYNC_INST    ] \
       [list "MI_ASYNC"    $MI_ASYNC_BASE    $MI_ASYNC    $MI_ASYNC_INST    ] \
-      [list "FL_PIPE"     $PIPE_BASE        $PIPE        $PIPE_INST        ] \
+      [list "FL_TRANSFORMER" $TRANSFORMER_BASE $TRANSFORMER $TRANSFORMER_INST ] \
+      [list "WATCH"       $WATCH_BASE       $WATCH       $WATCH_INST       ] \
       [list "VERIFICATION_CORE" $VER_CORE_BASE $VER_CORE $VER_CORE_INST    ] \
    ]]
 }
