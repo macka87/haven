@@ -107,6 +107,16 @@ architecture arch of verification_core is
    signal fl_first_insert_out_src_rdy_n: std_logic;
    signal fl_first_insert_out_dst_rdy_n: std_logic;
 
+   -- clock gate signals
+   signal clock_enable           : std_logic;
+   signal clk_dut                : std_logic;
+
+   -- reset for DUT
+   signal reset_dut              : std_logic;
+
+   -- clock enable register
+   signal reg_clock_enable       : std_logic;
+
 begin
  
    -- ------------------------------------------------------------------------
@@ -136,8 +146,8 @@ begin
       RX_RESET      => RESET,
 
       -- output clock domain
-      TX_CLK        => CLK,
-      TX_RESET      => RESET,
+      TX_CLK        => clk_dut,
+      TX_RESET      => reset_dut,
 
       -- input interface
       RX_DATA       => fl_input_asfifo_in_data,
@@ -187,8 +197,8 @@ begin
       PARTS      => 1
    )
    port map(
-      CLK           => CLK,
-      RESET         => RESET,
+      CLK           => clk_dut,
+      RESET         => reset_dut,
 
       -- input interface
       RX_DATA       => fl_shortener_in_data,
@@ -230,8 +240,8 @@ begin
    )
    port map(
       -- input clock domain
-      RX_CLK        => CLK,
-      RX_RESET      => RESET,
+      RX_CLK        => clk_dut,
+      RX_RESET      => reset_dut,
 
       -- output clock domain
       TX_CLK        => CLK,
@@ -325,6 +335,37 @@ begin
 --   TX_EOF_N      <= RX_EOF_N;
 --   TX_SRC_RDY_N  <= RX_SRC_RDY_N;
 --   RX_DST_RDY_N  <= TX_DST_RDY_N;
+
+   -- ------------------------------------------------------------------------
+   --                              Clock gate
+   -- ------------------------------------------------------------------------
+
+   clock_gate_i: entity work.clock_gate
+   port map (
+      CLK_IN        => CLK,
+      CLOCK_ENABLE  => clock_enable,
+      CLK_OUT       => clk_dut
+   );
+
+   -- TODO: change to a more correct variant
+   reset_dut <= RESET;
+
+   -- ------------------------------------------------------------------------
+   --                       Register for clock enable
+   -- ------------------------------------------------------------------------
+
+   reg_clock_enable_p: process (CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            reg_clock_enable <= '1';
+         elsif (MI32_WR = '1') then
+            reg_clock_enable <= MI32_DWR(0);
+         end if;
+      end if;
+   end process;
+
+   clock_enable <= reg_clock_enable;
 
 
    -- ------------------------------------------------------------------------
