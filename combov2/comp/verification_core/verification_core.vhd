@@ -27,6 +27,37 @@ architecture arch of verification_core is
 --                                     SIGNALS
 -- ==========================================================================
 
+   -- FrameLink input asynchronous FIFO input
+   signal fl_input_asfifo_in_data       : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_input_asfifo_in_rem        : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_input_asfifo_in_sof_n      : std_logic;
+   signal fl_input_asfifo_in_sop_n      : std_logic;
+   signal fl_input_asfifo_in_eop_n      : std_logic;
+   signal fl_input_asfifo_in_eof_n      : std_logic;
+   signal fl_input_asfifo_in_src_rdy_n  : std_logic;
+   signal fl_input_asfifo_in_dst_rdy_n  : std_logic;
+
+   -- FrameLink input asynchronous FIFO output
+   signal fl_input_asfifo_out_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_input_asfifo_out_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_input_asfifo_out_sof_n     : std_logic;
+   signal fl_input_asfifo_out_sop_n     : std_logic;
+   signal fl_input_asfifo_out_eop_n     : std_logic;
+   signal fl_input_asfifo_out_eof_n     : std_logic;
+   signal fl_input_asfifo_out_src_rdy_n : std_logic;
+   signal fl_input_asfifo_out_dst_rdy_n : std_logic;
+
+   -- FrameLink shortener input
+   signal fl_shortener_in_data        : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_shortener_in_rem         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_shortener_in_sof_n       : std_logic;
+   signal fl_shortener_in_sop_n       : std_logic;
+   signal fl_shortener_in_eop_n       : std_logic;
+   signal fl_shortener_in_eof_n       : std_logic;
+   signal fl_shortener_in_src_rdy_n   : std_logic;
+   signal fl_shortener_in_dst_rdy_n   : std_logic;
+
+   -- FrameLink shortener output
    signal fl_shortener_out_data       : std_logic_vector(DATA_WIDTH-1 downto 0);
    signal fl_shortener_out_rem        : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
    signal fl_shortener_out_sof_n      : std_logic;
@@ -36,45 +67,107 @@ architecture arch of verification_core is
    signal fl_shortener_out_src_rdy_n  : std_logic;
    signal fl_shortener_out_dst_rdy_n  : std_logic;
 
-begin
+   -- FrameLink output asynchronous FIFO input
+   signal fl_output_asfifo_in_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_output_asfifo_in_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_output_asfifo_in_sof_n     : std_logic;
+   signal fl_output_asfifo_in_sop_n     : std_logic;
+   signal fl_output_asfifo_in_eop_n     : std_logic;
+   signal fl_output_asfifo_in_eof_n     : std_logic;
+   signal fl_output_asfifo_in_src_rdy_n : std_logic;
+   signal fl_output_asfifo_in_dst_rdy_n : std_logic;
 
---   -- ------------------------------------------------------------------------
---   --                              Frame Meter
---   -- ------------------------------------------------------------------------
---   frame_meter_i: entity work.FL_FRAME_METER
---   generic map(
---      -- frame data width in bits
---      DATA_WIDTH     => DATA_WIDTH,
---      -- block size in Bytes. Should be power of 2. Has to be greater than MTU!
---      BLOCK_SIZE     => 4096,
---      -- number of parts in frame (header, payload)
---      FRAME_PARTS    => 1
---   )
---   port map(
---      CLK           => CLK,
---      RESET         => RESET,
---
---      -- input interface
---      RX_DATA       => RX_DATA,
---      RX_REM        => RX_REM,
---      RX_SOF_N      => RX_SOF_N,
---      RX_SOP_N      => RX_SOP_N,
---      RX_EOP_N      => RX_EOP_N,
---      RX_EOF_N      => RX_EOF_N,
---      RX_SRC_RDY_N  => RX_SRC_RDY_N, 
---      RX_DST_RDY_N  => RX_DST_RDY_N, 
---      
---      -- output interface
---      TX_DATA       => TX_DATA,
---      TX_REM        => TX_REM,
---      TX_SOF_N      => TX_SOF_N,
---      TX_SOP_N      => TX_SOP_N,
---      TX_EOP_N      => TX_EOP_N,
---      TX_EOF_N      => TX_EOF_N,
---      TX_SRC_RDY_N  => TX_SRC_RDY_N,
---      TX_DST_RDY_N  => TX_DST_RDY_N
---   );
+   -- FrameLink output asynchronous FIFO output
+   signal fl_output_asfifo_out_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_output_asfifo_out_rem      : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_output_asfifo_out_sof_n    : std_logic;
+   signal fl_output_asfifo_out_sop_n    : std_logic;
+   signal fl_output_asfifo_out_eop_n    : std_logic;
+   signal fl_output_asfifo_out_eof_n    : std_logic;
+   signal fl_output_asfifo_out_src_rdy_n: std_logic;
+   signal fl_output_asfifo_out_dst_rdy_n: std_logic;
+
+   -- FrameLink first insert component input
+   signal fl_first_insert_in_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_first_insert_in_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_first_insert_in_sof_n     : std_logic;
+   signal fl_first_insert_in_sop_n     : std_logic;
+   signal fl_first_insert_in_eop_n     : std_logic;
+   signal fl_first_insert_in_eof_n     : std_logic;
+   signal fl_first_insert_in_src_rdy_n : std_logic;
+   signal fl_first_insert_in_dst_rdy_n : std_logic;
+
+   -- FrameLink first insert component output
+   signal fl_first_insert_out_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_first_insert_out_rem      : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_first_insert_out_sof_n    : std_logic;
+   signal fl_first_insert_out_sop_n    : std_logic;
+   signal fl_first_insert_out_eop_n    : std_logic;
+   signal fl_first_insert_out_eof_n    : std_logic;
+   signal fl_first_insert_out_src_rdy_n: std_logic;
+   signal fl_first_insert_out_dst_rdy_n: std_logic;
+
+begin
  
+   -- ------------------------------------------------------------------------
+   --                           Mapping of inputs
+   -- ------------------------------------------------------------------------
+   fl_input_asfifo_in_data       <= RX_DATA;
+   fl_input_asfifo_in_rem        <= RX_REM;
+   fl_input_asfifo_in_sof_n      <= RX_SOF_N;
+   fl_input_asfifo_in_sop_n      <= RX_SOP_N;
+   fl_input_asfifo_in_eop_n      <= RX_EOP_N;
+   fl_input_asfifo_in_eof_n      <= RX_EOF_N;
+   fl_input_asfifo_in_src_rdy_n  <= RX_SRC_RDY_N;
+   RX_DST_RDY_N  <= fl_input_asfifo_in_dst_rdy_n;
+
+
+   -- ------------------------------------------------------------------------
+   --                        Input asynchronous FIFO
+   -- ------------------------------------------------------------------------
+   fl_asfifo_input: entity work.FL_ASFIFO_VIRTEX5
+   generic map(
+      -- FrameLink data width
+      WIDTH => DATA_WIDTH
+   )
+   port map(
+      -- input clock domain
+      RX_CLK        => CLK,
+      RX_RESET      => RESET,
+
+      -- output clock domain
+      TX_CLK        => CLK,
+      TX_RESET      => RESET,
+
+      -- input interface
+      RX_DATA       => fl_input_asfifo_in_data,
+      RX_REM        => fl_input_asfifo_in_rem,
+      RX_SOF_N      => fl_input_asfifo_in_sof_n,
+      RX_SOP_N      => fl_input_asfifo_in_sop_n,
+      RX_EOP_N      => fl_input_asfifo_in_eop_n,
+      RX_EOF_N      => fl_input_asfifo_in_eof_n,
+      RX_SRC_RDY_N  => fl_input_asfifo_in_src_rdy_n, 
+      RX_DST_RDY_N  => fl_input_asfifo_in_dst_rdy_n, 
+      
+      -- output interface
+      TX_DATA       => fl_input_asfifo_out_data,
+      TX_REM        => fl_input_asfifo_out_rem,
+      TX_SOF_N      => fl_input_asfifo_out_sof_n,
+      TX_SOP_N      => fl_input_asfifo_out_sop_n,
+      TX_EOP_N      => fl_input_asfifo_out_eop_n,
+      TX_EOF_N      => fl_input_asfifo_out_eof_n,
+      TX_SRC_RDY_N  => fl_input_asfifo_out_src_rdy_n,
+      TX_DST_RDY_N  => fl_input_asfifo_out_dst_rdy_n
+   );
+
+   fl_shortener_in_data       <= fl_input_asfifo_out_data;
+   fl_shortener_in_rem        <= fl_input_asfifo_out_rem;
+   fl_shortener_in_sof_n      <= fl_input_asfifo_out_sof_n;
+   fl_shortener_in_sop_n      <= fl_input_asfifo_out_sop_n;
+   fl_shortener_in_eop_n      <= fl_input_asfifo_out_eop_n;
+   fl_shortener_in_eof_n      <= fl_input_asfifo_out_eof_n;
+   fl_shortener_in_src_rdy_n  <= fl_input_asfifo_out_src_rdy_n;
+   fl_input_asfifo_out_dst_rdy_n  <= fl_shortener_in_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
    --                              Frame Shortener
@@ -98,14 +191,14 @@ begin
       RESET         => RESET,
 
       -- input interface
-      RX_DATA       => RX_DATA,
-      RX_REM        => RX_REM,
-      RX_SOF_N      => RX_SOF_N,
-      RX_SOP_N      => RX_SOP_N,
-      RX_EOP_N      => RX_EOP_N,
-      RX_EOF_N      => RX_EOF_N,
-      RX_SRC_RDY_N  => RX_SRC_RDY_N, 
-      RX_DST_RDY_N  => RX_DST_RDY_N, 
+      RX_DATA       => fl_shortener_in_data,
+      RX_REM        => fl_shortener_in_rem,
+      RX_SOF_N      => fl_shortener_in_sof_n,
+      RX_SOP_N      => fl_shortener_in_sop_n,
+      RX_EOP_N      => fl_shortener_in_eop_n,
+      RX_EOF_N      => fl_shortener_in_eof_n,
+      RX_SRC_RDY_N  => fl_shortener_in_src_rdy_n, 
+      RX_DST_RDY_N  => fl_shortener_in_dst_rdy_n, 
       
       -- output interface
       TX_DATA       => fl_shortener_out_data,
@@ -118,6 +211,61 @@ begin
       TX_DST_RDY_N  => fl_shortener_out_dst_rdy_n
    );
 
+   fl_output_asfifo_in_data       <= fl_shortener_out_data;
+   fl_output_asfifo_in_rem        <= fl_shortener_out_rem;
+   fl_output_asfifo_in_sof_n      <= fl_shortener_out_sof_n;
+   fl_output_asfifo_in_sop_n      <= fl_shortener_out_sop_n;
+   fl_output_asfifo_in_eop_n      <= fl_shortener_out_eop_n;
+   fl_output_asfifo_in_eof_n      <= fl_shortener_out_eof_n;
+   fl_output_asfifo_in_src_rdy_n  <= fl_shortener_out_src_rdy_n;
+   fl_shortener_out_dst_rdy_n  <= fl_output_asfifo_in_dst_rdy_n;
+
+   -- ------------------------------------------------------------------------
+   --                        Output asynchronous FIFO
+   -- ------------------------------------------------------------------------
+   fl_asfifo_output: entity work.FL_ASFIFO_VIRTEX5
+   generic map(
+      -- FrameLink data width
+      WIDTH => DATA_WIDTH
+   )
+   port map(
+      -- input clock domain
+      RX_CLK        => CLK,
+      RX_RESET      => RESET,
+
+      -- output clock domain
+      TX_CLK        => CLK,
+      TX_RESET      => RESET,
+
+      -- input interface
+      RX_DATA       => fl_output_asfifo_in_data,
+      RX_REM        => fl_output_asfifo_in_rem,
+      RX_SOF_N      => fl_output_asfifo_in_sof_n,
+      RX_SOP_N      => fl_output_asfifo_in_sop_n,
+      RX_EOP_N      => fl_output_asfifo_in_eop_n,
+      RX_EOF_N      => fl_output_asfifo_in_eof_n,
+      RX_SRC_RDY_N  => fl_output_asfifo_in_src_rdy_n, 
+      RX_DST_RDY_N  => fl_output_asfifo_in_dst_rdy_n, 
+      
+      -- output interface
+      TX_DATA       => fl_output_asfifo_out_data,
+      TX_REM        => fl_output_asfifo_out_rem,
+      TX_SOF_N      => fl_output_asfifo_out_sof_n,
+      TX_SOP_N      => fl_output_asfifo_out_sop_n,
+      TX_EOP_N      => fl_output_asfifo_out_eop_n,
+      TX_EOF_N      => fl_output_asfifo_out_eof_n,
+      TX_SRC_RDY_N  => fl_output_asfifo_out_src_rdy_n,
+      TX_DST_RDY_N  => fl_output_asfifo_out_dst_rdy_n
+   );
+
+   fl_first_insert_in_data       <= fl_output_asfifo_out_data;
+   fl_first_insert_in_rem        <= fl_output_asfifo_out_rem;
+   fl_first_insert_in_sof_n      <= fl_output_asfifo_out_sof_n;
+   fl_first_insert_in_sop_n      <= fl_output_asfifo_out_sop_n;
+   fl_first_insert_in_eop_n      <= fl_output_asfifo_out_eop_n;
+   fl_first_insert_in_eof_n      <= fl_output_asfifo_out_eof_n;
+   fl_first_insert_in_src_rdy_n  <= fl_output_asfifo_out_src_rdy_n;
+   fl_output_asfifo_out_dst_rdy_n  <= fl_first_insert_in_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
    --                              First insert
@@ -135,25 +283,39 @@ begin
       DREM          => "111",
 
       -- input interface
-      RX_DATA       => fl_shortener_out_data,
-      RX_REM        => fl_shortener_out_rem,
-      RX_SOF_N      => fl_shortener_out_sof_n,
-      RX_SOP_N      => fl_shortener_out_sop_n,
-      RX_EOP_N      => fl_shortener_out_eop_n,
-      RX_EOF_N      => fl_shortener_out_eof_n,
-      RX_SRC_RDY_N  => fl_shortener_out_src_rdy_n,
-      RX_DST_RDY_N  => fl_shortener_out_dst_rdy_n,
+      RX_DATA       => fl_first_insert_in_data,
+      RX_REM        => fl_first_insert_in_rem,
+      RX_SOF_N      => fl_first_insert_in_sof_n,
+      RX_SOP_N      => fl_first_insert_in_sop_n,
+      RX_EOP_N      => fl_first_insert_in_eop_n,
+      RX_EOF_N      => fl_first_insert_in_eof_n,
+      RX_SRC_RDY_N  => fl_first_insert_in_src_rdy_n,
+      RX_DST_RDY_N  => fl_first_insert_in_dst_rdy_n,
       
       -- output interface
-      TX_DATA       => TX_DATA,
-      TX_REM        => TX_REM,
-      TX_SOF_N      => TX_SOF_N,
-      TX_SOP_N      => TX_SOP_N,
-      TX_EOP_N      => TX_EOP_N,
-      TX_EOF_N      => TX_EOF_N,
-      TX_SRC_RDY_N  => TX_SRC_RDY_N,
-      TX_DST_RDY_N  => TX_DST_RDY_N
+      TX_DATA       => fl_first_insert_out_data,
+      TX_REM        => fl_first_insert_out_rem,
+      TX_SOF_N      => fl_first_insert_out_sof_n,
+      TX_SOP_N      => fl_first_insert_out_sop_n,
+      TX_EOP_N      => fl_first_insert_out_eop_n,
+      TX_EOF_N      => fl_first_insert_out_eof_n,
+      TX_SRC_RDY_N  => fl_first_insert_out_src_rdy_n,
+      TX_DST_RDY_N  => fl_first_insert_out_dst_rdy_n
    );
+
+
+   -- ------------------------------------------------------------------------
+   --                          Mapping of outputs
+   -- ------------------------------------------------------------------------
+   TX_DATA       <= fl_first_insert_out_data;
+   TX_REM        <= fl_first_insert_out_rem;
+   TX_SOF_N      <= fl_first_insert_out_sof_n;
+   TX_SOP_N      <= fl_first_insert_out_sop_n;
+   TX_EOP_N      <= fl_first_insert_out_eop_n;
+   TX_EOF_N      <= fl_first_insert_out_eof_n;
+   TX_SRC_RDY_N  <= fl_first_insert_out_src_rdy_n;
+   fl_first_insert_out_dst_rdy_n  <= TX_DST_RDY_N;
+
 
 --   TX_DATA       <= RX_DATA;
 --   TX_REM        <= RX_REM;
