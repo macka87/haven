@@ -45,6 +45,8 @@ if { $ARCHGRP == "FULL" } {
 
   set MOD "$MOD $ENTITY_BASE/mi_splitter_plus.vhd"
   set MOD "$MOD $ENTITY_BASE/mi_splitter_plus_arch.vhd"
+  set MOD "$MOD $ENTITY_BASE/mi_splitter_ondriks_ent.vhd"
+  set MOD "$MOD $ENTITY_BASE/mi_splitter_ondriks.vhd"
 }  
 
 # -----------------------------------------------------------------------------

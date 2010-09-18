@@ -1,0 +1,58 @@
+# signals.fdo : Include file with signals
+# Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id: mi_splitter_ondriks_ent.vhd -1   $
+#
+
+proc blk_MI_SPLITTER_ONDRIKS_UP { BASE } {
+   add wave -divider "MI32 Upstream port"
+   add_wave "-noupdate -label IN_DWR -hex  " $BASE/IN_DWR
+   add_wave "-noupdate -label IN_ADDR -hex " $BASE/IN_ADDR
+   add_wave "-noupdate -label IN_BE        " $BASE/IN_BE
+   add_wave "-noupdate -label IN_RD        " $BASE/IN_RD
+   add_wave "-noupdate -label IN_WR        " $BASE/IN_WR
+   add_wave "-noupdate -label IN_ARDY      " $BASE/IN_ARDY
+   add_wave "-noupdate -label IN_DRD -hex  " $BASE/IN_DRD
+   add_wave "-noupdate -label IN_DRDY      " $BASE/IN_DRDY
+}
+
+proc blk_MI_SPLITTER_ONDRIKS_DOWN0 { BASE } {
+   add wave -divider "MI32 Downstream port 0"
+   add_wave "-noupdate -label OUT_DWR -hex  " $BASE/OUT_DWR(31:0)
+   add_wave "-noupdate -label OUT_ADDR -hex " $BASE/OUT_ADDR(31:0)
+   add_wave "-noupdate -label OUT_BE        " $BASE/OUT_BE(3:0)
+   add_wave "-noupdate -label OUT_RD        " $BASE/OUT_RD(0)
+   add_wave "-noupdate -label OUT_WR        " $BASE/OUT_WR(0)
+   add_wave "-noupdate -label OUT_ARDY      " $BASE/OUT_ARDY(0)
+   add_wave "-noupdate -label OUT_DRD -hex  " $BASE/OUT_DRD(31:0)
+   add_wave "-noupdate -label OUT_DRDY      " $BASE/OUT_DRDY(0)
+}
+
+proc blk_MI_SPLITTER_ONDRIKS_DOWN1 { BASE } {
+   add wave -divider "MI32 Downstream port 1"
+   add_wave "-noupdate -label OUT_DWR -hex  " $BASE/OUT_DWR(63:32)
+   add_wave "-noupdate -label OUT_ADDR -hex " $BASE/OUT_ADDR(63:32)
+   add_wave "-noupdate -label OUT_BE        " $BASE/OUT_BE(7:4)
+   add_wave "-noupdate -label OUT_RD        " $BASE/OUT_RD(1)
+   add_wave "-noupdate -label OUT_WR        " $BASE/OUT_WR(1)
+   add_wave "-noupdate -label OUT_ARDY      " $BASE/OUT_ARDY(1)
+   add_wave "-noupdate -label OUT_DRD -hex  " $BASE/OUT_DRD(63:32)
+   add_wave "-noupdate -label OUT_DRDY      " $BASE/OUT_DRDY(1)
+}
+
+proc blk_MI_SPLITTER_ONDRIKS_DOWN2 { BASE } {
+   add wave -divider "MI32 Downstream port 2"
+   add_wave "-noupdate -label OUT_DWR -hex  " $BASE/OUT_DWR(95:64)
+   add_wave "-noupdate -label OUT_ADDR -hex " $BASE/OUT_ADDR(95:64)
+   add_wave "-noupdate -label OUT_BE        " $BASE/OUT_BE(11:8)
+   add_wave "-noupdate -label OUT_RD        " $BASE/OUT_RD(2)
+   add_wave "-noupdate -label OUT_WR        " $BASE/OUT_WR(2)
+   add_wave "-noupdate -label OUT_ARDY      " $BASE/OUT_ARDY(2)
+   add_wave "-noupdate -label OUT_DRD -hex  " $BASE/OUT_DRD(95:64)
+   add_wave "-noupdate -label OUT_DRDY      " $BASE/OUT_DRDY(2)
+}
+
+proc blk_MI_SPLITTER_ONDRIKS_INTERNALS { BASE } {
+   add wave -divider "Internals"
+   add_wave "-noupdate -label port_sel -hex  " $BASE/port_sel
+}

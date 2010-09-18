@@ -1,0 +1,28 @@
+# signals_sig.fdo : Include file with signals
+# Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id: mi_splitter_ondriks_ent.vhd -1   $
+#
+
+# Paths
+set MI_SPL_PATH       "/testbench/uut"
+
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add_wave "-noupdate -label CLK    " $MI_SPL_PATH/CLK
+add_wave "-noupdate -label RESET  " $MI_SPL_PATH/RESET
+
+add wave -divider "Ondrik's MI32 Splitter"
+
+blk_MI_SPLITTER_ONDRIKS_UP        "$MI_SPL_PATH"
+blk_MI_SPLITTER_ONDRIKS_DOWN0     "$MI_SPL_PATH"
+blk_MI_SPLITTER_ONDRIKS_DOWN1     "$MI_SPL_PATH"
+blk_MI_SPLITTER_ONDRIKS_DOWN2     "$MI_SPL_PATH"
+blk_MI_SPLITTER_ONDRIKS_INTERNALS "$MI_SPL_PATH"
+
+restart -f
+run 2 us

@@ -33,7 +33,7 @@
 
 # specify vhdl_design directory
 set FIRMWARE_BASE     "../../../../.."
-set MODULE            "MI_SPLITTER_PLUS"
+set MODULE            "MI_SPLITTER_ONDRIKS"
 
 # synthesis variables
 # (MODULE must be set to the name of toplevel component)
