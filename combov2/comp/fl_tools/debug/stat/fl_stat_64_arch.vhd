@@ -49,7 +49,7 @@ type fl_cnt_array is array(IFCS - 1 downto 0) of std_logic_vector(63 downto 0); 
 --                          Signals in architecture
 -- ----------------------------------------------------------------------------
 -- counters and registers signals
-signal state            : std_logic_vector( 4 downto 0);
+signal state            : std_logic_vector( 5 downto 0);
 signal state_reg        : std_logic_vector(31 downto 0);
 signal clk_cnt          : std_logic_vector(63 downto 0);
 signal clk_cnt_s        : std_logic_vector(63 downto 0);
@@ -76,24 +76,42 @@ begin
 
 ARDY <= '1';
 
-   state_reg <= X"0000" & conv_std_logic_vector(IFCS, 8) & "000" & state; -- bits 32 downto 3 are constant or reserved for future purposes
+   state_reg <= X"0000" & conv_std_logic_vector(IFCS, 8) & "00" & state; -- bits 32 downto 3 are constant or reserved for future purposes
 
-   reg_state : process(RESET, CLK)
-   begin
-      if (CLK'event and CLK = '1') then
-         if (RESET = '1' or state(1) = '1') then
-            if (SAMPLE = true) then
-               state <= "10000";
-            else
-               state <= "00000";
+   gen_not_sample_reg_state: if SAMPLE = false generate
+      reg_state : process(CLK)
+      begin
+         if (CLK'event and CLK = '1') then
+            if (RESET = '1' or state(1) = '1') then
+               state <= "000000";
+            elsif (clk_cnt = X"1111111111111111") then -- what if there is write request into state_reg?
+               state(2) <= '1';
+            elsif (state_we = '1' and BE(0) = '1') then
+               state(1 downto 0) <= DWR(1 downto 0);
             end if;
-         elsif (clk_cnt = X"1111111111111111") then -- what if there is write request into state_reg?
-            state(2) <= '1';
-         elsif (state_we = '1' and BE(0) = '1') then
-            state(1 downto 0) <= DWR(1 downto 0);
          end if;
-      end if;
-   end process reg_state;
+      end process reg_state;
+   end generate;
+
+   gen_sample_reg_state: if SAMPLE = true generate
+      reg_state : process(CLK)
+      begin
+         if (CLK'event and CLK = '1') then
+            if (RESET = '1' or state(1) = '1') then
+               state <= "010000";
+            elsif (clk_cnt = X"1111111111111111") then -- what if there is write request into state_reg?
+               state(2) <= '1';
+            elsif (state_we = '1' and BE(0) = '1') then
+               state(1) <= DWR(1);
+               if DWR(0) = '1' then
+                  state(0) <= '1';
+               elsif DWR(5) = '1' then
+                  state(0) <= '0';
+               end if;
+            end if;
+         end if;
+      end process reg_state;
+   end generate;
 
    -- -------------------------------------------------------
    -- counter of clock cycles
@@ -187,10 +205,10 @@ ARDY <= '1';
       sel_state    <= '0';
       data_out     <= (others => '0');
 
-      case (ADDR(31 downto 0)) is
-         when X"00000000" => sel_state     <= '1';       -- state register
-         when X"00000008" => data_out <= clk_cnt_s(31 downto 0);
-         when X"0000000C" => data_out <= clk_cnt_s(63 downto 32);
+      case (ADDR(13 downto 0)) is
+         when "00" & X"000" => sel_state     <= '1';       -- state register
+         when "00" & X"008" => data_out <= clk_cnt_s(31 downto 0);
+         when "00" & X"00C" => data_out <= clk_cnt_s(63 downto 32);
          when others => null;
       end case;
 
@@ -218,17 +236,17 @@ ARDY <= '1';
    -- Set read enable from register
    state_re <= sel_state and RD;
 
-   sample_gen : if (SAMPLE = false) generate
+   nosample_gen : if (SAMPLE = false) generate
       clk_cnt_s <= clk_cnt;
       src_cnt_s <= src_cnt;
       dst_cnt_s <= dst_cnt;
       both_cnt_s <= both_cnt;
    end generate;
 
-   nosample_gen : if SAMPLE = true generate
-      sample_proc : process(CLK, WR, BE, ADDR, DWR, clk_cnt, src_cnt, dst_cnt, both_cnt)
+   sample_gen : if SAMPLE = true generate
+      sample_proc : process(CLK)
       begin
-         if CLK'event and CLK = '1' and WR = '1' and BE(0) = '1' and ADDR(31 downto 0) = 0 and DWR(3) = '1'  then
+         if CLK'event and CLK = '1' and WR = '1' and BE(0) = '1' and ADDR(13 downto 0) = 0 and DWR(3) = '1'  then
             clk_cnt_s <= clk_cnt;
             src_cnt_s <= src_cnt;
             dst_cnt_s <= dst_cnt;

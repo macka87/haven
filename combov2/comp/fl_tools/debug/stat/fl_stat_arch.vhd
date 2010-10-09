@@ -204,9 +204,9 @@ ARDY <= '1';
       sel_state    <= '0';
       data_out     <= (others => '0');
 
-      case (ADDR(31 downto 0)) is
-         when X"00000000" => sel_state     <= '1';       -- state register
-         when X"00000004" => data_out <= clk_cnt;
+      case (ADDR(11 downto 0)) is
+         when X"000" => sel_state     <= '1';       -- state register
+         when X"004" => data_out <= clk_cnt;
          when others => null;
       end case;
 

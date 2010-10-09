@@ -4,7 +4,7 @@ do_start(){
 }
 
 do_stop(){
-  csbus 00081000 0
+  csbus 00081000 20
 }
 
 do_reset(){
