@@ -1,0 +1,20 @@
+# clock_gate_sig.fdo : Include file with signals
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id: frame_meter_sig.fdo 1333 2008-02-14 22:20:10Z korcek $
+#
+
+# Paths
+set TB_PATH     "/testbench"
+set CG_PATH     "/testbench/uut"
+
+exec make
+view wave
+delete wave *
+
+add_wave "-noupdate -label CLK_IN              "  $CG_PATH/clk_in
+add_wave "-noupdate -label CLOCK_ENABLE        "  $CG_PATH/clock_enable
+add_wave "-noupdate -label CLK_OUT             "  $CG_PATH/clk_out
+
+restart -f
+run 100 ns

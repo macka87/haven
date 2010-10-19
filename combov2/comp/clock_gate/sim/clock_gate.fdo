@@ -1,0 +1,18 @@
+# clock_gate.fdo: Clock gate functional simulation file
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id: frame_meter.fdo 1333 2008-02-14 22:20:10Z korcek $
+
+set FIRMWARE_BASE    "../../.."
+set COMP_BASE        "$FIRMWARE_BASE/comp"
+
+set SIG_FILE         "clock_gate_sig.fdo"
+set TB_FILE          "clock_gate_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "CLOCK_GATE"       ".."                 "FULL"   ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE

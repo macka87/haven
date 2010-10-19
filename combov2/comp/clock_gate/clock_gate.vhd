@@ -1,6 +1,6 @@
 -- clock_gate.vhd: Clock gate: a component that can be used for
 --                 clock gating
--- Author(s): Ondrej Lengal <lengal@liberouter.org>
+-- Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
 --
 -- $Id$
 --
@@ -8,6 +8,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- pragma translate_off
+library unisim;
+use unisim.vcomponents.ALL;
+-- pragma translate_on
 
 entity clock_gate is
    port
