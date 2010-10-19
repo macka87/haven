@@ -1,5 +1,5 @@
 -- verification_core_tb.vhd: Verification core testbench
--- Author(s): Ondrej Lengal <lengal@liberouter.org>
+-- Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
 --
 -- $Id$
 --

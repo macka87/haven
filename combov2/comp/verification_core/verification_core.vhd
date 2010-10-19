@@ -1,5 +1,5 @@
 -- verification_core.vhd: Architecture of verification core
--- Author(s): Ondrej Lengal <lengal@liberouter.org>
+-- Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
 --
 -- $Id$
 --

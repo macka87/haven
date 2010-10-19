@@ -1,5 +1,5 @@
 # signals.fdo : Include file with signals
-# Author(s): Ondrej Lengal <lengal@liberouter.org>
+# Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
 
 view wave
 delete wave *

@@ -1,5 +1,7 @@
 # Modules.tcl: Local include Modules tcl script
-# Author: Ondrej Lengal <lengal@liberouter.org>
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id$
 #
 
 # Set paths

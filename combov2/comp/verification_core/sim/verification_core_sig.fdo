@@ -1,5 +1,5 @@
-# verification_cre_sig.fdo : Include file with signals
-# Author: Ondrej Lengal <lengal@liberouter.org>
+# verification_core_sig.fdo : Include file with signals
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
 #
 # $Id: frame_meter_sig.fdo 1333 2008-02-14 22:20:10Z korcek $
 #
