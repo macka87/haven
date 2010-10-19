@@ -1,5 +1,7 @@
 -- application_ent.vhd : Combov2 NetCOPE application module entity
--- Author(s): Ondrej Lengal <lengal@liberouter.org>
+-- Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
+--
+-- $Id$
 --
 
 -- --------------------------------------------------------------------

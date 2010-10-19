@@ -1,5 +1,5 @@
 -- application.vhd : Combov2 NetCOPE application module
--- Author(s): Ondrej Lengal <lengal@liberouter.org>
+-- Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
 --
 -- $Id$
 --
