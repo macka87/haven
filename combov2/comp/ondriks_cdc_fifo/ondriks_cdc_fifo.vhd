@@ -44,6 +44,26 @@ end entity;
 architecture arch of ONDRIKS_CDC_FIFO is
 
 -- ==========================================================================
+--                                    COMPONENTS
+-- ==========================================================================
+
+component asfifo_lut_71
+	port (
+	rst: IN std_logic;
+	wr_clk: IN std_logic;
+	rd_clk: IN std_logic;
+	din: IN std_logic_VECTOR(70 downto 0);
+	wr_en: IN std_logic;
+	rd_en: IN std_logic;
+	dout: OUT std_logic_VECTOR(70 downto 0);
+	full: OUT std_logic;
+	empty: OUT std_logic;
+	prog_full: OUT std_logic;
+	prog_empty: OUT std_logic);
+end component;
+
+
+-- ==========================================================================
 --                                      TYPES
 -- ==========================================================================
 
@@ -60,9 +80,26 @@ begin
    -- -----------------------------------------------------------------------
    --                              Assertions
    -- -----------------------------------------------------------------------
-   assert ((DATA_WIDTH = 64) AND (DATA_WIDTH /= 64))
+   assert (DATA_WIDTH = 71)
       report "Invalid data width"
       severity failure;
 
+gen_asfifo_71:
+   if (DATA_WIDTH = 71) generate
+
+      fifo_71 : asfifo_lut_71
+		port map (
+			rst => RESET,
+			wr_clk => WR_CLK,
+			rd_clk => RD_CLK,
+			din => WR_DATA,
+			wr_en => WR_WRITE,
+			rd_en => RD_READ,
+			dout => RD_DATA,
+			full => WR_FULL,
+			empty => RD_EMPTY,
+			prog_full => WR_ALMOST_FULL,
+			prog_empty => RD_ALMOST_EMPTY);
+   end generate;
 
 end architecture;
