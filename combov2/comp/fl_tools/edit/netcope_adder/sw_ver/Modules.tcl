@@ -8,10 +8,12 @@
 if { $ARCHGRP == "FULL" } {
   
   # interface packages
-  set SV_FL_BASE   "$ENTITY_BASE/framelink_package"
+  set SV_FL_BASE      "../framelink_package"
+  set SV_BASIC_BASE   "../basic_ver_components_package"
   
   set COMPONENTS [list \
-      [ list "SV_FL_BASE"  $SV_FL_BASE  "FULL"] \
+      [ list "SV_FL_BASE"     $SV_FL_BASE     "FULL"] \
+      [ list "SV_BASIC_BASE"  $SV_BASIC_BASE  "FULL"] \
   ]
  
   # verification files

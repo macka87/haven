@@ -9,7 +9,7 @@
 set FIRMWARE_BASE         "../../../../.."
 
 # DUT location
-set DUT_BASE              "FIRMWARE_BASE/comp/fl_tools/edit/netcope_adder"
+set DUT_BASE              "$FIRMWARE_BASE/comp/fl_tools/edit/netcope_adder"
 
 # Verification location
 set DUT_VER_BASE          "$DUT_BASE/sw_ver"
