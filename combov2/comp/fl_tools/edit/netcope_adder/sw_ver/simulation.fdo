@@ -1,0 +1,34 @@
+# ------------------------------------------------------------------------------
+# Project Name: NetCOPE Adder Functional Verification
+# File Name:    simulation.fdo 
+# Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz>    
+# Date:         27.2.2011
+# ------------------------------------------------------------------------------
+
+# Firmware location
+set FIRMWARE_BASE         "../../../../.."
+
+# DUT location
+set DUT_BASE              "FIRMWARE_BASE/comp/fl_tools/edit/netcope_adder"
+
+# Verification location
+set DUT_VER_BASE          "$DUT_BASE/sw_ver"
+set TB_FILE               "./tbench/testbench.sv"
+set SIG_FILE              "./signals_sig.fdo"
+
+set COMPONENTS [list [list "DUT"      $DUT_BASE       "FULL"]\
+                     [list "DUT_VER"  $DUT_VER_BASE   "FULL"]\
+                     ]
+
+# Enable Code Coverage
+set CODE_COVERAGE "true"
+
+# Global include file for compilation
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# File with signals
+source $SIG_FILE

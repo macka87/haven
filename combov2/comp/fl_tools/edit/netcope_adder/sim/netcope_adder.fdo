@@ -1,0 +1,25 @@
+# netcope_adder.fdo: FrameLink Adder of NetCOPE Header Simulation File
+# Copyright (C) 2011
+# Author(s): Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+
+set FIRMWARE_BASE         "../../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set NETCOPE_ADDER_BASE    "$COMP_BASE/fl_tools/edit/netcope_adder"
+set FL_BFM_BASE           "$COMP_BASE/fl_tools/debug/sim"
+
+set SIG_FILE              "$NETCOPE_ADDER_BASE/sim/netcope_adder_sig.fdo"
+set TB_FILE               "$NETCOPE_ADDER_BASE/sim/netcope_adder_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "NETCOPE_ADDER" $NETCOPE_ADDER_BASE "FULL" ] \
+                  [ list "FL_BFM"        $FL_BFM_BASE        "FULL" ] \
+               ]
+
+set PACKAGES [list \
+		"$FL_BFM_BASE/fl_bfm_rdy_pkg.vhd" \
+		"$FL_BFM_BASE/fl_bfm_pkg.vhd" \
+	     ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE
