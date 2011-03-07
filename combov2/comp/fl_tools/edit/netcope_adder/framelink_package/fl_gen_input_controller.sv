@@ -13,6 +13,7 @@
     */ 
   
     FrameLinkTransaction flBlueprint;    // Transaction format
+    tTransMbx transMbx;                  // Transaction mailbox
     
    /*
     * Public Class Methods
@@ -25,7 +26,9 @@
     * \param partSizeMax - maximal size of FrameLink frame part        
     * \param partSizeMin - minimal size of FrameLink frame part    
     */    
-    function new (int frameParts, int partSizeMax, int partSizeMin); 
+    function new (int frameParts, int partSizeMax[], int partSizeMin[]); 
+      // Create mailbox
+      this.transMbx = new(0);
       // Create generator
       generator   = new("FrameLink Generator", transMbx);
       // Create blueprint transaction
@@ -41,6 +44,7 @@
     */
     task sendGenerated(int unsigned transCount);
        // run generator
+       $write("bude sa volat generator\n");
        generator.setEnabled(transCount);
     endtask : sendGenerated 
    

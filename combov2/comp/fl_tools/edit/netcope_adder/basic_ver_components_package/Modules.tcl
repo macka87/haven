@@ -7,5 +7,5 @@
 
 if { $ARCHGRP == "FULL" } {
   set MOD "$MOD $ENTITY_BASE/sv_basic_comp_pkg.sv"
+  set MOD "$MOD $ENTITY_BASE/math_pkg.sv"
 }
-

@@ -6,6 +6,8 @@
  * ************************************************************************** */ 
  
 import test_pkg::*;
+import sv_basic_comp_pkg::*;
+import sv_fl_pkg::*;
 
 /*
  * Test output and input interfaces of DUT.

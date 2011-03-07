@@ -79,11 +79,8 @@
       enabled = 1;
       stop_after_n_insts = nInst;
       data_id = 0;
-      if ( blueprint != null) begin
-        fork
-          run();
-        join_none;
-        end
+      if ( blueprint != null) 
+        run();
       else
         $write("The blueprint transaction in generator must be set\n");
     endtask : setEnabled
@@ -100,10 +97,11 @@
     */    
     virtual task run();
       Transaction trans;
-      
+      $write("stop_after_n_insts: %d\n",stop_after_n_insts);
       while (enabled && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin          
+        $write("data_id: %d\n",data_id);
         trans = blueprint.copy;               // Copy from blueprint
-        trans.data_id      = data_id;         // Set instance count
+        trans.data_id = data_id;              // Set instance count
         assert(trans.randomize);              // Randomize transaction
         trans.display("generator");           // Display transaction
         transMbx.put(trans);                  // Put transaction to mailbox

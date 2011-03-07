@@ -153,6 +153,7 @@
   
    clocking monitor_cb @(posedge CLK);
      input DATA, DREM, SOF_N, EOF_N, SOP_N, EOP_N, SRC_RDY_N, DST_RDY_N;  
+   endclocking: monitor_cb;
    
   /*
    * Receive Modport
@@ -178,7 +179,7 @@
   
   /*
    * Interface properties/assertions
-   */-------------------------------------------------------------------------  
+   */ 
   
    // -- While RESET DST_RDY_N inactive ----------------------------------------
    // DST_RDY_N may be active only if RESET is inactive. 

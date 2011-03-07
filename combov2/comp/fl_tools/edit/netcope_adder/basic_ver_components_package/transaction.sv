@@ -54,11 +54,12 @@
                                  output string diff, input int kind = -1);
       return 1'b0;
     endfunction : compare
-    
+ endclass : Transaction  
+ 
    /*
     * Transaction mailbox
     */
     typedef mailbox #(Transaction) tTransMbx;
 
-  endclass : Transaction
+  
   

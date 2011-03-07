@@ -11,18 +11,19 @@ package test_pkg;
    import math_pkg::*;       
       
    // DUT GENERICS
-   parameter DATA_WIDTH = 128;            // FrameLink data width
+   parameter DATA_WIDTH = 128;                 // FrameLink data width
+   parameter DREM_WIDTH = log2(DATA_WIDTH/8);  // drem width
    
    // CLOCKS AND RESETS
    parameter CLK_PERIOD = 10ns;
    parameter RESET_TIME = 10*CLK_PERIOD;
 
    // TRANSACTION FORMAT 
-   int GENERATOR_FL_FRAME_COUNT     = 1;              // frame parts
-   int GENERATOR_FL_PART_SIZE_MAX[] = '{650,650,650}; // maximal size of part
-   int GENERATOR_FL_PART_SIZE_MIN[] = '{1,1,1};       // minimal size of part     
+   int GENERATOR_FL_FRAME_COUNT     = 1;       // frame parts
+   int GENERATOR_FL_PART_SIZE_MAX[] = '{36};   // maximal size of part
+   int GENERATOR_FL_PART_SIZE_MIN[] = '{1};    // minimal size of part     
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 10;        // Count of transactions
+   parameter TRANSACTION_COUT = 10;            // Count of transactions
 
 endpackage

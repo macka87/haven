@@ -24,7 +24,7 @@
       constraint c1 {
         data.size       == frameParts;
         foreach (data[i]) data[i].size inside
-          {[partSizeMin[i]:packetSizeMax[i]]};
+          {[partSizeMin[i]:partSizeMax[i]]};
       };
 
    /*

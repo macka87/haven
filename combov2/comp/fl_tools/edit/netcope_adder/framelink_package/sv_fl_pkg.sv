@@ -6,12 +6,16 @@
  * Date:         27.2.2011 
  * ************************************************************************** */
 
+// FrameLink interface
+`include "fl_ifc.sv"
+
 package sv_fl_pkg; 
   import sv_basic_comp_pkg::*;        // Import SV basic classes
-  `include "fl_ifc.sv"
+  
   `include "fl_transaction.sv"
-  `include "fl_driver.sv"
-  `include "fl_monitor.sv"
-  `include "fl_responder.sv"
-  `include "fl_command_coverage.sv"
+  `include "fl_gen_input_controller.sv"
+  //`include "fl_driver.sv"
+  //`include "fl_monitor.sv"
+  //`include "fl_responder.sv"
+  //`include "fl_command_coverage.sv"
 endpackage : sv_fl_pkg
