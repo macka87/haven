@@ -14,7 +14,7 @@ package sv_fl_pkg;
   
   `include "fl_transaction.sv"
   `include "fl_gen_input_controller.sv"
-  //`include "fl_driver.sv"
+  `include "fl_driver.sv"
   //`include "fl_monitor.sv"
   //`include "fl_responder.sv"
   //`include "fl_command_coverage.sv"

@@ -9,7 +9,10 @@
 package test_pkg;
    
    import math_pkg::*;       
-      
+   
+   // VERIFICATION FRAMEWORK
+   int FRAMEWORK  = 0;                         // 0 = software framework
+                                               // 1 = sw/hw framework      
    // DUT GENERICS
    parameter DATA_WIDTH = 128;                 // FrameLink data width
    parameter DREM_WIDTH = log2(DATA_WIDTH/8);  // drem width

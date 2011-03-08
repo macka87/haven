@@ -13,8 +13,7 @@
     */ 
     
    Generator  generator;  // Transaction Generator 
-   tTransMbx  transMbx;   // Transaction Mailbox
-    
+       
    /*
     * Public Class Methods
     */ 
