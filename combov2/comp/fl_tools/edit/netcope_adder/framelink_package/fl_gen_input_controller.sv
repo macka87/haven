@@ -6,13 +6,14 @@
  * Date:         27.2.2011 
  * ************************************************************************** */
  
- class FrameLinkGenInputController extends GenInputController;
+ class FrameLinkGenInputController #(int pDataWidth=32)
+       extends GenInputController;
    
    /*
     * Public Class Atributes
     */ 
   
-    FrameLinkTransaction flBlueprint;    // Transaction format
+    FrameLinkTransaction flBlueprint;  //! Transaction format
        
    /*
     * Public Class Methods
@@ -25,19 +26,36 @@
     * \param partSizeMax - maximal size of FrameLink frame part        
     * \param partSizeMin - minimal size of FrameLink frame part    
     */    
-    function new (int framework, int frameParts, int partSizeMax[],
-                  int partSizeMin[]); 
-      // Identify framework
-      this.framework = framework; //???? bude treba tu tato informacia ????
-      // Create mailbox
-      this.transMbx  = new(0);
+    function new (int framework, 
+                  int frameParts, int partSizeMax[], int partSizeMin[],
+                  int btDelayEn_wt, int btDelayDi_wt, 
+                  int btDelayLow, int btDelayHigh,
+                  int itDelayEn_wt, int itDelayDi_wt, 
+                  int itDelayLow, int itDelayHigh
+                 ); 
+                 
+      super.new(framework);
+      
       // Create generator
       generator      = new("FrameLink Generator", transMbx);
+      
       // Create blueprint transaction
-      flBlueprint    = new;
+      flBlueprint    = new(pDataWidth);
+      
       flBlueprint.frameParts    = frameParts;
       flBlueprint.partSizeMax   = partSizeMax;
       flBlueprint.partSizeMin   = partSizeMin;
+      
+      flBlueprint.btDelayEn_wt  = btDelayEn_wt;
+      flBlueprint.btDelayDi_wt  = btDelayDi_wt;
+      flBlueprint.btDelayLow    = btDelayLow;
+      flBlueprint.btDelayHigh   = btDelayHigh;
+      
+      flBlueprint.itDelayEn_wt  = itDelayEn_wt;
+      flBlueprint.itDelayDi_wt  = itDelayDi_wt;
+      flBlueprint.itDelayLow    = itDelayLow;
+      flBlueprint.itDelayHigh   = itDelayHigh;
+      
       generator.blueprint       = flBlueprint;
     endfunction: new  
     

@@ -12,24 +12,89 @@
     * Public Class Atributes
     */
    
-   // Randomization parameters
-      int frameParts     = 3;           // Count of FrameLink frame parts  
-      int partSizeMax[]  = '{32,32,32}; // Maximal size of FrameLink frame part
-      int partSizeMin[]  = '{8,8,8};    // Minimal size of FrameLink frame part
+   //! Randomization transaction parameters
+    int frameParts     = 3;            //! Count of FrameLink frame parts  
+    int partSizeMax[]  = '{32,32,32};  //! Maximal size of FrameLink frame part
+    int partSizeMin[]  = '{8,8,8};     //! Minimal size of FrameLink frame part
+    int totalWords     = 0;
+    int dataWidth      = 32;
    
-   // Randomized transaction data [packet][byte]
-      rand byte unsigned data[][];
+   //! Randomized transaction data [packet][byte]
+    rand byte unsigned data[][];
 
-   // Constrains
-      constraint c1 {
-        data.size       == frameParts;
-        foreach (data[i]) data[i].size inside
-          {[partSizeMin[i]:partSizeMax[i]]};
-      };
+   //! Transaction data constraint
+    constraint c1 {
+      data.size == frameParts;
+      
+      foreach (data[i]) 
+        data[i].size inside {
+                             [partSizeMin[i]:partSizeMax[i]]
+                            };
+      foreach (data[i]) 
+        if (data[i].size % dataWidth == 0) 
+          totalWords == totalWords + data[i].size/dataWidth;
+        else   
+          totalWords == totalWords + data[i].size/dataWidth + 1; 
+    };
+    
+   //! Enable/Disable delays "between transactions" according to weights
+    rand bit enBtDelay;   
+         int btDelayEn_wt  = 1; 
+         int btDelayDi_wt  = 3;
 
+   //! Value of delay "between transactions" randomized inside boundaries
+    rand int btDelay; 
+         int btDelayLow    = 0;
+         int btDelayHigh   = 3;
+    
+   //! Enable/Disable delays "inside transaction" according to weights 
+    rand bit enItDelay;     
+         int itDelayEn_wt  = 1; 
+         int itDelayDi_wt  = 3;
+    
+   //! Value of delay "inside transaction" randomized inside boundaries  
+    rand int itDelay[];  
+         int itDelayLow    = 0;
+         int itDelayHigh   = 3;
+    
+   //! Constraints for randomized values 
+    constraint cDelay1{
+      enBtDelay dist { 1'b1 := btDelayEn_wt,
+                       1'b0 := btDelayDi_wt
+                     };
+    };                 
+    
+    constraint cDelay2{
+      btDelay inside {
+                      [btDelayLow:btDelayHigh]
+                     };
+    };
+    
+    constraint cDelay3{
+      enItDelay dist { 1'b1 := itDelayEn_wt,
+                       1'b0 := itDelayDi_wt
+                     };
+    };
+    
+    constraint cDelay4{   
+      itDelay.size == totalWords;             
+      
+      foreach (itDelay[i])
+        itDelay[i] inside {
+                           [itDelayLow:itDelayHigh]
+                          };               
+    };
+    
    /*
     * Public Class Methods
     */
+    
+   /*!
+    * Constructor - creates transaction object 
+    */           
+    function new (int dataWidth); 
+      this.dataWidth = dataWidth;
+    endfunction: new 
   
    /*!
     * Function displays the current value of the transaction or data described
@@ -66,7 +131,7 @@
     virtual function Transaction copy(Transaction to = null);
       FrameLinkTransaction tr;
       if (to == null)
-        tr = new();
+        tr = new(dataWidth);
       else 
         $cast(tr, to);
 
@@ -85,13 +150,14 @@
     endfunction: copy
        
  	  /*!
-    * Compares the current value of the object instance with the current value of
-    * the specified object instance, according to the specified kind. Returns TRUE
-    * (i.e., non-zero) if the value is identical. If the value is different, FALSE is
-    * returned and a descriptive text of the first difference found is returned in the
-    * specified string variable. The kind argument may be used to implement different
-    * comparison functions (e.g., full compare, comparison of rand properties only,
-    * comparison of all properties physically implemented in a protocol and so on.)
+    * Compares the current value of the object instance with the current value
+    * of the specified object instance, according to the specified kind. Returns
+    * TRUE (i.e., non-zero) if the value is identical. If the value is 
+    * different, FALSE is returned and a descriptive text of the first
+    * difference found is returned in the specified string variable. The kind 
+    * argument may be used to implement different comparison functions (e.g.,
+    * full compare, comparison of rand properties only, comparison of all 
+    * properties physically implemented in a protocol and so on.)
     * 
     * \param to - transaction instance
     * \param diff - first difference

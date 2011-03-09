@@ -29,9 +29,6 @@
     //! FrameLink interface
     virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl;
     
-    //! Source Ready Generator
-    SrcRdyGenerator srcRdyGen;
-  
    /*
     * Public Class Methods
     */
@@ -53,9 +50,6 @@
       this.transMbx    = transMbx;  //! Store pointer to mailbox
       this.inst        = inst;      //! Store driver identifier
       
-      //! Create Source Ready Generator
-      srcRdyGen        = new(fl); // ? this.fl ???
-
       this.fl.cb.DATA      <= 0;
       this.fl.cb.DREM      <= 0;
       this.fl.cb.SOF_N     <= 1;
@@ -88,14 +82,12 @@
     * \param transaction - transaction from generator or direct transaction
     */
     task sendTransaction(FrameLinkTransaction transaction);
-      Transaction tr;
-      $cast(tr, transaction); 
       
       //! Driver is sending transaction
       busy = 1;
       
       //! Delay between transactions
-      srcRdyGen.randomWaitBt();
+      if (transaction.enBtDelay) repeat (transaction.btDelay) @(fl.cb);
 
       //! Send transaction
       sendData(transaction);
@@ -117,13 +109,13 @@
     task run();
       FrameLinkTransaction transaction;
       Transaction to;
+      int wordsNum = 0;
             
       @(fl.cb);                        //! Wait for clock
       
       while (enabled) begin            //! Repeat while enabled
-        srcRdyGen.randomizeVar();      //! Randomize rand variables
         transMbx.get(to);              //! Get transaction from mailbox 
-        $cast(transaction,to);               
+        $cast(transaction,to);   
         sendTransaction(transaction);  //! Send transaction
         //transaction.display(inst);   //! Display transaction
       end
@@ -137,6 +129,18 @@
         @(fl.cb);
       end;
     endtask : waitForAccept
+    
+   /*!
+    * Random wait after every transaction word (Sets SRC_RDY_N to 1)
+    */    
+    task randomWait(FrameLinkTransaction tr, int counter);
+      if (tr.enItDelay)
+        repeat (tr.itDelay[counter]) begin
+          fl.cb.SRC_RDY_N <= 1;
+          @(fl.cb); 
+        end
+      fl.cb.SRC_RDY_N <= 0;
+    endtask : randomWait 
         
    /*!
     * Send transaction data 
@@ -145,6 +149,7 @@
     */                 
     task sendData(FrameLinkTransaction tr);
       int m = 0;
+      int counter = 0;
       logic[pDataWidth-1:0] dataToSend = 0;
       
       //! for all frame parts 
@@ -178,8 +183,9 @@
 
           //! when data word is ready to send
           if (m==pDataWidth) begin
+            counter++;
             fl.cb.DATA <= dataToSend;
-            srcRdyGen.randomWaitIt();  //! create not ready
+            randomWait(tr, counter);   //! create not ready
             @(fl.cb);                  //! send data
             waitForAccept();           //! wait until oposite side set ready
 

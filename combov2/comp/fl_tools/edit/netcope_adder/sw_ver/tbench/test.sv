@@ -25,8 +25,9 @@ program TEST (
    */
   
   // Controller of generated input  
-  FrameLinkGenInputController   flGenInCnt;    
-  FrameLinkDriver               flDriver;
+  FrameLinkGenInputController #(DATA_WIDTH) flGenInCnt; 
+  // Software driver   
+  FrameLinkDriver #(DATA_WIDTH, DREM_WIDTH) flDriver;
  
   /*
    *  Environment tasks 
@@ -35,7 +36,12 @@ program TEST (
   // Create Test Environment
   task createEnvironment(); 
      flGenInCnt = new(FRAMEWORK, GENERATOR_FL_FRAME_COUNT, 
-                      GENERATOR_FL_PART_SIZE_MAX, GENERATOR_FL_PART_SIZE_MIN);
+                      GENERATOR_FL_PART_SIZE_MAX, GENERATOR_FL_PART_SIZE_MIN,
+                      DRIVER_BT_DELAY_EN_WT, DRIVER_BT_DELAY_DI_WT,
+                      DRIVER_BT_DELAY_LOW, DRIVER_BT_DELAY_HIGH,
+                      DRIVER_IT_DELAY_EN_WT, DRIVER_IT_DELAY_DI_WT,
+                      DRIVER_IT_DELAY_LOW, DRIVER_IT_DELAY_HIGH
+                     );
   endtask : createEnvironment
 
   /*

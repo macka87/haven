@@ -25,6 +25,20 @@ package test_pkg;
    int GENERATOR_FL_FRAME_COUNT     = 1;       // frame parts
    int GENERATOR_FL_PART_SIZE_MAX[] = '{36};   // maximal size of part
    int GENERATOR_FL_PART_SIZE_MIN[] = '{1};    // minimal size of part     
+   
+   // SOFTWARE DRIVER PARAMETERS 
+   // Enable/Disable weights of "delay between transactions" 
+   parameter DRIVER_BT_DELAY_EN_WT  = 0;       
+   parameter DRIVER_BT_DELAY_DI_WT  = 5;
+   // Low/High limit of "delay between transactions" value
+   parameter DRIVER_BT_DELAY_LOW    = 0;
+   parameter DRIVER_BT_DELAY_HIGH   = 10;
+   // Enable/Disable weights of "delays inside transaction"
+   parameter DRIVER_IT_DELAY_EN_WT  = 0;
+   parameter DRIVER_IT_DELAY_DI_WT  = 5;
+   // Low/High limit of "delay inside transaction" values
+   parameter DRIVER_IT_DELAY_LOW    = 0;
+   parameter DRIVER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
    parameter TRANSACTION_COUT = 10;            // Count of transactions

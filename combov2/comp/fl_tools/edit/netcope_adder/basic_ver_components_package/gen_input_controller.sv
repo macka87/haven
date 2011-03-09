@@ -18,8 +18,15 @@
     * Public Class Methods
     */ 
     
+   /*! 
+    * Constructor 
+    */    
+    function new (int framework); 
+      super.new(framework);
+    endfunction: new 
+    
    // Send generated transaction 
-   virtual task sendGenerated(int unsigned transCount);
-   endtask : sendGenerated 
+    virtual task sendGenerated(int unsigned transCount);
+    endtask : sendGenerated 
    
  endclass : GenInputController  
