@@ -114,10 +114,11 @@
       @(fl.cb);                        //! Wait for clock
       
       while (enabled) begin            //! Repeat while enabled
+        $write("som v driveri\n");
         transMbx.get(to);              //! Get transaction from mailbox 
         $cast(transaction,to);   
         sendTransaction(transaction);  //! Send transaction
-        //transaction.display(inst);   //! Display transaction
+        transaction.display(inst);   //! Display transaction
       end
     endtask : run
     
@@ -133,9 +134,9 @@
    /*!
     * Random wait after every transaction word (Sets SRC_RDY_N to 1)
     */    
-    task randomWait(FrameLinkTransaction tr, int counter);
+    task randomWait(FrameLinkTransaction tr, int part, int counter);
       if (tr.enItDelay)
-        repeat (tr.itDelay[counter]) begin
+        repeat (tr.itDelay[part][counter]) begin
           fl.cb.SRC_RDY_N <= 1;
           @(fl.cb); 
         end
@@ -183,11 +184,11 @@
 
           //! when data word is ready to send
           if (m==pDataWidth) begin
-            counter++;
             fl.cb.DATA <= dataToSend;
-            randomWait(tr, counter);   //! create not ready
-            @(fl.cb);                  //! send data
-            waitForAccept();           //! wait until oposite side set ready
+            randomWait(tr, i, counter);  //! create not ready
+            counter++;
+            @(fl.cb);                    //! send data
+            waitForAccept();             //! wait until oposite side set ready
 
             //! init for sending next data word
             fl.cb.SOF_N<=1;       

@@ -42,6 +42,7 @@ program TEST (
                       DRIVER_IT_DELAY_EN_WT, DRIVER_IT_DELAY_DI_WT,
                       DRIVER_IT_DELAY_LOW, DRIVER_IT_DELAY_HIGH
                      );
+     flDriver   = new("FrameLink Driver", flGenInCnt.transMbx, RX);                 
   endtask : createEnvironment
 
   /*
@@ -56,10 +57,26 @@ program TEST (
 
   // Enable test Environment
   task enableTestEnvironment();
+    flDriver.setEnabled();
   endtask : enableTestEnvironment
 
   // Disable test Environment
   task disableTestEnvironment();
+    int i;
+    bit busy;
+
+    // Check if drivers/monitors are not sending/receiving transaction for 
+    // 100 CLK_PERIODs
+    i = 0;
+    while (i<100) begin
+      busy = 0;
+      if (flDriver.busy) busy = 1;
+      if (busy) i = 0;
+      else i++;
+      #(CLK_PERIOD); 
+    end
+    
+    flDriver.setDisabled();
   endtask : disableTestEnvironment
 
   /*

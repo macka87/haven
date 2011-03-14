@@ -41,6 +41,6 @@ package test_pkg;
    parameter DRIVER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 10;            // Count of transactions
+   parameter TRANSACTION_COUT = 1;            // Count of transactions
 
 endpackage

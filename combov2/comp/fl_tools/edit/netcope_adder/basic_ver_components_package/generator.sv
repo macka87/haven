@@ -38,7 +38,6 @@
     * been generated.
     */
     Transaction blueprint;
-
     bit enabled; 
 
    /*

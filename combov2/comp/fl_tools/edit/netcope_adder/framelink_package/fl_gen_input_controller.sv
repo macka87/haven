@@ -40,7 +40,10 @@
       generator      = new("FrameLink Generator", transMbx);
       
       // Create blueprint transaction
-      flBlueprint    = new(pDataWidth);
+      $write("datawidth in controler: %d\n",pDataWidth);
+      flBlueprint    = new();
+      
+      flBlueprint.dataWidth     = pDataWidth/8;
       
       flBlueprint.frameParts    = frameParts;
       flBlueprint.partSizeMax   = partSizeMax;
@@ -50,12 +53,12 @@
       flBlueprint.btDelayDi_wt  = btDelayDi_wt;
       flBlueprint.btDelayLow    = btDelayLow;
       flBlueprint.btDelayHigh   = btDelayHigh;
-      
+            
       flBlueprint.itDelayEn_wt  = itDelayEn_wt;
       flBlueprint.itDelayDi_wt  = itDelayDi_wt;
       flBlueprint.itDelayLow    = itDelayLow;
       flBlueprint.itDelayHigh   = itDelayHigh;
-      
+            
       generator.blueprint       = flBlueprint;
     endfunction: new  
     
