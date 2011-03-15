@@ -12,9 +12,10 @@
    /*
     * Public Class Atributes
     */ 
-  
-    FrameLinkTransaction flBlueprint;  //! Transaction format
-       
+    
+    //! Transaction format
+    FrameLinkTransaction  flBlueprint;  
+    
    /*
     * Public Class Methods
     */ 
@@ -26,21 +27,19 @@
     * \param partSizeMax - maximal size of FrameLink frame part        
     * \param partSizeMin - minimal size of FrameLink frame part    
     */    
-    function new (int framework, 
-                  int frameParts, int partSizeMax[], int partSizeMin[],
-                  int btDelayEn_wt, int btDelayDi_wt, 
-                  int btDelayLow, int btDelayHigh,
-                  int itDelayEn_wt, int itDelayDi_wt, 
-                  int itDelayLow, int itDelayHigh
+    function new (int frameParts, int partSizeMax[], int partSizeMin[],
+                  byte btDelayEn_wt, byte btDelayDi_wt, 
+                  byte btDelayLow, byte btDelayHigh,
+                  byte itDelayEn_wt, byte itDelayDi_wt, 
+                  byte itDelayLow, byte itDelayHigh
                  ); 
                  
-      super.new(framework);
+      super.new();
       
-      // Create generator
+      //! Create generator
       generator      = new("FrameLink Generator", transMbx);
       
-      // Create blueprint transaction
-      $write("datawidth in controler: %d\n",pDataWidth);
+      //! Create blueprint transaction
       flBlueprint    = new();
       
       flBlueprint.dataWidth     = pDataWidth/8;
@@ -66,8 +65,9 @@
     * Send generated transaction 
     */
     task sendGenerated(int unsigned transCount);
-       // run generator
-       generator.setEnabled(transCount);
+      
+      //! run generator
+      generator.setEnabled(transCount);
     endtask : sendGenerated 
    
  endclass : FrameLinkGenInputController

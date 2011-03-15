@@ -11,7 +11,7 @@ package test_pkg;
    import math_pkg::*;       
    
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK  = 0;                         // 0 = software framework
+   int FRAMEWORK  = 1;                         // 0 = software framework
                                                // 1 = sw/hw framework      
    // DUT GENERICS
    parameter DATA_WIDTH = 128;                 // FrameLink data width
@@ -20,6 +20,7 @@ package test_pkg;
    // CLOCKS AND RESETS
    parameter CLK_PERIOD = 10ns;
    parameter RESET_TIME = 10*CLK_PERIOD;
+   parameter SIM_DELAY  = 100;
 
    // TRANSACTION FORMAT 
    int GENERATOR_FL_FRAME_COUNT     = 1;       // frame parts
@@ -28,19 +29,19 @@ package test_pkg;
    
    // SOFTWARE DRIVER PARAMETERS 
    // Enable/Disable weights of "delay between transactions" 
-   parameter DRIVER_BT_DELAY_EN_WT  = 0;       
-   parameter DRIVER_BT_DELAY_DI_WT  = 5;
+   parameter byte DRIVER_BT_DELAY_EN_WT  = 0;       
+   parameter byte DRIVER_BT_DELAY_DI_WT  = 10;
    // Low/High limit of "delay between transactions" value
-   parameter DRIVER_BT_DELAY_LOW    = 0;
-   parameter DRIVER_BT_DELAY_HIGH   = 10;
+   parameter byte DRIVER_BT_DELAY_LOW    = 0;
+   parameter byte DRIVER_BT_DELAY_HIGH   = 10;
    // Enable/Disable weights of "delays inside transaction"
-   parameter DRIVER_IT_DELAY_EN_WT  = 0;
-   parameter DRIVER_IT_DELAY_DI_WT  = 5;
+   parameter byte DRIVER_IT_DELAY_EN_WT  = 0;
+   parameter byte DRIVER_IT_DELAY_DI_WT  = 10;
    // Low/High limit of "delay inside transaction" values
-   parameter DRIVER_IT_DELAY_LOW    = 0;
-   parameter DRIVER_IT_DELAY_HIGH   = 10;
+   parameter byte DRIVER_IT_DELAY_LOW    = 0;
+   parameter byte DRIVER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 1;            // Count of transactions
+   parameter TRANSACTION_COUT = 5;            // Count of transactions
 
 endpackage

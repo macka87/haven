@@ -12,8 +12,9 @@
     * Public Class Atributes
     */
    
-   //! --- Randomization of transaction parameters ---
-    int dataWidth       = 4;            //in Bytes 
+   //! --- RANDOMIZATION OF TRANSACTION PARAMETERS ---
+   
+    int dataWidth       = 4;            //! data width in Bytes 
     
     int frameParts      = 3;            //! Count of FrameLink frame parts  
     int partSizeMax[]   = '{32,32,32};  //! Maximal size of FrameLink frame part
@@ -32,26 +33,27 @@
                             };
     };
     
-   //! --- Randomization of delay parameters ---
+   //! --- RANDOMIZATION OF DELAY PARAMETERS ---
+   
    //! Enable/Disable delays "between transactions" according to weights
     rand bit enBtDelay;   
-         int btDelayEn_wt  = 1; 
-         int btDelayDi_wt  = 3;
+         byte btDelayEn_wt  = 1; 
+         byte btDelayDi_wt  = 3;
 
     //! Value of delay "between transactions" randomized inside boundaries
-    rand int btDelay; 
-         int btDelayLow    = 0;
-         int btDelayHigh   = 3;
+    rand byte btDelay; 
+         byte btDelayLow    = 0;
+         byte btDelayHigh   = 3;
     
     //! Enable/Disable delays "inside transaction" according to weights 
     rand bit enItDelay;     
-         int itDelayEn_wt  = 1; 
-         int itDelayDi_wt  = 3;
+         byte itDelayEn_wt  = 1; 
+         byte itDelayDi_wt  = 3;
     
     //! Value of delay "inside transaction" randomized inside boundaries  
-    rand int itDelay[][];  
-         int itDelayLow    = 0;
-         int itDelayHigh   = 3;
+    rand byte itDelay[][];  
+         byte itDelayLow    = 0;
+         byte itDelayHigh   = 3;
     
     //! Constraints for randomized values 
     constraint cDelay1 {
@@ -117,19 +119,14 @@
       $write("\n");  
       
       $write("DELAY PARAMETERS: \n");
-      $write("enBtDelay: %b\n",enBtDelay);
-      $write("btDelay: %d\n",btDelay);
-      $write("enItDelay: %b\n",enItDelay);
+      $write("enBtDelay: %x\n",enBtDelay);
+      $write("btDelay: %x\n",btDelay);
+      $write("enItDelay: %x\n",enItDelay);
       
-      $write("itDelay.size: %d\n",itDelay.size);
-      for (int i=0; i < frameParts; i++) begin
-        $write("itDelay[i].size: %d\n",itDelay[i].size);
-      end
-            
       for (int i=0; i < frameParts; i++) begin
         $write("itDelay part: %d\n",i);
         for (int j=0; j < itDelay[i].size; j++)
-          $write("%d",itDelay[i][j]);
+          $write("%x ",itDelay[i][j]);
         $write("\n");
       end
       $write("\n");    

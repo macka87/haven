@@ -11,8 +11,7 @@
    /*
     * Public Class Atributes
     */ 
-   int        framework;  //! Verification Framework  
-   tTransMbx  transMbx;   //! Transaction Mailbox
+    tTransMbx  transMbx;   //! Transaction Mailbox
        
    /*
     * Public Class Methods
@@ -21,9 +20,7 @@
    /*! 
     * Constructor 
     */    
-    function new (int framework); 
-      // Identify framework
-      this.framework = framework; //???? bude treba tu tato informacia ????
+    function new(); 
       // Create mailbox
       this.transMbx  = new(0);
     endfunction: new 

@@ -21,8 +21,8 @@
    /*! 
     * Constructor 
     */    
-    function new (int framework); 
-      super.new(framework);
+    function new(); 
+      super.new();
     endfunction: new 
     
    // Send generated transaction 

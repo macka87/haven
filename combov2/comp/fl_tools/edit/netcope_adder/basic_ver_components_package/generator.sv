@@ -31,19 +31,18 @@
     * Transaction or data descriptor instance that is repeatedly
     * randomized to create the random content of the output descriptor
     * stream. The individual instances of the output stream are copied
-    * from this instance, after randomization, using the
-    * Transaction::copy() method. Data_id property of this instance is also set
-    * before each randomization. It will be reset to 0 when the generator
-    * is reset and after the specified maximum number of instances has
-    * been generated.
+    * from this instance, after randomization, using the Transaction::copy()
+    * method. Data_id property of this instance is also set before each 
+    * randomization. It will be reset to 0 when the generator is reset and 
+    * after the specified maximum number of instances has been generated.
     */
     Transaction blueprint;
-    bit enabled; 
+    bit         enabled;    //! Generator is enabled
+    string      inst;       //! Generator identification 
 
    /*
     * Protected Class Atributes
     */
-    
     protected int data_id;
     
    /*
@@ -62,13 +61,14 @@
     */
     function new(string inst, tTransMbx transMbx = null);
       if (transMbx == null)  
-        this.transMbx = new(1);          // Create own mailbox
+        this.transMbx = new(1);          //! Create own mailbox
       else
-        this.transMbx = transMbx;        // Use created mailbox
+        this.transMbx = transMbx;        //! Use created mailbox
     
-      enabled         = 0;               // Disable generator by default
-      blueprint       = null;            // Null the blueprint transaction
-      data_id         = 0;               // Set default data identifier
+      enabled         = 0;               //! Disable generator by default
+      this.inst       = inst;            //! Store generator identifier
+      blueprint       = null;            //! Null the blueprint transaction
+      data_id         = 0;               //! Set default data identifier
     endfunction : new
     
    /*!
@@ -97,12 +97,12 @@
     virtual task run();
       Transaction trans;
       while (enabled && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin          
-        trans = blueprint.copy;               // Copy from blueprint
-        trans.data_id = data_id;              // Set instance count
-        assert(trans.randomize);              // Randomize transaction
-        trans.display("generator");           // Display transaction
-        transMbx.put(trans);                  // Put transaction to mailbox
-        data_id=data_id+1;                    // Increment instance counter
+        trans = blueprint.copy;   //! Copy from blueprint
+        trans.data_id = data_id;  //! Set instance count
+        assert(trans.randomize);  //! Randomize transaction
+        //trans.display(inst);      //! Display transaction
+        transMbx.put(trans);      //! Put transaction to mailbox
+        data_id = data_id+1;      //! Increment instance counter
       end;
       enabled = 0;
     endtask : run

@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Project Name: Software Framework for Functional Verification 
- * File Name:    FrameLink Driver Class
+ * File Name:    Software FrameLink Driver Class
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011 
@@ -114,7 +114,6 @@
       @(fl.cb);                        //! Wait for clock
       
       while (enabled) begin            //! Repeat while enabled
-        $write("som v driveri\n");
         transMbx.get(to);              //! Get transaction from mailbox 
         $cast(transaction,to);   
         sendTransaction(transaction);  //! Send transaction
