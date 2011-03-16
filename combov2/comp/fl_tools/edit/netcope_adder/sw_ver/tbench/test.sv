@@ -24,38 +24,31 @@ program TEST (
    *  Variables declaration 
    */
   
-  //! Controller of generated input  
-  FrameLinkGenInputController #(DATA_WIDTH)  flGenInCnt; 
-  //! Software driver   
-  FrameLinkDriver #(DATA_WIDTH, DREM_WIDTH)  swFlDriver;   
-  //! Hardware sender                        
-  FrameLinkSender                            hwFlSender; 
   //! Mailbox for Input controller's transactions
-  tTransMbx                                  inputMbx; 
-     
+  tTransMbx                                              inputMbx; 
+  
+  //! Controller of generated input  
+  FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH)  flGenInCnt; 
+       
   /*
    *  Environment tasks 
    */  
   
   // Create Test Environment
   task createEnvironment(); 
+     //! Create Input Mailbox
+     inputMbx = new(0);
+     
      //! Create input controller 
-     flGenInCnt = new(GENERATOR_FL_FRAME_COUNT, GENERATOR_FL_PART_SIZE_MAX,
+     flGenInCnt = new(FRAMEWORK, inputMbx,
+                      GENERATOR_FL_FRAME_COUNT, GENERATOR_FL_PART_SIZE_MAX,
                       GENERATOR_FL_PART_SIZE_MIN,
                       DRIVER_BT_DELAY_EN_WT, DRIVER_BT_DELAY_DI_WT,
                       DRIVER_BT_DELAY_LOW, DRIVER_BT_DELAY_HIGH,
                       DRIVER_IT_DELAY_EN_WT, DRIVER_IT_DELAY_DI_WT,
-                      DRIVER_IT_DELAY_LOW, DRIVER_IT_DELAY_HIGH
+                      DRIVER_IT_DELAY_LOW, DRIVER_IT_DELAY_HIGH,
+                      RX
                       );
-     //! Create software driver
-     swFlDriver   = new("Software FrameLink Driver", flGenInCnt.transMbx, RX); 
-     
-     //! Create Input Mailbox
-     inputMbx = new(0);          
-           
-     //! Create hardware sender
-     hwFlSender   = new("Hardware FrameLink Sender", 0, flGenInCnt.transMbx,
-                         inputMbx);           
   endtask : createEnvironment
 
   /*
@@ -68,65 +61,26 @@ program TEST (
     #RESET_TIME     RESET = 0;     // Deactivate reset after reset_time
   endtask : resetDesign
 
-  // Enable test Environment
-  task enableTestEnvironment();
-    
-    // software framework
-    if (FRAMEWORK == 0) begin
-      swFlDriver.setEnabled();
-    end
-    
-    // hardware framework
-    else if (FRAMEWORK == 1) begin
-      hwFlSender.setEnabled();
-    end  
-     
-  endtask : enableTestEnvironment
-
-  // Disable test Environment
-  task disableTestEnvironment();
-    int i=0; 
-     
-    // software framework
-    if (FRAMEWORK == 0) begin
-      while (i<SIM_DELAY) begin
-        if (swFlDriver.busy) i=0;
-        else i++;
-        #(CLK_PERIOD); 
-      end
-    
-      swFlDriver.setDisabled();
-    end
-    
-    // hardware framework
-    else if (FRAMEWORK == 1) begin
-      while (i<SIM_DELAY) begin
-        if (hwFlSender.busy) i=0;
-        else i++;
-        #(CLK_PERIOD); 
-      end
-    
-      hwFlSender.setDisabled();
-    end
-  endtask : disableTestEnvironment
-
   /*
    *  Test cases
    */
 
   // Test Case 1
   task test1();
+     process proc;
+     proc = process::self();
+     
      $write("\n\n############ TEST CASE 1 ############\n\n");
      
-     // Enable Test environment
-     enableTestEnvironment();
-    
      // Sending of transactions
+     flGenInCnt.start(); 
+     proc.srandom(1);             
      flGenInCnt.sendGenerated(TRANSACTION_COUT);
+     flGenInCnt.waitFor(5);
+     proc.srandom(2);       
+     flGenInCnt.sendGenerated(TRANSACTION_COUT);
+     flGenInCnt.stop();
      
-     // Disable Test Enviroment
-     disableTestEnvironment();
-
      // Display Scoreboard and Coverage
      //scoreboard.display();
      //coverage.display();
@@ -136,6 +90,11 @@ program TEST (
    *  Main test part
    */
   initial begin
+    // Set PRNG seed
+    // process proc;
+    // proc = process::self();
+    // proc.srandom(RNG_SEED);
+    
     // Design Environment
     resetDesign();                      
     createEnvironment();                

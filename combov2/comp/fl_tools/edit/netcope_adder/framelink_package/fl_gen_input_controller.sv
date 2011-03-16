@@ -6,7 +6,7 @@
  * Date:         27.2.2011 
  * ************************************************************************** */
  
- class FrameLinkGenInputController #(int pDataWidth=32)
+ class FrameLinkGenInputController #(int pDataWidth=32, int pDremWidth=2)
        extends GenInputController;
    
    /*
@@ -14,7 +14,14 @@
     */ 
     
     //! Transaction format
-    FrameLinkTransaction  flBlueprint;  
+    FrameLinkTransaction                       flBlueprint; 
+    //! Software driver   
+    FrameLinkDriver #(pDataWidth, pDremWidth)  swFlDriver;   
+    //! Hardware sender                        
+    FrameLinkSender                            hwFlSender; 
+    
+    //! FrameLink interface
+    virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl;
     
    /*
     * Public Class Methods
@@ -27,20 +34,24 @@
     * \param partSizeMax - maximal size of FrameLink frame part        
     * \param partSizeMin - minimal size of FrameLink frame part    
     */    
-    function new (int frameParts, int partSizeMax[], int partSizeMin[],
+    function new (int framework, tTransMbx inputMbx,
+                  int frameParts, int partSizeMax[], int partSizeMin[],
                   byte btDelayEn_wt, byte btDelayDi_wt, 
                   byte btDelayLow, byte btDelayHigh,
                   byte itDelayEn_wt, byte itDelayDi_wt, 
-                  byte itDelayLow, byte itDelayHigh
+                  byte itDelayLow, byte itDelayHigh,
+                  virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl
                  ); 
-                 
-      super.new();
+      
+      super.new(framework, inputMbx);
+      
+      this.fl       = fl;
       
       //! Create generator
-      generator      = new("FrameLink Generator", transMbx);
+      generator     = new("FrameLink Generator", transMbx);
       
       //! Create blueprint transaction
-      flBlueprint    = new();
+      flBlueprint   = new();
       
       flBlueprint.dataWidth     = pDataWidth/8;
       
@@ -59,16 +70,95 @@
       flBlueprint.itDelayHigh   = itDelayHigh;
             
       generator.blueprint       = flBlueprint;
+      
+      //! Create software driver
+      swFlDriver   = new("Software FrameLink Driver", transMbx, fl); 
+      
+      //! Create hardware sender
+      hwFlSender   = new("Hardware FrameLink Sender", 0, transMbx, inputMbx); 
     endfunction: new  
     
+   /*!
+    * Start controller's activity
+    */
+    task start();
+      // software framework
+      if (framework == 0) begin 
+        swFlDriver.setEnabled();
+      end  
+      
+      // hardware framework
+      else if (framework == 1) 
+        hwFlSender.sendStart();
+    endtask : start
+    
+   /*!
+    * Stop controller's activity
+    */     
+    task stop();
+      int i=0; 
+     
+      // software framework
+      if (framework == 0) begin
+        while (i<100) begin
+          if (swFlDriver.busy) i=0;
+          else i++;
+          @(fl.cb);     
+        end
+        swFlDriver.setDisabled();
+      end
+    
+      // hardware framework
+      else if (framework == 1) 
+        hwFlSender.sendStop();
+    endtask : stop   
+   
+   /*!
+    * Wait for written number of clocks 
+    */     
+    task waitFor(input int clocks);
+      // software framework  
+      if (framework == 0) begin  
+        swFlDriver.sendWait(clocks);
+      end   
+      
+      // hardware framework
+      else if (framework == 1) 
+        hwFlSender.sendWait(clocks);
+    endtask : waitFor
+    
+   /*! 
+    * Wait forever
+    */     
+    task waitForever();
+      // software framework
+      if (framework == 0) 
+        swFlDriver.setDisabled();     
+      
+      // hardware framework
+      else if (framework == 1) 
+        hwFlSender.sendWaitForever();
+    endtask : waitForever    
+   
    /*!
     * Send generated transaction 
     */
     task sendGenerated(int unsigned transCount);
-      
       //! run generator
       generator.setEnabled(transCount);
+      
+      // software framework
+      if (framework == 0) 
+        swFlDriver.sendTransactions(transCount);
+              
+      // hardware framework
+      if (framework == 1) 
+        hwFlSender.sendTransactions(transCount);
     endtask : sendGenerated 
-   
+    
  endclass : FrameLinkGenInputController
+  
+  
+ 
+
   

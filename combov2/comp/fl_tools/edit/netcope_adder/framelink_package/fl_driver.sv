@@ -64,84 +64,56 @@
     */
     task setEnabled();
       enabled = 1;  //! Driver Enabling
-      fork         
-        run();      //! Creating driver subprocess
-      join_none;    //! Don't wait for ending
+      @(fl.cb);  
     endtask : setEnabled
         
    /*! 
     * Disable Driver
     */
     task setDisabled();
-      enabled = 0;  //! Disable driver, after sending last transaction it ends
+      enabled = 0;  
     endtask : setDisabled
-    
-   /*! 
-    * Send Transaction - sends transaction to input FrameLink interface
-    *
-    * \param transaction - transaction from generator or direct transaction
-    */
-    task sendTransaction(FrameLinkTransaction transaction);
-      
-      //! Driver is sending transaction
-      busy = 1;
-      
-      //! Delay between transactions
-      if (transaction.enBtDelay) repeat (transaction.btDelay) @(fl.cb);
-
-      //! Send transaction
-      sendData(transaction);
-      
-      //! Set not ready 
-      fl.cb.SRC_RDY_N <= 1;
-    
-      //! Driver is not sending transaction
-      busy = 0;
-    endtask : sendTransaction
     
    /*
     * Private Class Methods
     */
+   
+   /*! 
+    * Send wait - waits for defined count of clock.    
+    */ 
+    task sendWait(int clocks);
+       //if (enabled && !busy) begin 
+         repeat (clocks) @(fl.cb);
+       //end
+    endtask : sendWait
     
    /*! 
-    * Run Driver - takes transactions from mailbox and sends it to interface
+    * Send transactions - takes transactions from mailbox and sends it 
+    * to interface.
     */  
-    task run();
+    task sendTransactions(input int transCount);
       FrameLinkTransaction transaction;
       Transaction to;
-      int wordsNum = 0;
-            
-      @(fl.cb);                        //! Wait for clock
+      int i=0;
       
-      while (enabled) begin            //! Repeat while enabled
+      while (enabled && (i < transCount)) begin 
+        //busy = 1; 
         transMbx.get(to);              //! Get transaction from mailbox 
-        $cast(transaction,to);   
-        sendTransaction(transaction);  //! Send transaction
-        transaction.display(inst);   //! Display transaction
+        $cast(transaction,to); 
+          
+        if (transaction.enBtDelay)     //! Delay between transactions
+          repeat (transaction.btDelay) 
+            @(fl.cb);
+
+        sendData(transaction);         //! Send transaction
+        fl.cb.SRC_RDY_N <= 1;          //! Set not ready
+        transaction.display(inst);     //! Display transaction
+        i++;
       end
-    endtask : run
+      
+      //busy = 0;
+    endtask : sendTransactions
     
-   /*!
-    * Wait for accept - waits for accepting of general bits word of transaction
-    */      
-    task waitForAccept();
-      while (fl.cb.DST_RDY_N) begin
-        @(fl.cb);
-      end;
-    endtask : waitForAccept
-    
-   /*!
-    * Random wait after every transaction word (Sets SRC_RDY_N to 1)
-    */    
-    task randomWait(FrameLinkTransaction tr, int part, int counter);
-      if (tr.enItDelay)
-        repeat (tr.itDelay[part][counter]) begin
-          fl.cb.SRC_RDY_N <= 1;
-          @(fl.cb); 
-        end
-      fl.cb.SRC_RDY_N <= 0;
-    endtask : randomWait 
-        
    /*!
     * Send transaction data 
     * 
@@ -200,5 +172,27 @@
         end
       end
     endtask : sendData
+    
+   /*!
+    * Wait for accept - waits for accepting of general bits word of transaction
+    */      
+    task waitForAccept();
+      while (fl.cb.DST_RDY_N) begin
+        @(fl.cb);
+      end;
+    endtask : waitForAccept
+    
+   /*!
+    * Random wait after every transaction word (Sets SRC_RDY_N to 1)
+    */    
+    task randomWait(FrameLinkTransaction tr, int part, int counter);
+      if (tr.enItDelay)
+        repeat (tr.itDelay[part][counter]) begin
+          fl.cb.SRC_RDY_N <= 1;
+          @(fl.cb); 
+        end
+      fl.cb.SRC_RDY_N <= 0;
+    endtask : randomWait 
+        
  endclass : FrameLinkDriver 
 

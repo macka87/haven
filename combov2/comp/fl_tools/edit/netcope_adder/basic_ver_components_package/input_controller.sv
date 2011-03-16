@@ -12,6 +12,8 @@
     * Public Class Atributes
     */ 
     tTransMbx  transMbx;   //! Transaction Mailbox
+    tTransMbx  inputMbx;   //! Input Transaction Mailbox
+    int        framework;
        
    /*
     * Public Class Methods
@@ -20,22 +22,30 @@
    /*! 
     * Constructor 
     */    
-    function new(); 
+    function new(int framework, tTransMbx inputMbx); 
       // Create mailbox
       this.transMbx  = new(0);
+      this.inputMbx  = inputMbx;
+      this.framework = framework;
     endfunction: new 
     
+   /*!
+    * Start controller's activity
+    */     
+   virtual task start();
+   endtask : start
+   
+   /*!
+    * Stop controller's activity
+    */     
+    virtual task stop();
+    endtask : stop  
+   
    /*!
     * Wait for written number of clocks 
     */     
     virtual task waitFor(input int clocks);
-    endtask : waitFor 
-   
-   /*!
-    * Stop driver's activity
-    */     
-    virtual task stop();
-    endtask : stop  
+    endtask : waitFor  
    
    /*! 
     * Wait forever

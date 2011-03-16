@@ -13,18 +13,7 @@
  * are received by 'transMbx'(Mailbox) property.
  *
  */
- class FrameLinkSender #();  
- 
-   /*
-    * Public Class Atributes
-    */
-    string    inst;      //! Sender identification
-    byte      id;        //! Sender ID number
-    bit       enabled;   //! Sender is enabled
-    bit       busy;      //! Sender is sending transaction
-    tTransMbx transMbx;  //! Transaction mailbox
-    tTransMbx inputMbx;  //! Input controller's mailbox 
-    
+ class FrameLinkSender extends Sender;  
    /*
     * Public Class Methods
     */
@@ -40,50 +29,30 @@
                   tTransMbx transMbx,
                   tTransMbx inputMbx 
                   ); 
-      this.id          = id;        //! Sender ID number
-      this.enabled     = 0;         //! Sender is disabled by default
-      this.busy        = 0;         //! Sender is not busy by default
-      this.transMbx    = transMbx;  //! Store pointer to mailbox
-      this.inputMbx    = inputMbx;  //! Store pointer to mailbox 
-      this.inst        = inst;      //! Store sender identifier
+      super.new(inst, id, transMbx, inputMbx);
     endfunction: new 
-    
-   /*! 
-    * Enable Sender - eable sender and runs sender process
-    */
-    task setEnabled();
-      enabled = 1;  //! Sender Enabling
-      fork         
-        run();      //! Creating sender subprocess
-      join_none;    //! Don't wait for ending
-    endtask : setEnabled
-        
-   /*! 
-    * Disable Sender
-    */
-    task setDisabled();
-      enabled = 0;  //! Disable Sender, after sending last transaction it ends
-    endtask : setDisabled
     
    /*
     * Private Class Methods
     */
-    
+ 
    /*! 
-    * Run Sender - takes transaction from mailbox, divides it to parts and adds 
-    * NetCOPE protocol header to each part.     
+    * Sends transactions - takes transaction from mailbox, divides it to parts
+    * and adds NetCOPE protocol header to each part.     
     */  
-    task run();
+    task sendTransactions(input int transCount);
       FrameLinkTransaction transaction;
       Transaction to;
+      int i=0;
       
-      while (enabled) begin               //! Repeat while enabled
+      while (i < transCount) begin  
         transMbx.get(to);                 //! Get transaction from mailbox 
         $cast(transaction,to);   
         transaction.display(inst);        //! Display transaction
         createNetCOPETrans(transaction);  //! Create NetCOPE transactions
-      end
-    endtask : run
+        i++;
+      end  
+    endtask : sendTransactions
     
    /*! 
     * Create data and control NetCOPE transactions from FrameLink transaction.      
@@ -133,7 +102,7 @@
       
       controlTrans.endpointID  = id;
       controlTrans.endpointID  = 0;  // identifies driver protocol
-      controlTrans.transType   = 3;  // control src_rdy transaction
+      controlTrans.transType   = 5;  // control src_rdy transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       

@@ -46,9 +46,11 @@
       $write("endpointProtocol: %x\n",endpointProtocol);
       
       if (transType == 0) $write("Data transaction\n");
-      else if (transType == 1) $write("Control Wait transaction\n");
-      else if (transType == 2) $write("Control Stop transaction\n");
-      else if (transType == 3) $write("Control SRC_RDY transaction\n");
+      else if (transType == 1) $write("Control START transaction\n");
+      else if (transType == 2) $write("Control WAIT transaction\n");
+      else if (transType == 3) $write("Control WAITFOREVER transaction\n");
+      else if (transType == 4) $write("Control STOP transaction\n");
+      else if (transType == 5) $write("Control SRC_RDY transaction\n");
       
       $write("ifcProtocol: %x\n",ifcProtocol);
       $write("ifcInfo: %x\n",ifcInfo);

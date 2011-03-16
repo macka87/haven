@@ -21,8 +21,8 @@
    /*! 
     * Constructor 
     */    
-    function new(); 
-      super.new();
+    function new(int framework, tTransMbx inputMbx); 
+      super.new(framework, inputMbx);
     endfunction: new 
     
    // Send generated transaction 

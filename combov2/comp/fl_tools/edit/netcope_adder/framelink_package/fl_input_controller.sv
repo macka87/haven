@@ -16,20 +16,34 @@
     * Public Class Methods
     */ 
     
-   // Wait for written number of clocks 
-   virtual task waitFor(input int clocks);
-   endtask : waitFor 
+   /*!
+    * Start controller's activity
+    */     
+   virtual task start();
+   endtask : start
    
-   // Stop driver's activity
-   virtual task stop();
-   endtask : stop  
+   /*!
+    * Stop controller's activity
+    */     
+    virtual task stop();
+    endtask : stop  
+    
+   /*!
+    * Wait for written number of clocks 
+    */     
+    virtual task waitFor(input int clocks);
+    endtask : waitFor  
    
-   // Wait forever
-   virtual task waitForever();
-   endtask : waitForever    
+   /*! 
+    * Wait forever
+    */     
+    virtual task waitForever();
+    endtask : waitForever    
    
-   // Send transaction 
-   virtual task send(input Transaction trans);
-   endtask : send 
+   /*! 
+    * Send transaction
+    */      
+    virtual task send(input Transaction trans);
+    endtask : send 
    
  endclass : FrameLinkInputController  
