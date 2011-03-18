@@ -1,67 +1,59 @@
-/*
- * transaction_table.sv: Transaction Table
- * Copyright (C) 2007 CESNET
- * Author(s): Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- * 3. Neither the name of the Company nor the names of its contributors
- *    may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- *
- * This software is provided ``as is'', and any express or implied
- * warranties, including, but not limited to, the implied warranties of
- * merchantability and fitness for a particular purpose are disclaimed.
- * In no event shall the company or contributors be liable for any
- * direct, indirect, incidental, special, exemplary, or consequential
- * damages (including, but not limited to, procurement of substitute
- * goods or services; loss of use, data, or profits; or business
- * interruption) however caused and on any theory of liability, whether
- * in contract, strict liability, or tort (including negligence or
- * otherwise) arising in any way out of the use of this software, even
- * if advised of the possibility of such damage.
- *
- *
- *
- * TODO:
- *
- *
+/* *****************************************************************************
+ * Project Name: Software Framework for Functional Verification 
+ * File Name:    Transaction Table Class
+ * Description: 
+ * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
+ * Date:         27.2.2011 
+ * ************************************************************************** * 
+
+/*!
+ * Transaction's comparison rules 
+ *  
+ * Transaction table behaviour - it compares all transactions (FIFO) or first
+ * transaction (FIRST_ONLY) in the table with coming transaction
  */
+ typedef enum {TR_TABLE_FIFO, TR_TABLE_FIRST_ONLY} tTrTableBehav;
 
-  // Transaction table behaviour
-  typedef enum {TR_TABLE_FIFO, TR_TABLE_FIRST_ONLY} tTrTableBehav;
-
-  // --------------------------------------------------------------------------
-  // -- Transaction Table
-  // --------------------------------------------------------------------------
-  class TransactionTable #(int behav = TR_TABLE_FIFO, 
-                           type TransType = Transaction);
-     // ---------------------
-     // -- Class Variables --
-     // ---------------------
-     TransType tr_table[$];         // tr_table of transactions
-     semaphore sem;                 // Semaphore solve problems with 
-                                       // concurent acces to TransactionTable        
-     integer added;                 // Items added to TransactionTable
-     integer removed;               // Items removed from TransactionTable
+/*!
+ * Transaction Table Class 
+ *  
+ * This class contains transaction table and adds and removes transactions from 
+ * the table according to special rules defined by tTrTableBehav. 
+ * 
+ * \param behav     - selected comparison rule
+ * \param TransType - type of transaction that is stored into the table     
+ */
+ class TransactionTable #(int behav = TR_TABLE_FIFO, 
+                          type TransType = Transaction);
+   
+   /*
+    * Public Class Atributes
+    */
+    TransType tr_table[$];  //! Table of transactions
+    semaphore sem;          //! Semaphore solves problems with concurent acces
+    integer added;          //! Items added to transaction table
+    integer removed;        //! Items removed from transaction table
     
-    // -- Constructor ---------------------------------------------------------
-    // Create a class 
-    function new ();
+   /*
+    * Public Class Methods
+    */
+
+   /*! 
+    * Constructor - creates transaction table object  
+    */
+    function new();
       sem = new(1);
       added = 0;
       removed = 0;
     endfunction
+   
+   /*
+    * Private Class Methods
+    */  
     
-    // ------------------------------------------------------------------------
-    // Add item to the table
+   /*! 
+    * Adds transaction items to the transaction table
+    */    
     task add(TransType transaction);
       lock();
       this.tr_table.push_back(transaction);
@@ -69,13 +61,15 @@
       unlock();
     endtask: add
     
-   // ------------------------------------------------------------------------
-   //Remove item from the table
-   task remove(TransType transaction, ref bit status, input int kind = -1);
+   /*! 
+    * Remove transaction items from the transaction table
+    */ 
+    task remove(TransType transaction, ref bit status, input int kind = -1);
       string diff;
       status=0;
       lock();
 
+      // compares all transactions in the table with coming transaction
       if (behav==TR_TABLE_FIFO)begin  
       for(integer i=0; i < this.tr_table.size; i++) begin 
         if (this.tr_table[i].compare(transaction,diff, kind)==1) begin
@@ -86,6 +80,8 @@
            end
         end
       end
+      
+      // compares first transaction in the table with coming transaction
       if (behav==TR_TABLE_FIRST_ONLY && tr_table.size > 0) begin
           if (this.tr_table[0].compare(transaction,diff, kind)==1) begin
           this.tr_table.delete(0);
@@ -97,21 +93,23 @@
       unlock();     
    endtask: remove 
  
-    
-    // ------------------------------------------------------------------------
-    // Lock scoreboard 
+   /*! 
+    * Lock scoreboard
+    */ 
     task lock();
-       sem.get(1);                     // Semaphore is set to lock 
+       sem.get(1);  //! Semaphore is set to lock 
     endtask: lock
 
-    // ------------------------------------------------------------------------
-    // Unlock scoreboard
+   /*! 
+    * Unlock scoreboard
+    */
     task unlock();
-       sem.put(1);                     // Semaphore is set to unlock
+       sem.put(1);  //! Semaphore is set to unlock
     endtask: unlock
     
-    // ------------------------------------------------------------------------
-    // Display the actual state of transaction table
+   /*! 
+    * Display the actual state of transaction table
+    */
     task display(integer full=1, string inst = "");
        lock();
        $write("------------------------------------------------------------\n");
@@ -120,10 +118,13 @@
        $write("Size: %d\n", tr_table.size);
        $write("Items added: %d\n", added);
        $write("Items removed: %d\n", removed);
-       if (full)
+       $write("\n");
+       if (full) begin
+          $write("!!! REMAINING TRANSACTIONS !!!\n");
           foreach(tr_table[i]) tr_table[i].display();
+       end   
        $write("------------------------------------------------------------\n");
        unlock();
     endtask: display
-endclass : TransactionTable
+ endclass : TransactionTable
 

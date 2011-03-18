@@ -14,5 +14,7 @@ package sv_netcope_adder_pkg;
 
   import sv_basic_comp_pkg::*; // Import SV basic verification components 
   import sv_fl_pkg::*;         // Import SV FrameLink classes
+  
+  `include "scoreboard.sv"
 
 endpackage : sv_netcope_adder_pkg

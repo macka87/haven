@@ -1,38 +1,37 @@
 /* *****************************************************************************
  * Project Name: Software Framework for Functional Verification 
- * File Name:    Input Callback Class
+ * File Name:    Output Callback Class
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011 
  * ************************************************************************** *
  
 /*!
- * \brief Driver Callback 
+ * \brief Output Callback 
  * 
  * This is a abstract class for creating objects which get benefits from
- * function callback. This object can be used with Driver class. Inheritence 
- * from this basic class is neaded for functionality.
+ * function callback. Inheritence from this basic class is neaded for 
+ * functionality.
  */
- class InputCbs;
-    
+ class OutputCbs;
+   
    /*
     * Private Class Methods
     */
 
    /*! 
-    * Preprocessing call - function is called before a transaction is sended to
-    * DUT. It is usefull for transaction modifications.
-    */     
-    virtual task pre_tr (ref Transaction transaction, string inst);
+    * Preprocessing call 
+    */
+    virtual task pre_tr(ref Transaction transaction, byte id);
       // By default, callback does nothing
-    endtask: pre_tr
+    endtask : pre_tr
     
    /*! 
     * Postprocessing call - function is called before a transaction is sended to
     * scoreboard. It is usefull for transaction modifications.
     */
-    virtual task post_tr(Transaction transaction, string inst);
+    virtual task post_tr(Transaction transaction, byte id);
       // By default, callback does nothing
     endtask: post_tr
- endclass : InputCbs
+ endclass : OutputCbs
 

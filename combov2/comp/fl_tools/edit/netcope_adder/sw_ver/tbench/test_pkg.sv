@@ -40,8 +40,23 @@ package test_pkg;
    // Low/High limit of "delay inside transaction" values
    parameter byte DRIVER_IT_DELAY_LOW    = 0;
    parameter byte DRIVER_IT_DELAY_HIGH   = 10;
+   
+   // SOFTWARE RESPONDER PARAMETERS 
+   // Enable/Disable weights of "delay between transactions" 
+   parameter byte RESPONDER_BT_DELAY_EN_WT  = 0;       
+   parameter byte RESPONDER_BT_DELAY_DI_WT  = 10;
+   // Low/High limit of "delay between transactions" value
+   parameter byte RESPONDER_BT_DELAY_LOW    = 0;
+   parameter byte RESPONDER_BT_DELAY_HIGH   = 10;
+   // Enable/Disable weights of "delays inside transaction"
+   parameter byte RESPONDER_IT_DELAY_EN_WT  = 0;
+   parameter byte RESPONDER_IT_DELAY_DI_WT  = 10;
+   // Low/High limit of "delay inside transaction" values
+   parameter byte RESPONDER_IT_DELAY_LOW    = 0;
+   parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 2;  // Count of transactions
-   parameter RNG_SEED         = 20;  // Seed for PRNG
+   parameter TRANSACTION_COUT = 4;  // Count of transactions
+   parameter SEED1            = 1;  // Seed for PRNG
+   parameter SEED2            = 2;  // Seed for PRNG
 endpackage

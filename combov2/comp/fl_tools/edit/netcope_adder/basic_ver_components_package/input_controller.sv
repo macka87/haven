@@ -14,7 +14,8 @@
     tTransMbx  transMbx;   //! Transaction Mailbox
     tTransMbx  inputMbx;   //! Input Transaction Mailbox
     int        framework;
-       
+    InputCbs   cbs[$];   //! Input callback list 
+    
    /*
     * Public Class Methods
     */ 
@@ -28,7 +29,7 @@
       this.inputMbx  = inputMbx;
       this.framework = framework;
     endfunction: new 
-    
+   
    /*!
     * Start controller's activity
     */     

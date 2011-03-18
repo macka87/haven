@@ -72,11 +72,19 @@
       generator.blueprint       = flBlueprint;
       
       //! Create software driver
-      swFlDriver   = new("Software FrameLink Driver", transMbx, fl); 
-      
+      swFlDriver   = new("Software FrameLink Driver", 0, transMbx, fl); 
+           
       //! Create hardware sender
       hwFlSender   = new("Hardware FrameLink Sender", 0, transMbx, inputMbx); 
     endfunction: new  
+    
+   /*! 
+    * Set Callback - callback object into List 
+    */
+    virtual function void setCallbacks(InputCbs cbs);
+      if (framework == 0)      swFlDriver.setCallbacks(cbs); 
+      else if (framework == 1) hwFlSender.setCallbacks(cbs); 
+    endfunction : setCallbacks 
     
    /*!
     * Start controller's activity
@@ -100,11 +108,7 @@
      
       // software framework
       if (framework == 0) begin
-        while (i<100) begin
-          if (swFlDriver.busy) i=0;
-          else i++;
-          @(fl.cb);     
-        end
+        $write("DISABLING DRIVER IN CONTROLLER\n");
         swFlDriver.setDisabled();
       end
     
@@ -149,11 +153,11 @@
       
       // software framework
       if (framework == 0) 
-        swFlDriver.sendTransactions(transCount);
+        swFlDriver.sendTransactions(transCount);  
               
       // hardware framework
       if (framework == 1) 
-        hwFlSender.sendTransactions(transCount);
+        hwFlSender.sendTransactions(transCount); 
     endtask : sendGenerated 
     
  endclass : FrameLinkGenInputController

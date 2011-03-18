@@ -17,6 +17,7 @@ if { $ARCHGRP == "FULL" } {
   ]
  
   # verification files
+  set MOD "$MOD $ENTITY_BASE/tbench/sv_netcope_adder_pkg.sv"
   set MOD "$MOD $ENTITY_BASE/tbench/test_pkg.sv"
   set MOD "$MOD $ENTITY_BASE/tbench/dut.sv"
   set MOD "$MOD $ENTITY_BASE/tbench/test.sv"  

@@ -1,169 +1,157 @@
-/*
- * fl_responder_pkg.sv: FrameLink Responder
- * Copyright (C) 2008 CESNET
- * Author(s): Marek Santa <xsanta06@stud.fit.vutbr.cz>
- *            Martin Kosek <kosek@liberouter.org>
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- * 3. Neither the name of the Company nor the names of its contributors
- *    may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- *
- * This software is provided ``as is'', and any express or implied
- * warranties, including, but not limited to, the implied warranties of
- * merchantability and fitness for a particular purpose are disclaimed.
- * In no event shall the company or contributors be liable for any
- * direct, indirect, incidental, special, exemplary, or consequential
- * damages (including, but not limited to, procurement of substitute
- * goods or services; loss of use, data, or profits; or business
- * interruption) however caused and on any theory of liability, whether
- * in contract, strict liability, or tort (including negligence or
- * otherwise) arising in any way out of the use of this software, even
- * if advised of the possibility of such damage.
- *
- * $Id$
- *
- * TODO:
- *
+/* *****************************************************************************
+ * Project Name: Software Framework for Functional Verification 
+ * File Name:    Software FrameLink Responder Class
+ * Description: 
+ * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
+ * Date:         27.2.2011 
+ * ************************************************************************** */
+
+/*!
+ * This class is responsible for random intra- and intertransaction's dealys. 
+ * Unit must be enabled by "setEnable()" function call. Random delaying can be
+ * stoped by "setDisable()" function call.
+ * 
+ * \param pDataWidth - width of transaction data
+ * \param pDremWidth - drem width  
  */
- 
-  // --------------------------------------------------------------------------
-  // -- Frame Link Responder Class
-  // --------------------------------------------------------------------------
-  /* This class is responsible for random intra- and intertransaction's dealys. 
-   * It's used by class monitor. Unit must be enabled by "setEnable()" function
-   * call. Random delaying can be stoped by "setDisable()" function call.
-   */
-  class FrameLinkResponder #(int pDataWidth=32, int pDremWidth=2);
+ class FrameLinkResponder #(int pDataWidth=32, int pDremWidth=2);
     
-    // -- Private Class Atributes --
-    string  inst;                            // Monitor identification
-    bit     enabled;                         // Monitor is enabled
+   /*
+    * Public Class Atributes
+    */
+    string  inst;     //! Responder identification
+    byte    id;       //! Responder identification number
+    bit     enabled;  //! Responder is enabled
     virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) fl;
     
-    // ----
-    rand bit enRxDelay;   // Enable/Disable delays between transactions
-      // Enable/Disable delays between transaction (weights)
-      int rxDelayEn_wt             = 1; 
-      int rxDelayDisable_wt        = 3;
-    rand integer rxDelay; // Delay between transactions
-      // Delay between transactions limits
-      int rxDelayLow               = 0;
-      int rxDelayHigh              = 3;
-    // ----
-
-
-    // ----
-    rand bit enInsideRxDelay;   // Enable/Disable delays inside transaction
-      // Enable/Disable delays inside transaction weights
-      int insideRxDelayEn_wt       = 1; 
-      int insideRxDelayDisable_wt  = 3;
-    rand integer insideRxDelay; // Delay inside transaction 
-      // Minimal/Maximal delay between transaction words
-      int insideRxDelayLow         = 0;
-      int insideRxDelayHigh        = 3;
-    // ----
-
-    // -- Constrains --
-    constraint cDelays {
-      enRxDelay dist { 1'b1 := rxDelayEn_wt,
-                       1'b0 := rxDelayDisable_wt
-                     };
-
-      rxDelay inside {
-                      [rxDelayLow:rxDelayHigh]
-                     };
-
-      enInsideRxDelay dist { 1'b1 := insideRxDelayEn_wt,
-                             1'b0 := insideRxDelayDisable_wt
-                           };
-                     
-      insideRxDelay inside {
-                            [insideRxDelayLow:insideRxDelayHigh]
-                           };               
-      }
-
+    //! --- RANDOMIZATION OF DELAY PARAMETERS ---
     
-    // -- Public Class Methods --
+    //! Enable/Disable delays "between transactions" according to weights
+    rand bit enBtDelay;   
+         byte btDelayEn_wt  = 1; 
+         byte btDelayDi_wt  = 3;
 
-    // -- Constructor ---------------------------------------------------------
+    //! Value of delay "between transactions" randomized inside boundaries
+    rand byte btDelay; 
+         byte btDelayLow    = 0;
+         byte btDelayHigh   = 3;
+    
+    //! Enable/Disable delays "inside transaction" according to weights 
+    rand bit enItDelay;     
+         byte itDelayEn_wt  = 1; 
+         byte itDelayDi_wt  = 3;
+    
+    //! Value of delay "inside transaction" randomized inside boundaries  
+    rand byte itDelay;  
+         byte itDelayLow    = 0;
+         byte itDelayHigh   = 3;
+    
+    //! Constraints for randomized values 
+    constraint cDelay1 {
+      enBtDelay dist { 1'b1 := btDelayEn_wt,
+                       1'b0 := btDelayDi_wt
+                     };
+    };                 
+
+    constraint cDelay2 {
+      btDelay inside {
+                      [btDelayLow:btDelayHigh]
+                     };
+    };                 
+
+    constraint cDelay3 {
+      enItDelay dist { 1'b1 := itDelayEn_wt,
+                       1'b0 := itDelayDi_wt
+                     };
+    };                 
+     
+    constraint cDelay4 {    
+      itDelay inside {
+                      [itDelayLow:itDelayHigh]
+                     };               
+    }; 
+
+   /*
+    * Public Class Methods
+    */
+
+   /*!
+    * Constructor - creates responder object 
+    *
+    * \param inst     - responder instance name
+    * \param fl       - output FrameLink interface
+    */
     function new ( string inst,
+                   byte id,
                    virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) fl
                    );
-      this.enabled     = 0;           // Monitor is disabled by default   
-      this.fl          = fl;          // Store pointer interface 
-      this.inst        = inst;        // Store driver identifier
+      this.enabled     = 0;     //! Responder is disabled by default   
+      this.fl          = fl;    //! Store pointer interface 
+      this.inst        = inst;  //! Store responder identifier
+      this.id          = id;    //! Store responder identification number  
       
-      // Setting default values for Frame Link interface
-      fl.cb.DST_RDY_N <= 1;           // Ready ONLY IF enabled
+      fl.cb.DST_RDY_N <= 1;     //! Ready ONLY IF enabled
     endfunction
     
-    // -- Enable Responder ----------------------------------------------------
-    // Enable responder and runs responder process
+   /*! 
+    * Enable Responder - eable responder and runs responder process
+    */
     task setEnabled();
-      enabled = 1; // Responder Enabling
+      enabled = 1;  //! Responder Enabling
       fork         
-        run();     // Creating responder subprocess
-      join_none;   // Don't wait for ending
+        run();      //! Creating responder subprocess
+      join_none;    //! Don't wait for ending
     endtask : setEnabled
         
-    // -- Disable responder ---------------------------------------------------
-    // Disable responder
+   /*! 
+    * Disable Driver
+    */
     task setDisabled();
-      enabled = 0; // Disable responder, after receiving last transaction
+      $write("DISABLING RESPONDER\n");
+      enabled = 0;  //! Disable responder, after receiving last transaction
     endtask : setDisabled 
     
-    // -- Run Responder -------------------------------------------------------
-    // 
+   /*
+    * Private Class Methods
+    */
+    
+   /*!
+    * Run Responder 
+    */
     task run();
       
-      // Repeat while enabled
       while (enabled) begin
-        
-        // destination ready active for one cycle
-        fl.cb.DST_RDY_N <= 0;
+        fl.cb.DST_RDY_N <= 0;  //! destination ready active for one cycle
         @(fl.cb);
-        
-        // randomize waits
-        assert(randomize());
+        assert(randomize());   //! randomize delays
 
-        if (fl.cb.EOF_N == 0 && fl.cb.SRC_RDY_N == 0)   // delay between frames
-          waitRxDelay();
-        else                                            // delay inside frame
-          waitInsideRxDelay();
+        if (fl.cb.EOF_N == 0 && fl.cb.SRC_RDY_N == 0)   
+          waitBtDelay();       //! between transaction delay
+        else                                           
+          waitItDelay();       //! inside transaction delay
       end
-
       fl.cb.DST_RDY_N <= 1;
     endtask : run
-    
-    // -- Not ready between transactions --------------------------------------
-    // Random wait between sending transactions (Set DST_RDY_N to 1)
-    task waitRxDelay();
-      
-      if (enRxDelay)
-        repeat (rxDelay) begin
+   
+   /*!
+    * Random wait between sending transactions (Set DST_RDY_N to 1)
+    */ 
+    task waitBtDelay();
+      if (enBtDelay)
+        repeat (btDelay) begin
           fl.cb.DST_RDY_N <= 1;
           @(fl.cb);
         end
-    endtask : waitRxDelay
-        
-    // -- Random wait ---------------------------------------------------------
-    // Random wait during sending transaction (Set DST_RDY_N to 1)
-    task waitInsideRxDelay();
-
-      if (enInsideRxDelay)
-        repeat (insideRxDelay) begin
+    endtask : waitBtDelay
+   
+   /*!
+    * Random wait during sending transaction (Set DST_RDY_N to 1)
+    */     
+    task waitItDelay();
+      if (enItDelay)
+        repeat (itDelay) begin
           fl.cb.DST_RDY_N <= 1;
           @(fl.cb);
         end
-    endtask : waitInsideRxDelay
-    
-  endclass: FrameLinkResponder
+    endtask : waitItDelay
+ endclass: FrameLinkResponder

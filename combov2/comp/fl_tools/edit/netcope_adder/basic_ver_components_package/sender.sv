@@ -21,7 +21,8 @@
     string    inst;      //! Sender identification
     byte      id;        //! Sender ID number
     tTransMbx transMbx;  //! Transaction mailbox
-    tTransMbx inputMbx;  //! Input controller's mailbox 
+    tTransMbx inputMbx;  //! Input controller's mailbox
+    InputCbs  cbs[$];    //! Sender callback list  
     
    /*
     * Public Class Methods
@@ -43,6 +44,13 @@
       this.transMbx    = transMbx;  //! Store pointer to mailbox
       this.inputMbx    = inputMbx;  //! Store pointer to mailbox 
     endfunction: new 
+    
+   /*! 
+    * Set Sender Callback - callback object into List 
+    */
+    virtual function void setCallbacks(InputCbs cbs);
+      this.cbs.push_back(cbs);
+    endfunction : setCallbacks 
     
    /*
     * Private Class Methods

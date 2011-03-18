@@ -47,6 +47,10 @@
       
       while (i < transCount) begin  
         transMbx.get(to);                 //! Get transaction from mailbox 
+        
+        foreach (cbs[i])                  //! Call transaction postprocessing
+          cbs[i].post_tr(to, id);  
+          
         $cast(transaction,to);   
         transaction.display(inst);        //! Display transaction
         createNetCOPETrans(transaction);  //! Create NetCOPE transactions

@@ -4,7 +4,7 @@
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011 
- * ************************************************************************** * 
+ * ************************************************************************** */
 
 /*!
  * This class is responsible for generating signals to FrameLink
@@ -16,16 +16,12 @@
  * \param pDataWidth - width of transaction data
  * \param pDremWidth - drem width   
  */
- class FrameLinkDriver #(int pDataWidth=32, int pDremWidth=2);
+ class FrameLinkDriver #(int pDataWidth=32, int pDremWidth=2)
+       extends Driver;  
 
    /*
     * Public Class Atributes
     */
-    string    inst;      //! Driver identification
-    bit       enabled;   //! Driver is enabled
-    bit       busy;      //! Driver is sending transaction
-    tTransMbx transMbx;  //! Transaction mailbox
-    
     //! FrameLink interface
     virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl;
     
@@ -38,17 +34,15 @@
     *
     * \param inst     - driver instance name
     * \param transMbx - transaction mailbox   
-    * \param fl       - inoput FrameLink interface
+    * \param fl       - input FrameLink interface
     */           
     function new (string inst, 
+                  byte id,
                   tTransMbx transMbx, 
                   virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl
                   ); 
-      this.enabled     = 0;         //! Driver is disabled by default
-      this.busy        = 0;         //! Driver is not busy by default   
-      this.fl          = fl;        //! Store pointer interface 
-      this.transMbx    = transMbx;  //! Store pointer to mailbox
-      this.inst        = inst;      //! Store driver identifier
+      super.new(inst, id, transMbx);
+      this.fl = fl;  //! Store pointer interface 
       
       this.fl.cb.DATA      <= 0;
       this.fl.cb.DREM      <= 0;
@@ -63,6 +57,7 @@
     * Enable Driver - eable driver and runs driver process
     */
     task setEnabled();
+      $write("ENABLING DRIVER\n");
       enabled = 1;  //! Driver Enabling
       @(fl.cb);  
     endtask : setEnabled
@@ -71,6 +66,7 @@
     * Disable Driver
     */
     task setDisabled();
+      $write("DISABLING DRIVER\n");
       enabled = 0;  
     endtask : setDisabled
     
@@ -82,9 +78,7 @@
     * Send wait - waits for defined count of clock.    
     */ 
     task sendWait(int clocks);
-       //if (enabled && !busy) begin 
-         repeat (clocks) @(fl.cb);
-       //end
+       repeat (clocks) @(fl.cb);
     endtask : sendWait
     
    /*! 
@@ -97,8 +91,11 @@
       int i=0;
       
       while (enabled && (i < transCount)) begin 
-        //busy = 1; 
         transMbx.get(to);              //! Get transaction from mailbox 
+        
+        foreach (cbs[i])               //! Call transaction preprocessing
+          cbs[i].pre_tr(to, id);
+      
         $cast(transaction,to); 
           
         if (transaction.enBtDelay)     //! Delay between transactions
@@ -106,12 +103,14 @@
             @(fl.cb);
 
         sendData(transaction);         //! Send transaction
+        
+        foreach (cbs[i])               //! Call transaction postprocessing
+          cbs[i].post_tr(to, id);
+      
         fl.cb.SRC_RDY_N <= 1;          //! Set not ready
         transaction.display(inst);     //! Display transaction
         i++;
       end
-      
-      //busy = 0;
     endtask : sendTransactions
     
    /*!

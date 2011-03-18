@@ -4,7 +4,7 @@
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011 
- * ************************************************************************** *  
+ * ************************************************************************** */  
  
 /*!
  * \brief Driver
@@ -20,9 +20,10 @@
     * Public Class Atributes
     */
     string    inst;      //! Driver identification
+    byte      id;        //! Driver ID number
     bit       enabled;   //! Driver enabling
-    bit       busy;      //! Driver is sending transaction
     tTransMbx transMbx;  //! Transaction mailbox
+    InputCbs  cbs[$];    //! Driver callback list 
     
    /*
     * Public Class Methods
@@ -32,47 +33,56 @@
     * Constructor - creates driver object  
     *
     * \param inst     - driver instance name
+    * \param id       - identification number     
     * \param transMbx - transaction mailbox     
     */     
-    function new (string inst, tTransMbx transMbx);
-      this.enabled     = 0;         //! Driver is disabled by default
-      this.busy        = 0;         //! Driver is not busy by default   
-      this.transMbx    = transMbx;  //! Store pointer to mailbox
+    function new (string inst, 
+                  byte id,
+                  tTransMbx transMbx);
       this.inst        = inst;      //! Store driver identifier
+      this.id          = id;        //! Driver ID number
+      this.enabled     = 0;         //! Driver is disabled by default
+      this.transMbx    = transMbx;  //! Store pointer to mailbox
     endfunction: new          
+   
+   /*! 
+    * Set Driver Callback - put callback object into List 
+    */
+    virtual function void setCallbacks(InputCbs cbs);
+      this.cbs.push_back(cbs);
+    endfunction : setCallbacks
     
    /*! 
     * Enable Driver - eable driver and runs driver process
     */     
     virtual task setEnabled();
-      enabled = 1;  //! Driver Enabling
-      fork         
-         run();     //! Creating driver subprocess
-      join_none;    //! Don't wait for ending
+      //enabled = 1;  //! Driver Enabling
+      //fork         
+      //   run();     //! Creating driver subprocess
+      //join_none;    //! Don't wait for ending
     endtask : setEnabled
         
    /*! 
     * Disable Driver
     */      
     virtual task setDisabled();
-      enabled = 0;  //! Disable Driver
+      //enabled = 0;  //! Disable Driver
     endtask : setDisabled
 
-   /*! 
-    * Send Transaction - sends transaction to input interface
-    *
-    * \param transaction - transaction from generator or direct transaction
-    */
-    task sendTransaction(Transaction transaction);
-    endtask : sendTransaction
-    
    /*
     * Private Class Methods
     */
-    
+
    /*! 
-    * Run Driver - takes transactions from mailbox and sends it to interface
-    */      
-    virtual task run();
-    endtask : run
+    * Send wait - waits for defined count of clock.    
+    */ 
+    virtual task sendWait(int clocks);
+    endtask : sendWait
+   
+   /*! 
+    * Send transactions - takes transactions from mailbox and sends it 
+    * to interface.
+    */
+    virtual task sendTransactions(input int transCount);
+    endtask : sendTransactions
  endclass : Driver
