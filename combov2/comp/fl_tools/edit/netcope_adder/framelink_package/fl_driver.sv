@@ -151,6 +151,7 @@
 
             m=pDataWidth;
           end
+          else fl.cb.DREM <= (pDataWidth/8)-1;
 
           //! when data word is ready to send
           if (m==pDataWidth) begin
