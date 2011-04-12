@@ -72,6 +72,7 @@ signal sig_part_width          : std_logic_vector(HEADER_WIDTH-1 downto 0); --?
 signal sig_part_sum            : std_logic_vector(HEADER_WIDTH-1 downto 0); --?
 signal sig_reg_out             : std_logic_vector(HEADER_WIDTH-1 downto 0); --?
 signal sig_header_rx_data      : std_logic_vector(HEADER_WIDTH-1 downto 0);
+signal sig_header_rx_rem       : std_logic_vector(log2(HEADER_WIDTH/8) - 1 downto 0);
 signal sig_rx_src_and_dst_rdy  : std_logic;
 signal sig_header_rx_src_rdy_n : std_logic; 
 signal sig_header_rx_dst_rdy_n : std_logic; 
@@ -115,7 +116,7 @@ begin
 
       -- Write interface
       RX_DATA        => sig_header_rx_data,
-      RX_REM         => (others => '0'),
+      RX_REM         => sig_header_rx_rem,
       RX_SRC_RDY_N   => sig_header_rx_src_rdy_n, 
       RX_DST_RDY_N   => sig_header_rx_dst_rdy_n,
       RX_SOP_N       => '0',
@@ -202,13 +203,14 @@ begin
       sig_part_sum <= (others => '0');
 
       case RX_SOF_N is
-         when '0'    => sig_part_sum <= (others => '0'); 
+         when '0'    => sig_part_sum <= conv_std_logic_vector((DATA_WIDTH/8), HEADER_WIDTH); 
          when '1'    => sig_part_sum <= sig_reg_out;
          when others => null;
       end case;   
    end process;
    
    sig_header_rx_data <= sig_part_sum + sig_part_width;
+   sig_header_rx_rem  <= (others => '0');
    
    reg : process (CLK)
    begin
