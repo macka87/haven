@@ -150,11 +150,9 @@
       string tableLabel;
       int i;
        
-      $write("BEFORE removing\n"); 
       // Gets number of transaction table from ID number
       sc_table[id].remove(transaction, status);
-      $write("AFTER removing\n"); 
-      
+            
       if (status==0)begin
          $write("STATUS==0\n");
          $write("Unknown transaction received from monitor %d\n", inst);

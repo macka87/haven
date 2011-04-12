@@ -18,4 +18,5 @@ package sv_basic_comp_pkg;
   `include "output_cbs.sv"
   `include "monitor.sv"
   `include "transaction_table.sv"
+  `include "lfsr.sv"
 endpackage : sv_basic_comp_pkg

@@ -16,6 +16,7 @@ proc fl_rx {NAME PATH} {
      add_wave "-noupdate  -label RX_EOP_N"        $PATH/RX_EOP_N
      add_wave "-noupdate  -label RX_SRC_RDY_N"    $PATH/RX_SRC_RDY_N
      add_wave "-noupdate  -label RX_DST_RDY_N"    $PATH/RX_DST_RDY_N
+     add_wave "-noupdate  -hex -label sig_header_rx_data"    $PATH/sig_header_rx_data
 }
 
 proc fl_tx {NAME PATH} {
@@ -28,4 +29,14 @@ proc fl_tx {NAME PATH} {
      add_wave "-noupdate  -label TX_EOP_N"        $PATH/TX_EOP_N
      add_wave "-noupdate  -label TX_SRC_RDY_N"    $PATH/TX_SRC_RDY_N
      add_wave "-noupdate  -label TX_DST_RDY_N"    $PATH/TX_DST_RDY_N
+}
+
+proc cmp {NAME PATH} {
+    add wave -divider "$NAME"      
+     add_wave "-noupdate  -hex -label is_header"  $PATH/is_header
+     add_wave "-noupdate  -hex -label sig_frame_tx_src_rdy_n"  $PATH/sig_frame_tx_src_rdy_n
+     add_wave "-noupdate  -hex -label TX_DST_RDY_N"  $PATH/TX_DST_RDY_N
+     add_wave "-noupdate  -hex -label sig_frame_tx_eof_n"  $PATH/sig_frame_tx_eof_n
+     add_wave "-noupdate  -hex -label state_reg"  $PATH/state_reg
+     add_wave "-noupdate  -hex -label state_next"  $PATH/state_next
 }

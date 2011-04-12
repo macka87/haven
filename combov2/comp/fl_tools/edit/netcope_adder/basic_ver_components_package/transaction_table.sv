@@ -120,8 +120,10 @@
        $write("Items removed: %d\n", removed);
        $write("\n");
        if (full) begin
-          $write("!!! REMAINING TRANSACTIONS !!!\n");
-          foreach(tr_table[i]) tr_table[i].display();
+          if (tr_table.size != 0) begin
+            $write("!!! REMAINING TRANSACTIONS !!!\n");
+            foreach(tr_table[i]) tr_table[i].display();
+          end  
        end   
        $write("------------------------------------------------------------\n");
        unlock();

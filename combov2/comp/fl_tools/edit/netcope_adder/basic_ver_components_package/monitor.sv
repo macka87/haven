@@ -63,7 +63,6 @@
     * Disable Monitor
     */
     virtual task setDisabled();
-      $write("DISABLING MONITOR\n");
       enabled = 0;  //! Disable monitor, after receiving last transaction
     endtask : setDisabled
 

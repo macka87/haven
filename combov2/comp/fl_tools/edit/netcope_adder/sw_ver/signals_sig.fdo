@@ -22,6 +22,7 @@ set PATH "testbench/DUT_U/VHDL_DUT_U"
 # Set DUT interfaces 
 fl_rx  FL_RX  $PATH
 fl_tx  FL_TX  $PATH
+cmp    CMP    $PATH
 
 restart -f
 run -all

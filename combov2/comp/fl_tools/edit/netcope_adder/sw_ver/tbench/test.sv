@@ -70,7 +70,11 @@ program TEST (
      flMonitor.setCallbacks(scoreboard.outputCbs);  
      
      //! Create Responder 
-     flResponder  = new("FrameLink Responder", 0, TX);           
+     flResponder  = new("FrameLink Responder", 0, TX);
+       flResponder.btDelayLow   = RESPONDER_BT_DELAY_LOW;
+       flResponder.btDelayHigh  = RESPONDER_BT_DELAY_HIGH;
+       flResponder.itDelayLow   = RESPONDER_IT_DELAY_LOW;
+       flResponder.itDelayHigh  = RESPONDER_IT_DELAY_HIGH;             
   endtask : createEnvironment
 
   /*
@@ -98,7 +102,7 @@ program TEST (
     i = 0;
     while (i<SIM_DELAY) begin
       busy = 0;
-      if (flMonitor.busy) busy = 1;
+      if (flMonitor.busy || flResponder.busy) busy = 1;
       if (busy) i = 0;
       else i++;
       #(CLK_PERIOD); 
