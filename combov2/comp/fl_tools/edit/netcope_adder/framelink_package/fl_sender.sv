@@ -52,7 +52,7 @@
           cbs[i].post_tr(to, id);  
           
         $cast(transaction,to);   
-        transaction.display(inst);        //! Display transaction
+        //transaction.display(inst);        //! Display transaction
         createNetCOPETrans(transaction);  //! Create NetCOPE transactions
         i++;
       end  
@@ -90,7 +90,7 @@
       dataTrans.data        = new[tr.data[part].size];
       dataTrans.data        = tr.data[part];
       
-      dataTrans.display("DATA");
+      //dataTrans.display("DATA");
       inputMbx.put(dataTrans);    // put transaction to mailbox
     endtask : createDataTransaction 
     
@@ -116,7 +116,7 @@
       end
       else size += 1;
       
-      $write("size: %d\n",size);    
+      //$write("size: %d\n",size);    
         
       controlTrans.data    = new[size];
       
@@ -134,7 +134,7 @@
       end
       else controlTrans.data[counter] = 0;    
           
-      controlTrans.display("CONTROL");
+      //controlTrans.display("CONTROL");
       inputMbx.put(controlTrans);   // put transaction to mailbox
     endtask : createControlTransaction  
      

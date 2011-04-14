@@ -31,15 +31,18 @@ program TEST (
   //! Controller of generated input  
   FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH)  flGenInCnt; 
   
-  //! Scoreboard
-  NetCOPEAdderScoreboard #(DATA_WIDTH, 1, TR_TABLE_FIRST_ONLY)
-                                                         scoreboard;
+  //! Input Wrapper
+  InputWrapper #(CLK_PERIOD)                             inputWrapper;  
                                                          
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
   
   //! Responder
-  FrameLinkResponder #(DATA_WIDTH, DREM_WIDTH)           flResponder;  
+  FrameLinkResponder #(DATA_WIDTH, DREM_WIDTH)           flResponder; 
+  
+  //! Scoreboard
+  NetCOPEAdderScoreboard #(DATA_WIDTH, 1, TR_TABLE_FIRST_ONLY)
+                                                         scoreboard; 
        
   /*
    *  Environment tasks 
@@ -63,7 +66,10 @@ program TEST (
                       DRIVER_IT_DELAY_LOW, DRIVER_IT_DELAY_HIGH,
                       RX
                       );
-     flGenInCnt.setCallbacks(scoreboard.inputCbs);  
+     flGenInCnt.setCallbacks(scoreboard.inputCbs); 
+     
+     //! Create Input Wrapper
+     inputWrapper = new("Input Wrapper", inputMbx); 
      
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR);   
@@ -89,8 +95,11 @@ program TEST (
   
   // Enable test Environment
   task enableTestEnvironment();
-    flMonitor.setEnabled();
-    flResponder.setEnabled();
+    if (FRAMEWORK == 0) begin
+      flMonitor.setEnabled();
+      flResponder.setEnabled();
+    end
+    if (FRAMEWORK == 1) inputWrapper.setEnabled();
   endtask : enableTestEnvironment
   
   // Disable test Environment
@@ -102,14 +111,25 @@ program TEST (
     i = 0;
     while (i<SIM_DELAY) begin
       busy = 0;
-      if (flMonitor.busy || flResponder.busy) busy = 1;
+      
+      if (FRAMEWORK == 0) begin
+        if (flMonitor.busy || flResponder.busy) busy = 1;
+      end
+      
+      if (FRAMEWORK == 1) begin
+        if (inputWrapper.busy) busy = 1; 
+      end
+        
       if (busy) i = 0;
       else i++;
       #(CLK_PERIOD); 
     end
     
-    flMonitor.setDisabled();
-    flResponder.setDisabled();
+    if (FRAMEWORK == 0) begin
+      flMonitor.setDisabled();
+      flResponder.setDisabled();
+    end
+    if (FRAMEWORK == 1) inputWrapper.setDisabled();
   endtask : disableTestEnvironment
 
   /*

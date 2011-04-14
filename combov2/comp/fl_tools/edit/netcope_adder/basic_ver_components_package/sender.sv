@@ -68,7 +68,7 @@
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      controlTrans.display("START CONTROL");
+      //controlTrans.display("START CONTROL");
       inputMbx.put(controlTrans);    // put transaction to mailbox  
     endtask : sendStart
     
@@ -84,7 +84,7 @@
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      controlTrans.display("STOP CONTROL");
+      //controlTrans.display("STOP CONTROL");
       inputMbx.put(controlTrans);    // put transaction to mailbox  
     endtask : sendStop
     
@@ -106,7 +106,7 @@
         for(int j=0; j<8; j++)
           controlTrans.data[i][j] = data[i*8+j];
       
-      controlTrans.display("WAIT FOR CONTROL");
+      //controlTrans.display("WAIT FOR CONTROL");
       inputMbx.put(controlTrans);    // put transaction to mailbox  
     endtask : sendWait
     
@@ -122,7 +122,7 @@
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      controlTrans.display("WAIT FOREVER CONTROL");
+      //controlTrans.display("WAIT FOREVER CONTROL");
       inputMbx.put(controlTrans);    // put transaction to mailbox
     endtask : sendWaitForever
     

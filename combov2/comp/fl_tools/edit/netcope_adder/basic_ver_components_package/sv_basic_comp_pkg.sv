@@ -15,6 +15,7 @@ package sv_basic_comp_pkg;
   `include "gen_input_controller.sv"    
   `include "driver.sv"
   `include "sender.sv"
+  `include "input_wrapper.sv"
   `include "output_cbs.sv"
   `include "monitor.sv"
   `include "transaction_table.sv"

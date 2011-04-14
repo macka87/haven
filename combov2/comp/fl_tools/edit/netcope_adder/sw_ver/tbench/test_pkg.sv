@@ -11,7 +11,7 @@ package test_pkg;
    import math_pkg::*;       
    
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK  = 0;                         // 0 = software framework
+   int FRAMEWORK  = 1;                         // 0 = software framework
                                                // 1 = sw/hw framework      
    // DUT GENERICS
    parameter DATA_WIDTH = 128;                 // FrameLink data width
@@ -50,7 +50,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 100;  // Count of transactions
+   parameter TRANSACTION_COUT = 1;  // Count of transactions
    parameter SEED1            = 1;  // Seed for PRNG
    parameter SEED2            = 2;  // Seed for PRNG
 endpackage

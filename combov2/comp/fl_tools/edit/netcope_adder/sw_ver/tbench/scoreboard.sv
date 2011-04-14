@@ -65,8 +65,8 @@
     
     virtual task post_tr(Transaction transaction, byte id);
       FrameLinkTransaction tr;
-      logic [31:0] size = 0;       // Size of transaction in Bytes
-      byte unsigned data_new[][];  // New data with NetCOPE header
+      logic [31:0] size = pDataWidth/8; // Size of transaction in Bytes
+      byte unsigned data_new[][];       // New data with NetCOPE header
       string driverLabel;
       int i,j; 
       
