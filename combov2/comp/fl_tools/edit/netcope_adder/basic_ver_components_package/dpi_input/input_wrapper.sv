@@ -79,7 +79,7 @@
         ntr.createHardwarePacket();
         
         // we call C function (through DPI layer) for data transfer to hardware
-        c_sendData(ntr.hwpacket[]);
+        c_sendData(ntr.hwpacket);
                 
         busy = 0;
       end
