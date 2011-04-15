@@ -16,6 +16,8 @@ set DUT_VER_BASE          "$DUT_BASE/sw_ver"
 set TB_FILE               "./tbench/testbench.sv"
 set SIG_FILE              "./signals_sig.fdo"
 
+set SV_LIBS               [list "$DUT_BASE/basic_ver_components_package/dpi_input/dpi_input_wrapper_pkg"]
+
 set COMPONENTS [list [list "DUT"      $DUT_BASE       "FULL"]\
                      [list "DUT_VER"  $DUT_VER_BASE   "FULL"]\
                      ]
