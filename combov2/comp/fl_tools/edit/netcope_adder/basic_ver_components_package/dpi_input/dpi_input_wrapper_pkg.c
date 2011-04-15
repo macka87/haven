@@ -42,7 +42,7 @@ int c_sendData(const svOpenArrayHandle hwpacket){
   // receive data from hwpacket 
   auxPkt = (unsigned char*) svGetArrayPtr(hwpacket);
   // prepare packet for transfer to hardware    
-  test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, sizeof(auxPkt), len);  
+  test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, sizeof(auxPkt), &len);  
   // szewrite
   ret = szedata_try_write_next(sze, test_data, len, ifc);
 
