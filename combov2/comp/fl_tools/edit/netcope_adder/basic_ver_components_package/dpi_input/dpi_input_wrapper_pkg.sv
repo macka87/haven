@@ -16,4 +16,4 @@ package dpi_input_wrapper_pkg;
   // C function for sending data to hardware
   import "DPI-C" context function int c_sendData(input byte unsigned hwpacket[]);
 
-endpackage : dpi_input_wrapper_pkg                .
+endpackage : dpi_input_wrapper_pkg
