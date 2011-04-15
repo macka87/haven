@@ -24,6 +24,7 @@ int c_sendData(const svOpenArrayHandle hwpacket){
   
   unsigned char *test_data;                   // sze test data
   unsigned char *auxPkt;                      // pointer to hwpacket data
+  unsigned int  pktSize = svSize(hwpacket, 1);
    
   // create sze 
   sze = szedata_open(sze_dev);
@@ -42,7 +43,8 @@ int c_sendData(const svOpenArrayHandle hwpacket){
   auxPkt = (unsigned char*) svGetArrayPtr(hwpacket);
   
   // prepare packet for transfer to hardware    
-  test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, sizeof(auxPkt), &len);  
+  test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, pktSize, &len);  
+  
   // szewrite
   ret = szedata_try_write_next(sze, test_data, len, ifc);
 
