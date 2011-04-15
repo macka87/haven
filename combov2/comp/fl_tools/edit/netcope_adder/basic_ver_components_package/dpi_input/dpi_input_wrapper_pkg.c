@@ -13,7 +13,6 @@
 #include <libsze2.h>
 #include "dpi_input_wrapper_pkg.h"
 
-
 //-----------------------------------------------------------------------------
 //- GLOBAL VARIABLES
 //-----------------------------------------------------------------------------
@@ -79,46 +78,3 @@ int c_sendData(const svOpenArrayHandle hwpacket){
   
   return ret;
 }  
-
-/*
-int c_sendData(const svOpenArrayHandle hwpacket){
-  char *sze_dev       = "/dev/szedataII0";	  // path to hw device 
-  unsigned int rx     = 0x00;
-  unsigned int tx     = SZE2_ALL_INTERFACES;
-  struct szedata *sze = NULL;
-  unsigned short ifc  = 0;
-  unsigned int len;
-  bool ret;
-  
-  unsigned char *test_data;                   // sze test data
-  unsigned char *auxPkt;                      // pointer to hwpacket data
-  unsigned int  pktSize = svSize(hwpacket, 1);
-   
-  // create sze 
-  sze = szedata_open(sze_dev);
-  if (sze == NULL)
-    errx(3, "szedata_open failed");
-		
-	ret = szedata_subscribe3(sze, &rx, &tx);
-	if (ret) 
-    goto free_res;
-
-	ret = szedata_start(sze);
-	if (ret) 
-    goto free_res;
-  
-  // set pointer to hwpacket  
-  auxPkt = (unsigned char*) svGetArrayPtr(hwpacket);
-  
-  // prepare packet for transfer to hardware    
-  test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, pktSize, &len);  
-  
-  // szewrite
-  ret = szedata_try_write_next(sze, test_data, len, ifc);
-
-free_res:
-	szedata_close(sze);
-	
-  return ret;
-}
-*/
