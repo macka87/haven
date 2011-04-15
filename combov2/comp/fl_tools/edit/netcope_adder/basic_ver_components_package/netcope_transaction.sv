@@ -12,8 +12,6 @@
     * Public Class Atributes
     */
    
-    //int headerWidth       = 8;  //! header width in Bytes
-   
     // NetCOPE header
     byte endpointID       = 0;  //! hardware endpoint indentification
     byte endpointProtocol = 0;  //! hardware endpoint protocol
@@ -23,6 +21,9 @@
     
     // transported data 
     byte unsigned data[];
+    
+    // hardware packet
+    byte unsigned hwpacket[];
 
    /*
     * Public Class Methods
@@ -45,12 +46,12 @@
       $write("endpointID: %x\n",endpointID);
       $write("endpointProtocol: %x\n",endpointProtocol);
       
-      if (transType == 0) $write("Data transaction\n");
-      else if (transType == 1) $write("Control START transaction\n");
-      else if (transType == 2) $write("Control WAIT transaction\n");
-      else if (transType == 3) $write("Control WAITFOREVER transaction\n");
-      else if (transType == 4) $write("Control STOP transaction\n");
-      else if (transType == 5) $write("Control SRC_RDY transaction\n");
+      if (transType == 0) $write("Data transaction: %x\n",transType);
+      else if (transType == 1) $write("Control START transaction: %x\n",transType);
+      else if (transType == 2) $write("Control WAIT transaction: %x\n",transType);
+      else if (transType == 3) $write("Control WAITFOREVER transaction: %x\n",transType);
+      else if (transType == 4) $write("Control STOP transaction: %x\n",transType);
+      else if (transType == 5) $write("Control SRC_RDY transaction: %x\n",transType);
       
       $write("ifcProtocol: %x\n",ifcProtocol);
       $write("ifcInfo: %x\n",ifcInfo);
@@ -62,5 +63,42 @@
         
       $write("\n");    
     endfunction : display
+    
+    /*!
+    * Function prepares data for transfer to hardware - it connects NetCOPE
+    * header with data to one block.  
+    */
+    virtual function void createHardwarePacket();
+      // size of hardware packet = header(8B) + data size  
+      hwpacket = new[8 + data.size];
+      
+      $write("HARDWARE PACKET:\n");
+      
+      // copy of NetCOPE header
+      hwpacket[0] = endpointID;
+      $write("%x ",hwpacket[0]);
+      hwpacket[1] = endpointProtocol;
+      $write("%x ",hwpacket[1]);
+      hwpacket[2] = 0; 
+      $write("%x ",hwpacket[2]);
+      hwpacket[3] = 0;
+      $write("%x ",hwpacket[3]);
+      hwpacket[4] = transType;
+      $write("%x ",hwpacket[4]);
+      hwpacket[5] = 0;
+      $write("%x ",hwpacket[5]);
+      hwpacket[6] = ifcProtocol;
+      $write("%x ",hwpacket[6]);
+      hwpacket[7] = ifcInfo; 
+      $write("%x ",hwpacket[7]);
+      
+      // copy of data
+      
+      for (int i= 8; i<(data.size+8); i++)begin
+        hwpacket[i] = data[i-8]; 
+        $write("%x ",hwpacket[i]);
+      end  
+      $write("\n");
+    endfunction : createHardwarePacket
     
  endclass: NetCOPETransaction
