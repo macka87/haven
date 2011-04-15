@@ -70,21 +70,28 @@
       NetCOPETransaction ntr;
       int res;
       
-      while (enabled) begin 
-        wait(inputMbx.num()!=0) 
-        busy = 1;
-        $write("mailbox: %d\n", inputMbx.num());  
-        inputMbx.get(tr);
-        //tr.display(); 
-        $cast(ntr,tr);
-        ntr.createHardwarePacket();
+      // open DMA channel for data transfer
+      res = c_openDMAChannel();
+      
+      if (res==0) begin
+        while (enabled) begin 
+          wait(inputMbx.num()!=0) 
+          busy = 1;
+          $write("mailbox: %d\n", inputMbx.num());  
+          inputMbx.get(tr);
+          //tr.display(); 
+          $cast(ntr,tr);
+          ntr.createHardwarePacket();
         
-        // we call C function (through DPI layer) for data transfer to hardware
-        res = c_sendData(ntr.hwpacket);
-        $write("res: %d\n",res);
+          // data transfer to hardware through DMA channel
+          res = (c_sendData(ntr.hwpacket));
                 
-        busy = 0;
-      end
+          busy = 0;
+        end
+        
+        // close DMA channel after data transfer
+        assert(c_closeDMAChannel());
+      end  
     endtask : run 
  
  endclass : InputWrapper 

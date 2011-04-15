@@ -13,7 +13,19 @@
 
 package dpi_input_wrapper_pkg;
   
-  // C function for sending data to hardware
+  /*
+   *  Open DMA Channel for data transport. 
+   */
+  import "DPI-C" pure function int c_openDMAChannel();
+  
+  /*
+   *  Close DMA Channel after data transport. 
+   */
+  import "DPI-C" pure function int c_closeDMAChannel(); 
+   
+  /*
+   *  Data transport through DMA Channel. 
+   */
   import "DPI-C" context function int c_sendData(input byte unsigned hwpacket[]);
 
 endpackage : dpi_input_wrapper_pkg
