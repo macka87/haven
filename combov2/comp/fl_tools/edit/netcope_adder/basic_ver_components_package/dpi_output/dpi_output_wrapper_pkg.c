@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Project Name: Hardware - Software Framework for Functional Verification 
- * File Name:    Input Wrapper
+ * File Name:    Output Wrapper
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011 
@@ -11,9 +11,9 @@
 #include <stdbool.h>
 #include <err.h>
 #include <libsze2.h>
-#include "dpi_input_wrapper_pkg.h"
+#include "dpi_output_wrapper_pkg.h"
 
-int c_sendData(const svOpenArrayHandle hwpacket){
+int c_receiveData(const svOpenArrayHandle hwpacket){
   char *sze_dev       = "/dev/szedataII0";	/*!< path to hw device */
   unsigned int rx     = 0x00;
   unsigned int tx     = SZE2_ALL_INTERFACES;
@@ -22,9 +22,8 @@ int c_sendData(const svOpenArrayHandle hwpacket){
   unsigned int len;
   bool ret;
   
-  unsigned char *test_data;                   // sze test data
   unsigned char *auxPkt;                      // pointer to hwpacket data
-   
+  
   // create sze 
   sze = szedata_open(sze_dev);
   if (sze == NULL)
@@ -38,13 +37,10 @@ int c_sendData(const svOpenArrayHandle hwpacket){
 	if (ret) 
     goto free_res;
   
-  // set pointer to hwpacket  
+  // set pointer to hwpacket 
   auxPkt = (unsigned char*) svGetArrayPtr(hwpacket);
-  
-  // prepare packet for transfer to hardware    
-  test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, sizeof(auxPkt), &len);  
-  // szewrite
-  ret = szedata_try_write_next(sze, test_data, len, ifc);
+  // receive data from hardware
+  auxPkt = szedata_read_next(sze, &len);
 
 free_res:
 	szedata_close(sze);

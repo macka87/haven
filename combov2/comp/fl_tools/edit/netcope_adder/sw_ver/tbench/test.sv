@@ -28,11 +28,17 @@ program TEST (
   //! Mailbox for Input controller's transactions
   tTransMbx                                              inputMbx; 
   
+  //! Mailbox for Output controller's transactions
+  tTransMbx                                              outputMbx; 
+  
   //! Controller of generated input  
   FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH)  flGenInCnt; 
   
   //! Input Wrapper
-  InputWrapper #(CLK_PERIOD)                             inputWrapper;  
+  InputWrapper                                           inputWrapper;  
+  
+  //! Output Wrapper
+  //OutputWrapper                                          outputWrapper; 
                                                          
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
@@ -53,8 +59,9 @@ program TEST (
      //! Create scoreboard
      scoreboard = new("Scoreboard");
      
-     //! Create Input Mailbox
+     //! Create Input and Output Mailbox
      inputMbx   = new(0);
+     outputMbx  = new(0);
      
      //! Create Input Controller 
      flGenInCnt = new(FRAMEWORK, inputMbx,
@@ -70,6 +77,9 @@ program TEST (
      
      //! Create Input Wrapper
      inputWrapper = new("Input Wrapper", inputMbx); 
+     
+     //! Create Output Wrapper
+     //outputWrapper = new("Output Wrapper", outputMbx); 
      
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR);   
@@ -99,7 +109,10 @@ program TEST (
       flMonitor.setEnabled();
       flResponder.setEnabled();
     end
-    if (FRAMEWORK == 1) inputWrapper.setEnabled();
+    if (FRAMEWORK == 1) begin
+      inputWrapper.setEnabled();
+      //outputWrapper.setEnabled();
+    end  
   endtask : enableTestEnvironment
   
   // Disable test Environment
@@ -129,7 +142,10 @@ program TEST (
       flMonitor.setDisabled();
       flResponder.setDisabled();
     end
-    if (FRAMEWORK == 1) inputWrapper.setDisabled();
+    if (FRAMEWORK == 1) begin
+      inputWrapper.setDisabled();
+      //outputWrapper.setDisabled();
+    end  
   endtask : disableTestEnvironment
 
   /*

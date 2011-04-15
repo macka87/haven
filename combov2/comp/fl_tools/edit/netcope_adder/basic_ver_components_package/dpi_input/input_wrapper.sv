@@ -14,7 +14,7 @@
  * layer. Unit must be enabled by "setEnable()" function call. Unit can be 
  * stoped by "setDisable()" function call.  
  */
- class InputWrapper #(int pClkPeriod=10ns);
+ class InputWrapper;
    /*
     * Public Class Atributes
     */
@@ -35,7 +35,7 @@
     */     
     function new (string inst, 
                   tTransMbx inputMbx);
-      this.inst        = inst;      //! Store driver identifier
+      this.inst        = inst;      //! Store wrapper identifier
       this.enabled     = 0;         //! Input Wrapper is disabled by default
       this.busy        = 0;
       this.inputMbx    = inputMbx;  //! Store pointer to mailbox
@@ -68,6 +68,7 @@
     task run();
       Transaction tr;
       NetCOPETransaction ntr;
+      int res;
       
       while (enabled) begin 
         wait(inputMbx.num()!=0) 
@@ -79,7 +80,8 @@
         ntr.createHardwarePacket();
         
         // we call C function (through DPI layer) for data transfer to hardware
-        c_sendData(ntr.hwpacket);
+        res = c_sendData(ntr.hwpacket);
+        $write("res: %d\n",res);
                 
         busy = 0;
       end

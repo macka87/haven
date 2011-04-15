@@ -16,6 +16,7 @@ package sv_basic_comp_pkg;
   `include "driver.sv"
   `include "sender.sv"
   `include "dpi_input/input_wrapper.sv"
+  //`include "dpi_output/output_wrapper.sv"
   `include "output_cbs.sv"
   `include "monitor.sv"
   `include "transaction_table.sv"
