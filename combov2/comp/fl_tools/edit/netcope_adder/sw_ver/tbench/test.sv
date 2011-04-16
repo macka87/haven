@@ -38,7 +38,7 @@ program TEST (
   InputWrapper                                           inputWrapper;  
   
   //! Output Wrapper
-  //OutputWrapper                                          outputWrapper; 
+  OutputWrapper                                          outputWrapper; 
                                                          
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
@@ -79,7 +79,7 @@ program TEST (
      inputWrapper = new("Input Wrapper", inputMbx); 
      
      //! Create Output Wrapper
-     //outputWrapper = new("Output Wrapper", outputMbx); 
+     outputWrapper = new("Output Wrapper", outputMbx); 
      
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR);   
@@ -111,7 +111,7 @@ program TEST (
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setEnabled();
-      //outputWrapper.setEnabled();
+      outputWrapper.setEnabled();
     end  
   endtask : enableTestEnvironment
   
@@ -130,7 +130,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy) busy = 1; 
+        if (inputWrapper.busy || outputWrapper.busy) busy = 1; 
       end
         
       if (busy) i = 0;
@@ -144,7 +144,7 @@ program TEST (
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setDisabled();
-      //outputWrapper.setDisabled();
+      outputWrapper.setDisabled();
     end  
   endtask : disableTestEnvironment
 
