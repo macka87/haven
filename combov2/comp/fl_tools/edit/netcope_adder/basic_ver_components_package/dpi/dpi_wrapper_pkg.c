@@ -82,37 +82,19 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
 /*
  *  Data transport through DMA Channel. 
  */
-int c_receiveData(unsigned int size, const svOpenArrayHandle outhwpkt){
-  unsigned char *test;
-  unsigned char *auxPkt;                        // pointer to hwpacket data
+int c_receiveData(unsigned int* size, unsigned char* outhwpkt){
   unsigned int len;
   int i;
    
-  unsigned char test_data[] = {0x00,0x18,0xF3};
-  test = test_data;
+  // szeread - receive data from hardware
+  outhwpkt = szedata_read_next(sze, &len);
+  size = &len;
   
-  // set pointer to hwpacket  
-  auxPkt = (unsigned char*) svGetArrayPtr(outhwpkt);
-  
-  for (i=0; i<3; i++)
-    *auxPkt++ = *test++;
-  
-  /*  //auxPkt = {0x00,0x18,0xF3};
-    auxPkt[0] = 0x00;
-    auxPkt[1] = 0x18;
-    auxPkt[2] = 0xF3;
-  
+  /*
   printf("test data: \n");
   for (i=0; i<3; i++)
     printf("%x ",auxPkt[i]);
   printf("\n"); */
-  
-  // szeread - receive data from hardware
-  //test_data = szedata_read_next(sze, &len);
-  
-  //for (i=0; i<len; i++)
-  //  printf("%x ",test_data[i]);
-  //printf("\n");
-  
+    
   return 0;
 } 

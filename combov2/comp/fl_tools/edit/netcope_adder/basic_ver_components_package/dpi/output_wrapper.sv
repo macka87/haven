@@ -69,7 +69,7 @@
     task run();
       Transaction tr;
       int res;
-      int size;
+      int unsigned size;   
       NetCOPETransaction ntr;
       
       while (enabled) begin 
