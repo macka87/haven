@@ -45,9 +45,12 @@
     * Enable Input Wrapper - eable wrapper and runs wrapper process
     */     
     virtual task setEnabled();
-      enabled = 1;    //! Wrapper Enabling
+      int res;
+      enabled = 1;                 //! Wrapper Enabling
+      res = c_openDMAChannel();    //! Open DMA Channel 
+      $write("OPENING CHANNEL (musi byt 0): %d\n",res);
       fork
-        run();        //! Creating wrapper subprocess
+        run();                     //! Creating wrapper subprocess
       join_none;  
     endtask : setEnabled
         
@@ -55,7 +58,10 @@
     * Disable Input Wrapper
     */      
     virtual task setDisabled();
-      enabled = 0;  //! Disable Wrapper
+      int res;
+      enabled = 0;                 //! Disable Wrapper
+      res = c_closeDMAChannel();   //! Close DMA Channel
+      $write("CLOSING CHANNEL (musi byt 0): %d\n",res); 
     endtask : setDisabled
 
    /*
@@ -66,32 +72,24 @@
     * Run Input Wrapper - receives transactions and sends them through DPI to HW
     */
     task run();
+      int res;
       Transaction tr;
       NetCOPETransaction ntr;
-      int res;
       
-      // open DMA channel for data transfer
-      res = c_openDMAChannel();
-      
-      if (res==0) begin
-        while (enabled) begin 
-          wait(inputMbx.num()!=0) 
-          busy = 1;
-          $write("mailbox: %d\n", inputMbx.num());  
-          inputMbx.get(tr);
-          //tr.display(); 
-          $cast(ntr,tr);
-          ntr.createHardwarePacket();
+      while (enabled) begin 
+        wait(inputMbx.num()!=0) 
+        busy = 1;
+        $write("mailbox: %d\n", inputMbx.num());  
+        inputMbx.get(tr);
+        //tr.display(); 
+        $cast(ntr,tr);
+        ntr.createHardwarePacket();
         
-          // data transfer to hardware through DMA channel
-          res = (c_sendData(ntr.hwpacket));
+        // data transfer to hardware through DMA channel
+        res = c_sendData(ntr.hwpacket);
                 
-          busy = 0;
-        end
-        
-        // close DMA channel after data transfer
-        assert(c_closeDMAChannel());
-      end  
+        busy = 0;
+      end
     endtask : run 
  
  endclass : InputWrapper 

@@ -130,7 +130,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || outputWrapper.busy) busy = 1; 
+        if (inputWrapper.busy) busy = 1; 
       end
         
       if (busy) i = 0;

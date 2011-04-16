@@ -34,18 +34,26 @@ int c_openDMAChannel(){
   // create sze 
   sze = szedata_open(sze_dev);
   if (sze == NULL)
-    errx(3, "szedata_open failed");
+    return 1;
 		
 	ret = szedata_subscribe3(sze, &rx, &tx);
 	
-	if (ret) szedata_close(sze);  
+	if (ret){
+    szedata_close(sze); 
+    sze = NULL;
+    return 1; 
+  }
   
   else { 
     ret = szedata_start(sze);
-	  if (ret) szedata_close(sze);   
+	  if (ret){
+      szedata_close(sze); 
+      sze = NULL;
+      return 1; 
+    }   
   }
   
-  return ret;
+  return 0;
 }    
 
 /*
@@ -53,6 +61,7 @@ int c_openDMAChannel(){
  */    
 int c_closeDMAChannel(){
   szedata_close(sze);
+  sze = NULL;
   return 0;
 }
 
@@ -76,7 +85,7 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
   // szewrite - send data to hardware
   ret = szedata_try_write_next(sze, test_data, len, ifc);
   
-  return ret;
+  return 0;
 }  
 
 /*
@@ -86,19 +95,13 @@ int c_receiveData(unsigned int* size, unsigned char* outhwpkt){
   unsigned int len;
   int i;
   unsigned char *data;
+  short events = SZEDATA_POLLRX;
 
+  if (szedata_poll(sze, &events, SZE2_TX_POLL_TIMEOUT)<0) return 1;
+  
   data = szedata_read_next(sze, &len);
-  
-  printf("data in C: \n");
-  for (i=0; i<len; i++)
-    printf("%x ",data[i]);
-  printf("\n"); 
-
   memcpy(outhwpkt, data, len);
- 
-  // szeread - receive data from hardware
-  //outhwpkt = szedata_read_next(sze, &len);
-  //size = &len;
-  
+  size = &len; 
+   
   return 0;
 } 

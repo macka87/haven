@@ -75,17 +75,21 @@
       while (enabled) begin 
         busy = 1;
         
-        // we call C function (through DPI layer) for data transfer from hw
+        // create new transaction
         ntr = new();
         ntr.hwpacket = new[4096];
         
+        // we call C function (through DPI layer) for data transfer from hw
         res = c_receiveData(size, ntr.hwpacket);
-        //$write("res: %d\n",res);
         
-        $write("OUTPUT WRAPPER: HARDWARE PACKET: \n");
-        for (int i=0; i<ntr.hwpacket.size; i++)
-          $write("%x ",ntr.hwpacket[i]);
-        $write("\n"); 
+        if (res == 1) $write("CHYBAAAAA\n"); 
+        else begin
+          // print received transaction
+          $write("OUTPUT WRAPPER: HARDWARE PACKET: \n");
+          for (int i=0; i<size; i++)
+            $write("%x ",ntr.hwpacket[i]);
+          $write("\n"); 
+        end  
         
         busy = 0;
       end
