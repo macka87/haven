@@ -69,6 +69,7 @@
     task run();
       Transaction tr;
       int res;
+      int size;
       NetCOPETransaction ntr;
       
       while (enabled) begin 
@@ -76,8 +77,9 @@
         
         // we call C function (through DPI layer) for data transfer from hw
         ntr = new();
+        ntr.hwpacket = new[4096];
         
-        res = c_receiveData(ntr.hwpacket);
+        res = c_receiveData(size, ntr.hwpacket);
         $write("res: %d\n",res);
         
         /*$write("OUTPUT WRAPPER: HARDWARE PACKET: \n");

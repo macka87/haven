@@ -82,7 +82,7 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
 /*
  *  Data transport through DMA Channel. 
  */
-int c_receiveData(const svOpenArrayHandle outhwpkt){
+int c_receiveData(unsigned int size, const svOpenArrayHandle outhwpkt){
   unsigned char *test;
   unsigned char *auxPkt;                        // pointer to hwpacket data
   unsigned int len;
