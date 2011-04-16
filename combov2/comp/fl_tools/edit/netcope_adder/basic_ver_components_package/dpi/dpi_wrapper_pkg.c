@@ -85,16 +85,20 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
 int c_receiveData(unsigned int* size, unsigned char* outhwpkt){
   unsigned int len;
   int i;
-   
-  // szeread - receive data from hardware
-  outhwpkt = szedata_read_next(sze, &len);
-  size = &len;
+  unsigned char *data;
+
+  data = szedata_read_next(sze, &len);
   
-  /*
-  printf("test data: \n");
-  for (i=0; i<3; i++)
-    printf("%x ",auxPkt[i]);
-  printf("\n"); */
-    
+  printf("data in C: \n");
+  for (i=0; i<len; i++)
+    printf("%x ",data[i]);
+  printf("\n"); 
+
+  memcpy(outhwpkt, data, len);
+ 
+  // szeread - receive data from hardware
+  //outhwpkt = szedata_read_next(sze, &len);
+  //size = &len;
+  
   return 0;
 } 

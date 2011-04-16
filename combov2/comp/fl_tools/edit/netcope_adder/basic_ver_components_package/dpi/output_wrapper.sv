@@ -80,12 +80,12 @@
         ntr.hwpacket = new[4096];
         
         res = c_receiveData(size, ntr.hwpacket);
-        $write("res: %d\n",res);
+        //$write("res: %d\n",res);
         
-        /*$write("OUTPUT WRAPPER: HARDWARE PACKET: \n");
+        $write("OUTPUT WRAPPER: HARDWARE PACKET: \n");
         for (int i=0; i<ntr.hwpacket.size; i++)
           $write("%x ",ntr.hwpacket[i]);
-        $write("\n");*/  
+        $write("\n"); 
         
         busy = 0;
       end
