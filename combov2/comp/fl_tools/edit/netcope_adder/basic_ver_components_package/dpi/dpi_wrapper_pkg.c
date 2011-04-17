@@ -16,7 +16,8 @@
 //-----------------------------------------------------------------------------
 //- GLOBAL VARIABLES
 //-----------------------------------------------------------------------------
-struct szedata *sze = NULL;
+static struct szedata *sze = NULL;
+static unsigned char* lastData = NULL;
 
 //-----------------------------------------------------------------------------
 //- USER Functions
@@ -27,10 +28,14 @@ struct szedata *sze = NULL;
  */ 
 int c_openDMAChannel(){
   char *sze_dev       = "/dev/szedataII0";	  // path to hw device 
-  unsigned int rx     = 0x00;
+  unsigned int rx     = SZE2_ALL_INTERFACES;
   unsigned int tx     = SZE2_ALL_INTERFACES;
   bool ret;
   
+	// check if sze is not already initialized
+	if (sze != NULL)
+		return 1;
+
   // create sze 
   sze = szedata_open(sze_dev);
   if (sze == NULL)
@@ -60,6 +65,9 @@ int c_openDMAChannel(){
  *  Close DMA Channel after data transport. 
  */    
 int c_closeDMAChannel(){
+	if (sze == NULL)
+		return 1;
+
   szedata_close(sze);
   sze = NULL;
   return 0;
@@ -81,7 +89,7 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
   
   // prepare packet for transfer to hardware    
   test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, pktSize, &len);  
-  
+
   // szewrite - send data to hardware
   ret = szedata_try_write_next(sze, test_data, len, ifc);
   
@@ -91,17 +99,27 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
 /*
  *  Data transport through DMA Channel. 
  */
-int c_receiveData(unsigned int* size, unsigned char* outhwpkt){
+int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt) {
   unsigned int len;
-  int i;
   unsigned char *data;
-  short events = SZEDATA_POLLRX;
+	unsigned char *outData;
 
-  if (szedata_poll(sze, &events, SZE2_TX_POLL_TIMEOUT)<0) return 1;
-  
+	// retrieve the pointer to the SystemVerilog array
+	outData = svGetArrayPtr(outhwpkt);
+
+	// read next data from the buffer
   data = szedata_read_next(sze, &len);
-  memcpy(outhwpkt, data, len);
-  size = &len; 
-   
+
+	if (data) {
+		// in case something was read, copy it to the SystemVerilog array
+		lastData = data;
+		memcpy(outData, data, len);
+		*size = len;
+	}
+	else
+	{
+		*size = 0;
+	}
+
   return 0;
 } 
