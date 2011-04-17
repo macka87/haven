@@ -31,6 +31,6 @@ package dpi_wrapper_pkg;
   /*
    *  Data transport through DMA Channel from HW. 
    */
-  import "DPI-C" context function int c_receiveData(output int unsigned size, output byte unsigned outhwpkt[4095:0]);
+  import "DPI-C" context function int c_receiveData(output int unsigned size, inout byte unsigned outhwpkt[]);
   
 endpackage : dpi_wrapper_pkg
