@@ -72,7 +72,7 @@
       // size of hardware packet = header(8B) + data size  
       hwpacket = new[8 + data.size];
       
-      $write("INPUT WRAPPER: HARDWARE PACKET:\n");
+      $write("<<<<<   INPUT  WRAPPER: HARDWARE PACKET: ");
       
       // copy of NetCOPE header
       hwpacket[0] = endpointID;

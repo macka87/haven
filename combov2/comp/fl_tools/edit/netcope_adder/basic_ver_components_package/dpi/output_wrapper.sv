@@ -72,23 +72,31 @@
       int unsigned size;   
       NetCOPETransaction ntr;
       
+			// create new transaction
+			ntr = new();
+			ntr.hwpacket = new[4096];
+
       while (enabled) begin 
         busy = 1;
         
-        // create new transaction
-        ntr = new();
-        ntr.hwpacket = new[4096];
+				size = 0;
         
         // we call C function (through DPI layer) for data transfer from hw
         res = c_receiveData(size, ntr.hwpacket);
         
         if (res == 1) $write("CHYBAAAAA\n"); 
         else begin
-          // print received transaction
-          $write("OUTPUT WRAPPER: HARDWARE PACKET: \n");
-          for (int i=0; i<size; i++)
-            $write("%x ",ntr.hwpacket[i]);
-          $write("\n"); 
+					if (size > 0) begin
+						// print received transaction
+						$write(">>>>>   OUTPUT WRAPPER: HARDWARE PACKET: ");
+						for (int i=0; i<size; i++)
+							$write("%x ",ntr.hwpacket[i]);
+						$write("\n"); 
+					end
+					else begin
+						#10ns;
+					end
+					
         end  
         
         busy = 0;
