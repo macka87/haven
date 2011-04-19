@@ -110,6 +110,7 @@
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
+      // size = total count if words in framelink packet
       if (tr.enItDelay) begin
         for (int i=0; i<tr.frameParts; i++)
           size += tr.itDelay[i].size; 

@@ -1,0 +1,38 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2011 
+# Author: Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+
+   view wave
+   delete wave *
+
+proc blk_ASYNC_UNIT { TB ASYNC_UNIT } {
+   
+      add wave -divider "ASYNC_UNIT"
+   add_wave "-noupdate -label WR_CLK" $ASYNC_UNIT/WR_CLK
+   add_wave "-noupdate -label RD_CLK" $ASYNC_UNIT/RD_CLK
+   add_wave "-noupdate -label RESET"  $ASYNC_UNIT/RESET
+
+      add wave -divider "Input interface - DATA"
+   add_wave "-noupdate -label RX_DATA -hex" $ASYNC_UNIT/RX_DATA
+   add_wave "-noupdate -label RX_SRC_RDY_N" $ASYNC_UNIT/RX_SRC_RDY_N
+   add_wave "-noupdate -label RX_DST_RDY_N" $ASYNC_UNIT/RX_DST_RDY_N
+   
+      add wave -divider "Input interface - DELAY"
+   add_wave "-noupdate -label RX_DELAY -hex"  $ASYNC_UNIT/RX_DELAY
+   add_wave "-noupdate -label RX_DELAY_WR_N"  $ASYNC_UNIT/RX_DELAY_WR_N
+   add_wave "-noupdate -label RX_DELAY_RDY_N" $ASYNC_UNIT/RX_DELAY_RDY_N  
+      
+      add wave -divider "Input interface - FINISH"
+   add_wave "-noupdate -label RX_FINISH -hex" $ASYNC_UNIT/RX_FINISH 
+
+      add wave -divider "Output interface"
+   add_wave "-noupdate -hex -label TX_DATA" $ASYNC_UNIT/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM " $ASYNC_UNIT/TX_REM
+   add_wave "-noupdate -label TX_SOF_N    " $ASYNC_UNIT/TX_SOF_N
+   add_wave "-noupdate -label TX_SOP_N    " $ASYNC_UNIT/TX_SOP_N
+   add_wave "-noupdate -label TX_EOP_N    " $ASYNC_UNIT/TX_EOP_N
+   add_wave "-noupdate -label TX_EOF_N    " $ASYNC_UNIT/TX_EOF_N
+   add_wave "-noupdate -label TX_SRC_RDY_N" $ASYNC_UNIT/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $ASYNC_UNIT/TX_DST_RDY_N
+	 add_wave "-noupdate -label OUTPUT_RDY"   $ASYNC_UNIT/OUTPUT_RDY
+}      
