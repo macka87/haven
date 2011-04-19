@@ -5,4 +5,4 @@
 #
 
 # Source files
-set MOD "$MOD $ENTITY_BASE/ondriks_cdc_fifo.vhd"
+set MOD "$MOD $ENTITY_BASE/cdc_fifo.vhd"

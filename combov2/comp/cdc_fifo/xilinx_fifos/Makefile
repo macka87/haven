@@ -1,7 +1,7 @@
 # Makefile: Makefile for Xilinx FIFOs
 # Author(s): Ondrej Lengal <lengal@liberouter.org>
 #
-# $Id: ondriks_cdc_fifo.vhd 30 2010-11-10 22:08:27Z ilengal $
+# $Id$
 #
 
 XILINX_VERSION=xilinx123

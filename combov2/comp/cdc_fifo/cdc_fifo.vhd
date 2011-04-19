@@ -1,4 +1,4 @@
--- ondriks_cdc_fifo.vhd: Clock-Domain Crossing FIFO for Virtex-5
+-- cdc_fifo.vhd: Clock-Domain Crossing FIFO for Virtex-5
 -- Author(s): Ondrej Lengal <lengal@liberouter.org>
 --
 -- $Id$
@@ -10,7 +10,7 @@ use ieee.std_logic_1164.all;
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
-entity ONDRIKS_CDC_FIFO is
+entity CDC_FIFO is
    generic
    (
       -- data width
@@ -41,7 +41,7 @@ end entity;
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
-architecture arch of ONDRIKS_CDC_FIFO is
+architecture arch of CDC_FIFO is
 
 -- ==========================================================================
 --                                    COMPONENTS
