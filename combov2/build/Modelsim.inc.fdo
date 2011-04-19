@@ -150,6 +150,10 @@ if { [info exist MACROS] } {
 
 set FILES [list ]
 
+if { ![info exist SVLIBS] } {
+  set SV_LIBS [list ]
+}
+
 # Saves MOD variable - Components have to be compiled first
 if { [info exist MOD] } {
    set MOD_SAVE $MOD
