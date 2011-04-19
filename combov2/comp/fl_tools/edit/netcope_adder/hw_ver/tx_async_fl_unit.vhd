@@ -162,7 +162,7 @@ begin
    TX_SOP_N <= sig_data_fifo_data(2);
    TX_EOP_N <= sig_data_fifo_data(3);
    TX_REM   <= sig_data_fifo_data(REM_INDEX-1 downto 4); 
-   TX_DATA  <= sig_data_fifo_data(OUT_DATA_WIDTH-1 downto REM_INDEX);
+   TX_DATA  <= sig_data_fifo_data(IN_DATA_WIDTH-1 downto REM_INDEX);
    
    -- delay fifo input side
    sig_delay_fifo_write <= not RX_DELAY_WR_N;
