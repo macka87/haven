@@ -63,6 +63,7 @@
     *
     * \param tr - input FrameLink transaction
     */  
+    //! dorobit potom pre viac slovne pakety !!!!!!!!
     task createNetCOPETrans(input FrameLinkTransaction tr);
       for (int i=0; i<tr.frameParts; i++)
         if (i == (tr.frameParts-1)) createDataTransaction(tr, 1, 1, i);
@@ -82,7 +83,7 @@
       NetCOPETransaction dataTrans = new();
       
       dataTrans.endpointID  = id;
-      dataTrans.endpointID  = 0;  // identifies driver protocol
+      //dataTrans.endpointID  = 0;  // identifies driver protocol
       dataTrans.transType   = 0;  // data transaction
       dataTrans.ifcProtocol = 1;  // identifies FrameLink protocol
       dataTrans.ifcInfo     = 2*allData + lastPart;  
@@ -105,9 +106,9 @@
       int counter = 0;
       
       controlTrans.endpointID  = id;
-      controlTrans.endpointID  = 0;  // identifies driver protocol
+      //controlTrans.endpointID  = 0;  // identifies driver protocol
       controlTrans.transType   = 5;  // control src_rdy transaction
-      controlTrans.ifcProtocol = 0;  // no protocol
+      controlTrans.ifcProtocol = 1;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
       // size = total count if words in framelink packet

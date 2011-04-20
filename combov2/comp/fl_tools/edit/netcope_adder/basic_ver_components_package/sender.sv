@@ -63,7 +63,7 @@
       NetCOPETransaction controlTrans = new();
       
       controlTrans.endpointID  = id;
-      controlTrans.endpointID  = 0;  // identifies driver protocol
+     //controlTrans.endpointID  = 0;  // identifies driver protocol
       controlTrans.transType   = 1;  // control start transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -79,7 +79,7 @@
       NetCOPETransaction controlTrans = new();
       
       controlTrans.endpointID  = id;
-      controlTrans.endpointID  = 0;  // identifies driver protocol
+      //controlTrans.endpointID  = 0;  // identifies driver protocol
       controlTrans.transType   = 4;  // control stop transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -96,7 +96,7 @@
       logic [63:0] data = clocks;
       
       controlTrans.endpointID  = id;
-      controlTrans.endpointID  = 0;  // identifies driver protocol
+      //controlTrans.endpointID  = 0;  // identifies driver protocol
       controlTrans.transType   = 2;  // control wait transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -117,7 +117,7 @@
       NetCOPETransaction controlTrans = new();
       
       controlTrans.endpointID  = id;
-      controlTrans.endpointID  = 0;  // identifies driver protocol
+      //controlTrans.endpointID  = 0;  // identifies driver protocol
       controlTrans.transType   = 3;  // control wait transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
