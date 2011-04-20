@@ -23,7 +23,7 @@ entity TX_ASYNC_FL_UNIT is
       -- data width
       IN_DATA_WIDTH  : integer := 71;
       OUT_DATA_WIDTH : integer := 64;
-      DELAY_WIDTH    : integer := 8
+      DELAY_WIDTH    : integer := 9
    );
 
    port
@@ -94,12 +94,17 @@ signal sig_delay_fifo_read  : std_logic;
 signal sig_delay_fifo_empty : std_logic;
 signal sig_delay_fifo_rdy   : std_logic;
 
-signal sig_decremented      : std_logic_vector(DELAY_WIDTH-1 downto 0);
-signal sig_delay            : std_logic_vector(DELAY_WIDTH-1 downto 0);
+signal sig_delay_fifo_data_only : std_logic_vector(DELAY_WIDTH-2 downto 0);
+signal sig_is_delay         : std_logic; 
+signal sig_reg_out_is_delay : std_logic; 
+signal sig_mux_is_delay     : std_logic; 
+signal sig_src_rdy          : std_logic; 
+signal sig_decremented      : std_logic_vector(DELAY_WIDTH-2 downto 0);
+signal sig_delay            : std_logic_vector(DELAY_WIDTH-2 downto 0);
 signal sig_take             : std_logic;
 signal sig_comp_output      : std_logic;
 signal sig_neg_comp_output  : std_logic;
-signal sig_reg_out          : std_logic_vector(DELAY_WIDTH-1 downto 0);
+signal sig_reg_out          : std_logic_vector(DELAY_WIDTH-2 downto 0);
 signal sig_taken            : std_logic;
 signal sig_reg_taken        : std_logic;
 
@@ -168,15 +173,41 @@ begin
    sig_delay_fifo_write <= not RX_DELAY_WR_N;
    
    -- delay fifo output side
+   sig_delay_fifo_data_only <= sig_delay_fifo_data(DELAY_WIDTH-2 downto 0);
+   sig_is_delay <= sig_delay_fifo_data(DELAY_WIDTH-1);
+   
+   -- register for identification if delay or wait transaction 
+   reg1 : process (RD_CLK)
+   begin
+      if (RESET = '1') then 
+        sig_reg_out_is_delay <= '0';
+      elsif (rising_edge(RD_CLK)) then
+         if (sig_take = '1') then
+            sig_reg_out_is_delay <= sig_is_delay;   
+         end if;   
+      end if;
+   end process;
    
    -- multiplexer
-   mux : process (sig_take, sig_delay_fifo_data, sig_decremented)
+   mux1 : process (sig_take, sig_is_delay, sig_reg_out_is_delay)
+   begin
+      sig_mux_is_delay <= '0';
+
+      case sig_take is
+         when '0'    => sig_mux_is_delay <= sig_reg_out_is_delay;
+         when '1'    => sig_mux_is_delay <= sig_is_delay;
+         when others => null;   
+      end case;   
+   end process;
+   
+   -- multiplexer
+   mux2 : process (sig_take, sig_delay_fifo_data_only, sig_decremented)
    begin
       sig_delay <= (others => '0');
 
       case sig_take is
          when '0'    => sig_delay <= sig_decremented;
-         when '1'    => sig_delay <= sig_delay_fifo_data;
+         when '1'    => sig_delay <= sig_delay_fifo_data_only;
          when others => null;   
       end case;   
    end process;
@@ -191,10 +222,9 @@ begin
    
    sig_neg_comp_output <= not sig_comp_output;
    sig_taken <= sig_neg_comp_output nor TX_DST_RDY_N;
-   sig_data_fifo_read <= sig_taken; 
-   
+      
    -- register for decrement 
-   reg1 : process (RD_CLK)
+   reg2 : process (RD_CLK)
    begin
       if (rising_edge(RD_CLK)) then
          if (RESET = '1') then 
@@ -208,7 +238,7 @@ begin
    sig_decremented <= sig_reg_out - 1;
    
    -- register for taken
-   reg2 : process (RD_CLK, RESET)
+   reg3 : process (RD_CLK, RESET)
    begin
       if (RESET = '1') then 
          sig_reg_taken <= '1';
@@ -222,7 +252,9 @@ begin
    end process;
    
    sig_take <= sig_reg_taken and (not sig_delay_fifo_empty); 
-   TX_SRC_RDY_N <= sig_neg_comp_output or (sig_delay_fifo_empty and sig_taken);
+   sig_src_rdy <= (sig_neg_comp_output or sig_mux_is_delay) or (sig_delay_fifo_empty and sig_taken);
+   TX_SRC_RDY_N <= sig_src_rdy;
+   sig_data_fifo_read <= sig_src_rdy nor TX_DST_RDY_N; 
    sig_delay_fifo_read <= sig_take;
    
    OUTPUT_RDY <= RX_FINISH or ((not sig_data_fifo_rdy) and 

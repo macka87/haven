@@ -23,7 +23,7 @@ architecture behavioral of testbench is
    ----------------------------------------------------------------------------
    constant IN_DATA_WIDTH     : integer := 71;  
    constant OUT_DATA_WIDTH    : integer := 64;
-   constant DELAY_WIDTH       : integer := 8;
+   constant DELAY_WIDTH       : integer := 9;
 
    constant wr_clkper         : time := 10 ns; 
    constant rd_clkper         : time := 15 ns;
@@ -138,7 +138,7 @@ begin
       fl_async_unit_rx_data <= X"1234567812345678" & "111" & '0' & '0' & '1' & '0';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= X"01";
+      fl_async_unit_rx_delay <= "0" & X"01";
       fl_async_unit_rx_delay_wr_n <= '0';
       fl_async_unit_tx_dst_rdy_n <= '0';
       
@@ -147,7 +147,7 @@ begin
       fl_async_unit_rx_data <= X"8765432187654321" & "111" & '1' & '0' & '1' & '1';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= X"02";
+      fl_async_unit_rx_delay <= "0" & X"02";
       fl_async_unit_rx_delay_wr_n <= '0';
       fl_async_unit_tx_dst_rdy_n <= '0';
       
@@ -156,7 +156,14 @@ begin
       fl_async_unit_rx_data <= X"0000000000004321" & "011" & '0' & '1' & '0' & '1';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= X"00";
+      fl_async_unit_rx_delay <= "0" & X"00";
+      fl_async_unit_rx_delay_wr_n <= '0';
+      fl_async_unit_tx_dst_rdy_n <= '0';
+      
+      wait until rising_edge(wr_clk);
+      
+      fl_async_unit_rx_delay <= "1" & X"0A";
+      fl_async_unit_rx_src_rdy_n <= '1';
       fl_async_unit_rx_delay_wr_n <= '0';
       fl_async_unit_tx_dst_rdy_n <= '0';
       
@@ -165,7 +172,7 @@ begin
       fl_async_unit_rx_data <= X"1122334411223344" & "111" & '0' & '0' & '1' & '0';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= X"05";
+      fl_async_unit_rx_delay <= "0" & X"05";
       fl_async_unit_rx_delay_wr_n <= '0';
       fl_async_unit_tx_dst_rdy_n <= '0';
       
@@ -174,13 +181,14 @@ begin
       fl_async_unit_rx_data <= X"4433221144332211" & "111" & '0' & '0' & '0' & '1';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= X"00";
+      fl_async_unit_rx_delay <= "0" & X"00";
       fl_async_unit_rx_delay_wr_n <= '0';
       fl_async_unit_tx_dst_rdy_n <= '0';
       
       wait until rising_edge(wr_clk);
       fl_async_unit_rx_finish <= '1';
       fl_async_unit_rx_delay_wr_n <= '1';
+      fl_async_unit_rx_src_rdy_n <= '1';
       wait;
    end process;
 end architecture behavioral;
