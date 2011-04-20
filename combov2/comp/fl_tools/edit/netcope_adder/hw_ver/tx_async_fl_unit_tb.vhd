@@ -111,7 +111,11 @@ begin
    
    rdclkgen: process
    begin
-      rd_clk <= '1';
+      if (fl_async_unit_tx_output_rdy = '1') then      
+        rd_clk <= '1';
+      else
+        rd_clk <= '0';
+      end if;
       wait for rd_clkper/2;
       rd_clk <= '0';
       wait for rd_clkper/2;
@@ -128,45 +132,55 @@ begin
    tb: process
 
    begin
-      wait for 3*reset_time;
+      wait for 30*wr_clkper;
+      wait until rising_edge(wr_clk);
+      
       fl_async_unit_rx_data <= X"1234567812345678" & "111" & '0' & '0' & '1' & '0';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= X"00";
+      fl_async_unit_rx_delay <= X"01";
       fl_async_unit_rx_delay_wr_n <= '0';
+      fl_async_unit_tx_dst_rdy_n <= '0';
       
-      wait for 1*wr_clkper;
+      wait until rising_edge(wr_clk);
        
       fl_async_unit_rx_data <= X"8765432187654321" & "111" & '1' & '0' & '1' & '1';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= X"02";
       fl_async_unit_rx_delay_wr_n <= '0';
+      fl_async_unit_tx_dst_rdy_n <= '0';
       
-      wait for 1*wr_clkper;
+      wait until rising_edge(wr_clk);
        
       fl_async_unit_rx_data <= X"0000000000004321" & "011" & '0' & '1' & '0' & '1';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= X"00";
       fl_async_unit_rx_delay_wr_n <= '0';
+      fl_async_unit_tx_dst_rdy_n <= '0';
       
-      wait for 1*wr_clkper;
+      wait until rising_edge(wr_clk);
        
       fl_async_unit_rx_data <= X"1122334411223344" & "111" & '0' & '0' & '1' & '0';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= X"05";
       fl_async_unit_rx_delay_wr_n <= '0';
+      fl_async_unit_tx_dst_rdy_n <= '0';
       
-      wait for 1*wr_clkper;
+      wait until rising_edge(wr_clk);
        
       fl_async_unit_rx_data <= X"4433221144332211" & "111" & '0' & '0' & '0' & '1';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= X"00";
       fl_async_unit_rx_delay_wr_n <= '0';
+      fl_async_unit_tx_dst_rdy_n <= '0';
       
+      wait until rising_edge(wr_clk);
+      fl_async_unit_rx_finish <= '1';
+      fl_async_unit_rx_delay_wr_n <= '1';
       wait;
    end process;
 end architecture behavioral;

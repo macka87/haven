@@ -190,7 +190,6 @@ begin
    end process;
    
    sig_neg_comp_output <= not sig_comp_output;
-   TX_SRC_RDY_N <= sig_neg_comp_output;
    sig_taken <= sig_neg_comp_output nor TX_DST_RDY_N;
    sig_data_fifo_read <= sig_taken; 
    
@@ -206,19 +205,24 @@ begin
       end if;
    end process;
    
+   sig_decremented <= sig_reg_out - 1;
+   
    -- register for taken
-   reg2 : process (RD_CLK)
+   reg2 : process (RD_CLK, RESET)
    begin
-      if (rising_edge(RD_CLK)) then
-         if (RESET = '1') then 
-            sig_reg_taken <= '0';
-         elsif (sig_taken = '1') then
-            sig_reg_taken <= sig_taken;   
+      if (RESET = '1') then 
+         sig_reg_taken <= '1';
+      elsif (rising_edge(RD_CLK)) then
+         if (sig_taken = '1') then
+            sig_reg_taken <= sig_taken;
+         elsif (sig_take = '1') then
+            sig_reg_taken <= '0';   
          end if;   
       end if;
    end process;
    
    sig_take <= sig_reg_taken and (not sig_delay_fifo_empty); 
+   TX_SRC_RDY_N <= sig_neg_comp_output or (sig_delay_fifo_empty and sig_taken);
    sig_delay_fifo_read <= sig_take;
    
    OUTPUT_RDY <= RX_FINISH or ((not sig_data_fifo_rdy) and 
