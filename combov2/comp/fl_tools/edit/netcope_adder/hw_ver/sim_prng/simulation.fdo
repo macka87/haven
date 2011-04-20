@@ -1,0 +1,27 @@
+#   1) pøepnout se do adresáøe, kde se skript "simulation.fdo" nachází.
+#      vsim -do simulation.fdo
+
+vlib work
+
+# Kompilace potøebných zdrojových kódù
+vcom prng_8.vhd testbench.vhd 
+
+# Spuštìní simulace 
+vsim -t 1ps -lib work testbench
+
+view wave
+
+# Pøidání rùzných skupin signálù do okna waveform 
+#add  wave -hex * 
+
+  # ------------------------ RAM ---------------------------
+  add  wave -divider "PRNG_8" 
+  add wave -hex -label "clk"     sim:/testbench/uut/clk 
+  add wave -hex -label "reset"   sim:/testbench/uut/reset 
+  add wave -hex -label "seed"    sim:/testbench/uut/seed
+  add wave -hex -label "output"  sim:/testbench/uut/output 
+  
+view structure
+view signals
+
+run 500 ns 
