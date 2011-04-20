@@ -16,7 +16,7 @@ entity PRNG_8 is
      CLK    : in  std_logic;
      RESET  : in  std_logic;
      SEED   : in  std_logic_vector(7 downto 0);
-     OUTPUT : out std_logic_vector(7 downto 0)
+     OUTPUT : out std_logic
   );
 end entity PRNG_8;
 
@@ -49,5 +49,5 @@ begin
   r_next <= fb & r_reg(7 downto 1);
   
   -- output logic 
-  OUTPUT <= r_reg;
+  OUTPUT <= fb;
 end architecture arch;  
