@@ -13,7 +13,8 @@ view wave
 delete wave *
 
 add wave -noupdate -label reset $TB_BASE/reset
-add wave -noupdate -label base_clk $TB_BASE/clk
+add wave -noupdate -label base_clk $TB_BASE/wr_clk
+add wave -noupdate -label base_clk $TB_BASE/rd_clk
 
 blk_ASYNC_UNIT "$TB_BASE" "$ASYNC_UNIT_PATH"
 

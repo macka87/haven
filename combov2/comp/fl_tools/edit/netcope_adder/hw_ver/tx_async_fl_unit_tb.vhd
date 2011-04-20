@@ -22,7 +22,7 @@ architecture behavioral of testbench is
    -- constants declarations
    ----------------------------------------------------------------------------
    constant IN_DATA_WIDTH     : integer := 71;  
-   constant OUT_DATA_WIDTH    : integer := 46;
+   constant OUT_DATA_WIDTH    : integer := 64;
    constant DELAY_WIDTH       : integer := 8;
 
    constant wr_clkper         : time := 10 ns; 
