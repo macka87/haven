@@ -47,25 +47,25 @@ architecture arch of verification_core is
    signal fl_input_asfifo_out_src_rdy_n : std_logic;
    signal fl_input_asfifo_out_dst_rdy_n : std_logic;
 
-   -- FrameLink shortener input
-   signal fl_shortener_in_data        : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_shortener_in_rem         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_shortener_in_sof_n       : std_logic;
-   signal fl_shortener_in_sop_n       : std_logic;
-   signal fl_shortener_in_eop_n       : std_logic;
-   signal fl_shortener_in_eof_n       : std_logic;
-   signal fl_shortener_in_src_rdy_n   : std_logic;
-   signal fl_shortener_in_dst_rdy_n   : std_logic;
+   -- FIFO input
+   signal fl_fifo_in_data        : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_fifo_in_rem         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_fifo_in_sof_n       : std_logic;
+   signal fl_fifo_in_sop_n       : std_logic;
+   signal fl_fifo_in_eop_n       : std_logic;
+   signal fl_fifo_in_eof_n       : std_logic;
+   signal fl_fifo_in_src_rdy_n   : std_logic;
+   signal fl_fifo_in_dst_rdy_n   : std_logic;
 
-   -- FrameLink shortener output
-   signal fl_shortener_out_data       : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_shortener_out_rem        : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_shortener_out_sof_n      : std_logic;
-   signal fl_shortener_out_sop_n      : std_logic;
-   signal fl_shortener_out_eop_n      : std_logic;
-   signal fl_shortener_out_eof_n      : std_logic;
-   signal fl_shortener_out_src_rdy_n  : std_logic;
-   signal fl_shortener_out_dst_rdy_n  : std_logic;
+   -- FIFO output
+   signal fl_fifo_out_data       : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_fifo_out_rem        : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_fifo_out_sof_n      : std_logic;
+   signal fl_fifo_out_sop_n      : std_logic;
+   signal fl_fifo_out_eop_n      : std_logic;
+   signal fl_fifo_out_eof_n      : std_logic;
+   signal fl_fifo_out_src_rdy_n  : std_logic;
+   signal fl_fifo_out_dst_rdy_n  : std_logic;
 
    -- FrameLink output asynchronous FIFO input
    signal fl_output_asfifo_in_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -87,25 +87,25 @@ architecture arch of verification_core is
    signal fl_output_asfifo_out_src_rdy_n: std_logic;
    signal fl_output_asfifo_out_dst_rdy_n: std_logic;
 
-   -- FrameLink first insert component input
-   signal fl_first_insert_in_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_first_insert_in_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_first_insert_in_sof_n     : std_logic;
-   signal fl_first_insert_in_sop_n     : std_logic;
-   signal fl_first_insert_in_eop_n     : std_logic;
-   signal fl_first_insert_in_eof_n     : std_logic;
-   signal fl_first_insert_in_src_rdy_n : std_logic;
-   signal fl_first_insert_in_dst_rdy_n : std_logic;
+   -- FrameLink NetCOPE Adder component input
+   signal fl_netcope_adder_in_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_netcope_adder_in_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_netcope_adder_in_sof_n     : std_logic;
+   signal fl_netcope_adder_in_sop_n     : std_logic;
+   signal fl_netcope_adder_in_eop_n     : std_logic;
+   signal fl_netcope_adder_in_eof_n     : std_logic;
+   signal fl_netcope_adder_in_src_rdy_n : std_logic;
+   signal fl_netcope_adder_in_dst_rdy_n : std_logic;
 
-   -- FrameLink first insert component output
-   signal fl_first_insert_out_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_first_insert_out_rem      : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_first_insert_out_sof_n    : std_logic;
-   signal fl_first_insert_out_sop_n    : std_logic;
-   signal fl_first_insert_out_eop_n    : std_logic;
-   signal fl_first_insert_out_eof_n    : std_logic;
-   signal fl_first_insert_out_src_rdy_n: std_logic;
-   signal fl_first_insert_out_dst_rdy_n: std_logic;
+   -- FrameLink NetCOPE Adder component output
+   signal fl_netcope_adder_out_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_netcope_adder_out_rem      : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_netcope_adder_out_sof_n    : std_logic;
+   signal fl_netcope_adder_out_sop_n    : std_logic;
+   signal fl_netcope_adder_out_eop_n    : std_logic;
+   signal fl_netcope_adder_out_eof_n    : std_logic;
+   signal fl_netcope_adder_out_src_rdy_n: std_logic;
+   signal fl_netcope_adder_out_dst_rdy_n: std_logic;
 
    -- clock gate signals
    signal clock_enable           : std_logic;
@@ -170,65 +170,58 @@ begin
       TX_DST_RDY_N  => fl_input_asfifo_out_dst_rdy_n
    );
 
-   fl_shortener_in_data       <= fl_input_asfifo_out_data;
-   fl_shortener_in_rem        <= fl_input_asfifo_out_rem;
-   fl_shortener_in_sof_n      <= fl_input_asfifo_out_sof_n;
-   fl_shortener_in_sop_n      <= fl_input_asfifo_out_sop_n;
-   fl_shortener_in_eop_n      <= fl_input_asfifo_out_eop_n;
-   fl_shortener_in_eof_n      <= fl_input_asfifo_out_eof_n;
-   fl_shortener_in_src_rdy_n  <= fl_input_asfifo_out_src_rdy_n;
-   fl_input_asfifo_out_dst_rdy_n  <= fl_shortener_in_dst_rdy_n;
+   fl_fifo_in_data       <= fl_input_asfifo_out_data;
+   fl_fifo_in_rem        <= fl_input_asfifo_out_rem;
+   fl_fifo_in_sof_n      <= fl_input_asfifo_out_sof_n;
+   fl_fifo_in_sop_n      <= fl_input_asfifo_out_sop_n;
+   fl_fifo_in_eop_n      <= fl_input_asfifo_out_eop_n;
+   fl_fifo_in_eof_n      <= fl_input_asfifo_out_eof_n;
+   fl_fifo_in_src_rdy_n  <= fl_input_asfifo_out_src_rdy_n;
+   fl_input_asfifo_out_dst_rdy_n  <= fl_fifo_in_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
-   --                              Frame Shortener
+   --                              FIFO
    -- ------------------------------------------------------------------------
-   shortener_i: entity work.FL_SHORTENER
+   fifo_i: entity work.fl_fifo
    generic map(
-      -- FrameLink data width
-      DATA_WIDTH => DATA_WIDTH,
-      -- number of part in the FrameLink frame that will be truncated
-      PART_NUM   => 0,
-
-      -- number of bytes that will be kept in processed part of frame
-      -- value of 0 is not accepted
-      BYTES_KEPT => DATA_WIDTH / 8,
-
-      -- number of parts in frame
-      PARTS      => 1
+      DATA_WIDTH  => DATA_WIDTH,
+      USE_BRAMS   => false,
+      ITEMS       => 16,
+      PARTS       => 1
    )
    port map(
       CLK           => clk_dut,
       RESET         => reset_dut,
 
       -- input interface
-      RX_DATA       => fl_shortener_in_data,
-      RX_REM        => fl_shortener_in_rem,
-      RX_SOF_N      => fl_shortener_in_sof_n,
-      RX_SOP_N      => fl_shortener_in_sop_n,
-      RX_EOP_N      => fl_shortener_in_eop_n,
-      RX_EOF_N      => fl_shortener_in_eof_n,
-      RX_SRC_RDY_N  => fl_shortener_in_src_rdy_n, 
-      RX_DST_RDY_N  => fl_shortener_in_dst_rdy_n, 
+      RX_DATA       => fl_fifo_in_data,
+      RX_REM        => fl_fifo_in_rem,
+      RX_SOF_N      => fl_fifo_in_sof_n,
+      RX_SOP_N      => fl_fifo_in_sop_n,
+      RX_EOP_N      => fl_fifo_in_eop_n,
+      RX_EOF_N      => fl_fifo_in_eof_n,
+      RX_SRC_RDY_N  => fl_fifo_in_src_rdy_n, 
+      RX_DST_RDY_N  => fl_fifo_in_dst_rdy_n, 
       
       -- output interface
-      TX_DATA       => fl_shortener_out_data,
-      TX_REM        => fl_shortener_out_rem,
-      TX_SOF_N      => fl_shortener_out_sof_n,
-      TX_SOP_N      => fl_shortener_out_sop_n,
-      TX_EOP_N      => fl_shortener_out_eop_n,
-      TX_EOF_N      => fl_shortener_out_eof_n,
-      TX_SRC_RDY_N  => fl_shortener_out_src_rdy_n,
-      TX_DST_RDY_N  => fl_shortener_out_dst_rdy_n
+      TX_DATA       => fl_fifo_out_data,
+      TX_REM        => fl_fifo_out_rem,
+      TX_SOF_N      => fl_fifo_out_sof_n,
+      TX_SOP_N      => fl_fifo_out_sop_n,
+      TX_EOP_N      => fl_fifo_out_eop_n,
+      TX_EOF_N      => fl_fifo_out_eof_n,
+      TX_SRC_RDY_N  => fl_fifo_out_src_rdy_n,
+      TX_DST_RDY_N  => fl_fifo_out_dst_rdy_n
    );
 
-   fl_output_asfifo_in_data       <= fl_shortener_out_data;
-   fl_output_asfifo_in_rem        <= fl_shortener_out_rem;
-   fl_output_asfifo_in_sof_n      <= fl_shortener_out_sof_n;
-   fl_output_asfifo_in_sop_n      <= fl_shortener_out_sop_n;
-   fl_output_asfifo_in_eop_n      <= fl_shortener_out_eop_n;
-   fl_output_asfifo_in_eof_n      <= fl_shortener_out_eof_n;
-   fl_output_asfifo_in_src_rdy_n  <= fl_shortener_out_src_rdy_n;
-   fl_shortener_out_dst_rdy_n  <= fl_output_asfifo_in_dst_rdy_n;
+   fl_output_asfifo_in_data       <= fl_fifo_out_data;
+   fl_output_asfifo_in_rem        <= fl_fifo_out_rem;
+   fl_output_asfifo_in_sof_n      <= fl_fifo_out_sof_n;
+   fl_output_asfifo_in_sop_n      <= fl_fifo_out_sop_n;
+   fl_output_asfifo_in_eop_n      <= fl_fifo_out_eop_n;
+   fl_output_asfifo_in_eof_n      <= fl_fifo_out_eof_n;
+   fl_output_asfifo_in_src_rdy_n  <= fl_fifo_out_src_rdy_n;
+   fl_fifo_out_dst_rdy_n  <= fl_output_asfifo_in_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
    --                        Output asynchronous FIFO
@@ -268,19 +261,19 @@ begin
       TX_DST_RDY_N  => fl_output_asfifo_out_dst_rdy_n
    );
 
-   fl_first_insert_in_data       <= fl_output_asfifo_out_data;
-   fl_first_insert_in_rem        <= fl_output_asfifo_out_rem;
-   fl_first_insert_in_sof_n      <= fl_output_asfifo_out_sof_n;
-   fl_first_insert_in_sop_n      <= fl_output_asfifo_out_sop_n;
-   fl_first_insert_in_eop_n      <= fl_output_asfifo_out_eop_n;
-   fl_first_insert_in_eof_n      <= fl_output_asfifo_out_eof_n;
-   fl_first_insert_in_src_rdy_n  <= fl_output_asfifo_out_src_rdy_n;
-   fl_output_asfifo_out_dst_rdy_n  <= fl_first_insert_in_dst_rdy_n;
+   fl_netcope_adder_in_data       <= fl_output_asfifo_out_data;
+   fl_netcope_adder_in_rem        <= fl_output_asfifo_out_rem;
+   fl_netcope_adder_in_sof_n      <= fl_output_asfifo_out_sof_n;
+   fl_netcope_adder_in_sop_n      <= fl_output_asfifo_out_sop_n;
+   fl_netcope_adder_in_eop_n      <= fl_output_asfifo_out_eop_n;
+   fl_netcope_adder_in_eof_n      <= fl_output_asfifo_out_eof_n;
+   fl_netcope_adder_in_src_rdy_n  <= fl_output_asfifo_out_src_rdy_n;
+   fl_output_asfifo_out_dst_rdy_n  <= fl_netcope_adder_in_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
-   --                              First insert
+   --                              NetCOPE Adder
    -- ------------------------------------------------------------------------
-   first_insert_i: entity work.FL_FIRST_INSERT
+   netcope_adder_i: entity work.FL_NETCOPE_ADDER
    generic map(
       DATA_WIDTH => DATA_WIDTH
    )
@@ -288,43 +281,39 @@ begin
       CLK           => CLK,
       RESET         => RESET,
 
-      -- word to insert
-      DATA          => X"CA1A010000040010",
-      DREM          => "111",
-
       -- input interface
-      RX_DATA       => fl_first_insert_in_data,
-      RX_REM        => fl_first_insert_in_rem,
-      RX_SOF_N      => fl_first_insert_in_sof_n,
-      RX_SOP_N      => fl_first_insert_in_sop_n,
-      RX_EOP_N      => fl_first_insert_in_eop_n,
-      RX_EOF_N      => fl_first_insert_in_eof_n,
-      RX_SRC_RDY_N  => fl_first_insert_in_src_rdy_n,
-      RX_DST_RDY_N  => fl_first_insert_in_dst_rdy_n,
+      RX_DATA       => fl_netcope_adder_in_data,
+      RX_REM        => fl_netcope_adder_in_rem,
+      RX_SOF_N      => fl_netcope_adder_in_sof_n,
+      RX_SOP_N      => fl_netcope_adder_in_sop_n,
+      RX_EOP_N      => fl_netcope_adder_in_eop_n,
+      RX_EOF_N      => fl_netcope_adder_in_eof_n,
+      RX_SRC_RDY_N  => fl_netcope_adder_in_src_rdy_n,
+      RX_DST_RDY_N  => fl_netcope_adder_in_dst_rdy_n,
       
       -- output interface
-      TX_DATA       => fl_first_insert_out_data,
-      TX_REM        => fl_first_insert_out_rem,
-      TX_SOF_N      => fl_first_insert_out_sof_n,
-      TX_SOP_N      => fl_first_insert_out_sop_n,
-      TX_EOP_N      => fl_first_insert_out_eop_n,
-      TX_EOF_N      => fl_first_insert_out_eof_n,
-      TX_SRC_RDY_N  => fl_first_insert_out_src_rdy_n,
-      TX_DST_RDY_N  => fl_first_insert_out_dst_rdy_n
+      TX_DATA       => fl_netcope_adder_out_data,
+      TX_REM        => fl_netcope_adder_out_rem,
+      TX_SOF_N      => fl_netcope_adder_out_sof_n,
+      TX_SOP_N      => fl_netcope_adder_out_sop_n,
+      TX_EOP_N      => fl_netcope_adder_out_eop_n,
+      TX_EOF_N      => fl_netcope_adder_out_eof_n,
+      TX_SRC_RDY_N  => fl_netcope_adder_out_src_rdy_n,
+      TX_DST_RDY_N  => fl_netcope_adder_out_dst_rdy_n
    );
 
 
    -- ------------------------------------------------------------------------
    --                          Mapping of outputs
    -- ------------------------------------------------------------------------
-   TX_DATA       <= fl_first_insert_out_data;
-   TX_REM        <= fl_first_insert_out_rem;
-   TX_SOF_N      <= fl_first_insert_out_sof_n;
-   TX_SOP_N      <= fl_first_insert_out_sop_n;
-   TX_EOP_N      <= fl_first_insert_out_eop_n;
-   TX_EOF_N      <= fl_first_insert_out_eof_n;
-   TX_SRC_RDY_N  <= fl_first_insert_out_src_rdy_n;
-   fl_first_insert_out_dst_rdy_n  <= TX_DST_RDY_N;
+   TX_DATA       <= fl_netcope_adder_out_data;
+   TX_REM        <= fl_netcope_adder_out_rem;
+   TX_SOF_N      <= fl_netcope_adder_out_sof_n;
+   TX_SOP_N      <= fl_netcope_adder_out_sop_n;
+   TX_EOP_N      <= fl_netcope_adder_out_eop_n;
+   TX_EOF_N      <= fl_netcope_adder_out_eof_n;
+   TX_SRC_RDY_N  <= fl_netcope_adder_out_src_rdy_n;
+   fl_netcope_adder_out_dst_rdy_n  <= TX_DST_RDY_N;
 
 
 --   TX_DATA       <= RX_DATA;
