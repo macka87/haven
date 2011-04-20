@@ -189,6 +189,21 @@ begin
       fl_async_unit_rx_finish <= '1';
       fl_async_unit_rx_delay_wr_n <= '1';
       fl_async_unit_rx_src_rdy_n <= '1';
+      
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      fl_async_unit_tx_dst_rdy_n <= '1';
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      wait until rising_edge(rd_clk);
+      fl_async_unit_tx_dst_rdy_n <= '0';
       wait;
    end process;
 end architecture behavioral;
