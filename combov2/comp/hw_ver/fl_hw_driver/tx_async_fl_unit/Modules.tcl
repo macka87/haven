@@ -3,7 +3,7 @@
 # Author(s): Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
 
 # Set paths
-set FIRMWARE_BASE       "$ENTITY_BASE/../../../../.."
+set FIRMWARE_BASE       "$ENTITY_BASE/../../../.."
 set COMP_BASE           "$FIRMWARE_BASE/comp"
 #set FL_BASE             "$COMP_BASE/fl_tools"
 set BASE_BASE           "$COMP_BASE/base"
