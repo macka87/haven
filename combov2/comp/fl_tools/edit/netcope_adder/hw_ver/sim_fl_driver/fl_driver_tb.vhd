@@ -188,6 +188,7 @@ begin
       fl_driver_tx_delay_rdy_n <= '0';
       
       wait until rising_edge(clk);
+      fl_driver_rx_src_rdy_n <= '1';
       wait until rising_edge(clk);
       wait until rising_edge(clk);
       wait until rising_edge(clk);
