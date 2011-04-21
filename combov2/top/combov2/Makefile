@@ -67,6 +67,12 @@ IB_SWITCH=ib_switch_slave_synth.ngc
 IB_ASYNC=ib_asfifo_64b.ngc
 TSU_ASYNC=tsu_async.ngc
 
+FIFO_PATH=$(FIRMWARE_BASE)/comp/cdc_fifo/xilinx_fifos
+FIFO_NGCS=$(FIFO_PATH)/asfifo_lut_1.ngc \
+          $(FIFO_PATH)/asfifo_lut_8.ngc \
+          $(FIFO_PATH)/asfifo_lut_9.ngc \
+          $(FIFO_PATH)/asfifo_lut_71.ngc
+
 
 ##############################################################################
 # Translation parameters 
@@ -153,7 +159,9 @@ APP_MCS_DEPENDS =
 
 APP_MODULES=$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ICON) \
 	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA72) \
-	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA144)
+	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA144) \
+	$(FIFO_NGCS) \
+
 
 ifeq ($(MODS),1)
 	APP_MODULES += \
