@@ -324,7 +324,8 @@ begin
    
    TX_SRC_RDY_N <= not((not RX_SRC_RDY_N) and is_data);
    
-   mux1 : process (is_header, is_data, is_delay, is_cntr)
+   mux1 : process (is_header, is_data, is_delay, is_delaying,
+      sig_set_delay_rdy_n, is_cntr)
    begin
      if    (is_header = '1') then sig_rx_dst_rdy_n <= '0';
      elsif (is_data   = '1') then sig_rx_dst_rdy_n <= '0'; 
