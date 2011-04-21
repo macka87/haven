@@ -113,7 +113,7 @@ begin
    sig_data_fifo_wr_data(1)  <= RX_SOP_N;
    sig_data_fifo_wr_data(2)  <= RX_EOF_N;
    sig_data_fifo_wr_data(3)  <= RX_EOP_N;
-   sig_data_fifo_wr_write    <= not (RX_SRC_RDY_N or lfsr_output;
+   sig_data_fifo_wr_write    <= not (RX_SRC_RDY_N or lfsr_output);
    RX_DST_RDY_N              <= lfsr_output OR sig_data_fifo_wr_full;
 
    OUTPUT_READY        <= not sig_data_fifo_wr_almost_full;
