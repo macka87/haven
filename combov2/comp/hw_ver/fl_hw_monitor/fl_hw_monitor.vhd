@@ -80,6 +80,7 @@ constant LFSR_GENERATOR_SEED : std_logic_vector(7 downto 0) := "10011011";
 signal sig_data_fifo_wr_data         : std_logic_vector(DATA_FIFO_WIDTH-1 downto 0);
 signal sig_data_fifo_wr_write        : std_logic;
 signal sig_data_fifo_wr_almost_full  : std_logic;
+signal sig_data_fifo_wr_full         : std_logic;
 
 signal sig_data_fifo_rd_data   : std_logic_vector(DATA_FIFO_WIDTH-1 downto 0);
 signal sig_data_fifo_rd_read   : std_logic;
@@ -113,7 +114,7 @@ begin
    sig_data_fifo_wr_data(2)  <= RX_EOF_N;
    sig_data_fifo_wr_data(3)  <= RX_EOP_N;
    sig_data_fifo_wr_write    <= not (RX_SRC_RDY_N or lfsr_output;
-   RX_DST_RDY_N              <= lfsr_output;
+   RX_DST_RDY_N              <= lfsr_output OR sig_data_fifo_wr_full;
 
    OUTPUT_READY        <= not sig_data_fifo_wr_almost_full;
 
@@ -129,7 +130,7 @@ begin
       WR_CLK          => RX_CLK,
       WR_DATA         => sig_data_fifo_wr_data,
       WR_WRITE        => sig_data_fifo_wr_write,
-      WR_FULL         => open,
+      WR_FULL         => sig_data_fifo_wr_full,
       WR_ALMOST_FULL  => sig_data_fifo_wr_almost_full,
       
       RD_CLK          => TX_CLK,
