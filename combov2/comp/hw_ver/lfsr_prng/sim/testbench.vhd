@@ -11,7 +11,7 @@ architecture tb_arch of testbench is
   signal clk      : std_logic;
   signal reset    : std_logic;
   signal seed     : std_logic_vector(7 downto 0);
-  signal output   : std_logic_vector(7 downto 0);
+  signal output   : std_logic;
   
 begin
   -- instancia testovanej komponenty
@@ -19,7 +19,7 @@ begin
   port map( CLK     => clk,
             RESET   => reset,
             SEED    => seed,
-            OUTPUT  => OUTPUT
+            OUTPUT  => output
   );
 
   -- generovanie hodinoveho signalu 

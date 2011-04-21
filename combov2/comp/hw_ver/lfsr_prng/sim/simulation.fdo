@@ -4,7 +4,7 @@
 vlib work
 
 # Kompilace potøebných zdrojových kódù
-vcom prng_8.vhd testbench.vhd 
+vcom ../prng_8.vhd testbench.vhd 
 
 # Spuštìní simulace 
 vsim -t 1ps -lib work testbench
