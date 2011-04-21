@@ -4,10 +4,10 @@
 
 set FIRMWARE_BASE         "../../../../../.."
 set COMP_BASE             "$FIRMWARE_BASE/comp"
-set FL_DRIVER_BASE       "$COMP_BASE/fl_tools/edit/netcope_adder/hw_ver"
+set FL_DRIVER_BASE        "$COMP_BASE/fl_tools/edit/netcope_adder/hw_ver/sim_fl_driver"
 
-set SIG_FILE              "$ASYNC_UNIT_BASE/sim_async_unit/fl_driver_sig.fdo"
-set TB_FILE               "$ASYNC_UNIT_BASE/sim_async_unit/fl_driver_tb.vhd"
+set SIG_FILE              "$FL_DRIVER_BASE/fl_driver_sig.fdo"
+set TB_FILE               "$FL_DRIVER_BASE/fl_driver_tb.vhd"
 
 set COMPONENTS [list \
                   [ list "FL_DRIVER" $FL_DRIVER_BASE "FULL" ] \
