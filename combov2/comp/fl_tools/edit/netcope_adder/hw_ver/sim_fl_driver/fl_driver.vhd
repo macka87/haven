@@ -248,7 +248,7 @@ begin
           end if;
         
         when delay_rdy_state =>
-          if (RX_SRC_RDY_N ='0' and sig_set_delay_rdy_n = '0') then 
+          if (sig_set_delay_rdy_n = '0') then 
             state_next <= init_state;
           else 
             state_next <= delay_rdy_state;        
