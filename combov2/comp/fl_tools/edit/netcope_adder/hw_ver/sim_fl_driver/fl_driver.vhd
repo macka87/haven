@@ -246,7 +246,7 @@ begin
           end if;
         
         when delay_rdy_state =>
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0' and sig_eof_reg = '1') then 
+          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0' and sig_set_delay_rdy_n = '0') then 
             state_next <= init_state;
           else 
             state_next <= delay_rdy_state;        
@@ -326,7 +326,7 @@ begin
    begin
      if    (is_header = '1') then sig_rx_dst_rdy_n <= '0';
      elsif (is_data   = '1') then sig_rx_dst_rdy_n <= '0'; 
-     elsif (is_delaying = '1') then sig_rx_dst_rdy_n <= sig_set_delay_rdy_n_final;  
+     elsif (is_delaying = '1') then sig_rx_dst_rdy_n <= sig_set_delay_rdy_n;  
      elsif (is_cntr   = '1') then sig_rx_dst_rdy_n <= '1'; 
      end if;
    end process;
@@ -410,7 +410,7 @@ begin
       elsif (rising_edge(CLK)) then
          if ((RX_SRC_RDY_N nor sig_rx_dst_rdy_n) = '1') then -- reset
             sig_select <= (others => '0');
-         elsif ((sig_delay_wr_n nor TX_DELAY_RDY_N) = '0') then -- enable
+         elsif ((sig_delay_wr_n nor TX_DELAY_RDY_N) = '1') then -- enable
             sig_select <= sig_incremented;
          end if;   
       end if;
