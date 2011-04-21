@@ -83,8 +83,6 @@ constant COMP_VALUE : std_logic_vector(IN_DATA_WIDTH-1 downto 0)
                       
 constant ZERO_VALUE : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0) 
                       := (others => '0');       
-                      
-constant SELECT_WIDTH : integer := log2(IN_DATA_WIDTH/8);              
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -122,10 +120,10 @@ signal sig_delay_wr_n      : std_logic;
 signal sig_output_reg      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal sig_rem_reg         : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
 signal sig_eof_reg         : std_logic;
-signal sig_incremented     : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
-signal sig_select          : std_logic_vector(SELECT_WIDTH-1 downto 0);
+signal sig_incremented     : std_logic_vector(log2(IN_DATA_WIDTH/8) downto 0);
+signal sig_select          : std_logic_vector(log2(IN_DATA_WIDTH/8) downto 0);
 signal sig_mux_delay       : std_logic_vector(7 downto 0);
-signal sig_set_boundary    : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+signal sig_set_boundary    : std_logic_vector(log2(IN_DATA_WIDTH/8) downto 0);
 signal sig_set_delay_rdy_n : std_logic;
 signal sig_set_delay_rdy_n_final : std_logic;
 
@@ -248,7 +246,7 @@ begin
           end if;
         
         when delay_rdy_state =>
-          if (RX_EOF_N = '0') then 
+          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0' and sig_eof_reg = '1') then 
             state_next <= init_state;
           else 
             state_next <= delay_rdy_state;        
@@ -328,7 +326,7 @@ begin
    begin
      if    (is_header = '1') then sig_rx_dst_rdy_n <= '0';
      elsif (is_data   = '1') then sig_rx_dst_rdy_n <= '0'; 
-     elsif (is_delay  = sig_set_delay_rdy_n_final) then sig_rx_dst_rdy_n <= '0';  
+     elsif (is_delaying = '1') then sig_rx_dst_rdy_n <= sig_set_delay_rdy_n_final;  
      elsif (is_cntr   = '1') then sig_rx_dst_rdy_n <= '1'; 
      end if;
    end process;
@@ -422,15 +420,15 @@ begin
    begin
       sig_mux_delay <= (others => '0');
 
-      case sig_select(2 downto 0) is
-         when "000"  => sig_mux_delay <= sig_output_reg (7 downto 0);
-         when "001"  => sig_mux_delay <= sig_output_reg (15 downto 8);
-         when "010"  => sig_mux_delay <= sig_output_reg (23 downto 16);
-         when "011"  => sig_mux_delay <= sig_output_reg (31 downto 24);
-         when "100"  => sig_mux_delay <= sig_output_reg (39 downto 32);
-         when "101"  => sig_mux_delay <= sig_output_reg (47 downto 40);
-         when "110"  => sig_mux_delay <= sig_output_reg (55 downto 48);
-         when "111"  => sig_mux_delay <= sig_output_reg (63 downto 56);
+      case sig_select(3 downto 0) is
+         when "0000"  => sig_mux_delay <= sig_output_reg (7 downto 0);
+         when "0001"  => sig_mux_delay <= sig_output_reg (15 downto 8);
+         when "0010"  => sig_mux_delay <= sig_output_reg (23 downto 16);
+         when "0011"  => sig_mux_delay <= sig_output_reg (31 downto 24);
+         when "0100"  => sig_mux_delay <= sig_output_reg (39 downto 32);
+         when "0101"  => sig_mux_delay <= sig_output_reg (47 downto 40);
+         when "0110"  => sig_mux_delay <= sig_output_reg (55 downto 48);
+         when "0111"  => sig_mux_delay <= sig_output_reg (63 downto 56);
          when others => null;   
       end case;   
    end process;
@@ -442,8 +440,8 @@ begin
       sig_set_boundary <= (others => '0');
 
       case sig_eof_reg is
-         when '0'    => sig_set_boundary <= "111";
-         when '1'    => sig_set_boundary <= sig_rem_reg;
+         when '0'    => sig_set_boundary <= "1000";
+         when '1'    => sig_set_boundary <= ('0'& sig_rem_reg) + 1;
          when others => null;   
       end case;   
    end process;
