@@ -206,7 +206,7 @@ begin
       
       wait until rising_edge(clk);
       -- wait 
-      fl_driver_rx_data  <= X"0000000000000005"; 
+      fl_driver_rx_data  <= X"0000000000000100"; 
       fl_driver_rx_rem   <= "111";
       fl_driver_rx_sof_n <= '1';
       fl_driver_rx_eof_n <= '0';
@@ -218,6 +218,7 @@ begin
       
       wait until rising_edge(clk);
       fl_driver_rx_src_rdy_n <= '1';
+      wait until rising_edge(clk);
       wait until rising_edge(clk);
       -- stop header   
       fl_driver_rx_data  <= X"0001000400000000"; 

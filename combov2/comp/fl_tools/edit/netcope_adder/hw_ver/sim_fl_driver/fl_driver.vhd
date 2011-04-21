@@ -351,7 +351,7 @@ begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then 
             sig_counter_reg <= (others => '0');
-         elsif ((is_wait and (not TX_DELAY_RDY_N)) = '1') then
+         elsif (((is_wait or is_cntr) and (not TX_DELAY_RDY_N)) = '1') then
             sig_counter_reg <= sig_mux_counter;   
          end if;   
       end if;
