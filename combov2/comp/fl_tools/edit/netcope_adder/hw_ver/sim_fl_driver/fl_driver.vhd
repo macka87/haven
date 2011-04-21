@@ -127,6 +127,8 @@ signal sig_set_boundary    : std_logic_vector(log2(IN_DATA_WIDTH/8) downto 0);
 signal sig_set_delay_rdy_n : std_logic;
 signal sig_set_delay_rdy_n_final : std_logic;
 
+signal data_ready          : std_logic;
+
 -- ==========================================================================
 --                           ARCHITECTURE BODY
 -- ==========================================================================
@@ -144,7 +146,7 @@ begin
    end process;
    
    -- next state logic
-   fsm_next_state_logic : process (state_reg, RX_SRC_RDY_N, sig_rx_dst_rdy_n, 
+   fsm_next_state_logic : process (state_reg, data_ready,
                                    sig_trans_type, sig_reg_last, RX_EOF_N,
                                    sig_counter_is_zero, sig_set_delay_rdy_n)
    begin
@@ -158,7 +160,7 @@ begin
      case state_reg is
         
         when init_state =>
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0') then
+          if (data_ready = '1') then
             -- read header
             sig_trans_type <= RX_DATA(39 downto 32);
             sig_new_compl  <= RX_DATA(57); 
@@ -182,7 +184,7 @@ begin
           end if;                
         
         when sof_state => 
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0') then 
+          if (data_ready = '1') then 
             if (RX_EOF_N = '0') then 
               state_next <= init_state;
               sig_out_sof_n <= '0';
@@ -201,7 +203,7 @@ begin
           end if;
         
         when sop_state =>
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0') then 
+          if (data_ready = '1') then 
             if (RX_EOF_N = '0') then 
               state_next <= init_state;
               sig_out_sof_n <= '1';
@@ -220,7 +222,7 @@ begin
           end if;
              
         when data_state =>
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0') then 
+          if (data_ready = '1') then 
             if (RX_EOF_N = '0') then 
               state_next <= init_state;
               sig_out_sof_n <= '1';
@@ -239,7 +241,7 @@ begin
           end if;
         
         when delay_state =>
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0') then
+          if (data_ready = '1') then
             state_next <= delay_rdy_state;
           else 
             state_next <= delay_state;        
@@ -256,7 +258,7 @@ begin
           state_next <= stop_state;
         
         when wait_state =>
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0' and RX_EOF_N = '0' and
+          if (data_ready = '1' and RX_EOF_N = '0' and
               sig_counter_is_zero = '1') then
             state_next <= counter_state; 
           else 
@@ -304,7 +306,7 @@ begin
       if (RESET = '1') then 
          sig_reg_last <= '1';
       elsif (rising_edge(CLK)) then
-         if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0') then
+         if (data_ready = '1') then
             sig_reg_last <= sig_new_last;   
          end if;   
       end if;
@@ -385,6 +387,8 @@ begin
    sig_delay_wr_n <= is_delaying nor is_wait;
    TX_DELAY_WR_N <= sig_delay_wr_n;
    
+   data_ready <= RX_SRC_RDY_N nor sig_rx_dst_rdy_n;
+
    -- ================= DELAY PROCESSING ====================================
    reg3 : process (CLK)
    begin
@@ -393,7 +397,7 @@ begin
          sig_rem_reg    <= RX_REM; 
          sig_eof_reg    <= '0';
       elsif (rising_edge(CLK)) then
-         if ((RX_SRC_RDY_N nor sig_rx_dst_rdy_n) = '1') then
+         if (data_ready = '1') then
             sig_output_reg <= RX_DATA;  
             sig_rem_reg    <= RX_REM; 
             sig_eof_reg    <= not RX_EOF_N;  
@@ -408,7 +412,7 @@ begin
       if (RESET = '1') then 
          sig_select <= (others => '0');
       elsif (rising_edge(CLK)) then
-         if ((RX_SRC_RDY_N nor sig_rx_dst_rdy_n) = '1') then -- reset
+         if (data_ready = '1') then -- reset
             sig_select <= (others => '0');
          elsif ((sig_delay_wr_n nor TX_DELAY_RDY_N) = '1') then -- enable
             sig_select <= sig_incremented;
