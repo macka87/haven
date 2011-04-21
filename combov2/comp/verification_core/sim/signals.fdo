@@ -36,3 +36,36 @@ proc blk_VER_CORE { BASE } {
   add_wave "-noupdate -label MI32_DRDY"      $BASE/MI32_DRDY
 }
 
+proc blk_VER_CORE_INTERNALS { BASE } {
+  add wave -divider "Clock Gate"
+  add_wave "-noupdate -label CLK_IN"        $BASE/clock_gate_i/CLK_IN
+  add_wave "-noupdate -label CLOCK_ENABLE"  $BASE/clock_gate_i/CLOCK_ENABLE
+  add_wave "-noupdate -label CLK_OUT"       $BASE/clock_gate_i/CLK_OUT
+}
+
+proc blk_VER_CORE_MONITOR { BASE } {
+  add wave -divider "Input"
+  add_wave "-noupdate -label RX_CLK"       $BASE/RX_CLK
+  add_wave "-noupdate -label RX_DATA -hex" $BASE/RX_DATA
+  add_wave "-noupdate -label RX_REM"       $BASE/RX_REM
+  add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
+  add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
+  add_wave "-noupdate -label RX_SOP_N"     $BASE/RX_SOP_N
+  add_wave "-noupdate -label RX_EOP_N"     $BASE/RX_EOP_N
+  add_wave "-noupdate -label RX_SOF_N"     $BASE/RX_SOF_N
+  add_wave "-noupdate -label RX_EOF_N"     $BASE/RX_EOF_N
+ 
+  add wave -divider "Output"
+  add_wave "-noupdate -label TX_CLK"       $BASE/TX_CLK
+  add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+  add_wave "-noupdate -label TX_REM"       $BASE/TX_REM
+  add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+  add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+  add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
+  add_wave "-noupdate -label TX_EOP_N"     $BASE/TX_EOP_N
+  add_wave "-noupdate -label TX_SOF_N"     $BASE/TX_SOF_N
+  add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
+
+  add wave -divider "Misc"
+  add_wave "-noupdate -label OUTPUT_READY" $BASE/OUTPUT_READY
+}

@@ -18,7 +18,14 @@ delete wave *
 add_wave "-noupdate -label RESET -color yellow"  $TB_PATH/reset
 add_wave "-noupdate -label CLK   -color yellow"  $TB_PATH/clk
 
+add wave -divider "INTERFACE"
 blk_VER_CORE     $VERIFICATION_CORE_PATH
+
+add wave -divider "INTERNALS"
+blk_VER_CORE_INTERNALS    $VERIFICATION_CORE_PATH
+
+add wave -divider "MONITOR"
+blk_VER_CORE_MONITOR      $VERIFICATION_CORE_PATH/fl_hw_monitor_i
 
 restart -f
 run 500 ns
