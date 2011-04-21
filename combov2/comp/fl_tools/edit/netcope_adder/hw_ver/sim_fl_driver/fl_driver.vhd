@@ -146,7 +146,7 @@ begin
    -- next state logic
    fsm_next_state_logic : process (state_reg, RX_SRC_RDY_N, sig_rx_dst_rdy_n, 
                                    sig_trans_type, sig_reg_last, RX_EOF_N,
-                                   sig_counter_is_zero)
+                                   sig_counter_is_zero, sig_set_delay_rdy_n)
    begin
      state_next <= state_reg;  
      
@@ -246,7 +246,7 @@ begin
           end if;
         
         when delay_rdy_state =>
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0' and sig_set_delay_rdy_n = '0') then 
+          if (RX_SRC_RDY_N ='0' and sig_set_delay_rdy_n = '0') then 
             state_next <= init_state;
           else 
             state_next <= delay_rdy_state;        
