@@ -186,7 +186,6 @@ begin
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
-      wait;
       
       wait until rising_edge(clk);
       wait until rising_edge(clk);
@@ -215,7 +214,6 @@ begin
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
-      wait;
       
       wait until rising_edge(clk);
       -- stop header   
@@ -231,5 +229,8 @@ begin
       
       wait until rising_edge(clk);
       fl_driver_rx_src_rdy_n <= '1';
+
+      -- wait forever
+      wait;
    end process;
 end architecture behavioral;
