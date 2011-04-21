@@ -357,9 +357,9 @@ begin
       end if;
    end process;
    
-   comparator1 : process (sig_counter_reg)
+   comparator1 : process (sig_mux_counter)
    begin
-      if (sig_counter_reg = ZERO_VALUE) then sig_counter_is_zero <= '1';
+      if (sig_mux_counter = ZERO_VALUE) then sig_counter_is_zero <= '1';
       else sig_counter_is_zero <= '0';
       end if;
    end process;

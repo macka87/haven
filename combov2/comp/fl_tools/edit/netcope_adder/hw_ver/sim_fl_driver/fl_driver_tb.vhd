@@ -217,6 +217,8 @@ begin
       fl_driver_tx_delay_rdy_n <= '0';
       
       wait until rising_edge(clk);
+      fl_driver_rx_src_rdy_n <= '1';
+      wait until rising_edge(clk);
       -- stop header   
       fl_driver_rx_data  <= X"0001000400000000"; 
       fl_driver_rx_rem   <= "111";
