@@ -4,13 +4,13 @@
 
 set FIRMWARE_BASE         "../../../../../.."
 set COMP_BASE             "$FIRMWARE_BASE/comp"
-set ASYNC_UNIT_BASE       "$COMP_BASE/fl_tools/edit/netcope_adder/hw_ver"
+set FL_DRIVER_BASE       "$COMP_BASE/fl_tools/edit/netcope_adder/hw_ver"
 
-set SIG_FILE              "$ASYNC_UNIT_BASE/sim_async_unit/tx_async_fl_unit_sig.fdo"
-set TB_FILE               "$ASYNC_UNIT_BASE/sim_async_unit/tx_async_fl_unit_tb.vhd"
+set SIG_FILE              "$ASYNC_UNIT_BASE/sim_async_unit/fl_driver_sig.fdo"
+set TB_FILE               "$ASYNC_UNIT_BASE/sim_async_unit/fl_driver_tb.vhd"
 
 set COMPONENTS [list \
-                  [ list "ASYNC_UNIT" $ASYNC_UNIT_BASE "FULL" ] \
+                  [ list "FL_DRIVER" $FL_DRIVER_BASE "FULL" ] \
                ]
 
 source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"

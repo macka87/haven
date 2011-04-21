@@ -21,42 +21,38 @@ architecture behavioral of testbench is
 
    -- constants declarations
    ----------------------------------------------------------------------------
-   constant IN_DATA_WIDTH     : integer := 71;  
-   constant OUT_DATA_WIDTH    : integer := 64;
+   constant IN_DATA_WIDTH     : integer := 64;  
+   constant OUT_DATA_WIDTH    : integer := 71;
    constant DELAY_WIDTH       : integer := 9;
 
-   constant wr_clkper         : time := 10 ns; 
-   constant rd_clkper         : time := 15 ns;
+   constant clkper            : time := 10 ns; 
    constant reset_time        : time := 100 ns;
 
    -- signals declarations
    ----------------------------------------------------------------------------
-   signal wr_clk              : std_logic;
-   signal rd_clk              : std_logic;
+   signal clk                 : std_logic;
    signal reset               : std_logic;
    
    -- UUT input signals
-   signal fl_async_unit_rx_data         : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-   signal fl_async_unit_rx_src_rdy_n    : std_logic;
-   signal fl_async_unit_rx_dst_rdy_n    : std_logic;
+   signal fl_driver_rx_data         : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+   signal fl_driver_rx_rem          : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+   signal fl_driver_rx_sof_n        : std_logic;
+   signal fl_driver_rx_sop_n        : std_logic;
+   signal fl_driver_rx_eof_n        : std_logic;
+   signal fl_driver_rx_eop_n        : std_logic;
+   signal fl_driver_rx_src_rdy_n    : std_logic;
+   signal fl_driver_rx_dst_rdy_n    : std_logic;
    
-   signal fl_async_unit_rx_delay        : std_logic_vector(DELAY_WIDTH-1 downto 0);
-   signal fl_async_unit_rx_delay_wr_n   : std_logic;
-   signal fl_async_unit_rx_delay_rdy_n  : std_logic;
-   
-   signal fl_async_unit_rx_finish       : std_logic;
-
    -- UUT output signals
-   signal fl_async_unit_tx_data         : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-   signal fl_async_unit_tx_rem          : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
-   signal fl_async_unit_tx_sof_n        : std_logic;
-   signal fl_async_unit_tx_sop_n        : std_logic;
-   signal fl_async_unit_tx_eof_n        : std_logic;
-   signal fl_async_unit_tx_eop_n        : std_logic;
-   signal fl_async_unit_tx_src_rdy_n    : std_logic;
-   signal fl_async_unit_tx_dst_rdy_n    : std_logic;
+   signal fl_driver_tx_data         : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+   signal fl_driver_tx_src_rdy_n    : std_logic;
+   signal fl_driver_tx_dst_rdy_n    : std_logic;
    
-   signal fl_async_unit_tx_output_rdy   : std_logic;
+   signal fl_driver_tx_delay        : std_logic_vector(DELAY_WIDTH-1 downto 0);
+   signal fl_driver_tx_delay_wr_n   : std_logic;
+   signal fl_driver_tx_delay_rdy_n  : std_logic;
+   
+   signal fl_driver_tx_finish       : std_logic;
 
 -- ----------------------------------------------------------------------------
 --                      Architecture body
@@ -65,62 +61,47 @@ begin
    -- -------------------------------------------------------------------------
    --                   FL Shortener
    -- -------------------------------------------------------------------------
-   uut: entity work.TX_ASYNC_FL_UNIT
+   uut: entity work.FL_DRIVER
       generic map (
          IN_DATA_WIDTH     => IN_DATA_WIDTH,
          OUT_DATA_WIDTH    => OUT_DATA_WIDTH,
          DELAY_WIDTH       => DELAY_WIDTH
       )
       port map (
-         WR_CLK            => WR_CLK,
-         RD_CLK            => RD_CLK, 
+         CLK               => CLK,
          RESET             => RESET,
 
-         RX_DATA           => fl_async_unit_rx_data,
-         RX_SRC_RDY_N      => fl_async_unit_rx_src_rdy_n,
-         RX_DST_RDY_N      => fl_async_unit_rx_dst_rdy_n,
+         RX_DATA           => fl_driver_rx_data,
+         RX_REM            => fl_driver_rx_rem,
+         RX_SOF_N          => fl_driver_rx_sof_n,
+         RX_SOP_N          => fl_driver_rx_sop_n,
+         RX_EOP_N          => fl_driver_rx_eop_n,
+         RX_EOF_N          => fl_driver_rx_eof_n,
+         RX_SRC_RDY_N      => fl_driver_rx_src_rdy_n,
+         RX_DST_RDY_N      => fl_driver_rx_dst_rdy_n,
          
-         RX_DELAY          => fl_async_unit_rx_delay,
-         RX_DELAY_WR_N     => fl_async_unit_rx_delay_wr_n,
-         RX_DELAY_RDY_N    => fl_async_unit_rx_delay_rdy_n, 
+         TX_DATA           => fl_driver_tx_data,
+         TX_SRC_RDY_N      => fl_driver_tx_src_rdy_n,
+         TX_DST_RDY_N      => fl_driver_tx_dst_rdy_n,
          
-         RX_FINISH         => fl_async_unit_rx_finish,
-
-         TX_DATA           => fl_async_unit_tx_data,
-         TX_REM            => fl_async_unit_tx_rem,
-         TX_SOF_N          => fl_async_unit_tx_sof_n,
-         TX_SOP_N          => fl_async_unit_tx_sop_n,
-         TX_EOP_N          => fl_async_unit_tx_eop_n,
-         TX_EOF_N          => fl_async_unit_tx_eof_n,
-         TX_SRC_RDY_N      => fl_async_unit_tx_src_rdy_n,
-         TX_DST_RDY_N      => fl_async_unit_tx_dst_rdy_n,
+         TX_DELAY          => fl_driver_tx_delay,
+         TX_DELAY_WR_N     => fl_driver_tx_delay_wr_n,
+         TX_DELAY_RDY_N    => fl_driver_tx_delay_rdy_n, 
          
-         OUTPUT_RDY        => fl_async_unit_tx_output_rdy
+         TX_FINISH         => fl_driver_tx_finish
       );
 
    -- ----------------------------------------------------
 
    -- CLK generator
-   wrclkgen: process
+   clkgen: process
    begin
-      wr_clk <= '1';
-      wait for wr_clkper/2;
-      wr_clk <= '0';
-      wait for wr_clkper/2;
+      clk <= '1';
+      wait for clkper/2;
+      clk <= '0';
+      wait for clkper/2;
    end process;
    
-   rdclkgen: process
-   begin
-      if (fl_async_unit_tx_output_rdy = '1') then      
-        rd_clk <= '1';
-      else
-        rd_clk <= '0';
-      end if;
-      wait for rd_clkper/2;
-      rd_clk <= '0';
-      wait for rd_clkper/2;
-   end process;
-
    resetgen: process
    begin
       reset <= '1';
@@ -132,78 +113,114 @@ begin
    tb: process
 
    begin
-      wait for 30*wr_clkper;
-      wait until rising_edge(wr_clk);
+      wait for 30*clkper;
+      -- data header - first part  
+      fl_driver_rx_data  <= X"0201000000000000"; 
+      fl_driver_rx_rem   <= "111";
+      fl_driver_rx_sof_n <= '0';
+      fl_driver_rx_eof_n <= '1';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
       
-      fl_async_unit_rx_data <= X"1234567812345678" & "111" & '0' & '0' & '1' & '0';
-      fl_async_unit_rx_src_rdy_n <= '0';
-      fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= "0" & X"01";
-      fl_async_unit_rx_delay_wr_n <= '0';
-      fl_async_unit_tx_dst_rdy_n <= '0';
+      wait until rising_edge(clk);
+      -- data - first part 
+      fl_driver_rx_data  <= X"1234567812345678"; 
+      fl_driver_rx_rem   <= "111";
+      fl_driver_rx_sof_n <= '1';
+      fl_driver_rx_eof_n <= '0';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
+   
+      wait until rising_edge(clk);
+      -- data header - second part  
+      fl_driver_rx_data  <= X"0301000000000000"; 
+      fl_driver_rx_rem   <= "111";
+      fl_driver_rx_sof_n <= '0';
+      fl_driver_rx_eof_n <= '1';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
       
-      wait until rising_edge(wr_clk);
+      wait until rising_edge(clk);
+      -- data - second part
+      fl_driver_rx_data  <= X"0000000000004321""; 
+      fl_driver_rx_rem   <= "011";
+      fl_driver_rx_sof_n <= '1';
+      fl_driver_rx_eof_n <= '0';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
        
-      fl_async_unit_rx_data <= X"8765432187654321" & "111" & '1' & '0' & '1' & '1';
-      fl_async_unit_rx_src_rdy_n <= '0';
-      fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= "0" & X"02";
-      fl_async_unit_rx_delay_wr_n <= '0';
-      fl_async_unit_tx_dst_rdy_n <= '0';
+      wait for 30*clkper;
+      -- delay header   
+      fl_driver_rx_data  <= X"0001000500000000"; 
+      fl_driver_rx_rem   <= "111";
+      fl_driver_rx_sof_n <= '0';
+      fl_driver_rx_eof_n <= '1';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
       
-      wait until rising_edge(wr_clk);
-       
-      fl_async_unit_rx_data <= X"0000000000004321" & "011" & '0' & '1' & '0' & '1';
-      fl_async_unit_rx_src_rdy_n <= '0';
-      fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= "0" & X"00";
-      fl_async_unit_rx_delay_wr_n <= '0';
-      fl_async_unit_tx_dst_rdy_n <= '0';
-      
-      wait until rising_edge(wr_clk);
-      
-      fl_async_unit_rx_delay <= "1" & X"0A";
-      fl_async_unit_rx_src_rdy_n <= '1';
-      fl_async_unit_rx_delay_wr_n <= '0';
-      fl_async_unit_tx_dst_rdy_n <= '0';
-      
-      wait until rising_edge(wr_clk);
-       
-      fl_async_unit_rx_data <= X"1122334411223344" & "111" & '0' & '0' & '1' & '0';
-      fl_async_unit_rx_src_rdy_n <= '0';
-      fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= "0" & X"05";
-      fl_async_unit_rx_delay_wr_n <= '0';
-      fl_async_unit_tx_dst_rdy_n <= '0';
-      
-      wait until rising_edge(wr_clk);
-       
-      fl_async_unit_rx_data <= X"4433221144332211" & "111" & '0' & '0' & '0' & '1';
-      fl_async_unit_rx_src_rdy_n <= '0';
-      fl_async_unit_rx_finish <= '0';
-      fl_async_unit_rx_delay <= "0" & X"00";
-      fl_async_unit_rx_delay_wr_n <= '0';
-      fl_async_unit_tx_dst_rdy_n <= '0';
-      
-      wait until rising_edge(wr_clk);
-      fl_async_unit_rx_finish <= '1';
-      fl_async_unit_rx_delay_wr_n <= '1';
-      fl_async_unit_rx_src_rdy_n <= '1';
-      
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      fl_async_unit_tx_dst_rdy_n <= '1';
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      wait until rising_edge(rd_clk);
-      fl_async_unit_tx_dst_rdy_n <= '0';
+      wait until rising_edge(clk);
+      -- delay 
+      fl_driver_rx_data  <= X"0000000000000201"; 
+      fl_driver_rx_rem   <= "001";
+      fl_driver_rx_sof_n <= '1';
+      fl_driver_rx_eof_n <= '0';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
       wait;
+      
+      wait for 30*clkper;
+      -- wait header   
+      fl_driver_rx_data  <= X"0001000200000000"; 
+      fl_driver_rx_rem   <= "111";
+      fl_driver_rx_sof_n <= '0';
+      fl_driver_rx_eof_n <= '1';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
+      
+      wait until rising_edge(clk);
+      -- wait 
+      fl_driver_rx_data  <= X"0000000000000005"; 
+      fl_driver_rx_rem   <= "111";
+      fl_driver_rx_sof_n <= '1';
+      fl_driver_rx_eof_n <= '0';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
+      wait;
+      
+      wait for 30*clkper;
+      -- stop header   
+      fl_driver_rx_data  <= X"0001000400000000"; 
+      fl_driver_rx_rem   <= "111";
+      fl_driver_rx_sof_n <= '0';
+      fl_driver_rx_eof_n <= '0';
+      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_src_rdy_n <= '0';
+      fl_driver_tx_dst_rdy_n <= '0';
+      fl_driver_tx_delay_rdy_n <= '0';
    end process;
 end architecture behavioral;
