@@ -54,7 +54,7 @@ entity FL_DRIVER is
       TX_DELAY_RDY_N : in  std_logic;
       
       -- driver is disabled from software
-      TX_FINISH      : out std_logic; 
+      TX_FINISH      : out std_logic 
    );
    
 end entity FL_DRIVER;
@@ -67,7 +67,7 @@ architecture arch of FL_DRIVER is
 --                                      TYPES
 -- ==========================================================================
 type state_type is (init_state, sof_state, sop_state, data_state, delay_state,
-                    wait_state, stop_state);
+                    delay_rdy_state, wait_state, stop_state, counter_state);
 
 -- ==========================================================================
 --                                    CONSTANTS
@@ -77,24 +77,28 @@ constant WAIT_TYPE  :  std_logic_vector(7 downto 0) := X"02";
 constant DELAY_TYPE :  std_logic_vector(7 downto 0) := X"05";
 constant STOP_TYPE  :  std_logic_vector(7 downto 0) := X"04";
 
-constant REM_INDEX  : integer := 4+log2(OUT_DATA_WIDTH/8);
+constant REM_INDEX  : integer := 4+log2(IN_DATA_WIDTH/8);
 constant COMP_VALUE : std_logic_vector(IN_DATA_WIDTH-1 downto 0) 
                       := conv_std_logic_vector(255, IN_DATA_WIDTH);
+                      
+constant ZERO_VALUE : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0) 
+                      := (others => '0');       
+                      
+constant SELECT_WIDTH : integer := log2(IN_DATA_WIDTH/8);              
 
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
 -- FSM signals ---------------------------------------------------------------
 signal state_reg, state_next   : state_type;
-signal is_header, is_data, is_delay, is_stop, is_wait, is_cntr : std_logic;
+signal is_header, is_data, is_delay, is_delaying, is_stop, is_wait, is_cntr : std_logic;
 
 signal sig_rx_dst_rdy_n    : std_logic;
-signal sig_tx_dst_rdy_n    : std_logic;
 
 signal sig_trans_type      : std_logic_vector(7 downto 0);
 signal sig_reg_last        : std_logic; 
 signal sig_new_last        : std_logic;
-signal sig_counter_is_zero : std_logic;
+signal sig_new_compl       : std_logic;
 
 -- data processing
 signal sig_tx_data         : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
@@ -108,7 +112,8 @@ signal sig_difference      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal sig_mux_counter     : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal sig_counter_reg     : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal sig_counter_is_zero : std_logic; 
-signal sig_minimum         : std_logic_vector(7 downto 0);
+signal sig_minimum         : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal sig_minimum_final   : std_logic_vector(7 downto 0);
 signal sig_wait            : std_logic_vector(8 downto 0);
 
 -- delay processing
@@ -118,7 +123,7 @@ signal sig_output_reg      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal sig_rem_reg         : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
 signal sig_eof_reg         : std_logic;
 signal sig_incremented     : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
-signal sig_select          : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+signal sig_select          : std_logic_vector(SELECT_WIDTH-1 downto 0);
 signal sig_mux_delay       : std_logic_vector(7 downto 0);
 signal sig_set_boundary    : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
 signal sig_set_delay_rdy_n : std_logic;
@@ -146,6 +151,11 @@ begin
                                    sig_counter_is_zero)
    begin
      state_next <= state_reg;  
+     
+     sig_out_sof_n <= '1';
+     sig_out_sop_n <= '1'; 
+     sig_out_eof_n <= '1';
+     sig_out_eop_n <= '1';
 
      case state_reg is
         
@@ -156,7 +166,7 @@ begin
             sig_new_compl  <= RX_DATA(57); 
             sig_new_last   <= RX_DATA(56);
           
-            if (sig_trans_type = DATA_TYPE)
+            if (sig_trans_type = DATA_TYPE) then
               if (sig_reg_last = '1') then
                 state_next <= sof_state;
               elsif (sig_reg_last = '0') then  
@@ -179,7 +189,7 @@ begin
               state_next <= init_state;
               sig_out_sof_n <= '0';
               sig_out_sop_n <= '0'; 
-              sig_out_eof_n <= '0';
+              sig_out_eof_n <= not sig_reg_last;
               sig_out_eop_n <= '0';
             elsif (RX_EOF_N = '1') then   
               state_next <= data_state;
@@ -198,7 +208,7 @@ begin
               state_next <= init_state;
               sig_out_sof_n <= '1';
               sig_out_sop_n <= '0'; 
-              sig_out_eof_n <= sig_reg_last;
+              sig_out_eof_n <= not sig_reg_last;
               sig_out_eop_n <= '0';
             elsif (RX_EOF_N = '1') then   
               state_next <= data_state;
@@ -217,7 +227,7 @@ begin
               state_next <= init_state;
               sig_out_sof_n <= '1';
               sig_out_sop_n <= '1'; 
-              sig_out_eof_n <= sig_reg_last;
+              sig_out_eof_n <= not sig_reg_last;
               sig_out_eop_n <= '0';
             elsif (RX_EOF_N = '1') then   
               state_next <= data_state;
@@ -231,10 +241,17 @@ begin
           end if;
         
         when delay_state =>
-          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0' and RX_EOF_N = '0') then 
-            state_next <= init_state;
+          if (RX_SRC_RDY_N ='0' and sig_rx_dst_rdy_n ='0') then
+            state_next <= delay_rdy_state;
           else 
             state_next <= delay_state;        
+          end if;
+        
+        when delay_rdy_state =>
+          if (RX_EOF_N = '0') then 
+            state_next <= init_state;
+          else 
+            state_next <= delay_rdy_state;        
           end if;
           
         when stop_state =>
@@ -268,6 +285,7 @@ begin
       is_stop      <= '0';
       is_wait      <= '0'; 
       is_cntr      <= '0';
+      is_delaying  <= '0';
       
       case state_reg is
          when init_state    => is_header <= '1';
@@ -277,7 +295,8 @@ begin
          when delay_state   => is_delay  <= '1';  
          when stop_state    => is_stop   <= '1';
          when wait_state    => is_wait   <= '1'; 
-         when counter_state => is_cntr   <= '1';
+         when counter_state   => is_cntr      <= '1';
+         when delay_rdy_state => is_delaying  <= '1';
       end case;   
    end process moore_output;
    
@@ -301,17 +320,20 @@ begin
    sig_tx_data(2) <= sig_out_sop_n; 
    sig_tx_data(3) <= sig_out_eop_n; 
    
-   sig_tx_src_rdy_n <= not((not RX_SRC_RDY_N) and is_data);
-    
+   TX_DATA <= sig_tx_data;
+   
+   TX_SRC_RDY_N <= not((not RX_SRC_RDY_N) and is_data);
+   
    mux1 : process (is_header, is_data, is_delay, is_cntr)
    begin
-     sig_rx_dst_rdy_n <= '0' when is_header = '1'; else
-                         '0' when is_data   = '1'; else
-                         '0' when is_delay  = sig_set_delay_rdy_n_final; else
-                         '1' when is_cntr   = '1'; else
-                         '1' when others;
+     if    (is_header = '1') then sig_rx_dst_rdy_n <= '0';
+     elsif (is_data   = '1') then sig_rx_dst_rdy_n <= '0'; 
+     elsif (is_delay  = sig_set_delay_rdy_n_final) then sig_rx_dst_rdy_n <= '0';  
+     elsif (is_cntr   = '1') then sig_rx_dst_rdy_n <= '1'; 
+     end if;
    end process;
   
+   RX_DST_RDY_N <= sig_rx_dst_rdy_n;
    -- ================= WAIT PROCESSING =====================================
    mux2 : process (is_wait, sig_difference, RX_DATA)
    begin
@@ -329,7 +351,7 @@ begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then 
             sig_counter_reg <= (others => '0');
-         elsif ((is_wait and (not TX_DELAY_WR_N)) = '1') then
+         elsif ((is_wait and (not TX_DELAY_RDY_N)) = '1') then
             sig_counter_reg <= sig_mux_counter;   
          end if;   
       end if;
@@ -337,14 +359,14 @@ begin
    
    comparator1 : process (sig_counter_reg)
    begin
-      if (sig_counter_reg = (others => '0')) sig_counter_is_zero <= '1';
+      if (sig_counter_reg = ZERO_VALUE) then sig_counter_is_zero <= '1';
       else sig_counter_is_zero <= '0';
       end if;
    end process;
   
    minimum_extractor : process (sig_counter_reg)
    begin
-      if (sig_counter_reg > COMP_VALUE)
+      if (sig_counter_reg > COMP_VALUE) then 
         sig_minimum <= COMP_VALUE;
       else   
         sig_minimum <= sig_counter_reg;
@@ -352,16 +374,17 @@ begin
    end process;
    
    sig_difference <= sig_counter_reg - sig_minimum;
-   sig_wait <= '1' & sig_minimum; 
+   sig_minimum_final <= sig_minimum(7 downto 0); 
+   sig_wait <= '1' & sig_minimum_final; 
    
-   mux3 : process (is_delay, is_wait)
+   mux3 : process (is_delaying, is_wait)
    begin
-     TX_DELAY <= sig_wait  when is_wait  = '1'; else
-                 sig_delay when is_delay = '1'; else
-                 (others => '0') when others;
+     if (is_wait  = '1')       then TX_DELAY <= sig_wait;
+     elsif (is_delaying = '1') then TX_DELAY <= sig_delay;
+     end if;
    end process;
    
-   sig_delay_wr_n <= is_delay nor is_wait;
+   sig_delay_wr_n <= is_delaying nor is_wait;
    TX_DELAY_WR_N <= sig_delay_wr_n;
    
    -- ================= DELAY PROCESSING ====================================
@@ -385,10 +408,10 @@ begin
    reg4 : process (CLK)
    begin
       if (RESET = '1') then 
-         sig_select <= '0';
+         sig_select <= (others => '0');
       elsif (rising_edge(CLK)) then
          if ((RX_SRC_RDY_N nor sig_rx_dst_rdy_n) = '1') then -- reset
-            sig_select <= '0';
+            sig_select <= (others => '0');
          elsif ((sig_delay_wr_n nor TX_DELAY_RDY_N) = '0') then -- enable
             sig_select <= sig_incremented;
          end if;   
@@ -399,7 +422,7 @@ begin
    begin
       sig_mux_delay <= (others => '0');
 
-      case sig_select is
+      case sig_select(2 downto 0) is
          when "000"  => sig_mux_delay <= sig_output_reg (7 downto 0);
          when "001"  => sig_mux_delay <= sig_output_reg (15 downto 8);
          when "010"  => sig_mux_delay <= sig_output_reg (23 downto 16);
@@ -427,7 +450,7 @@ begin
    
    comparator2 : process (sig_incremented, sig_set_boundary)
    begin
-      if (sig_incremented = sig_set_boundary) sig_set_delay_rdy_n <= '0';
+      if (sig_incremented = sig_set_boundary) then sig_set_delay_rdy_n <= '0';
       else sig_set_delay_rdy_n <= '1';
       end if;
    end process;

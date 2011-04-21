@@ -8,29 +8,29 @@
 proc blk_FL_DRIVER { TB FL_DRIVER } {
    
       add wave -divider "FL_DRIVER"
-   add_wave "-noupdate -label CLK"    $ASYNC_UNIT/CLK
-   add_wave "-noupdate -label RESET"  $ASYNC_UNIT/RESET
+   add_wave "-noupdate -label CLK"    $FL_DRIVER/CLK
+   add_wave "-noupdate -label RESET"  $FL_DRIVER/RESET
 
       add wave -divider "Input interface - DATA"
-   add_wave "-noupdate -hex -label RX_DATA" $ASYNC_UNIT/RX_DATA
-   add_wave "-noupdate -hex -label RX_REM " $ASYNC_UNIT/RX_REM
-   add_wave "-noupdate -label RX_SOF_N    " $ASYNC_UNIT/RX_SOF_N
-   add_wave "-noupdate -label RX_SOP_N    " $ASYNC_UNIT/RX_SOP_N
-   add_wave "-noupdate -label RX_EOP_N    " $ASYNC_UNIT/RX_EOP_N
-   add_wave "-noupdate -label RX_EOF_N    " $ASYNC_UNIT/RX_EOF_N
-   add_wave "-noupdate -label RX_SRC_RDY_N" $ASYNC_UNIT/RX_SRC_RDY_N
-   add_wave "-noupdate -label RX_DST_RDY_N" $ASYNC_UNIT/RX_DST_RDY_N
+   add_wave "-noupdate -hex -label RX_DATA" $FL_DRIVER/RX_DATA
+   add_wave "-noupdate -hex -label RX_REM " $FL_DRIVER/RX_REM
+   add_wave "-noupdate -label RX_SOF_N    " $FL_DRIVER/RX_SOF_N
+   add_wave "-noupdate -label RX_SOP_N    " $FL_DRIVER/RX_SOP_N
+   add_wave "-noupdate -label RX_EOP_N    " $FL_DRIVER/RX_EOP_N
+   add_wave "-noupdate -label RX_EOF_N    " $FL_DRIVER/RX_EOF_N
+   add_wave "-noupdate -label RX_SRC_RDY_N" $FL_DRIVER/RX_SRC_RDY_N
+   add_wave "-noupdate -label RX_DST_RDY_N" $FL_DRIVER/RX_DST_RDY_N
 	 
       add wave -divider "Output interface"      
-   add_wave "-noupdate -label TX_DATA -hex" $ASYNC_UNIT/TX_DATA
-   add_wave "-noupdate -label TX_SRC_RDY_N" $ASYNC_UNIT/TX_SRC_RDY_N
-   add_wave "-noupdate -label TX_DST_RDY_N" $ASYNC_UNIT/TX_DST_RDY_N
+   add_wave "-noupdate -label TX_DATA -hex" $FL_DRIVER/TX_DATA
+   add_wave "-noupdate -label TX_SRC_RDY_N" $FL_DRIVER/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $FL_DRIVER/TX_DST_RDY_N
    
       add wave -divider "Output interface - DELAY"
-   add_wave "-noupdate -label TX_DELAY -hex"  $ASYNC_UNIT/TX_DELAY
-   add_wave "-noupdate -label TX_DELAY_WR_N"  $ASYNC_UNIT/TX_DELAY_WR_N
-   add_wave "-noupdate -label TX_DELAY_RDY_N" $ASYNC_UNIT/TX_DELAY_RDY_N  
+   add_wave "-noupdate -label TX_DELAY -hex"  $FL_DRIVER/TX_DELAY
+   add_wave "-noupdate -label TX_DELAY_WR_N"  $FL_DRIVER/TX_DELAY_WR_N
+   add_wave "-noupdate -label TX_DELAY_RDY_N" $FL_DRIVER/TX_DELAY_RDY_N  
       
       add wave -divider "Output interface - FINISH"
-   add_wave "-noupdate -label TX_FINISH -hex" $ASYNC_UNIT/TX_FINISH 
+   add_wave "-noupdate -label TX_FINISH -hex" $FL_DRIVER/TX_FINISH 
 }      

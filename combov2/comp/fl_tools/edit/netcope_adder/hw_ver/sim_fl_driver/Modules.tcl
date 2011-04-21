@@ -10,7 +10,6 @@ set BASE_BASE           "$COMP_BASE/base"
 # components
 set COMPONENTS [list \
    [ list "PKG_MATH"    $BASE_BASE/pkg    "MATH"] \
-   [ list "CDC_FIFO"    $FIFO_BASE        "FULL"] \
 ]
 
 # FrameLink Adder of NetCOPE Header 

@@ -114,13 +114,14 @@ begin
 
    begin
       wait for 30*clkper;
+      wait until rising_edge(clk);
       -- data header - first part  
       fl_driver_rx_data  <= X"0201000000000000"; 
       fl_driver_rx_rem   <= "111";
       fl_driver_rx_sof_n <= '0';
       fl_driver_rx_eof_n <= '1';
       fl_driver_rx_sop_n <= '0';
-      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_eop_n <= '1';
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
@@ -131,7 +132,7 @@ begin
       fl_driver_rx_rem   <= "111";
       fl_driver_rx_sof_n <= '1';
       fl_driver_rx_eof_n <= '0';
-      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_sop_n <= '1';
       fl_driver_rx_eop_n <= '0';
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
@@ -144,31 +145,31 @@ begin
       fl_driver_rx_sof_n <= '0';
       fl_driver_rx_eof_n <= '1';
       fl_driver_rx_sop_n <= '0';
-      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_eop_n <= '1';
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
       
       wait until rising_edge(clk);
       -- data - second part
-      fl_driver_rx_data  <= X"0000000000004321""; 
+      fl_driver_rx_data  <= X"0000000000004321"; 
       fl_driver_rx_rem   <= "011";
       fl_driver_rx_sof_n <= '1';
       fl_driver_rx_eof_n <= '0';
-      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_sop_n <= '1';
       fl_driver_rx_eop_n <= '0';
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
        
-      wait for 30*clkper;
+      wait until rising_edge(clk);
       -- delay header   
       fl_driver_rx_data  <= X"0001000500000000"; 
       fl_driver_rx_rem   <= "111";
       fl_driver_rx_sof_n <= '0';
       fl_driver_rx_eof_n <= '1';
       fl_driver_rx_sop_n <= '0';
-      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_eop_n <= '1';
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
@@ -179,21 +180,21 @@ begin
       fl_driver_rx_rem   <= "001";
       fl_driver_rx_sof_n <= '1';
       fl_driver_rx_eof_n <= '0';
-      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_sop_n <= '1';
       fl_driver_rx_eop_n <= '0';
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
       wait;
       
-      wait for 30*clkper;
+      wait until rising_edge(clk);
       -- wait header   
       fl_driver_rx_data  <= X"0001000200000000"; 
       fl_driver_rx_rem   <= "111";
       fl_driver_rx_sof_n <= '0';
       fl_driver_rx_eof_n <= '1';
       fl_driver_rx_sop_n <= '0';
-      fl_driver_rx_eop_n <= '0';
+      fl_driver_rx_eop_n <= '1';
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
@@ -204,14 +205,14 @@ begin
       fl_driver_rx_rem   <= "111";
       fl_driver_rx_sof_n <= '1';
       fl_driver_rx_eof_n <= '0';
-      fl_driver_rx_sop_n <= '0';
+      fl_driver_rx_sop_n <= '1';
       fl_driver_rx_eop_n <= '0';
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
       wait;
       
-      wait for 30*clkper;
+      wait until rising_edge(clk);
       -- stop header   
       fl_driver_rx_data  <= X"0001000400000000"; 
       fl_driver_rx_rem   <= "111";
@@ -222,5 +223,8 @@ begin
       fl_driver_rx_src_rdy_n <= '0';
       fl_driver_tx_dst_rdy_n <= '0';
       fl_driver_tx_delay_rdy_n <= '0';
+      
+      wait until rising_edge(clk);
+      fl_driver_rx_src_rdy_n <= '1';
    end process;
 end architecture behavioral;
