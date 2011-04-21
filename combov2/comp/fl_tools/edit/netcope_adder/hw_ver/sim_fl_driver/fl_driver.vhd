@@ -377,7 +377,7 @@ begin
    sig_minimum_final <= sig_minimum(7 downto 0); 
    sig_wait <= '1' & sig_minimum_final; 
    
-   mux3 : process (is_delaying, is_wait)
+   mux3 : process (is_delaying, is_wait, sig_wait, sig_delay)
    begin
      if (is_wait  = '1')       then TX_DELAY <= sig_wait;
      elsif (is_delaying = '1') then TX_DELAY <= sig_delay;
