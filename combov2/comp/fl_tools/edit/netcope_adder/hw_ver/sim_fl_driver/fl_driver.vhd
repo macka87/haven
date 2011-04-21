@@ -258,8 +258,7 @@ begin
           state_next <= stop_state;
         
         when wait_state =>
-          if (data_ready = '1' and RX_EOF_N = '0' and
-              sig_counter_is_zero = '1') then
+          if (data_ready = '1' and RX_EOF_N = '0') then
             state_next <= counter_state; 
           else 
             state_next <= wait_state;    
@@ -329,7 +328,7 @@ begin
    begin
      if    (is_header = '1') then sig_rx_dst_rdy_n <= '0';
      elsif (is_data   = '1') then sig_rx_dst_rdy_n <= '0'; 
-     elsif (is_delaying = '1') then sig_rx_dst_rdy_n <= sig_set_delay_rdy_n;  
+     elsif (is_delaying = '1') then sig_rx_dst_rdy_n <= '1';  
      elsif (is_cntr   = '1') then sig_rx_dst_rdy_n <= '1'; 
      end if;
    end process;
@@ -380,12 +379,12 @@ begin
    
    mux3 : process (is_delaying, is_wait, sig_wait, sig_delay)
    begin
-     if (is_wait  = '1')       then TX_DELAY <= sig_wait;
+     if (is_cntr  = '1')       then TX_DELAY <= sig_wait;
      elsif (is_delaying = '1') then TX_DELAY <= sig_delay;
      end if;
    end process;
    
-   sig_delay_wr_n <= is_delaying nor is_wait;
+   sig_delay_wr_n <= is_delaying nor is_cntr;
    TX_DELAY_WR_N <= sig_delay_wr_n;
    
    data_ready <= RX_SRC_RDY_N nor sig_rx_dst_rdy_n;
