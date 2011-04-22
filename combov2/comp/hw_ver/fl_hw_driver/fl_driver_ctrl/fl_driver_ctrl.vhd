@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------
 -- Project Name: Hardware - Software Framework for Functional Verification
--- File Name:    FrameLink Driver 
+-- File Name:    FrameLink Driver Controller
 -- Description: 
 -- Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
 -- Date:         15.4.2011 
@@ -16,7 +16,7 @@ use work.math_pack.all;
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
-entity FL_DRIVER is
+entity FL_DRIVER_CTRL is
 
    generic
    (
@@ -57,12 +57,12 @@ entity FL_DRIVER is
       TX_FINISH      : out std_logic 
    );
    
-end entity FL_DRIVER;
+end entity;
 
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
-architecture arch of FL_DRIVER is
+architecture arch of FL_DRIVER_CTRL is
 -- ==========================================================================
 --                                      TYPES
 -- ==========================================================================

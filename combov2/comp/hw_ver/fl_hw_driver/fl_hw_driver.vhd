@@ -1,0 +1,228 @@
+--------------------------------------------------------------------------
+-- Project Name: Hardware - Software Framework for Functional Verification
+-- File Name:    FrameLink Driver
+-- Description: 
+-- Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
+-- Date:         15.4.2011 
+-- --------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+use ieee.std_logic_unsigned.all;
+
+use work.math_pack.all;
+
+-- ==========================================================================
+--                              ENTITY DECLARATION
+-- ==========================================================================
+entity FL_HW_DRIVER is
+
+   generic
+   (
+      -- data width
+      IN_DATA_WIDTH  : integer := 64;
+      OUT_DATA_WIDTH : integer := 64
+   );
+
+   port
+   (
+      RX_CLK         : in  std_logic;
+      TX_CLK         : in  std_logic;
+      RESET          : in  std_logic;
+
+      -- ----------------- INPUT INTERFACE ----------------------------------
+      -- input FrameLink interface
+      RX_DATA        : in  std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+      RX_REM         : in  std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+      RX_SRC_RDY_N   : in  std_logic;
+      RX_DST_RDY_N   : out std_logic;
+      RX_SOP_N       : in  std_logic;
+      RX_EOP_N       : in  std_logic;
+      RX_SOF_N       : in  std_logic;
+      RX_EOF_N       : in  std_logic;
+      
+      -- ----------------- OUTPUT INTERFACE ---------------------------------      
+      -- output FrameLink interface
+      TX_DATA        : out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+      TX_REM         : out std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+      TX_SRC_RDY_N   : out std_logic;
+      TX_DST_RDY_N   : in  std_logic;
+      TX_SOP_N       : out std_logic;
+      TX_EOP_N       : out std_logic;
+      TX_SOF_N       : out std_logic;
+      TX_EOF_N       : out std_logic;
+
+      -- ------------------ ready signal ------------------------------------
+      OUTPUT_READY   : out std_logic
+   );
+   
+end entity;
+
+-- ==========================================================================
+--                           ARCHITECTURE DESCRIPTION
+-- ==========================================================================
+architecture arch of FL_HW_DRIVER is
+
+-- ==========================================================================
+--                                    CONSTANTS
+-- ==========================================================================
+
+constant AGG_IN_FL_WIDTH : integer :=
+   log2(IN_DATA_WIDTH/8) + IN_DATA_WIDTH + 4;
+
+constant DELAY_WIDTH : integer := 9;
+
+-- ==========================================================================
+--                                     SIGNALS
+-- ==========================================================================
+
+-- ---- tx_async_fl_unit ----------------------------------------------------
+signal tx_async_rx_data          : std_logic_vector(AGG_IN_FL_WIDTH-1 downto 0);
+signal tx_async_rx_src_rdy_n     : std_logic;
+signal tx_async_rx_dst_rdy_n     : std_logic;
+signal tx_async_rx_delay         : std_logic_vector(DELAY_WIDTH-1 downto 0);
+signal tx_async_rx_delay_wr_n    : std_logic;
+signal tx_async_rx_delay_rdy_n   : std_logic;
+signal tx_async_rx_finish        : std_logic;
+
+signal tx_async_tx_data          : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal tx_async_tx_rem           : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+signal tx_async_tx_src_rdy_n     : std_logic;
+signal tx_async_tx_dst_rdy_n     : std_logic;
+signal tx_async_tx_sop_n         : std_logic;
+signal tx_async_tx_eop_n         : std_logic;
+signal tx_async_tx_sof_n         : std_logic;
+signal tx_async_tx_eof_n         : std_logic;
+
+signal tx_async_output_rdy       : std_logic;
+
+-- ---- fl_driver_ctrl ----------------------------------------------------
+signal ctrl_rx_data          : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal ctrl_rx_rem           : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+signal ctrl_rx_src_rdy_n     : std_logic;
+signal ctrl_rx_dst_rdy_n     : std_logic;
+signal ctrl_rx_sop_n         : std_logic;
+signal ctrl_rx_eop_n         : std_logic;
+signal ctrl_rx_sof_n         : std_logic;
+signal ctrl_rx_eof_n         : std_logic;
+
+signal ctrl_tx_data          : std_logic_vector(AGG_IN_FL_WIDTH-1 downto 0);
+signal ctrl_tx_src_rdy_n     : std_logic;
+signal ctrl_tx_dst_rdy_n     : std_logic;
+
+signal ctrl_tx_delay         : std_logic_vector(DELAY_WIDTH-1 downto 0);
+signal ctrl_tx_delay_wr_n    : std_logic;
+signal ctrl_tx_delay_rdy_n   : std_logic;
+
+signal ctrl_tx_finish        : std_logic;
+
+begin
+
+   ctrl_rx_data       <= RX_DATA;
+   ctrl_rx_rem        <= RX_REM;
+   ctrl_rx_src_rdy_n  <= RX_SRC_RDY_N;
+   RX_DST_RDY_N       <= ctrl_rx_dst_rdy_n;
+   ctrl_rx_sop_n      <= RX_SOP_N;
+   ctrl_rx_eop_n      <= RX_EOP_N;
+   ctrl_rx_sof_n      <= RX_SOF_N;
+   ctrl_rx_eof_n      <= RX_EOF_N;
+
+
+   -- --------------- FL_DRIVER_CTRL INSTANCE ------------------------------
+   fl_driver_ctrl_i : entity work.fl_driver_ctrl
+   generic map(
+      IN_DATA_WIDTH   => IN_DATA_WIDTH,
+      OUT_DATA_WIDTH  => AGG_IN_FL_WIDTH
+   )
+   port map(
+      CLK            => RX_CLK,
+      RESET          => RESET,
+
+      -- ----------------- INPUT INTERFACE ----------------------------------
+      -- input FrameLink interface
+      RX_DATA        => ctrl_rx_data,
+      RX_REM         => ctrl_rx_rem,
+      RX_SRC_RDY_N   => ctrl_rx_src_rdy_n,
+      RX_DST_RDY_N   => ctrl_rx_dst_rdy_n,
+      RX_SOP_N       => ctrl_rx_sop_n,
+      RX_EOP_N       => ctrl_rx_eop_n,
+      RX_SOF_N       => ctrl_rx_sof_n,
+      RX_EOF_N       => ctrl_rx_eof_n,
+      
+      -- ----------------- OUTPUT INTERFACE ---------------------------------      
+      -- output FrameLink interface
+      TX_DATA        => ctrl_tx_data,
+      TX_SRC_RDY_N   => ctrl_tx_src_rdy_n,
+      TX_DST_RDY_N   => ctrl_tx_dst_rdy_n,
+
+      TX_DELAY       => ctrl_tx_delay,
+      TX_DELAY_WR_N  => ctrl_tx_delay_wr_n,
+      TX_DELAY_RDY_N => ctrl_tx_delay_rdy_n,
+      
+      TX_FINISH      => ctrl_tx_finish
+   );
+
+   tx_async_rx_data       <= ctrl_tx_data;
+   tx_async_rx_src_rdy_n  <= ctrl_tx_src_rdy_n;
+   ctrl_tx_dst_rdy_n      <= tx_async_rx_dst_rdy_n;
+
+   tx_async_rx_delay        <= ctrl_tx_delay;
+   tx_async_rx_delay_wr_n   <= ctrl_tx_delay_rdy_n;
+   ctrl_tx_delay_rdy_n      <= tx_async_rx_delay_rdy_n;
+
+   tx_async_rx_finish <= ctrl_tx_finish;
+
+   -- --------------- TX_ASYNC_FL_UNIT INSTANCE ------------------------------
+   tx_async_fl_unit_i : entity work.tx_async_fl_unit
+   generic map(
+      IN_DATA_WIDTH   => AGG_IN_FL_WIDTH,
+      OUT_DATA_WIDTH  => OUT_DATA_WIDTH
+   )
+   port map(
+      WR_CLK         => RX_CLK,
+      RD_CLK         => TX_CLK,
+      RESET          => RESET,
+
+      -- ----------------- INPUT INTERFACE ----------------------------------
+      -- input FrameLink interface
+      RX_DATA        => tx_async_rx_data,
+      RX_SRC_RDY_N   => tx_async_rx_src_rdy_n,
+      RX_DST_RDY_N   => tx_async_rx_dst_rdy_n,
+      
+      -- input delay interface
+      RX_DELAY       => tx_async_rx_delay,
+      RX_DELAY_WR_N  => tx_async_rx_delay_wr_n,
+      RX_DELAY_RDY_N => tx_async_rx_delay_rdy_n,
+      
+      -- driver is disabled from software
+      RX_FINISH      => tx_async_rx_finish,
+      
+      -- ----------------- OUTPUT INTERFACE ---------------------------------      
+      -- output FrameLink interface
+      TX_DATA        => tx_async_tx_data,
+      TX_REM         => tx_async_tx_rem,
+      TX_SRC_RDY_N   => tx_async_tx_src_rdy_n,
+      TX_DST_RDY_N   => tx_async_tx_dst_rdy_n,
+      TX_SOP_N       => tx_async_tx_sop_n,
+      TX_EOP_N       => tx_async_tx_eop_n,
+      TX_SOF_N       => tx_async_tx_sof_n,
+      TX_EOF_N       => tx_async_tx_eof_n,
+      
+      -- unit is ready 
+      OUTPUT_RDY     => tx_async_output_rdy
+   );
+
+
+   TX_DATA        <= tx_async_tx_data;
+   TX_REM         <= tx_async_tx_rem;
+   TX_SRC_RDY_N   <= tx_async_tx_src_rdy_n;
+   tx_async_tx_dst_rdy_n <= TX_DST_RDY_N;
+   TX_SOP_N       <= tx_async_tx_sop_n;
+   TX_EOP_N       <= tx_async_tx_eop_n;
+   TX_SOF_N       <= tx_async_tx_sof_n;
+   TX_EOF_N       <= tx_async_tx_eof_n;
+
+   OUTPUT_READY <= tx_async_output_rdy;
+
+end architecture;
