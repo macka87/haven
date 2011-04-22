@@ -168,7 +168,7 @@ begin
    ctrl_tx_dst_rdy_n      <= tx_async_rx_dst_rdy_n;
 
    tx_async_rx_delay        <= ctrl_tx_delay;
-   tx_async_rx_delay_wr_n   <= ctrl_tx_delay_rdy_n;
+   tx_async_rx_delay_wr_n   <= ctrl_tx_delay_wr_n;
    ctrl_tx_delay_rdy_n      <= tx_async_rx_delay_rdy_n;
 
    tx_async_rx_finish <= ctrl_tx_finish;
