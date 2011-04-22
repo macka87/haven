@@ -100,12 +100,14 @@ begin
    -- Mapping of input and output ports
    TX_DATA                <= sig_data_fifo_rd_data(DATA_FIFO_WIDTH-1 downto REM_INDEX);
    TX_REM                 <= sig_data_fifo_rd_data(REM_INDEX-1 downto 4);
-   TX_SOF_N               <= sig_data_fifo_rd_data(0);
    TX_SOP_N               <= sig_data_fifo_rd_data(1); 
-   TX_EOF_N               <= sig_data_fifo_rd_data(2);
    TX_EOP_N               <= sig_data_fifo_rd_data(3);
    TX_SRC_RDY_N           <= sig_data_fifo_rd_empty;
    sig_data_fifo_rd_read  <= not TX_DST_RDY_N;
+
+   -- same as SOP (resp. EOP) - splits data packet to several part by part
+   TX_SOF_N               <= sig_data_fifo_rd_data(1);
+   TX_EOF_N               <= sig_data_fifo_rd_data(3);
 
    sig_data_fifo_wr_data(DATA_FIFO_WIDTH-1 downto REM_INDEX)  <= RX_DATA;
    sig_data_fifo_wr_data(REM_INDEX-1 downto 4)                <= RX_REM;
