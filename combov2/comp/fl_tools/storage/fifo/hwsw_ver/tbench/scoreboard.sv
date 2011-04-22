@@ -171,5 +171,5 @@
     task display();
       scoreTable.display();
     endtask
- endclass : NetCOPEAdderScoreboard   
+ endclass : FIFOScoreboard   
 

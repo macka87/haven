@@ -29,13 +29,12 @@ import test_pkg::*; // Test constants
      .USE_BRAMS     (USE_BRAMS),
      .ITEMS         (ITEMS),
      .BLOCK_SIZE    (BLOCK_SIZE),
-     .STATUS_WIDTH  (STATUS_WIDTH),
-     .PARTS         (PARTS)
+     .STATUS_WIDTH  (STATUS_WIDTH)
    )
 
    VHDL_DUT_U (
-     .CLK               (CLK),
-     .RESET             (RESET),
+     .CLK           (CLK),
+     .RESET         (RESET),
      
      // Write interface
      .RX_DATA       (RX.DATA),

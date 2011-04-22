@@ -60,7 +60,7 @@ program TEST (
   // Create Test Environment
   task createEnvironment(); 
      //! Create scoreboard
-     scoreboard = new("Scoreboard");
+     scoreboard = new();
      
      //! Create Input and Output Mailbox
      inputMbx   = new(0);
