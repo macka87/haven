@@ -1,0 +1,68 @@
+# top_level_sig.fdo : Include file with signals 
+# Copyright (C) 2008 CESNET
+# Author(s): Vlastimil Kosar <xkosar02@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals_sig.fdo 13200 2010-03-11 12:27:18Z polcak_l $
+#
+
+# Global file with signals
+
+
+source "./signals.fdo"
+source "../sim/signals.fdo"
+source      "../comp/128_to_96/sim/signals.fdo"
+source      "../comp/spliter/sim/signals.fdo"
+exec make
+view wave
+delete wave *
+
+# TODO: ZMENA NAZVU TESTOVANEJ KOMPONENTY
+add wave -divider "FIRST_INSERT"  
+add_wave "-noupdate -color yellow -label RESET"   /testbench/RESET
+add_wave "-noupdate -color yellow -label CLK"     /testbench/CLK
+set HGEN_PATH "/testbench/DUT_U/VHDL_DUT_U"
+rx  RX  /testbench/DUT_U/VHDL_DUT_U
+tx  TX  /testbench/DUT_U/VHDL_DUT_U
+mi  MI  /testbench/DUT_U/VHDL_DUT_U
+
+blk_HGEN "$HGEN_PATH"
+blk_mask "$HGEN_PATH"
+blk_fl_fifo "$HGEN_PATH"
+blk_CONV_128_TO_96 "$HGEN_PATH/CONV_U"
+blk_SPLITER "$HGEN_PATH/HGEN_CORE_U/SPLITER_U"
+blk_jenkins "$HGEN_PATH/HGEN_CORE_U"
+blk_jenkins_internal "$HGEN_PATH/HGEN_CORE_U/JENKINS_U"
+
+add_wave "-noupdate -label current_state" $HGEN_PATH/current_state
+add_wave "-noupdate -label next_state" $HGEN_PATH/next_state
+
+add_wave "-label hash_init" /testbench/DUT_U/VHDL_DUT_U/hash_init
+
+
+restart -f
+run -all

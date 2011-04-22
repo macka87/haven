@@ -1,0 +1,240 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2008 CESNET
+# Author(s): Vlastimil Kosar <xkosar02@stud.fit.vutbr.cz>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in
+#    the documentation and/or other materials provided with the
+#    distribution.
+# 3. Neither the name of the Company nor the names of its contributors
+#    may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# This software is provided ``as is'', and any express or implied
+# warranties, including, but not limited to, the implied warranties of
+# merchantability and fitness for a particular purpose are disclaimed.
+# In no event shall the company or contributors be liable for any
+# direct, indirect, incidental, special, exemplary, or consequential
+# damages (including, but not limited to, procurement of substitute
+# goods or services; loss of use, data, or profits; or business
+# interruption) however caused and on any theory of liability, whether
+# in contract, strict liability, or tort (including negligence or
+# otherwise) arising in any way out of the use of this software, even
+# if advised of the possibility of such damage.
+#
+# $Id: signals.fdo 13200 2010-03-11 12:27:18Z polcak_l $
+
+proc blk_HGEN { HGEN } {
+   add wave -divider "HGEN"
+   add_wave "-noupdate -label CLK            " $HGEN/CLK
+   add_wave "-noupdate -label RESET          " $HGEN/RESET
+   
+
+   add wave -divider "Framelink input interface"
+   add_wave "-noupdate -label RX_DATA -hex" $HGEN/RX_DATA
+   add_wave "-noupdate -label RX_REM -hex " $HGEN/RX_REM
+   add_wave "-noupdate -label RX_SOF_N    " $HGEN/RX_SOF_N
+   add_wave "-noupdate -label RX_SOP_N    " $HGEN/RX_SOP_N
+   add_wave "-noupdate -label RX_EOP_N    " $HGEN/RX_EOP_N
+   add_wave "-noupdate -label RX_EOF_N    " $HGEN/RX_EOF_N
+   add_wave "-noupdate -label RX_SRC_RDY_N" $HGEN/RX_SRC_RDY_N
+   add_wave "-noupdate -label RX_DST_RDY_N" $HGEN/RX_DST_RDY_N
+   
+   add wave -divider "Framelink output interface"
+   add_wave "-noupdate -label TX_DATA -hex" $HGEN/TX_DATA
+   add_wave "-noupdate -label TX_REM -hex " $HGEN/TX_REM
+   add_wave "-noupdate -label TX_SOF_N    " $HGEN/TX_SOF_N
+   add_wave "-noupdate -label TX_SOP_N    " $HGEN/TX_SOP_N
+   add_wave "-noupdate -label TX_EOP_N    " $HGEN/TX_EOP_N
+   add_wave "-noupdate -label TX_EOF_N    " $HGEN/TX_EOF_N
+   add_wave "-noupdate -label TX_SRC_RDY_N" $HGEN/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $HGEN/TX_DST_RDY_N
+
+   add wave -divider "FIFO output interface"
+   add_wave "-noupdate -hex -label HASH" $HGEN/hash
+   add_wave "-noupdate -hex -label HASH_MOD" $HGEN/hash_mod
+   add_wave "-noupdate -label VLD      " $HGEN/hash_vld
+   add_wave "-noupdate -label RDY      " $HGEN/hash_ack
+   
+   add wave -divider "Inside signals"
+   add_wave "-noupdate -label current_state" $HGEN/current_state
+   add_wave "-noupdate -label next_state   " $HGEN/next_state
+   add_wave "-noupdate -label mux_sel      " $HGEN/mux_sel
+   add_wave "-noupdate -label reg_data_we  " $HGEN/reg_data_we
+}
+
+
+proc blk_mask { HGEN } {
+   add wave -divider "MASK signals"   
+
+   add_wave "-noupdate -label fl_mask_in_data -hex" $HGEN/fl_mask_in_data
+   add_wave "-noupdate -label fl_mask_in_rem -hex " $HGEN/fl_mask_in_rem
+   add_wave "-noupdate -label fl_mask_in_sof_n    " $HGEN/fl_mask_in_sof_n
+   add_wave "-noupdate -label fl_mask_in_sop_n    " $HGEN/fl_mask_in_sop_n
+   add_wave "-noupdate -label fl_mask_in_eop_n    " $HGEN/fl_mask_in_eop_n
+   add_wave "-noupdate -label fl_mask_in_eof_n    " $HGEN/fl_mask_in_eof_n
+   add_wave "-noupdate -label fl_mask_in_src_rdy_n" $HGEN/fl_mask_in_src_rdy_n
+   add_wave "-noupdate -label fl_mask_in_dst_rdy_n" $HGEN/fl_mask_in_dst_rdy_n   
+   
+   add_wave "-noupdate -label fl_mask_out_data -hex" $HGEN/fl_mask_out_data
+   add_wave "-noupdate -label fl_mask_out_rem -hex " $HGEN/fl_mask_out_rem
+   add_wave "-noupdate -label fl_mask_out_sof_n    " $HGEN/fl_mask_out_sof_n
+   add_wave "-noupdate -label fl_mask_out_sop_n    " $HGEN/fl_mask_out_sop_n
+   add_wave "-noupdate -label fl_mask_out_eop_n    " $HGEN/fl_mask_out_eop_n
+   add_wave "-noupdate -label fl_mask_out_eof_n    " $HGEN/fl_mask_out_eof_n
+   add_wave "-noupdate -label fl_mask_out_src_rdy_n" $HGEN/fl_mask_out_src_rdy_n
+   add_wave "-noupdate -label fl_mask_out_dst_rdy_n" $HGEN/fl_mask_out_dst_rdy_n   
+   
+}
+
+proc blk_fl_fifo { HGEN } {
+   add wave -divider "FL_FIFO signals"   
+
+   add_wave "-noupdate -label fl_fifo_in_data -hex" $HGEN/fl_fifo_in_data
+   add_wave "-noupdate -label fl_fifo_in_rem -hex " $HGEN/fl_fifo_in_rem
+   add_wave "-noupdate -label fl_fifo_in_sof_n    " $HGEN/fl_fifo_in_sof_n
+   add_wave "-noupdate -label fl_fifo_in_sop_n    " $HGEN/fl_fifo_in_sop_n
+   add_wave "-noupdate -label fl_fifo_in_eop_n    " $HGEN/fl_fifo_in_eop_n
+   add_wave "-noupdate -label fl_fifo_in_eof_n    " $HGEN/fl_fifo_in_eof_n
+   add_wave "-noupdate -label fl_fifo_in_src_rdy_n" $HGEN/fl_fifo_in_src_rdy_n
+   add_wave "-noupdate -label fl_fifo_in_dst_rdy_n" $HGEN/fl_fifo_in_dst_rdy_n   
+   
+   add_wave "-noupdate -label fl_fifo_out_data -hex" $HGEN/fl_fifo_out_data
+   add_wave "-noupdate -label fl_fifo_out_rem -hex " $HGEN/fl_fifo_out_rem
+   add_wave "-noupdate -label fl_fifo_out_sof_n    " $HGEN/fl_fifo_out_sof_n
+   add_wave "-noupdate -label fl_fifo_out_sop_n    " $HGEN/fl_fifo_out_sop_n
+   add_wave "-noupdate -label fl_fifo_out_eop_n    " $HGEN/fl_fifo_out_eop_n
+   add_wave "-noupdate -label fl_fifo_out_eof_n    " $HGEN/fl_fifo_out_eof_n
+   add_wave "-noupdate -label fl_fifo_out_src_rdy_n" $HGEN/fl_fifo_out_src_rdy_n
+   add_wave "-noupdate -label fl_fifo_out_dst_rdy_n" $HGEN/fl_fifo_out_dst_rdy_n   
+   
+}
+
+proc blk_jenkins { HGEN } {
+   add wave -divider "JENKIS FIFO signals" 
+   
+   add_wave "-noupdate -label spliter_out_data -hex" $HGEN/spliter_out_data
+   add_wave "-noupdate -label spliter_out_sof      " $HGEN/spliter_out_sof
+   add_wave "-noupdate -label spliter_out_eof      " $HGEN/spliter_out_eof
+   add_wave "-noupdate -label spliter_out_vld      " $HGEN/spliter_out_vld
+   add_wave "-noupdate -label spliter_out_rdy      " $HGEN/spliter_out_rdy
+   
+   add_wave "-noupdate -label fifo_out_data -hex" $HGEN/fifo_out_data
+   add_wave "-noupdate -label fifo_out_sof      " $HGEN/fifo_out_sof
+   add_wave "-noupdate -label fifo_out_eof      " $HGEN/fifo_out_eof
+   add_wave "-noupdate -label fifo_out_vld      " $HGEN/fifo_out_vld
+   add_wave "-noupdate -label fifo_out_rdy      " $HGEN/fifo_out_rdy
+   add_wave "-noupdate -label fifo_out_blk_rdy  " $HGEN/fifo_out_blk_rdy
+   add_wave "-noupdate -label full              " $HGEN/full
+   add_wave "-noupdate -label fifo_blk_end      " $HGEN/fifo_blk_end
+   
+   add wave -divider "MUX output signals" 
+    
+   add_wave "-noupdate -label fifo_mux_data -hex" $HGEN/fifo_mux_data
+   add_wave "-noupdate -label fifo_mux_sof      " $HGEN/fifo_mux_sof
+   add_wave "-noupdate -label fifo_mux_eof      " $HGEN/fifo_mux_eof
+   add_wave "-noupdate -label fifo_mux_vld      " $HGEN/fifo_mux_vld
+   add_wave "-noupdate -label fifo_mux_rdy      " $HGEN/fifo_mux_rdy
+   
+   add wave -divider "Jenkins signals"
+   
+   add_wave "-noupdate -label fifo_mux_data -hex" $HGEN/fifo_mux_data
+   add_wave "-noupdate -label fifo_mux_sof      " $HGEN/fifo_mux_sof
+   add_wave "-noupdate -label fifo_mux_eof      " $HGEN/fifo_mux_eof
+   add_wave "-noupdate -label jenkins_in_vld    " $HGEN/jenkins_in_vld
+   add_wave "-noupdate -label jenkins_in_rdy    " $HGEN/jenkins_in_rdy
+   add_wave "-noupdate -label state -hex        " $HGEN/jenkins_out_data
+   add_wave "-noupdate -label context_in        " $HGEN/context_in
+   add_wave "-noupdate -label context_in_vld    " $HGEN/context_in_vld
+   add_wave "-noupdate -label context_in_rdy    " $HGEN/context_in_rdy
+   add_wave "-noupdate -label input_type        " $HGEN/input_type
+   
+   add_wave "-noupdate -label jenkins_out_data -hex" $HGEN/jenkins_out_data
+   add_wave "-noupdate -label jenkins_out_sof      " $HGEN/jenkins_out_sof
+   add_wave "-noupdate -label jenkins_out_eof      " $HGEN/jenkins_out_eof
+   add_wave "-noupdate -label jenkins_out_vld      " $HGEN/jenkins_out_vld
+   add_wave "-noupdate -label jenkins_out_rdy      " $HGEN/jenkins_out_rdy
+   add_wave "-noupdate -label context_out          " $HGEN/context_out  
+   add_wave "-noupdate -label context_out_vld      " $HGEN/context_out_vld
+   add_wave "-noupdate -label context_out_rdy      " $HGEN/context_out_rdy
+   add_wave "-noupdate -label hash_wr              " $HGEN/hash_wr
+   add wave -divider "interm sig"
+   add_wave "-noupdate -label out_mux_sel             " $HGEN/out_mux_sel
+   add_wave "-noupdate -label context_out_intermediate" $HGEN/context_out_intermediate
+   add_wave "-noupdate -label context_in_intermediate " $HGEN/context_in_intermediate
+   add_wave "-noupdate -label fifo_mux_intermediate   " $HGEN/fifo_mux_intermediate
+   add_wave "-noupdate -label vld_in_intermediate     " $HGEN/vld_in_intermediate
+   add_wave "-noupdate -label context_data_vld        " $HGEN/context_data_vld
+      
+   add wave -divider "CNT INIT"
+   add_wave "-noupdate -label CLK            " $HGEN/CLK
+   add_wave "-noupdate -label RESET          " $HGEN/RESET
+   add_wave "-noupdate -label cnt_init_cont -hex " $HGEN/cnt_init_count
+   add_wave "-noupdate -label cnt_init_ce        " $HGEN/cnt_init_ce
+   
+   add wave -divider "HASH FIFO IN"
+   add_wave "-noupdate -label jenkins_out_data -hex " $HGEN/jenkins_out_data
+   add_wave "-noupdate -label hash_wr               " $HGEN/hash_wr
+}  
+
+proc blk_jenkins_internal { HGEN } {
+   add wave -divider "JENKIS internal signals" 
+   add_wave "-noupdate -label a_1 -hex " $HGEN/a_1
+   add_wave "-noupdate -label b_1 -hex " $HGEN/b_1
+   add_wave "-noupdate -label c_1 -hex " $HGEN/c_1
+   add_wave "-noupdate -label context_1" $HGEN/context_1
+   add_wave "-noupdate -label cont_s0rdy -hex " $HGEN/cont_s0rdy
+   add_wave "-noupdate -label cont_s0next -hex" $HGEN/cont_s0next
+   add_wave "-noupdate -label cont_s0en -hex  " $HGEN/cont_s0en
+   add_wave "-noupdate -label reg_rdy -hex    " $HGEN/pipe_cont_en_u0/reg_rdy
+   add_wave "-noupdate -label sig_in_next -hex" $HGEN/pipe_cont_en_u0/sig_in_next
+   add_wave "-noupdate -label want_next -hex  " $HGEN/pipe_cont_en_u0/want_next
+   add_wave "-noupdate -label sig_en -hex     " $HGEN/pipe_cont_en_u0/sig_en
+   
+   add_wave "-noupdate -label a2 -hex " $HGEN/a2
+   add_wave "-noupdate -label b2 -hex " $HGEN/b2
+   add_wave "-noupdate -label c2 -hex " $HGEN/c2
+   add_wave "-noupdate -label context2" $HGEN/context2
+   add_wave "-noupdate -label cont_s3rdy -hex " $HGEN/cont_s3rdy
+   add_wave "-noupdate -label cont_s3next -hex" $HGEN/cont_s3next
+   add_wave "-noupdate -label cont_s3en -hex  " $HGEN/cont_s3en
+   add_wave "-noupdate -label reg_rdy -hex    " $HGEN/pipe_cont_en_u3/reg_rdy
+   add_wave "-noupdate -label sig_in_next -hex" $HGEN/pipe_cont_en_u3/sig_in_next
+   add_wave "-noupdate -label want_next -hex  " $HGEN/pipe_cont_en_u3/want_next
+   add_wave "-noupdate -label sig_en -hex     " $HGEN/pipe_cont_en_u3/sig_en
+   
+   add_wave "-noupdate -label a6 -hex " $HGEN/a6
+   add_wave "-noupdate -label b6 -hex " $HGEN/b6
+   add_wave "-noupdate -label c6 -hex " $HGEN/c6
+   add_wave "-noupdate -label context6" $HGEN/context6
+   add_wave "-noupdate -label cont_s7rdy -hex " $HGEN/cont_s7rdy
+   add_wave "-noupdate -label cont_s7next -hex" $HGEN/cont_s7next
+   add_wave "-noupdate -label cont_s7en -hex  " $HGEN/cont_s7en
+   add_wave "-noupdate -label reg_rdy -hex    " $HGEN/pipe_cont_en_u7/reg_rdy
+   add_wave "-noupdate -label sig_in_next -hex" $HGEN/pipe_cont_en_u7/sig_in_next
+   add_wave "-noupdate -label want_next -hex  " $HGEN/pipe_cont_en_u7/want_next
+   add_wave "-noupdate -label sig_en -hex     " $HGEN/pipe_cont_en_u7/sig_en
+   
+   add_wave "-noupdate -label a9 -hex " $HGEN/a9
+   add_wave "-noupdate -label b9 -hex " $HGEN/b9
+   add_wave "-noupdate -label c9 -hex " $HGEN/c9
+   add_wave "-noupdate -label context9" $HGEN/context9
+   add_wave "-noupdate -label cont_s10en -hex " $HGEN/cont_s10en
+   add_wave "-noupdate -label reg_rdy -hex    " $HGEN/pipe_cont_en_u10/reg_rdy
+   add_wave "-noupdate -label sig_in_next -hex" $HGEN/pipe_cont_en_u10/sig_in_next
+   add_wave "-noupdate -label want_next -hex  " $HGEN/pipe_cont_en_u10/want_next
+   add_wave "-noupdate -label sig_en -hex     " $HGEN/pipe_cont_en_u10/sig_en
+   
+   add_wave "-noupdate -label a10 -hex " $HGEN/a10
+   add_wave "-noupdate -label b10 -hex " $HGEN/b10
+   add_wave "-noupdate -label c10 -hex " $HGEN/c10
+   add_wave "-noupdate -label context10" $HGEN/context10
+   
+}
+
+
