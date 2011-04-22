@@ -8,12 +8,10 @@
 if { $ARCHGRP == "FULL" } {
   
   # interface packages
-  set COMP_BASE       "../../../.."
-  set SV_FL_BASE      "COMP_BASE/sw_ver/framelink_package"
-  set SV_BASIC_BASE   "COMP_BASE/sw_ver/basic_ver_components_package"
+  set SV_FL_BASE      "ENTITY_BASE/../../../../sw_ver/framelink_package"
+  set SV_BASIC_BASE   "ENTITY_BASE/../../../../sw_ver/basic_ver_components_package"
   
   set COMPONENTS [list \
-      [ list "COMP_BASE"      $COMP_BASE      "FULL"] \
       [ list "SV_FL_BASE"     $SV_FL_BASE     "FULL"] \
       [ list "SV_BASIC_BASE"  $SV_BASIC_BASE  "FULL"] \
   ]
