@@ -1,0 +1,22 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2011 
+# Author: Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+
+proc blk_CDC_FIFO { BASE } {
+   
+   add_wave "-noupdate -label RESET"      $BASE/RESET
+
+      add wave -divider "WRITE IFC"
+   add_wave "-noupdate -label WR_CLK         " $BASE/WR_CLK
+   add_wave "-noupdate -hex -label WR_DATA   " $BASE/WR_DATA
+   add_wave "-noupdate -label WR_WRITE       " $BASE/WR_WRITE
+   add_wave "-noupdate -label WR_FULL        " $BASE/WR_FULL
+   add_wave "-noupdate -label WR_ALMOST_FULL " $BASE/WR_ALMOST_FULL
+	 
+      add wave -divider "READ IFC"
+   add_wave "-noupdate -label RD_CLK         " $BASE/RD_CLK
+   add_wave "-noupdate -hex -label RD_DATA   " $BASE/RD_DATA
+   add_wave "-noupdate -label RD_READ        " $BASE/RD_READ
+   add_wave "-noupdate -label RD_EMPTY       " $BASE/RD_EMPTY
+   add_wave "-noupdate -label RD_ALMOST_EMPTY" $BASE/RD_ALMOST_EMPTY
+}      
