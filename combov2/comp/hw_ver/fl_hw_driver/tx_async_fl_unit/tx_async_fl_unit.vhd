@@ -21,8 +21,7 @@ entity TX_ASYNC_FL_UNIT is
    generic
    (
       -- data width
-      IN_DATA_WIDTH  : integer := 71;
-      OUT_DATA_WIDTH : integer := 64;
+      DATA_WIDTH     : integer := 64;
       DELAY_WIDTH    : integer := 9
    );
 
@@ -34,9 +33,14 @@ entity TX_ASYNC_FL_UNIT is
 
       -- ----------------- INPUT INTERFACE ----------------------------------
       -- input FrameLink interface
-      RX_DATA        : in  std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+      RX_DATA        : in  std_logic_vector(DATA_WIDTH-1 downto 0);
+      RX_REM         : in  std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
       RX_SRC_RDY_N   : in  std_logic;
       RX_DST_RDY_N   : out std_logic;
+      RX_SOP_N       : in  std_logic;
+      RX_EOP_N       : in  std_logic;
+      RX_SOF_N       : in  std_logic;
+      RX_EOF_N       : in  std_logic;
       
       -- input delay interface
       RX_DELAY       : in  std_logic_vector(DELAY_WIDTH-1 downto 0);
@@ -48,8 +52,8 @@ entity TX_ASYNC_FL_UNIT is
       
       -- ----------------- OUTPUT INTERFACE ---------------------------------      
       -- output FrameLink interface
-      TX_DATA        : out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-      TX_REM         : out std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+      TX_DATA        : out std_logic_vector(DATA_WIDTH-1 downto 0);
+      TX_REM         : out std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
       TX_SRC_RDY_N   : out std_logic;
       TX_DST_RDY_N   : in  std_logic;
       TX_SOP_N       : out std_logic;
@@ -61,7 +65,7 @@ entity TX_ASYNC_FL_UNIT is
       OUTPUT_RDY     : out std_logic
       
    );
-end entity TX_ASYNC_FL_UNIT;
+end entity;
 
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
@@ -75,24 +79,26 @@ architecture arch of TX_ASYNC_FL_UNIT is
 -- ==========================================================================
 --                                    CONSTANTS
 -- ==========================================================================
-constant REM_INDEX  : integer := 4+log2(OUT_DATA_WIDTH/8);
+constant FIFO_DATA_WIDTH : integer := DATA_WIDTH + log2(DATA_WIDTH/8) + 4;
+constant REM_INDEX  : integer := 4+log2(DATA_WIDTH/8);
 
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
 
 -- data fifo signals
-signal sig_data_fifo_write  : std_logic;
-signal sig_data_fifo_data   : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-signal sig_data_fifo_read   : std_logic;
-signal sig_data_fifo_rdy    : std_logic;
+signal sig_data_fifo_write    : std_logic;
+signal sig_data_fifo_data_in  : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
+signal sig_data_fifo_data_out : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
+signal sig_data_fifo_read     : std_logic;
+signal sig_data_fifo_rdy      : std_logic;
 
 -- delay fifo signals
-signal sig_delay_fifo_write : std_logic;
-signal sig_delay_fifo_data  : std_logic_vector(DELAY_WIDTH-1 downto 0);
-signal sig_delay_fifo_read  : std_logic;
-signal sig_delay_fifo_empty : std_logic;
-signal sig_delay_fifo_rdy   : std_logic;
+signal sig_delay_fifo_write   : std_logic;
+signal sig_delay_fifo_data    : std_logic_vector(DELAY_WIDTH-1 downto 0);
+signal sig_delay_fifo_read    : std_logic;
+signal sig_delay_fifo_empty   : std_logic;
+signal sig_delay_fifo_rdy     : std_logic;
 
 signal sig_delay_fifo_data_only : std_logic_vector(DELAY_WIDTH-2 downto 0);
 signal sig_is_delay         : std_logic; 
@@ -112,23 +118,31 @@ signal sig_reg_taken        : std_logic;
 --                           ARCHITECTURE BODY
 -- ==========================================================================
 begin
+
+   sig_data_fifo_data_in(FIFO_DATA_WIDTH-1 downto REM_INDEX) <= RX_DATA;
+   sig_data_fifo_data_in(REM_INDEX-1 downto 4)               <= RX_REM;
+   sig_data_fifo_data_in(3)                                  <= RX_SOF_N;
+   sig_data_fifo_data_in(2)                                  <= RX_EOF_N;
+   sig_data_fifo_data_in(1)                                  <= RX_SOP_N;
+   sig_data_fifo_data_in(0)                                  <= RX_EOP_N;
+
    -- --------------- DATA FIFO INSTANCE ------------------------------------
    data_async_fifo : entity work.cdc_fifo
    generic map(
-      DATA_WIDTH  => IN_DATA_WIDTH
+      DATA_WIDTH  => FIFO_DATA_WIDTH
    )
    port map(
       RESET       => RESET,
       
       -- Write interface
       WR_CLK          => WR_CLK,
-      WR_DATA         => RX_DATA,
+      WR_DATA         => sig_data_fifo_data_in,
       WR_WRITE        => sig_data_fifo_write,
       WR_FULL         => RX_DST_RDY_N,
       WR_ALMOST_FULL  => open,
       
       RD_CLK          => RD_CLK,
-      RD_DATA         => sig_data_fifo_data,
+      RD_DATA         => sig_data_fifo_data_out,
       RD_READ         => sig_data_fifo_read,
       RD_EMPTY        => open,
       RD_ALMOST_EMPTY => sig_data_fifo_rdy
@@ -162,12 +176,12 @@ begin
    sig_data_fifo_write  <= not RX_SRC_RDY_N;
    
    -- data fifo output side
-   TX_SOF_N <= sig_data_fifo_data(0);
-   TX_EOF_N <= sig_data_fifo_data(1);
-   TX_SOP_N <= sig_data_fifo_data(2);
-   TX_EOP_N <= sig_data_fifo_data(3);
-   TX_REM   <= sig_data_fifo_data(REM_INDEX-1 downto 4); 
-   TX_DATA  <= sig_data_fifo_data(IN_DATA_WIDTH-1 downto REM_INDEX);
+   TX_SOF_N <= sig_data_fifo_data_out(0);
+   TX_EOF_N <= sig_data_fifo_data_out(1);
+   TX_SOP_N <= sig_data_fifo_data_out(2);
+   TX_EOP_N <= sig_data_fifo_data_out(3);
+   TX_REM   <= sig_data_fifo_data_out(REM_INDEX-1 downto 4); 
+   TX_DATA  <= sig_data_fifo_data_out(FIFO_DATA_WIDTH-1 downto REM_INDEX);
    
    -- delay fifo input side
    sig_delay_fifo_write <= not RX_DELAY_WR_N;

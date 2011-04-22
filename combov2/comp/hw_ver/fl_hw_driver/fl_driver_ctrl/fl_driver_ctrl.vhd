@@ -21,8 +21,7 @@ entity FL_DRIVER_CTRL is
    generic
    (
       -- data width
-      IN_DATA_WIDTH  : integer := 64;
-      OUT_DATA_WIDTH : integer := 71;
+      DATA_WIDTH     : integer := 64;
       DELAY_WIDTH    : integer := 9
    );
 
@@ -33,8 +32,8 @@ entity FL_DRIVER_CTRL is
 
       -- ----------------- INPUT INTERFACE ----------------------------------
       -- input FrameLink interface
-      RX_DATA        : in  std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-      RX_REM         : in  std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+      RX_DATA        : in  std_logic_vector(DATA_WIDTH-1 downto 0);
+      RX_REM         : in  std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
       RX_SRC_RDY_N   : in  std_logic;
       RX_DST_RDY_N   : out std_logic;
       RX_SOP_N       : in  std_logic;
@@ -44,9 +43,14 @@ entity FL_DRIVER_CTRL is
       
       -- ----------------- OUTPUT INTERFACE ---------------------------------      
       -- output FrameLink interface
-      TX_DATA        : out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+      TX_DATA        : out std_logic_vector(DATA_WIDTH-1 downto 0);
+      TX_REM         : out std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
       TX_SRC_RDY_N   : out std_logic;
       TX_DST_RDY_N   : in  std_logic;
+      TX_SOP_N       : out std_logic;
+      TX_EOP_N       : out std_logic;
+      TX_SOF_N       : out std_logic;
+      TX_EOF_N       : out std_logic;
       
       -- output delay interface
       TX_DELAY       : out std_logic_vector(DELAY_WIDTH-1 downto 0);
@@ -77,11 +81,11 @@ constant WAIT_TYPE  :  std_logic_vector(7 downto 0) := X"02";
 constant DELAY_TYPE :  std_logic_vector(7 downto 0) := X"05";
 constant STOP_TYPE  :  std_logic_vector(7 downto 0) := X"04";
 
-constant REM_INDEX  : integer := 4+log2(IN_DATA_WIDTH/8);
-constant COMP_VALUE : std_logic_vector(IN_DATA_WIDTH-1 downto 0) 
-                      := conv_std_logic_vector(255, IN_DATA_WIDTH);
+constant REM_INDEX  : integer := 4+log2(DATA_WIDTH/8);
+constant COMP_VALUE : std_logic_vector(DATA_WIDTH-1 downto 0) 
+                      := conv_std_logic_vector(255, DATA_WIDTH);
                       
-constant ZERO_VALUE : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0) 
+constant ZERO_VALUE : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0) 
                       := (others => '0');       
 
 -- ==========================================================================
@@ -99,31 +103,39 @@ signal sig_new_last        : std_logic;
 signal sig_new_compl       : std_logic;
 
 -- data processing
-signal sig_tx_data         : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal sig_tx_data         : std_logic_vector(DATA_WIDTH-1 downto 0);
+signal sig_tx_rem          : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+signal sig_tx_sof_n        : std_logic;
+signal sig_tx_sop_n        : std_logic;
+signal sig_tx_eof_n        : std_logic;
+signal sig_tx_eop_n        : std_logic;
+signal sig_tx_src_rdy_n    : std_logic;
+signal sig_tx_dst_rdy_n    : std_logic;
+
 signal sig_out_sof_n       : std_logic;
 signal sig_out_sop_n       : std_logic;
 signal sig_out_eof_n       : std_logic;
 signal sig_out_eop_n       : std_logic; 
 
 -- wait processing 
-signal sig_difference      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-signal sig_mux_counter     : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-signal sig_counter_reg     : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal sig_difference      : std_logic_vector(DATA_WIDTH-1 downto 0);
+signal sig_mux_counter     : std_logic_vector(DATA_WIDTH-1 downto 0);
+signal sig_counter_reg     : std_logic_vector(DATA_WIDTH-1 downto 0);
 signal sig_counter_is_zero : std_logic; 
-signal sig_minimum         : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal sig_minimum         : std_logic_vector(DATA_WIDTH-1 downto 0);
 signal sig_minimum_final   : std_logic_vector(7 downto 0);
 signal sig_wait            : std_logic_vector(8 downto 0);
 
 -- delay processing
 signal sig_delay           : std_logic_vector(8 downto 0);
 signal sig_delay_wr_n      : std_logic;
-signal sig_output_reg      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-signal sig_rem_reg         : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+signal sig_output_reg      : std_logic_vector(DATA_WIDTH-1 downto 0);
+signal sig_rem_reg         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
 signal sig_eof_reg         : std_logic;
-signal sig_incremented     : std_logic_vector(log2(IN_DATA_WIDTH/8) downto 0);
-signal sig_select          : std_logic_vector(log2(IN_DATA_WIDTH/8) downto 0);
+signal sig_incremented     : std_logic_vector(log2(DATA_WIDTH/8) downto 0);
+signal sig_select          : std_logic_vector(log2(DATA_WIDTH/8) downto 0);
 signal sig_mux_delay       : std_logic_vector(7 downto 0);
-signal sig_set_boundary    : std_logic_vector(log2(IN_DATA_WIDTH/8) downto 0);
+signal sig_set_boundary    : std_logic_vector(log2(DATA_WIDTH/8) downto 0);
 signal sig_set_delay_rdy_n : std_logic;
 signal sig_set_delay_rdy_n_final : std_logic;
 
@@ -312,22 +324,28 @@ begin
    end process;
    
    -- ================= DATA PROCESSING =====================================
-   sig_tx_data(OUT_DATA_WIDTH-1 downto REM_INDEX) <= RX_DATA;
-   sig_tx_data(REM_INDEX-1 downto 4) <= RX_REM;
-   sig_tx_data(0) <= sig_out_sof_n; 
-   sig_tx_data(1) <= sig_out_eof_n; 
-   sig_tx_data(2) <= sig_out_sop_n; 
-   sig_tx_data(3) <= sig_out_eop_n; 
+   sig_tx_data      <= RX_DATA;
+   sig_tx_rem       <= RX_REM;
+   sig_tx_sof_n     <= sig_out_sof_n; 
+   sig_tx_eof_n     <= sig_out_eof_n; 
+   sig_tx_sop_n     <= sig_out_sop_n; 
+   sig_tx_eop_n     <= sig_out_eop_n; 
+   sig_tx_src_rdy_n <= not((not RX_SRC_RDY_N) and is_data);
    
-   TX_DATA <= sig_tx_data;
-   
-   TX_SRC_RDY_N <= not((not RX_SRC_RDY_N) and is_data);
+   TX_DATA            <= sig_tx_data;
+   TX_REM             <= sig_tx_rem;
+   TX_SOF_N           <= sig_tx_sof_n;
+   TX_EOF_N           <= sig_tx_eof_n;
+   TX_SOP_N           <= sig_tx_sop_n;
+   TX_EOP_N           <= sig_tx_eop_n;
+   TX_SRC_RDY_N       <= sig_tx_src_rdy_n;
+   sig_tx_dst_rdy_n   <= TX_DST_RDY_N;
    
    mux1 : process (is_header, is_data, is_delay, is_delaying,
-      sig_set_delay_rdy_n, is_cntr)
+      sig_set_delay_rdy_n, is_cntr, sig_tx_dst_rdy_n)
    begin
      if    (is_header = '1') then sig_rx_dst_rdy_n <= '0';
-     elsif (is_data   = '1') then sig_rx_dst_rdy_n <= '0'; 
+     elsif (is_data   = '1') then sig_rx_dst_rdy_n <= sig_tx_dst_rdy_n; 
      elsif (is_delaying = '1') then sig_rx_dst_rdy_n <= '1';  
      elsif (is_cntr   = '1') then sig_rx_dst_rdy_n <= '1'; 
      end if;

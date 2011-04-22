@@ -12,6 +12,8 @@ set CDC_FIFO_BASE          "$COMP_BASE/cdc_fifo"
 set FL_DRIVER_CTRL_BASE    "$ENTITY_BASE/fl_driver_ctrl"
 set TX_ASYNC_FL_UNIT_BASE  "$ENTITY_BASE/tx_async_fl_unit"
 
+set FL_TRANSFORMER_BASE    "$COMP_BASE/fl_tools/flow/transformer"
+
 
 # Source files
 set MOD "$MOD $ENTITY_BASE/fl_hw_driver.vhd"
@@ -21,4 +23,6 @@ set COMPONENTS [list \
    [ list "CDC_FIFO"           $CDC_FIFO_BASE            "FULL"] \
    [ list "FL_DRIVER_CTRL"     $FL_DRIVER_CTRL_BASE      "FULL"] \
    [ list "TX_ASYNC_FL_UNIT"   $TX_ASYNC_FL_UNIT_BASE    "FULL"] \
+   [ list "FL_TRANSFORMER"     $FL_TRANSFORMER_BASE      "FULL"] \
+
 ]

@@ -68,9 +68,6 @@ architecture arch of FL_HW_DRIVER is
 --                                    CONSTANTS
 -- ==========================================================================
 
-constant AGG_IN_FL_WIDTH : integer :=
-   log2(IN_DATA_WIDTH/8) + IN_DATA_WIDTH + 4;
-
 constant DELAY_WIDTH : integer := 9;
 
 -- ==========================================================================
@@ -78,9 +75,15 @@ constant DELAY_WIDTH : integer := 9;
 -- ==========================================================================
 
 -- ---- tx_async_fl_unit ----------------------------------------------------
-signal tx_async_rx_data          : std_logic_vector(AGG_IN_FL_WIDTH-1 downto 0);
+signal tx_async_rx_data          : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal tx_async_rx_rem           : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+signal tx_async_rx_sof_n         : std_logic;
+signal tx_async_rx_eof_n         : std_logic;
+signal tx_async_rx_sop_n         : std_logic;
+signal tx_async_rx_eop_n         : std_logic;
 signal tx_async_rx_src_rdy_n     : std_logic;
 signal tx_async_rx_dst_rdy_n     : std_logic;
+
 signal tx_async_rx_delay         : std_logic_vector(DELAY_WIDTH-1 downto 0);
 signal tx_async_rx_delay_wr_n    : std_logic;
 signal tx_async_rx_delay_rdy_n   : std_logic;
@@ -107,9 +110,14 @@ signal ctrl_rx_eop_n         : std_logic;
 signal ctrl_rx_sof_n         : std_logic;
 signal ctrl_rx_eof_n         : std_logic;
 
-signal ctrl_tx_data          : std_logic_vector(AGG_IN_FL_WIDTH-1 downto 0);
+signal ctrl_tx_data          : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal ctrl_tx_rem           : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
 signal ctrl_tx_src_rdy_n     : std_logic;
 signal ctrl_tx_dst_rdy_n     : std_logic;
+signal ctrl_tx_sop_n         : std_logic;
+signal ctrl_tx_eop_n         : std_logic;
+signal ctrl_tx_sof_n         : std_logic;
+signal ctrl_tx_eof_n         : std_logic;
 
 signal ctrl_tx_delay         : std_logic_vector(DELAY_WIDTH-1 downto 0);
 signal ctrl_tx_delay_wr_n    : std_logic;
@@ -132,8 +140,7 @@ begin
    -- --------------- FL_DRIVER_CTRL INSTANCE ------------------------------
    fl_driver_ctrl_i : entity work.fl_driver_ctrl
    generic map(
-      IN_DATA_WIDTH   => IN_DATA_WIDTH,
-      OUT_DATA_WIDTH  => AGG_IN_FL_WIDTH
+      DATA_WIDTH   => IN_DATA_WIDTH
    )
    port map(
       CLK            => RX_CLK,
@@ -153,8 +160,13 @@ begin
       -- ----------------- OUTPUT INTERFACE ---------------------------------      
       -- output FrameLink interface
       TX_DATA        => ctrl_tx_data,
+      TX_REM         => ctrl_tx_rem,
       TX_SRC_RDY_N   => ctrl_tx_src_rdy_n,
       TX_DST_RDY_N   => ctrl_tx_dst_rdy_n,
+      TX_SOP_N       => ctrl_tx_sop_n,
+      TX_EOP_N       => ctrl_tx_eop_n,
+      TX_SOF_N       => ctrl_tx_sof_n,
+      TX_EOF_N       => ctrl_tx_eof_n,
 
       TX_DELAY       => ctrl_tx_delay,
       TX_DELAY_WR_N  => ctrl_tx_delay_wr_n,
@@ -163,9 +175,36 @@ begin
       TX_FINISH      => ctrl_tx_finish
    );
 
-   tx_async_rx_data       <= ctrl_tx_data;
-   tx_async_rx_src_rdy_n  <= ctrl_tx_src_rdy_n;
-   ctrl_tx_dst_rdy_n      <= tx_async_rx_dst_rdy_n;
+   -- --------------- FL_TRANSFORMER instance -------------------------------
+   fl_tran_i : entity work.FL_TRANSFORMER
+   generic map(
+      RX_DATA_WIDTH      => IN_DATA_WIDTH,
+      TX_DATA_WIDTH      => OUT_DATA_WIDTH
+   )
+   port map(
+      CLK             => TX_CLK,
+      RESET           => RESET,
+      
+      -- RX interface
+      RX_DATA         => ctrl_tx_data,
+      RX_REM          => ctrl_tx_rem,
+      RX_SOF_N        => ctrl_tx_sof_n,
+      RX_EOF_N        => ctrl_tx_eof_n,
+      RX_SOP_N        => ctrl_tx_sop_n,
+      RX_EOP_N        => ctrl_tx_eop_n,
+      RX_SRC_RDY_N    => ctrl_tx_src_rdy_n,
+      RX_DST_RDY_N    => ctrl_tx_dst_rdy_n,
+
+      -- TX interface
+      TX_DATA         => tx_async_rx_data,
+      TX_REM          => tx_async_rx_rem,
+      TX_SOF_N        => tx_async_rx_sof_n,
+      TX_EOF_N        => tx_async_rx_eof_n,
+      TX_SOP_N        => tx_async_rx_sop_n,
+      TX_EOP_N        => tx_async_rx_eop_n,
+      TX_SRC_RDY_N    => tx_async_rx_src_rdy_n,
+      TX_DST_RDY_N    => tx_async_rx_dst_rdy_n
+   );
 
    tx_async_rx_delay        <= ctrl_tx_delay;
    tx_async_rx_delay_wr_n   <= ctrl_tx_delay_wr_n;
@@ -176,8 +215,7 @@ begin
    -- --------------- TX_ASYNC_FL_UNIT INSTANCE ------------------------------
    tx_async_fl_unit_i : entity work.tx_async_fl_unit
    generic map(
-      IN_DATA_WIDTH   => AGG_IN_FL_WIDTH,
-      OUT_DATA_WIDTH  => OUT_DATA_WIDTH
+      DATA_WIDTH   => OUT_DATA_WIDTH
    )
    port map(
       WR_CLK         => RX_CLK,
@@ -187,8 +225,13 @@ begin
       -- ----------------- INPUT INTERFACE ----------------------------------
       -- input FrameLink interface
       RX_DATA        => tx_async_rx_data,
+      RX_REM         => tx_async_rx_rem,
       RX_SRC_RDY_N   => tx_async_rx_src_rdy_n,
       RX_DST_RDY_N   => tx_async_rx_dst_rdy_n,
+      RX_SOP_N       => tx_async_rx_sop_n,
+      RX_EOP_N       => tx_async_rx_eop_n,
+      RX_SOF_N       => tx_async_rx_sof_n,
+      RX_EOF_N       => tx_async_rx_eof_n,
       
       -- input delay interface
       RX_DELAY       => tx_async_rx_delay,
