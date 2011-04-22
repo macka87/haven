@@ -61,7 +61,7 @@ begin
    -- -------------------------------------------------------------------------
    --                   FL Shortener
    -- -------------------------------------------------------------------------
-   uut: entity work.FL_DRIVER
+   uut: entity work.FL_DRIVER_CTRL
       generic map (
          IN_DATA_WIDTH     => IN_DATA_WIDTH,
          OUT_DATA_WIDTH    => OUT_DATA_WIDTH,
