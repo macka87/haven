@@ -27,25 +27,27 @@ architecture arch of verification_core is
 --                                     SIGNALS
 -- ==========================================================================
 
-   -- FrameLink input asynchronous FIFO input
-   signal fl_input_asfifo_in_data       : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_input_asfifo_in_rem        : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_input_asfifo_in_sof_n      : std_logic;
-   signal fl_input_asfifo_in_sop_n      : std_logic;
-   signal fl_input_asfifo_in_eop_n      : std_logic;
-   signal fl_input_asfifo_in_eof_n      : std_logic;
-   signal fl_input_asfifo_in_src_rdy_n  : std_logic;
-   signal fl_input_asfifo_in_dst_rdy_n  : std_logic;
+   -- FrameLink input driver input
+   signal fl_hw_driver_rx_data       : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_hw_driver_rx_rem        : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_hw_driver_rx_sof_n      : std_logic;
+   signal fl_hw_driver_rx_sop_n      : std_logic;
+   signal fl_hw_driver_rx_eop_n      : std_logic;
+   signal fl_hw_driver_rx_eof_n      : std_logic;
+   signal fl_hw_driver_rx_src_rdy_n  : std_logic;
+   signal fl_hw_driver_rx_dst_rdy_n  : std_logic;
 
-   -- FrameLink input asynchronous FIFO output
-   signal fl_input_asfifo_out_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_input_asfifo_out_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_input_asfifo_out_sof_n     : std_logic;
-   signal fl_input_asfifo_out_sop_n     : std_logic;
-   signal fl_input_asfifo_out_eop_n     : std_logic;
-   signal fl_input_asfifo_out_eof_n     : std_logic;
-   signal fl_input_asfifo_out_src_rdy_n : std_logic;
-   signal fl_input_asfifo_out_dst_rdy_n : std_logic;
+   -- FrameLink input driver output
+   signal fl_hw_driver_tx_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_hw_driver_tx_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_hw_driver_tx_sof_n     : std_logic;
+   signal fl_hw_driver_tx_sop_n     : std_logic;
+   signal fl_hw_driver_tx_eop_n     : std_logic;
+   signal fl_hw_driver_tx_eof_n     : std_logic;
+   signal fl_hw_driver_tx_src_rdy_n : std_logic;
+   signal fl_hw_driver_tx_dst_rdy_n : std_logic;
+
+   signal fl_hw_driver_output_ready : std_logic;
 
    -- FIFO input
    signal fl_fifo_in_data        : std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -127,62 +129,65 @@ begin
    -- ------------------------------------------------------------------------
    --                           Mapping of inputs
    -- ------------------------------------------------------------------------
-   fl_input_asfifo_in_data       <= RX_DATA;
-   fl_input_asfifo_in_rem        <= RX_REM;
-   fl_input_asfifo_in_sof_n      <= RX_SOF_N;
-   fl_input_asfifo_in_sop_n      <= RX_SOP_N;
-   fl_input_asfifo_in_eop_n      <= RX_EOP_N;
-   fl_input_asfifo_in_eof_n      <= RX_EOF_N;
-   fl_input_asfifo_in_src_rdy_n  <= RX_SRC_RDY_N;
-   RX_DST_RDY_N  <= fl_input_asfifo_in_dst_rdy_n;
+   fl_hw_driver_rx_data       <= RX_DATA;
+   fl_hw_driver_rx_rem        <= RX_REM;
+   fl_hw_driver_rx_sof_n      <= RX_SOF_N;
+   fl_hw_driver_rx_sop_n      <= RX_SOP_N;
+   fl_hw_driver_rx_eop_n      <= RX_EOP_N;
+   fl_hw_driver_rx_eof_n      <= RX_EOF_N;
+   fl_hw_driver_rx_src_rdy_n  <= RX_SRC_RDY_N;
+   RX_DST_RDY_N  <= fl_hw_driver_rx_dst_rdy_n;
 
 
    -- ------------------------------------------------------------------------
-   --                        Input asynchronous FIFO
+   --                        Input FrameLink Driver
    -- ------------------------------------------------------------------------
-   fl_asfifo_input: entity work.FL_ASFIFO_VIRTEX5
+   fl_hw_driver_i: entity work.FL_HW_DRIVER
    generic map(
       -- FrameLink data width
-      WIDTH => DATA_WIDTH
+      IN_DATA_WIDTH   => DATA_WIDTH,
+      OUT_DATA_WIDTH  => DATA_WIDTH
    )
    port map(
+      RESET         => RESET,
+
       -- input clock domain
       RX_CLK        => CLK,
-      RX_RESET      => RESET,
 
       -- output clock domain
       TX_CLK        => clk_dut,
-      TX_RESET      => reset_dut,
 
       -- input interface
-      RX_DATA       => fl_input_asfifo_in_data,
-      RX_REM        => fl_input_asfifo_in_rem,
-      RX_SOF_N      => fl_input_asfifo_in_sof_n,
-      RX_SOP_N      => fl_input_asfifo_in_sop_n,
-      RX_EOP_N      => fl_input_asfifo_in_eop_n,
-      RX_EOF_N      => fl_input_asfifo_in_eof_n,
-      RX_SRC_RDY_N  => fl_input_asfifo_in_src_rdy_n, 
-      RX_DST_RDY_N  => fl_input_asfifo_in_dst_rdy_n, 
+      RX_DATA       => fl_hw_driver_rx_data,
+      RX_REM        => fl_hw_driver_rx_rem,
+      RX_SOF_N      => fl_hw_driver_rx_sof_n,
+      RX_SOP_N      => fl_hw_driver_rx_sop_n,
+      RX_EOP_N      => fl_hw_driver_rx_eop_n,
+      RX_EOF_N      => fl_hw_driver_rx_eof_n,
+      RX_SRC_RDY_N  => fl_hw_driver_rx_src_rdy_n, 
+      RX_DST_RDY_N  => fl_hw_driver_rx_dst_rdy_n, 
       
       -- output interface
-      TX_DATA       => fl_input_asfifo_out_data,
-      TX_REM        => fl_input_asfifo_out_rem,
-      TX_SOF_N      => fl_input_asfifo_out_sof_n,
-      TX_SOP_N      => fl_input_asfifo_out_sop_n,
-      TX_EOP_N      => fl_input_asfifo_out_eop_n,
-      TX_EOF_N      => fl_input_asfifo_out_eof_n,
-      TX_SRC_RDY_N  => fl_input_asfifo_out_src_rdy_n,
-      TX_DST_RDY_N  => fl_input_asfifo_out_dst_rdy_n
+      TX_DATA       => fl_hw_driver_tx_data,
+      TX_REM        => fl_hw_driver_tx_rem,
+      TX_SOF_N      => fl_hw_driver_tx_sof_n,
+      TX_SOP_N      => fl_hw_driver_tx_sop_n,
+      TX_EOP_N      => fl_hw_driver_tx_eop_n,
+      TX_EOF_N      => fl_hw_driver_tx_eof_n,
+      TX_SRC_RDY_N  => fl_hw_driver_tx_src_rdy_n,
+      TX_DST_RDY_N  => fl_hw_driver_tx_dst_rdy_n,
+
+      OUTPUT_READY  => fl_hw_driver_output_ready
    );
 
-   fl_fifo_in_data       <= fl_input_asfifo_out_data;
-   fl_fifo_in_rem        <= fl_input_asfifo_out_rem;
-   fl_fifo_in_sof_n      <= fl_input_asfifo_out_sof_n;
-   fl_fifo_in_sop_n      <= fl_input_asfifo_out_sop_n;
-   fl_fifo_in_eop_n      <= fl_input_asfifo_out_eop_n;
-   fl_fifo_in_eof_n      <= fl_input_asfifo_out_eof_n;
-   fl_fifo_in_src_rdy_n  <= fl_input_asfifo_out_src_rdy_n;
-   fl_input_asfifo_out_dst_rdy_n  <= fl_fifo_in_dst_rdy_n;
+   fl_fifo_in_data            <= fl_hw_driver_tx_data;
+   fl_fifo_in_rem             <= fl_hw_driver_tx_rem;
+   fl_fifo_in_sof_n           <= fl_hw_driver_tx_sof_n;
+   fl_fifo_in_sop_n           <= fl_hw_driver_tx_sop_n;
+   fl_fifo_in_eop_n           <= fl_hw_driver_tx_eop_n;
+   fl_fifo_in_eof_n           <= fl_hw_driver_tx_eof_n;
+   fl_fifo_in_src_rdy_n       <= fl_hw_driver_tx_src_rdy_n;
+   fl_hw_driver_tx_dst_rdy_n  <= fl_fifo_in_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
    --                              FIFO
@@ -380,7 +385,7 @@ begin
       AND (NOT RESET);
    --clock_enable <= reg_clock_enable OR RESET;
 
-   output_ready_all <= fl_hw_monitor_output_ready;
+   output_ready_all <= fl_hw_driver_output_ready AND fl_hw_monitor_output_ready;
 
    -- ------------------------------------------------------------------------
    --                            MI32 Connection
