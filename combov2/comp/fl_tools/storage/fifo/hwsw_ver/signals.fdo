@@ -16,7 +16,6 @@ proc fl_rx {NAME PATH} {
      add_wave "-noupdate  -label RX_EOP_N"        $PATH/RX_EOP_N
      add_wave "-noupdate  -label RX_SRC_RDY_N"    $PATH/RX_SRC_RDY_N
      add_wave "-noupdate  -label RX_DST_RDY_N"    $PATH/RX_DST_RDY_N
-     add_wave "-noupdate  -hex -label sig_header_rx_data"    $PATH/sig_header_rx_data
 }
 
 proc fl_tx {NAME PATH} {
@@ -34,7 +33,7 @@ proc fl_tx {NAME PATH} {
 proc ctrl {NAME PATH} {
     add wave -divider "$NAME"      
      add_wave "-noupdate  -label LSTBLK"          $PATH/LSTBLK
-     add_wave "-noupdate  -uns -label STATUS"     $PATH/STATUS
+     add_wave "-noupdate  -label STATUS"          $PATH/STATUS
      add_wave "-noupdate  -label EMPTY"           $PATH/EMPTY
      add_wave "-noupdate  -label FULL"            $PATH/FULL
      add_wave "-noupdate  -label FRAME_RDY"       $PATH/FRAME_RDY
