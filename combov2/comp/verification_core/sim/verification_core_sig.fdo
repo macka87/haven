@@ -10,6 +10,8 @@ set VERIFICATION_CORE_PATH   "/testbench/uut"
 
 # include signals
 source      "signals.fdo"
+source      "../../hw_ver/fl_hw_driver/fl_driver_ctrl/sim/signals.fdo"
+source      "../../hw_ver/fl_hw_driver/tx_async_fl_unit/sim/signals.fdo"
 
 exec make
 view wave
@@ -18,14 +20,40 @@ delete wave *
 add_wave "-noupdate -label RESET -color yellow"  $TB_PATH/reset
 add_wave "-noupdate -label CLK   -color yellow"  $TB_PATH/clk
 
-add wave -divider "INTERFACE"
-blk_VER_CORE     $VERIFICATION_CORE_PATH
+add wave -divider "****************************"
+add wave -divider "INTERFACE" 
+add wave -divider "****************************"
+blk_VER_CORE              $VERIFICATION_CORE_PATH
 
-add wave -divider "INTERNALS"
+add wave -divider "****************************"
+add wave -divider "INTERNALS" 
+add wave -divider "****************************"
 blk_VER_CORE_INTERNALS    $VERIFICATION_CORE_PATH
 
-add wave -divider "MONITOR"
+add wave -divider "****************************"
+add wave -divider "DRIVER" 
+add wave -divider "****************************"
+blk_VER_CORE_MONITOR      $VERIFICATION_CORE_PATH/fl_hw_driver_i
+
+add wave -divider "****************************"
+add wave -divider "DRIVER CTRL" 
+add wave -divider "****************************"
+blk_FL_DRIVER_CTRL        $VERIFICATION_CORE_PATH/fl_hw_driver_i/fl_driver_ctrl_i
+
+add wave -divider "****************************"
+add wave -divider "DRIVER TX_ASYNC" 
+add wave -divider "****************************"
+blk_ASYNC_UNIT            $VERIFICATION_CORE_PATH/fl_hw_driver_i/tx_async_fl_unit_i
+
+add wave -divider "****************************"
+add wave -divider "DRIVER TX_ASYNC INTERNALS" 
+add wave -divider "****************************"
+blk_ASYNC_UNIT_INTERNALS  $VERIFICATION_CORE_PATH/fl_hw_driver_i/tx_async_fl_unit_i
+
+add wave -divider "****************************"
+add wave -divider "MONITOR" 
+add wave -divider "****************************"
 blk_VER_CORE_MONITOR      $VERIFICATION_CORE_PATH/fl_hw_monitor_i
 
 restart -f
-run 500 ns
+run 1 us

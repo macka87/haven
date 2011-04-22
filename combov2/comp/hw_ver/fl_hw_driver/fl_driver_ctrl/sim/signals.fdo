@@ -7,7 +7,6 @@
 
 proc blk_FL_DRIVER_CTRL { BASE } {
    
-      add wave -divider "FL_DRIVER"
    add_wave "-noupdate -label CLK"    $BASE/CLK
    add_wave "-noupdate -label RESET"  $BASE/RESET
 

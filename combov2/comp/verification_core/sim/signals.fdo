@@ -37,6 +37,9 @@ proc blk_VER_CORE { BASE } {
 }
 
 proc blk_VER_CORE_INTERNALS { BASE } {
+  add wave -divider "Misc"
+  add_wave "-noupdate -label reset_dut"     $BASE/reset_dut
+
   add wave -divider "Clock Gate"
   add_wave "-noupdate -label CLK_IN"        $BASE/clock_gate_i/CLK_IN
   add_wave "-noupdate -label CLOCK_ENABLE"  $BASE/clock_gate_i/CLOCK_ENABLE
