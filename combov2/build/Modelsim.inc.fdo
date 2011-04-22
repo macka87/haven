@@ -150,7 +150,7 @@ if { [info exist MACROS] } {
 
 set FILES [list ]
 
-if { ![info exist SVLIBS] } {
+if { ![info exist SV_LIBS] } {
   set SV_LIBS [list ]
 }
 
