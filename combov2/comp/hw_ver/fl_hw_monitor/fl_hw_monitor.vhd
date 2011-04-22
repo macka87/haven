@@ -67,50 +67,54 @@ architecture arch of FL_HW_MONITOR is
 -- ==========================================================================
 --                                    CONSTANTS
 -- ==========================================================================
-constant DATA_FIFO_WIDTH : integer := IN_DATA_WIDTH + log2(IN_DATA_WIDTH/8) + 4;
+constant FIFO_DATA_WIDTH : integer := IN_DATA_WIDTH + log2(IN_DATA_WIDTH/8) + 4;
 
-constant REM_INDEX  : integer := 4+log2(OUT_DATA_WIDTH/8);
+constant IN_REM_INDEX  : integer := 4+log2(IN_DATA_WIDTH/8);
 
 constant LFSR_GENERATOR_SEED : std_logic_vector(7 downto 0) := "10011011";
 
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
--- data fifo signals
-signal sig_data_fifo_wr_data         : std_logic_vector(DATA_FIFO_WIDTH-1 downto 0);
+-- data fifo signals write ifc
+signal sig_data_fifo_wr_data         : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
 signal sig_data_fifo_wr_write        : std_logic;
 signal sig_data_fifo_wr_almost_full  : std_logic;
 signal sig_data_fifo_wr_full         : std_logic;
 
-signal sig_data_fifo_rd_data   : std_logic_vector(DATA_FIFO_WIDTH-1 downto 0);
+-- data fifo signals read ifc
+signal sig_data_fifo_rd_data   : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
 signal sig_data_fifo_rd_read   : std_logic;
 signal sig_data_fifo_rd_empty  : std_logic;
+
+-- FL_TRANSFORMER input
+signal rx_fl_transformer_data      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal rx_fl_transformer_rem       : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+signal rx_fl_transformer_sof_n     : std_logic;
+signal rx_fl_transformer_sop_n     : std_logic;
+signal rx_fl_transformer_eof_n     : std_logic;
+signal rx_fl_transformer_eop_n     : std_logic;
+signal rx_fl_transformer_src_rdy_n : std_logic;
+signal rx_fl_transformer_dst_rdy_n : std_logic;
+
+-- FL_TRANSFORMER output
+signal tx_fl_transformer_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal tx_fl_transformer_rem       : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+signal tx_fl_transformer_sof_n     : std_logic;
+signal tx_fl_transformer_sop_n     : std_logic;
+signal tx_fl_transformer_eof_n     : std_logic;
+signal tx_fl_transformer_eop_n     : std_logic;
+signal tx_fl_transformer_src_rdy_n : std_logic;
+signal tx_fl_transformer_dst_rdy_n : std_logic;
 
 -- LFSR signals
 signal lfsr_output       : std_logic;
 
-
 begin
 
-   assert (IN_DATA_WIDTH = OUT_DATA_WIDTH)
-      report "IN_DATA_WIDTH must be equal to OUT_DATA_WIDTH"
-      severity failure;
-
-
-   -- Mapping of input and output ports
-   TX_DATA                <= sig_data_fifo_rd_data(DATA_FIFO_WIDTH-1 downto REM_INDEX);
-   TX_REM                 <= sig_data_fifo_rd_data(REM_INDEX-1 downto 4);
-   TX_SOP_N               <= sig_data_fifo_rd_data(1); 
-   TX_EOP_N               <= sig_data_fifo_rd_data(3);
-   TX_SRC_RDY_N           <= sig_data_fifo_rd_empty;
-   sig_data_fifo_rd_read  <= not TX_DST_RDY_N;
-
-   -- same as SOP (resp. EOP) - splits data packet to several part by part
-   TX_SOF_N               <= sig_data_fifo_rd_data(1);
-   TX_EOF_N               <= sig_data_fifo_rd_data(3);
-
-   sig_data_fifo_wr_data(DATA_FIFO_WIDTH-1 downto REM_INDEX)  <= RX_DATA;
-   sig_data_fifo_wr_data(REM_INDEX-1 downto 4)                <= RX_REM;
+   -- Mapping of input ports
+   sig_data_fifo_wr_data(FIFO_DATA_WIDTH-1 downto IN_REM_INDEX)  <= RX_DATA;
+   sig_data_fifo_wr_data(IN_REM_INDEX-1 downto 4)                <= RX_REM;
    sig_data_fifo_wr_data(0)  <= RX_SOF_N;
    sig_data_fifo_wr_data(1)  <= RX_SOP_N;
    sig_data_fifo_wr_data(2)  <= RX_EOF_N;
@@ -118,15 +122,13 @@ begin
    sig_data_fifo_wr_write    <= not (RX_SRC_RDY_N or lfsr_output);
    RX_DST_RDY_N              <= lfsr_output OR sig_data_fifo_wr_full;
 
-   OUTPUT_READY        <= not sig_data_fifo_wr_almost_full;
-
    -- --------------- DATA FIFO INSTANCE ------------------------------------
    data_async_fifo : entity work.cdc_fifo
    generic map(
-      DATA_WIDTH  => DATA_FIFO_WIDTH
+      DATA_WIDTH      => FIFO_DATA_WIDTH
    )
    port map(
-      RESET       => RESET,
+      RESET           => RESET,
       
       -- Write interface
       WR_CLK          => RX_CLK,
@@ -143,6 +145,58 @@ begin
    );
 
 
+   rx_fl_transformer_data                <= sig_data_fifo_rd_data(FIFO_DATA_WIDTH-1 downto IN_REM_INDEX);
+   rx_fl_transformer_rem                 <= sig_data_fifo_rd_data(IN_REM_INDEX-1 downto 4);
+   rx_fl_transformer_sop_n               <= sig_data_fifo_rd_data(1); 
+   rx_fl_transformer_eop_n               <= sig_data_fifo_rd_data(3);
+   rx_fl_transformer_src_rdy_n           <= sig_data_fifo_rd_empty;
+   sig_data_fifo_rd_read  <= not rx_fl_transformer_dst_rdy_n;
+
+   -- same as SOP (resp. EOP) - splits data packet to several part by part
+   rx_fl_transformer_sof_n               <= sig_data_fifo_rd_data(1);
+   rx_fl_transformer_eof_n               <= sig_data_fifo_rd_data(3);
+
+   -- --------------- FL_TRANSFORMER instance -------------------------------
+   fl_tran_i : entity work.FL_TRANSFORMER
+   generic map(
+      RX_DATA_WIDTH      => IN_DATA_WIDTH,
+      TX_DATA_WIDTH      => OUT_DATA_WIDTH
+   )
+   port map(
+      CLK             => TX_CLK,
+      RESET           => RESET,
+      
+      -- RX interface
+      RX_DATA         => rx_fl_transformer_data,
+      RX_REM          => rx_fl_transformer_rem,
+      RX_SOF_N        => rx_fl_transformer_sof_n,
+      RX_EOF_N        => rx_fl_transformer_eof_n,
+      RX_SOP_N        => rx_fl_transformer_sop_n,
+      RX_EOP_N        => rx_fl_transformer_eop_n,
+      RX_SRC_RDY_N    => rx_fl_transformer_src_rdy_n,
+      RX_DST_RDY_N    => rx_fl_transformer_dst_rdy_n,
+
+      -- TX interface
+      TX_DATA         => tx_fl_transformer_data,
+      TX_REM          => tx_fl_transformer_rem,
+      TX_SOF_N        => tx_fl_transformer_sof_n,
+      TX_EOF_N        => tx_fl_transformer_eof_n,
+      TX_SOP_N        => tx_fl_transformer_sop_n,
+      TX_EOP_N        => tx_fl_transformer_eop_n,
+      TX_SRC_RDY_N    => tx_fl_transformer_src_rdy_n,
+      TX_DST_RDY_N    => tx_fl_transformer_dst_rdy_n
+   );
+ 
+   -- mapping of outputs
+   TX_DATA         <= tx_fl_transformer_data;
+   TX_REM          <= tx_fl_transformer_rem;
+   TX_SOF_N        <= tx_fl_transformer_sof_n;
+   TX_EOF_N        <= tx_fl_transformer_eof_n;
+   TX_SOP_N        <= tx_fl_transformer_sop_n;
+   TX_EOP_N        <= tx_fl_transformer_eop_n;
+   TX_SRC_RDY_N    <= tx_fl_transformer_src_rdy_n;
+   tx_fl_transformer_dst_rdy_n    <= TX_DST_RDY_N;
+
    -- --------------- LFSR RANDOM BITSTREAM GENERATOR INSTANCE --------------
    lfsr : entity work.prng_8
    port map(
@@ -152,6 +206,6 @@ begin
       OUTPUT  => lfsr_output
    );
 
-
+   OUTPUT_READY        <= not sig_data_fifo_wr_almost_full;
 
 end architecture;
