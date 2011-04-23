@@ -91,6 +91,10 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
 
   // szewrite - send data to hardware
   ret = szedata_try_write_next(sze, test_data, len, ifc);
+	if (ret)
+	{
+		return EXIT_FAILURE;
+	}
   
   return EXIT_SUCCESS;
 }  
