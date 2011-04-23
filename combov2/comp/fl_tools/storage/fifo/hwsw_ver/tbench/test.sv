@@ -88,7 +88,8 @@ program TEST (
      //! Create Output Wrapper
      outputWrapper = new("Output Wrapper", outputMbx); 
      
-     flOutCnt = new("Output Controller", 0, outputMbx);
+     flOutCnt = new("Output Controller", 0, outputMbx, GENERATOR_FL_FRAME_COUNT);
+     flOutCnt.setCallbacks(scoreboard.outputCbs);  
      
      //! Create checker
      flChecker = new("Checker", RX, TX, CTRL);

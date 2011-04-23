@@ -62,6 +62,7 @@
     */
     
     virtual task post_tr(Transaction transaction, byte id);
+      transaction.display("ADDED TRANSACTION TO SCOREBOARD");
       sc_table.add(transaction);
     endtask : post_tr
  endclass : ScoreboardInputCbs
@@ -113,6 +114,8 @@
     */
     virtual task post_tr(Transaction transaction, byte id);
       bit status=0;
+      
+      transaction.display("REMOVED TRANSACTION FROM SCOREBOARD");
       
       // Gets number of transaction table from ID number
       sc_table.remove(transaction, status);

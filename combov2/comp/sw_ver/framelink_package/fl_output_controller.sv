@@ -11,6 +11,7 @@
    /*
     * Public Class Atributes
     */ 
+    int frameCount;
     
    /*
     * Public Class Methods
@@ -21,8 +22,10 @@
     */    
     function new(string inst,
                  byte id,
-                 tTransMbx outputMbx); 
+                 tTransMbx outputMbx, 
+                 int frameCount); 
        super.new(inst, id, outputMbx);
+       this.frameCount = frameCount;
     endfunction: new
     
    /*! 
@@ -30,25 +33,45 @@
     * callback.
     */ 
     task run();
+      NetCOPETransaction ntr;
+      FrameLinkTransaction fltr;
       Transaction tr;
-          
+      
+      ntr  = new();
+      
+      fltr = new();
+      fltr.frameParts = frameCount;
+                
       while (enabled) begin 
-        foreach (cbs[i])           //! Call transaction preprocesing
-          cbs[i].pre_tr(tr, id);
-        
         wait(outputMbx.num()!=0) 
-        
         busy = 1;
           
-        // receive transaction from output mailbox
-        outputMbx.get(tr);
-
-        tr.display("OUTPUT CONTROLLER ZA FIFEM");
+        // create new FrameLink packet
+        fltr.data  = new[frameCount];
         
-        foreach (cbs[i])          //! Call transaction postprocesing
-          cbs[i].post_tr(tr, id);  
+        // fill FrameLink packet with received data
+        for (int i=0; i<frameCount; i++) begin
+          // receive data from mailbox
+          outputMbx.get(tr);
+                    
+          $cast(ntr, tr);
           
-        busy = 0;  
+          // creates one FrameLink part from received data 
+          fltr.data[i] = new[ntr.data.size];
+            
+          for (int j=0; j<ntr.data.size; j++)
+            fltr.data[i][j] = ntr.data[j];
+        end     
+
+        fltr.display("CREATED OUTPUT FRAMELINK");
+          
+        $cast(tr, fltr);
+          
+        //! Call transaction postprocesing in scoreboard  
+        foreach (cbs[i])          
+          cbs[i].post_tr(tr, id); 
+          
+        busy = 0;   
       end
     endtask : run
  endclass : FrameLinkOutputController  

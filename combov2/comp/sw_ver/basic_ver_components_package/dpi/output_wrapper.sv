@@ -74,7 +74,7 @@
       
 			// create new transaction
 			ntr = new();
-			ntr.data = new[4096];
+			ntr.hwpacket = new[4096];
 
       while (enabled) begin 
         busy = 1;
@@ -82,7 +82,7 @@
 				size = 0;
         
         // we call C function (through DPI layer) for data transfer from hw
-        res = c_receiveData(size, ntr.data);
+        res = c_receiveData(size, ntr.hwpacket);
         
         if (res == 1) $write("CHYBAAAAA\n"); 
         else begin
@@ -90,8 +90,16 @@
 						// print received transaction
 						$write(">>>>>   OUTPUT WRAPPER: HARDWARE PACKET: ");
 						for (int i=0; i<size; i++)
-							$write("%x ",ntr.data[i]);
+							$write("%x ",ntr.hwpacket[i]);
 						$write("\n"); 
+						
+						// store the right size of data
+						$write("size: %d\n",size);
+						ntr.data = new[size]; 
+						for (int i=0; i<size; i++)
+						  ntr.data[i] = ntr.hwpacket[i]; 
+						  
+						$write("data size: %d\n",ntr.data.size());  
 						
 						// put received data to output mailbox
 						$cast(tr, ntr);
