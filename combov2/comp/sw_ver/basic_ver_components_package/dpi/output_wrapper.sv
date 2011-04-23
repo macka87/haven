@@ -81,7 +81,7 @@
         // we call C function (through DPI layer) for data transfer from hw
         res = c_receiveData(size, ntr.hwpacket);
         
-        if (res == 1) $write("CHYBA\n"); 
+        if (res == 1) $fatal("RECEIVE DATA in output wrapper failed!!!"); 
         else begin
           if (size > 0) begin
             // print received transaction
