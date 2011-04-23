@@ -17,7 +17,6 @@
 //- GLOBAL VARIABLES
 //-----------------------------------------------------------------------------
 static struct szedata *sze = NULL;
-static unsigned char* lastData = NULL;
 
 //-----------------------------------------------------------------------------
 //- USER Functions
@@ -34,19 +33,19 @@ int c_openDMAChannel(){
   
 	// check if sze is not already initialized
 	if (sze != NULL)
-		return 1;
+		return EXIT_FAILURE;
 
   // create sze 
   sze = szedata_open(sze_dev);
   if (sze == NULL)
-    return 1;
+    return EXIT_FAILURE;
 		
 	ret = szedata_subscribe3(sze, &rx, &tx);
 	
 	if (ret){
     szedata_close(sze); 
     sze = NULL;
-    return 1; 
+    return EXIT_FAILURE; 
   }
   
   else { 
@@ -54,11 +53,11 @@ int c_openDMAChannel(){
 	  if (ret){
       szedata_close(sze); 
       sze = NULL;
-      return 1; 
+      return EXIT_FAILURE; 
     }   
   }
   
-  return 0;
+  return EXIT_SUCCESS;
 }    
 
 /*
@@ -66,11 +65,11 @@ int c_openDMAChannel(){
  */    
 int c_closeDMAChannel(){
 	if (sze == NULL)
-		return 1;
+		return EXIT_FAILURE;
 
   szedata_close(sze);
   sze = NULL;
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 /*
@@ -93,7 +92,7 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
   // szewrite - send data to hardware
   ret = szedata_try_write_next(sze, test_data, len, ifc);
   
-  return 0;
+  return EXIT_SUCCESS;
 }  
 
 /*
@@ -112,7 +111,17 @@ int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt) {
 
 	if (data) {
 		// in case something was read, copy it to the SystemVerilog array
-		lastData = data;
+		if (len <= 8)
+		{	// in case the length read is smaller than expected
+			// (i.e. there is not complete header or any data
+			return EXIT_FAILURE;
+		}
+
+		// omit the first 8 bytes so that we can omit the NetCOPE header
+		data += 8;
+		len -= 8;
+
+		// copy to the SystemVerilog array without the NetCOPE header
 		memcpy(outData, data, len);
 		*size = len;
 	}
@@ -121,5 +130,5 @@ int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt) {
 		*size = 0;
 	}
 
-  return 0;
+  return EXIT_SUCCESS;
 } 
