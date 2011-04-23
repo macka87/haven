@@ -161,7 +161,7 @@ begin
    fsm_next_state_logic : process (state_reg, data_ready,
                                    sig_trans_type, sig_reg_last, RX_EOF_N,
                                    sig_counter_is_zero, sig_set_delay_rdy_n,
-                                   sig_set_delay_rdy_n_final)
+                                   sig_set_delay_rdy_n_final, RX_SRC_RDY_N)
    begin
      state_next <= state_reg;  
      
@@ -175,9 +175,6 @@ begin
         when init_state =>
           if (data_ready = '1') then
             -- read header
-            sig_trans_type <= RX_DATA(39 downto 32);
-            sig_new_compl  <= RX_DATA(57); 
-            sig_new_last   <= RX_DATA(56);
           
             if (sig_trans_type = DATA_TYPE) then
               if (sig_reg_last = '1') then
@@ -301,7 +298,7 @@ begin
    end process moore_output;
    
    -- register for fl_part_last value
-   reg1 : process (CLK)
+   reg1 : process (CLK, RESET)
    begin
       if (RESET = '1') then 
          sig_reg_last <= '1';
@@ -312,6 +309,12 @@ begin
       end if;
    end process;
    
+
+   sig_trans_type <= RX_DATA(39 downto 32);
+   sig_new_compl  <= RX_DATA(57); 
+   sig_new_last   <= RX_DATA(56);
+
+
    -- ================= DATA PROCESSING =====================================
    sig_tx_data      <= RX_DATA;
    sig_tx_rem       <= RX_REM;
@@ -392,7 +395,7 @@ begin
    sig_minimum_final <= sig_minimum(7 downto 0); 
    sig_wait <= '1' & sig_minimum_final; 
    
-   mux3 : process (is_delaying, is_wait, sig_wait, sig_delay)
+   mux3 : process (is_delaying, is_cntr, sig_wait, sig_delay)
    begin
       TX_DELAY <= sig_wait;
 
@@ -424,7 +427,7 @@ begin
    
    sig_incremented <= sig_select + 1;
    
-   reg4 : process (CLK)
+   reg4 : process (CLK, RESET)
    begin
       if (RESET = '1') then 
          sig_select <= (others => '0');

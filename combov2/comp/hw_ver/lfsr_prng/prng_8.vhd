@@ -35,7 +35,7 @@ signal fb : std_logic;
 --                           ARCHITECTURE BODY
 -- ==========================================================================
 begin
-  process (CLK)
+  process (CLK, RESET, SEED)
   begin
     if (RESET = '1') then
       r_reg <= SEED;

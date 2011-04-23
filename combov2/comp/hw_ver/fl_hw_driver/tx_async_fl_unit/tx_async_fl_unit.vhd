@@ -191,7 +191,7 @@ begin
    sig_is_delay <= sig_delay_fifo_data(DELAY_WIDTH-1);
    
    -- register for identification if delay or wait transaction 
-   reg1 : process (RD_CLK)
+   reg1 : process (RD_CLK, RESET)
    begin
       if (RESET = '1') then 
         sig_reg_out_is_delay <= '0';
@@ -238,7 +238,7 @@ begin
    sig_taken <= sig_neg_comp_output nor TX_DST_RDY_N;
       
    -- register for decrement 
-   reg2 : process (RD_CLK)
+   reg2 : process (RD_CLK, RESET)
    begin
       if (RESET = '1') then 
          sig_reg_out <= (others => '0');

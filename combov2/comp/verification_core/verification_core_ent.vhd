@@ -15,7 +15,7 @@ entity verification_core is
    generic
    (
       -- data width 
-      DATA_WIDTH         : integer
+      DATA_WIDTH         : integer := 64
    );
    port
    (
