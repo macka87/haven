@@ -34,7 +34,7 @@
     * \param partSizeMax - maximal size of FrameLink frame part        
     * \param partSizeMin - minimal size of FrameLink frame part    
     */    
-    function new (int framework, tTransMbx inputMbx,
+    function new (string inst, int framework, tTransMbx inputMbx,
                   int frameParts, int partSizeMax[], int partSizeMin[],
                   byte btDelayEn_wt, byte btDelayDi_wt, 
                   byte btDelayLow, byte btDelayHigh,
@@ -43,7 +43,7 @@
                   virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl
                  ); 
       
-      super.new(framework, inputMbx);
+      super.new(inst, framework, inputMbx);
       
       this.fl       = fl;
       

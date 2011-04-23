@@ -38,7 +38,7 @@
                   byte id);
       this.inst        = inst;      //! Store monitor identifier
       this.id          = id;        //! Monitor ID number
-      this.enabled     = 0;         //! Driver is disabled by default
+      this.enabled     = 0;         //! Monitor is disabled by default
       this.busy        = 0;         //! Monitor is not busy by default  
     endfunction: new 
     
@@ -50,7 +50,7 @@
     endfunction : setCallbacks
        
    /*! 
-    * Enable Monitor - eable monitor and runs monitor process
+    * Enable Monitor - enable monitor and runs monitor process
     */    
     virtual task setEnabled();
       enabled = 1;  //! Monitor Enabling

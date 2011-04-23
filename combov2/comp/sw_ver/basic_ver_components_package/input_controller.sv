@@ -11,10 +11,11 @@
    /*
     * Public Class Atributes
     */ 
+    string     inst;       //! Controller identification
     tTransMbx  transMbx;   //! Transaction Mailbox
     tTransMbx  inputMbx;   //! Input Transaction Mailbox
     int        framework;
-    InputCbs   cbs[$];   //! Input callback list 
+    InputCbs   cbs[$];     //! Input callback list 
     
    /*
     * Public Class Methods
@@ -23,8 +24,10 @@
    /*! 
     * Constructor 
     */    
-    function new(int framework, tTransMbx inputMbx); 
-      // Create mailbox
+    function new(string inst,
+                 int framework,
+                 tTransMbx inputMbx); 
+      this.inst      = inst; 
       this.transMbx  = new(0);
       this.inputMbx  = inputMbx;
       this.framework = framework;

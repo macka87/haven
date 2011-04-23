@@ -67,6 +67,7 @@
     /*!
     * Function prepares data for transfer to hardware - it connects NetCOPE
     * header with data to one block.  
+    * !!! This function changes ENDIANITY for transfer through hardware !!!
     */
     virtual function void createHardwarePacket();
       // size of hardware packet = header(8B) + data size  
@@ -91,6 +92,15 @@
       $write("%x ",hwpacket[6]);
       hwpacket[7] = ifcInfo; 
       $write("%x ",hwpacket[7]);
+
+     /* hwpacket[7] = endpointID;
+      hwpacket[6] = enpointProtocol;
+      hwpacket[5] = 0;
+      hwpacket[4] = 0;
+      hwpacket[3] = transType;
+      hwpacket[2] = 0;
+      hwpacket[1] = ifcProtocol;
+      hwpacket[0] = ifcInfo;*/  
       
       // copy of data
       
@@ -99,6 +109,8 @@
         $write("%x ",hwpacket[i]);
       end  
       $write("\n");
+
+
     endfunction : createHardwarePacket
     
  endclass: NetCOPETransaction
