@@ -32,7 +32,7 @@ program TEST (
   //! Mailbox for Output controller's transactions
   tTransMbx                                              outputMbx; 
   
-  //! Controller of generated input  
+  //! Input Controller of generated input  
   FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH)  flGenInCnt; 
   
   //! Input Wrapper
@@ -44,6 +44,10 @@ program TEST (
   //! Checker
   FrameLinkFifoChecker #(DATA_WIDTH, DREM_WIDTH, BLOCK_SIZE, 
                          STATUS_WIDTH, ITEMS, USE_BRAMS) flChecker;                                                       
+  
+  //! Output Controller 
+  FrameLinkOutputController                              flOutCnt;
+  
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
   
@@ -67,7 +71,7 @@ program TEST (
      outputMbx  = new(0);
      
      //! Create Input Controller 
-     flGenInCnt = new(FRAMEWORK, inputMbx,
+     flGenInCnt = new("Input Controller", FRAMEWORK, inputMbx,
                       GENERATOR_FL_FRAME_COUNT, GENERATOR_FL_PART_SIZE_MAX,
                       GENERATOR_FL_PART_SIZE_MIN,
                       DRIVER_BT_DELAY_EN_WT, DRIVER_BT_DELAY_DI_WT,
@@ -83,6 +87,8 @@ program TEST (
      
      //! Create Output Wrapper
      outputWrapper = new("Output Wrapper", outputMbx); 
+     
+     //flOutCnt = new("Output Controller", 0, outputMbx);
      
      //! Create checker
      flChecker = new("Checker", RX, TX, CTRL);
@@ -119,6 +125,7 @@ program TEST (
     if (FRAMEWORK == 1) begin
       inputWrapper.setEnabled();
       outputWrapper.setEnabled();
+      //flOutCnt.setEnabled();
     end  
   endtask : enableTestEnvironment
   
@@ -137,7 +144,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy) busy = 1; 
+        if (inputWrapper.busy || outputWrapper.busy) busy = 1; 
       end
         
       if (busy) i = 0;
@@ -153,6 +160,7 @@ program TEST (
     if (FRAMEWORK == 1) begin
       inputWrapper.setDisabled();
       outputWrapper.setDisabled();
+      //flOutCnt.setDisabled();
     end  
   endtask : disableTestEnvironment
 
