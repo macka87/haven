@@ -13,7 +13,7 @@ F5F4
 -- first data packet: delays
 00000000
 00010005
-030201
+0201
 #
 -- stop packet
 00000000

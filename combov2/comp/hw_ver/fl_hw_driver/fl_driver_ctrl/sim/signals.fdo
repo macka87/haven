@@ -2,10 +2,7 @@
 # Copyright (C) 2011 
 # Author: Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
 
-   view wave
-   delete wave *
-
-proc blk_FL_DRIVER_CTRL { BASE } {
+proc blk_FL_DRIVER_CTRL_IFC { BASE } {
    
    add_wave "-noupdate -label CLK"    $BASE/CLK
    add_wave "-noupdate -label RESET"  $BASE/RESET
@@ -38,3 +35,22 @@ proc blk_FL_DRIVER_CTRL { BASE } {
       add wave -divider "Output interface - FINISH"
    add_wave "-noupdate -label TX_FINISH -hex" $BASE/TX_FINISH 
 }      
+
+proc blk_FL_DRIVER_CTRL_INTERNALS { BASE } {
+
+      add wave -divider "State signals"
+   add_wave "-noupdate -label state_reg"   $BASE/state_reg
+   add_wave "-noupdate -label is_header"   $BASE/is_header
+   add_wave "-noupdate -label is_data"     $BASE/is_data
+   add_wave "-noupdate -label is_delay"    $BASE/is_delay
+   add_wave "-noupdate -label is_delaying" $BASE/is_delaying
+   add_wave "-noupdate -label is_stop"     $BASE/is_stop
+   add_wave "-noupdate -label is_wait"     $BASE/is_wait
+   add_wave "-noupdate -label is_cntr"     $BASE/is_cntr
+
+      add wave -divider "Delay signals"
+   add_wave "-noupdate -label sig_set_delay_rdy_n"       $BASE/sig_set_delay_rdy_n
+   add_wave "-noupdate -label sig_incremented -hex"      $BASE/sig_incremented
+   add_wave "-noupdate -label sig_set_boundary -hex"     $BASE/sig_set_boundary
+   add_wave "-noupdate -label sig_set_delay_rdy_n_final" $BASE/sig_set_delay_rdy_n_final
+}

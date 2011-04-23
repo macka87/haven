@@ -22,14 +22,17 @@ architecture arch of verification_core is
 -- ==========================================================================
 --                                    CONSTANTS
 -- ==========================================================================
+   constant ENV_DATA_WIDTH  : integer := DATA_WIDTH;
+   constant DUT_DATA_WIDTH  : integer := DATA_WIDTH;
+   --constant DUT_DATA_WIDTH  : integer := 128;
 
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
 
    -- FrameLink input driver input
-   signal fl_hw_driver_rx_data       : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_hw_driver_rx_rem        : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_hw_driver_rx_data       : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
+   signal fl_hw_driver_rx_rem        : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
    signal fl_hw_driver_rx_sof_n      : std_logic;
    signal fl_hw_driver_rx_sop_n      : std_logic;
    signal fl_hw_driver_rx_eop_n      : std_logic;
@@ -38,8 +41,8 @@ architecture arch of verification_core is
    signal fl_hw_driver_rx_dst_rdy_n  : std_logic;
 
    -- FrameLink input driver output
-   signal fl_hw_driver_tx_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_hw_driver_tx_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_hw_driver_tx_data      : std_logic_vector(DUT_DATA_WIDTH-1 downto 0);
+   signal fl_hw_driver_tx_rem       : std_logic_vector(log2(DUT_DATA_WIDTH/8)-1 downto 0);
    signal fl_hw_driver_tx_sof_n     : std_logic;
    signal fl_hw_driver_tx_sop_n     : std_logic;
    signal fl_hw_driver_tx_eop_n     : std_logic;
@@ -49,29 +52,29 @@ architecture arch of verification_core is
 
    signal fl_hw_driver_output_ready : std_logic;
 
-   -- FIFO input
-   signal fl_fifo_in_data        : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_fifo_in_rem         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_fifo_in_sof_n       : std_logic;
-   signal fl_fifo_in_sop_n       : std_logic;
-   signal fl_fifo_in_eop_n       : std_logic;
-   signal fl_fifo_in_eof_n       : std_logic;
-   signal fl_fifo_in_src_rdy_n   : std_logic;
-   signal fl_fifo_in_dst_rdy_n   : std_logic;
+   -- DUT input
+   signal dut_in_data        : std_logic_vector(DUT_DATA_WIDTH-1 downto 0);
+   signal dut_in_rem         : std_logic_vector(log2(DUT_DATA_WIDTH/8)-1 downto 0);
+   signal dut_in_sof_n       : std_logic;
+   signal dut_in_sop_n       : std_logic;
+   signal dut_in_eop_n       : std_logic;
+   signal dut_in_eof_n       : std_logic;
+   signal dut_in_src_rdy_n   : std_logic;
+   signal dut_in_dst_rdy_n   : std_logic;
 
-   -- FIFO output
-   signal fl_fifo_out_data       : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_fifo_out_rem        : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_fifo_out_sof_n      : std_logic;
-   signal fl_fifo_out_sop_n      : std_logic;
-   signal fl_fifo_out_eop_n      : std_logic;
-   signal fl_fifo_out_eof_n      : std_logic;
-   signal fl_fifo_out_src_rdy_n  : std_logic;
-   signal fl_fifo_out_dst_rdy_n  : std_logic;
+   -- DUT output
+   signal dut_out_data       : std_logic_vector(DUT_DATA_WIDTH-1 downto 0);
+   signal dut_out_rem        : std_logic_vector(log2(DUT_DATA_WIDTH/8)-1 downto 0);
+   signal dut_out_sof_n      : std_logic;
+   signal dut_out_sop_n      : std_logic;
+   signal dut_out_eop_n      : std_logic;
+   signal dut_out_eof_n      : std_logic;
+   signal dut_out_src_rdy_n  : std_logic;
+   signal dut_out_dst_rdy_n  : std_logic;
 
    -- FrameLink HW monitor input
-   signal fl_hw_monitor_rx_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_hw_monitor_rx_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_hw_monitor_rx_data      : std_logic_vector(DUT_DATA_WIDTH-1 downto 0);
+   signal fl_hw_monitor_rx_rem       : std_logic_vector(log2(DUT_DATA_WIDTH/8)-1 downto 0);
    signal fl_hw_monitor_rx_sof_n     : std_logic;
    signal fl_hw_monitor_rx_sop_n     : std_logic;
    signal fl_hw_monitor_rx_eop_n     : std_logic;
@@ -80,8 +83,8 @@ architecture arch of verification_core is
    signal fl_hw_monitor_rx_dst_rdy_n : std_logic;
 
    -- FrameLink HW monitor output
-   signal fl_hw_monitor_tx_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_hw_monitor_tx_rem      : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_hw_monitor_tx_data     : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
+   signal fl_hw_monitor_tx_rem      : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
    signal fl_hw_monitor_tx_sof_n    : std_logic;
    signal fl_hw_monitor_tx_sop_n    : std_logic;
    signal fl_hw_monitor_tx_eop_n    : std_logic;
@@ -92,8 +95,8 @@ architecture arch of verification_core is
    signal fl_hw_monitor_output_ready    : std_logic;
 
    -- FrameLink NetCOPE Adder component input
-   signal fl_netcope_adder_in_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_netcope_adder_in_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_netcope_adder_in_data      : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
+   signal fl_netcope_adder_in_rem       : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
    signal fl_netcope_adder_in_sof_n     : std_logic;
    signal fl_netcope_adder_in_sop_n     : std_logic;
    signal fl_netcope_adder_in_eop_n     : std_logic;
@@ -102,8 +105,8 @@ architecture arch of verification_core is
    signal fl_netcope_adder_in_dst_rdy_n : std_logic;
 
    -- FrameLink NetCOPE Adder component output
-   signal fl_netcope_adder_out_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_netcope_adder_out_rem      : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_netcope_adder_out_data     : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
+   signal fl_netcope_adder_out_rem      : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
    signal fl_netcope_adder_out_sof_n    : std_logic;
    signal fl_netcope_adder_out_sop_n    : std_logic;
    signal fl_netcope_adder_out_eop_n    : std_logic;
@@ -145,8 +148,8 @@ begin
    fl_hw_driver_i: entity work.FL_HW_DRIVER
    generic map(
       -- FrameLink data width
-      IN_DATA_WIDTH   => DATA_WIDTH,
-      OUT_DATA_WIDTH  => DATA_WIDTH
+      IN_DATA_WIDTH   => ENV_DATA_WIDTH,
+      OUT_DATA_WIDTH  => DUT_DATA_WIDTH
    )
    port map(
       RESET         => RESET,
@@ -180,21 +183,21 @@ begin
       OUTPUT_READY  => fl_hw_driver_output_ready
    );
 
-   fl_fifo_in_data            <= fl_hw_driver_tx_data;
-   fl_fifo_in_rem             <= fl_hw_driver_tx_rem;
-   fl_fifo_in_sof_n           <= fl_hw_driver_tx_sof_n;
-   fl_fifo_in_sop_n           <= fl_hw_driver_tx_sop_n;
-   fl_fifo_in_eop_n           <= fl_hw_driver_tx_eop_n;
-   fl_fifo_in_eof_n           <= fl_hw_driver_tx_eof_n;
-   fl_fifo_in_src_rdy_n       <= fl_hw_driver_tx_src_rdy_n;
-   fl_hw_driver_tx_dst_rdy_n  <= fl_fifo_in_dst_rdy_n;
+   dut_in_data                <= fl_hw_driver_tx_data;
+   dut_in_rem                 <= fl_hw_driver_tx_rem;
+   dut_in_sof_n               <= fl_hw_driver_tx_sof_n;
+   dut_in_sop_n               <= fl_hw_driver_tx_sop_n;
+   dut_in_eop_n               <= fl_hw_driver_tx_eop_n;
+   dut_in_eof_n               <= fl_hw_driver_tx_eof_n;
+   dut_in_src_rdy_n           <= fl_hw_driver_tx_src_rdy_n;
+   fl_hw_driver_tx_dst_rdy_n  <= dut_in_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
    --                              FIFO
    -- ------------------------------------------------------------------------
-   fifo_i: entity work.fl_fifo
+   dut_i: entity work.fl_fifo
    generic map(
-      DATA_WIDTH  => DATA_WIDTH,
+      DATA_WIDTH  => DUT_DATA_WIDTH,
       USE_BRAMS   => false,
       ITEMS       => 16,
       PARTS       => 1
@@ -204,34 +207,34 @@ begin
       RESET         => reset_dut,
 
       -- input interface
-      RX_DATA       => fl_fifo_in_data,
-      RX_REM        => fl_fifo_in_rem,
-      RX_SOF_N      => fl_fifo_in_sof_n,
-      RX_SOP_N      => fl_fifo_in_sop_n,
-      RX_EOP_N      => fl_fifo_in_eop_n,
-      RX_EOF_N      => fl_fifo_in_eof_n,
-      RX_SRC_RDY_N  => fl_fifo_in_src_rdy_n, 
-      RX_DST_RDY_N  => fl_fifo_in_dst_rdy_n, 
+      RX_DATA       => dut_in_data,
+      RX_REM        => dut_in_rem,
+      RX_SOF_N      => dut_in_sof_n,
+      RX_SOP_N      => dut_in_sop_n,
+      RX_EOP_N      => dut_in_eop_n,
+      RX_EOF_N      => dut_in_eof_n,
+      RX_SRC_RDY_N  => dut_in_src_rdy_n, 
+      RX_DST_RDY_N  => dut_in_dst_rdy_n, 
       
       -- output interface
-      TX_DATA       => fl_fifo_out_data,
-      TX_REM        => fl_fifo_out_rem,
-      TX_SOF_N      => fl_fifo_out_sof_n,
-      TX_SOP_N      => fl_fifo_out_sop_n,
-      TX_EOP_N      => fl_fifo_out_eop_n,
-      TX_EOF_N      => fl_fifo_out_eof_n,
-      TX_SRC_RDY_N  => fl_fifo_out_src_rdy_n,
-      TX_DST_RDY_N  => fl_fifo_out_dst_rdy_n
+      TX_DATA       => dut_out_data,
+      TX_REM        => dut_out_rem,
+      TX_SOF_N      => dut_out_sof_n,
+      TX_SOP_N      => dut_out_sop_n,
+      TX_EOP_N      => dut_out_eop_n,
+      TX_EOF_N      => dut_out_eof_n,
+      TX_SRC_RDY_N  => dut_out_src_rdy_n,
+      TX_DST_RDY_N  => dut_out_dst_rdy_n
    );
 
-   fl_hw_monitor_rx_data       <= fl_fifo_out_data;
-   fl_hw_monitor_rx_rem        <= fl_fifo_out_rem;
-   fl_hw_monitor_rx_sof_n      <= fl_fifo_out_sof_n;
-   fl_hw_monitor_rx_sop_n      <= fl_fifo_out_sop_n;
-   fl_hw_monitor_rx_eop_n      <= fl_fifo_out_eop_n;
-   fl_hw_monitor_rx_eof_n      <= fl_fifo_out_eof_n;
-   fl_hw_monitor_rx_src_rdy_n  <= fl_fifo_out_src_rdy_n;
-   fl_fifo_out_dst_rdy_n  <= fl_hw_monitor_rx_dst_rdy_n;
+   fl_hw_monitor_rx_data       <= dut_out_data;
+   fl_hw_monitor_rx_rem        <= dut_out_rem;
+   fl_hw_monitor_rx_sof_n      <= dut_out_sof_n;
+   fl_hw_monitor_rx_sop_n      <= dut_out_sop_n;
+   fl_hw_monitor_rx_eop_n      <= dut_out_eop_n;
+   fl_hw_monitor_rx_eof_n      <= dut_out_eof_n;
+   fl_hw_monitor_rx_src_rdy_n  <= dut_out_src_rdy_n;
+   dut_out_dst_rdy_n           <= fl_hw_monitor_rx_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
    --                        Output FrameLink Monitor
@@ -239,8 +242,8 @@ begin
    fl_hw_monitor_i: entity work.FL_HW_MONITOR
    generic map(
       -- FrameLink data width
-      IN_DATA_WIDTH   => DATA_WIDTH,
-      OUT_DATA_WIDTH  => DATA_WIDTH
+      IN_DATA_WIDTH   => DUT_DATA_WIDTH,
+      OUT_DATA_WIDTH  => ENV_DATA_WIDTH
    )
    port map(
       RESET         => RESET,
@@ -289,7 +292,7 @@ begin
    -- ------------------------------------------------------------------------
    netcope_adder_i: entity work.FL_NETCOPE_ADDER
    generic map(
-      DATA_WIDTH => DATA_WIDTH
+      DATA_WIDTH => ENV_DATA_WIDTH
    )
    port map(
       CLK           => CLK,

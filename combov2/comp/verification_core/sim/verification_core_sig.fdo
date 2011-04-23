@@ -26,6 +26,11 @@ add wave -divider "****************************"
 blk_VER_CORE              $VERIFICATION_CORE_PATH
 
 add wave -divider "****************************"
+add wave -divider "DUT INTERFACE" 
+add wave -divider "****************************"
+blk_VER_CORE_DUT_IFC      $VERIFICATION_CORE_PATH
+
+add wave -divider "****************************"
 add wave -divider "INTERNALS" 
 add wave -divider "****************************"
 blk_VER_CORE_INTERNALS    $VERIFICATION_CORE_PATH
@@ -38,7 +43,12 @@ blk_VER_CORE_MONITOR      $VERIFICATION_CORE_PATH/fl_hw_driver_i
 add wave -divider "****************************"
 add wave -divider "DRIVER CTRL" 
 add wave -divider "****************************"
-blk_FL_DRIVER_CTRL        $VERIFICATION_CORE_PATH/fl_hw_driver_i/fl_driver_ctrl_i
+blk_FL_DRIVER_CTRL_IFC    $VERIFICATION_CORE_PATH/fl_hw_driver_i/fl_driver_ctrl_i
+
+add wave -divider "****************************"
+add wave -divider "DRIVER CTRL INTERNALS" 
+add wave -divider "****************************"
+blk_FL_DRIVER_CTRL_INTERNALS  $VERIFICATION_CORE_PATH/fl_hw_driver_i/fl_driver_ctrl_i
 
 add wave -divider "****************************"
 add wave -divider "DRIVER TX_ASYNC" 

@@ -121,10 +121,10 @@ begin
 
    sig_data_fifo_data_in(FIFO_DATA_WIDTH-1 downto REM_INDEX) <= RX_DATA;
    sig_data_fifo_data_in(REM_INDEX-1 downto 4)               <= RX_REM;
-   sig_data_fifo_data_in(3)                                  <= RX_SOF_N;
-   sig_data_fifo_data_in(2)                                  <= RX_EOF_N;
-   sig_data_fifo_data_in(1)                                  <= RX_SOP_N;
-   sig_data_fifo_data_in(0)                                  <= RX_EOP_N;
+   sig_data_fifo_data_in(0)                                  <= RX_SOF_N;
+   sig_data_fifo_data_in(1)                                  <= RX_EOF_N;
+   sig_data_fifo_data_in(2)                                  <= RX_SOP_N;
+   sig_data_fifo_data_in(3)                                  <= RX_EOP_N;
 
    -- --------------- DATA FIFO INSTANCE ------------------------------------
    data_async_fifo : entity work.cdc_fifo
@@ -217,7 +217,7 @@ begin
    -- multiplexer
    mux2 : process (sig_take, sig_delay_fifo_data_only, sig_decremented)
    begin
-      sig_delay <= (others => '0');
+      sig_delay <= sig_decremented;
 
       case sig_take is
          when '0'    => sig_delay <= sig_decremented;
@@ -240,10 +240,10 @@ begin
    -- register for decrement 
    reg2 : process (RD_CLK)
    begin
-      if (rising_edge(RD_CLK)) then
-         if (RESET = '1') then 
-            sig_reg_out <= (others => '0');
-         elsif (sig_neg_comp_output = '1') then
+      if (RESET = '1') then 
+         sig_reg_out <= (others => '0');
+      elsif (rising_edge(RD_CLK)) then
+         if (sig_neg_comp_output = '1') then
             sig_reg_out <= sig_delay;   
          end if;   
       end if;
@@ -266,7 +266,7 @@ begin
    end process;
    
    sig_take <= sig_reg_taken and (not sig_delay_fifo_empty); 
-   sig_src_rdy <= (sig_neg_comp_output or sig_mux_is_delay) or (sig_delay_fifo_empty and sig_taken);
+   sig_src_rdy <= (sig_neg_comp_output or sig_mux_is_delay) or (sig_delay_fifo_empty and sig_reg_taken);
    TX_SRC_RDY_N <= sig_src_rdy;
    sig_data_fifo_read <= sig_src_rdy nor TX_DST_RDY_N; 
    sig_delay_fifo_read <= sig_take;

@@ -5,9 +5,11 @@ view wave
 delete wave *
 
 proc blk_VER_CORE { BASE } {
+  add_wave "-noupdate -label CLK"    $BASE/CLK
+  add_wave "-noupdate -label RESET"  $BASE/RESET
   add wave -divider "Input interface"
   add_wave "-noupdate -label RX_DATA -hex" $BASE/RX_DATA
-  add_wave "-noupdate -label RX_REM"       $BASE/RX_REM
+  add_wave "-noupdate -label RX_REM  -hex" $BASE/RX_REM
   add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
   add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
   add_wave "-noupdate -label RX_SOP_N"     $BASE/RX_SOP_N
@@ -17,7 +19,7 @@ proc blk_VER_CORE { BASE } {
 
   add wave -divider "Output interface"
   add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
-  add_wave "-noupdate -label TX_REM"       $BASE/TX_REM
+  add_wave "-noupdate -label TX_REM  -hex" $BASE/TX_REM
   add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
   add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
@@ -34,6 +36,30 @@ proc blk_VER_CORE { BASE } {
   add_wave "-noupdate -label MI32_DRD -hex"  $BASE/MI32_DRD
   add_wave "-noupdate -label MI32_ARDY"      $BASE/MI32_ARDY
   add_wave "-noupdate -label MI32_DRDY"      $BASE/MI32_DRDY
+}
+
+proc blk_VER_CORE_DUT_IFC { BASE } {
+  add_wave "-noupdate -label clk_dut"          $BASE/clk_dut
+  add_wave "-noupdate -label reset_dut"        $BASE/reset_dut
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label dut_in_data -hex" $BASE/dut_in_data
+  add_wave "-noupdate -label dut_in_rem  -hex" $BASE/dut_in_rem
+  add_wave "-noupdate -label dut_in_src_rdy_n" $BASE/dut_in_src_rdy_n
+  add_wave "-noupdate -label dut_in_dst_rdy_n" $BASE/dut_in_dst_rdy_n
+  add_wave "-noupdate -label dut_in_sop_n"     $BASE/dut_in_sop_n
+  add_wave "-noupdate -label dut_in_eop_n"     $BASE/dut_in_eop_n
+  add_wave "-noupdate -label dut_in_sof_n"     $BASE/dut_in_sof_n
+  add_wave "-noupdate -label dut_in_eof_n"     $BASE/dut_in_eof_n
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label dut_out_data -hex" $BASE/dut_out_data
+  add_wave "-noupdate -label dut_out_rem  -hex" $BASE/dut_out_rem
+  add_wave "-noupdate -label dut_out_src_rdy_n" $BASE/dut_out_src_rdy_n
+  add_wave "-noupdate -label dut_out_dst_rdy_n" $BASE/dut_out_dst_rdy_n
+  add_wave "-noupdate -label dut_out_sop_n"     $BASE/dut_out_sop_n
+  add_wave "-noupdate -label dut_out_eop_n"     $BASE/dut_out_eop_n
+  add_wave "-noupdate -label dut_out_sof_n"     $BASE/dut_out_sof_n
+  add_wave "-noupdate -label dut_out_eof_n"     $BASE/dut_out_eof_n
 }
 
 proc blk_VER_CORE_INTERNALS { BASE } {
