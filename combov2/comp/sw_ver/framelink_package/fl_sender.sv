@@ -112,11 +112,14 @@
       controlTrans.ifcInfo     = 0;  // no info
       
       // size = total count if words in framelink packet
-      for (int i=0; i<tr.frameParts; i++) begin
-        $write("data size: %d\n", tr.data[i].size);
-        size += (tr.data[i].size-1);
-      end  
-            
+      if (tr.enItDelay) begin
+        for (int i=0; i<tr.frameParts; i++)
+          size += tr.itDelay[i].size; 
+      end
+      else size += 1;
+      
+      //$write("size: %d\n",size);    
+        
       controlTrans.data    = new[size];
       
       if (tr.enBtDelay) controlTrans.data[counter] = tr.btDelay;
@@ -124,16 +127,15 @@
       
       counter++;
       
-      for (int i=0; i<tr.frameParts; i++) begin
-        for (int j=0; j<tr.data[i].size-1; j++) begin
-          if (tr.enItDelay) 
+      if (tr.enItDelay) begin
+        for (int i=0; i<tr.frameParts; i++)
+          for (int j=0; j<tr.itDelay[i].size; j++) begin
             controlTrans.data[counter] = tr.itDelay[i][j];
-          else 
-            controlTrans.data[counter] = 0;  
-          counter++;
-        end  
+            counter++;
+          end  
       end
-         
+      else controlTrans.data[counter] = 0;    
+          
       //controlTrans.display("CONTROL");
       inputMbx.put(controlTrans);   // put transaction to mailbox
     endtask : createControlTransaction  

@@ -78,7 +78,7 @@
       itDelay.size == frameParts;
       
       foreach (itDelay[i])
-        itDelay[i].size == partSizeMax[i];
+        itDelay[i].size == partSizeMax[i]/dataWidth + 1;
                  
       foreach (itDelay[i,j])
         itDelay[i][j] inside {
