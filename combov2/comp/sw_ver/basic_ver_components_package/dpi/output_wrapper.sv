@@ -94,8 +94,8 @@
 						$write("\n"); 
 						
 						// put received data to output mailbox
-						//$cast(tr, ntr);
-            //outputMbx.put(tr); 
+						$cast(tr, ntr);
+            outputMbx.put(tr); 
 					end
 					else begin
 						#10ns;

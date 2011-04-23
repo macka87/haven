@@ -42,6 +42,8 @@
           
         // receive transaction from output mailbox
         outputMbx.get(tr);
+
+        tr.display("OUTPUT CONTROLLER ZA FIFEM");
         
         foreach (cbs[i])          //! Call transaction postprocesing
           cbs[i].post_tr(tr, id);  
