@@ -100,6 +100,23 @@ signal tx_async_tx_eof_n         : std_logic;
 
 signal tx_async_output_rdy       : std_logic;
 
+-- ---- data fl_fifo ----------------------------------------------------
+signal fifo_out_data          : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal fifo_out_rem           : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+signal fifo_out_src_rdy_n     : std_logic;
+signal fifo_out_dst_rdy_n     : std_logic;
+signal fifo_out_sop_n         : std_logic;
+signal fifo_out_eop_n         : std_logic;
+signal fifo_out_sof_n         : std_logic;
+signal fifo_out_eof_n         : std_logic;
+
+-- ---- delay fl_fifo ----------------------------------------------------
+signal delay_fifo_out_data          : std_logic_vector(DELAY_WIDTH-2 downto 0);
+signal delay_fifo_out_src_rdy_n     : std_logic;
+signal delay_fifo_out_dst_rdy_n     : std_logic;
+signal delay_fifo_out_sof_n         : std_logic;
+signal delay_fifo_in_rem            : std_logic_vector(-1 downto 0);
+
 -- ---- fl_driver_ctrl ----------------------------------------------------
 signal ctrl_rx_data          : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal ctrl_rx_rem           : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
@@ -175,6 +192,76 @@ begin
       TX_FINISH      => ctrl_tx_finish
    );
 
+   -- ------------------------------------------------------------------------
+   --                         DATA FIFO
+   -- ------------------------------------------------------------------------
+   data_fifo_i: entity work.fl_fifo
+   generic map(
+      DATA_WIDTH  => IN_DATA_WIDTH,
+      USE_BRAMS   => true,
+      ITEMS       => 4096/(IN_DATA_WIDTH/8),
+      PARTS       => 1
+   )
+   port map(
+      CLK           => RX_CLK,
+      RESET         => RESET,
+
+      -- input interface
+      RX_DATA       => ctrl_tx_data,
+      RX_REM        => ctrl_tx_rem,
+      RX_SOF_N      => ctrl_tx_sof_n,
+      RX_SOP_N      => ctrl_tx_sop_n,
+      RX_EOP_N      => ctrl_tx_eop_n,
+      RX_EOF_N      => ctrl_tx_eof_n,
+      RX_SRC_RDY_N  => ctrl_tx_src_rdy_n, 
+      RX_DST_RDY_N  => ctrl_tx_dst_rdy_n, 
+      
+      -- output interface
+      TX_DATA       => fifo_out_data,
+      TX_REM        => fifo_out_rem,
+      TX_SOF_N      => fifo_out_sof_n,
+      TX_SOP_N      => fifo_out_sop_n,
+      TX_EOP_N      => fifo_out_eop_n,
+      TX_EOF_N      => fifo_out_eof_n,
+      TX_SRC_RDY_N  => fifo_out_src_rdy_n,
+      TX_DST_RDY_N  => fifo_out_dst_rdy_n
+   );
+
+   -- ------------------------------------------------------------------------
+   --                         DELAY FIFO
+   -- ------------------------------------------------------------------------
+   delay_fifo_i: entity work.fl_fifo
+   generic map(
+      DATA_WIDTH  => DELAY_WIDTH-1,
+      USE_BRAMS   => false,
+      ITEMS       => 4096/(IN_DATA_WIDTH/8),
+      PARTS       => 1
+   )
+   port map(
+      CLK           => RX_CLK,
+      RESET         => RESET,
+
+      -- input interface
+      RX_DATA       => ctrl_tx_delay(DELAY_WIDTH-2 downto 0),
+      RX_REM        => delay_fifo_in_rem,
+      RX_SOF_N      => ctrl_tx_delay(DELAY_WIDTH-1),
+      RX_SOP_N      => '1',
+      RX_EOP_N      => '1',
+      RX_EOF_N      => '1',
+      RX_SRC_RDY_N  => ctrl_tx_delay_wr_n, 
+      RX_DST_RDY_N  => ctrl_tx_delay_rdy_n, 
+      
+      -- output interface
+      TX_DATA       => tx_async_rx_delay(DELAY_WIDTH-2 downto 0),
+      TX_REM        => open,
+      TX_SOF_N      => tx_async_rx_delay(DELAY_WIDTH-1),
+      TX_SOP_N      => open,
+      TX_EOP_N      => open,
+      TX_EOF_N      => open,
+      TX_SRC_RDY_N  => tx_async_rx_delay_wr_n,
+      TX_DST_RDY_N  => tx_async_rx_delay_rdy_n
+   );
+
    -- --------------- FL_TRANSFORMER instance -------------------------------
    fl_tran_i : entity work.FL_TRANSFORMER
    generic map(
@@ -186,14 +273,14 @@ begin
       RESET           => RESET,
       
       -- RX interface
-      RX_DATA         => ctrl_tx_data,
-      RX_REM          => ctrl_tx_rem,
-      RX_SOF_N        => ctrl_tx_sof_n,
-      RX_EOF_N        => ctrl_tx_eof_n,
-      RX_SOP_N        => ctrl_tx_sop_n,
-      RX_EOP_N        => ctrl_tx_eop_n,
-      RX_SRC_RDY_N    => ctrl_tx_src_rdy_n,
-      RX_DST_RDY_N    => ctrl_tx_dst_rdy_n,
+      RX_DATA         => fifo_out_data,
+      RX_REM          => fifo_out_rem,
+      RX_SOF_N        => fifo_out_sof_n,
+      RX_EOF_N        => fifo_out_eof_n,
+      RX_SOP_N        => fifo_out_sop_n,
+      RX_EOP_N        => fifo_out_eop_n,
+      RX_SRC_RDY_N    => fifo_out_src_rdy_n,
+      RX_DST_RDY_N    => fifo_out_dst_rdy_n,
 
       -- TX interface
       TX_DATA         => tx_async_rx_data,
@@ -206,9 +293,9 @@ begin
       TX_DST_RDY_N    => tx_async_rx_dst_rdy_n
    );
 
-   tx_async_rx_delay        <= ctrl_tx_delay;
-   tx_async_rx_delay_wr_n   <= ctrl_tx_delay_wr_n;
-   ctrl_tx_delay_rdy_n      <= tx_async_rx_delay_rdy_n;
+   --tx_async_rx_delay        <= ctrl_tx_delay;
+   --tx_async_rx_delay_wr_n   <= ctrl_tx_delay_wr_n;
+   --ctrl_tx_delay_rdy_n      <= tx_async_rx_delay_rdy_n;
 
    tx_async_rx_finish <= ctrl_tx_finish;
 
