@@ -73,20 +73,25 @@
       NetCOPETransaction ntr;
       
 			// create new transaction
-			ntr = new();
-			ntr.hwpacket = new[4096];
+			//ntr = new();
+			//ntr.hwpacket = new[4096];
 
       while (enabled) begin 
-        busy = 1;
+        //busy = 1;
         
 				size = 0;
+				
+				ntr = new();
+			  ntr.hwpacket = new[4096];
         
         // we call C function (through DPI layer) for data transfer from hw
         res = c_receiveData(size, ntr.hwpacket);
         
         if (res == 1) $write("CHYBAAAAA\n"); 
         else begin
-					if (size > 0) begin
+          if (size > 0) begin
+            busy = 1;
+          
 						// print received transaction
 						$write(">>>>>   OUTPUT WRAPPER: HARDWARE PACKET: ");
 						for (int i=0; i<size; i++)
@@ -99,10 +104,12 @@
 						for (int i=0; i<size; i++)
 						  ntr.data[i] = ntr.hwpacket[i]; 
 						  
-						$write("data size: %d\n",ntr.data.size());  
+						//$write("data size: %d\n",ntr.data.size());  
 						
 						// put received data to output mailbox
 						$cast(tr, ntr);
+						
+						//tr.display("transaction putted to scoreboard");
             outputMbx.put(tr); 
 					end
 					else begin

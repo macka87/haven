@@ -13,7 +13,7 @@
  * are received by 'transMbx'(Mailbox) property.
  *
  */
- class FrameLinkSender extends Sender;  
+ class FrameLinkSender #(pDataWidth = 32) extends Sender;  
    /*
     * Public Class Methods
     */
@@ -65,10 +65,16 @@
     */  
     //! dorobit potom pre viac slovne pakety !!!!!!!!
     task createNetCOPETrans(input FrameLinkTransaction tr);
-      for (int i=0; i<tr.frameParts; i++)
-        if (i == (tr.frameParts-1)) createDataTransaction(tr, 1, 1, i);
-        else createDataTransaction(tr, 0, 1, i);
-      createControlTransaction(tr);
+      for (int i=0; i<tr.frameParts; i++) begin
+        if (i == (tr.frameParts-1)) begin
+          createDataTransaction(tr, 1, 1, i);
+          createControlTransaction(tr, i);
+        end  
+        else begin
+          createDataTransaction(tr, 0, 1, i);
+          createControlTransaction(tr, i);
+        end 
+      end   
     endtask : createNetCOPETrans
     
    /*! 
@@ -100,7 +106,8 @@
     *
     * \param tr - input FrameLink transaction
     */  
-    task createControlTransaction(input FrameLinkTransaction tr);
+    task createControlTransaction(input FrameLinkTransaction tr,
+                                  input int part);
       NetCOPETransaction controlTrans = new();
       int size    = 1; // btDelay takes 1 Byte
       int counter = 0;
@@ -111,14 +118,9 @@
       controlTrans.ifcProtocol = 1;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      // size = total count if words in framelink packet
-      if (tr.enItDelay) begin
-        for (int i=0; i<tr.frameParts; i++)
-          size += tr.itDelay[i].size; 
-      end
-      else size += 1;
-      
-      //$write("size: %d\n",size);    
+      size += (tr.data[part].size/(pDataWidth/8)+1);
+            
+      $write("size: %d\n",size);    
         
       controlTrans.data    = new[size];
       
@@ -127,15 +129,14 @@
       
       counter++;
       
-      if (tr.enItDelay) begin
-        for (int i=0; i<tr.frameParts; i++)
-          for (int j=0; j<tr.itDelay[i].size; j++) begin
-            controlTrans.data[counter] = tr.itDelay[i][j];
-            counter++;
-          end  
+      for (int j=0; j<size; j++) begin
+        if (tr.enItDelay) 
+          controlTrans.data[counter] = tr.itDelay[part][j];
+        else 
+          controlTrans.data[counter] = 0;  
+        counter++;
       end
-      else controlTrans.data[counter] = 0;    
-          
+                
       //controlTrans.display("CONTROL");
       inputMbx.put(controlTrans);   // put transaction to mailbox
     endtask : createControlTransaction  

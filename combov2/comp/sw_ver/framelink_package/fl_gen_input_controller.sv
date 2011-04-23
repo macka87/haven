@@ -18,7 +18,7 @@
     //! Software driver   
     FrameLinkDriver #(pDataWidth, pDremWidth)  swFlDriver;   
     //! Hardware sender                        
-    FrameLinkSender                            hwFlSender; 
+    FrameLinkSender #(pDataWidth)              hwFlSender; 
     
     //! FrameLink interface
     virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl;

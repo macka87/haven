@@ -145,7 +145,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || outputWrapper.busy) busy = 1; 
+        if (inputWrapper.busy || outputWrapper.busy || flOutCnt.busy) busy = 1; 
       end
         
       if (busy) i = 0;
@@ -183,7 +183,7 @@ program TEST (
      flGenInCnt.start(); 
      proc.srandom(SEED1);             
      flGenInCnt.sendGenerated(TRANSACTION_COUT);
-     flGenInCnt.waitFor(5);
+     //flGenInCnt.waitFor(5);
      proc.srandom(SEED2);       
      flGenInCnt.sendGenerated(TRANSACTION_COUT);
      flGenInCnt.stop();

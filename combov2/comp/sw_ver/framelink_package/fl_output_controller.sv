@@ -37,23 +37,20 @@
       FrameLinkTransaction fltr;
       Transaction tr;
       
-      ntr  = new();
-      
-      fltr = new();
-      fltr.frameParts = frameCount;
-                
       while (enabled) begin 
         wait(outputMbx.num()!=0) 
         busy = 1;
           
         // create new FrameLink packet
+        fltr = new();
+        fltr.frameParts = frameCount;
         fltr.data  = new[frameCount];
         
         // fill FrameLink packet with received data
         for (int i=0; i<frameCount; i++) begin
           // receive data from mailbox
           outputMbx.get(tr);
-                    
+          
           $cast(ntr, tr);
           
           // creates one FrameLink part from received data 

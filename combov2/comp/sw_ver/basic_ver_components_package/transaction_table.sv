@@ -73,6 +73,7 @@
       if (behav==TR_TABLE_FIFO)begin  
       for(integer i=0; i < this.tr_table.size; i++) begin 
         if (this.tr_table[i].compare(transaction,diff, kind)==1) begin
+           //$write("MAZEM\n");
            this.tr_table.delete(i);
            status=1;
            removed++;
@@ -84,6 +85,7 @@
       // compares first transaction in the table with coming transaction
       if (behav==TR_TABLE_FIRST_ONLY && tr_table.size > 0) begin
           if (this.tr_table[0].compare(transaction,diff, kind)==1) begin
+          //$write("MAZEM\n");
           this.tr_table.delete(0);
           status=1;
           removed++;
