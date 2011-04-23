@@ -145,7 +145,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || outputWrapper.busy || flOutCnt.busy) busy = 1; 
+        if (inputWrapper.busy || (outputWrapper.counter!=2*TRANSACTION_COUT) || flOutCnt.busy) busy = 1; 
       end
         
       if (busy) i = 0;

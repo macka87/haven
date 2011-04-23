@@ -118,7 +118,10 @@
       controlTrans.ifcProtocol = 1;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      size += (tr.data[part].size/(pDataWidth/8)+1);
+      if (tr.data[part].size%(pDataWidth/8) == 0) 
+        size += (tr.data[part].size/(pDataWidth/8)) -1;
+      else 
+        size += (tr.data[part].size/(pDataWidth/8));
             
       $write("size: %d\n",size);    
         

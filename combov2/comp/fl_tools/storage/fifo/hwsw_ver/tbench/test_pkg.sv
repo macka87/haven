@@ -14,7 +14,7 @@ package test_pkg;
    int FRAMEWORK  = 1;                         // 0 = software framework
                                                // 1 = sw/hw framework      
    // DUT GENERICS
-   parameter DATA_WIDTH   = 128;               // FrameLink data width
+   parameter DATA_WIDTH   = 64;                // FrameLink data width
    parameter DREM_WIDTH   = log2(DATA_WIDTH/8);// drem width
    parameter USE_BRAMS    = 1;                 // Use BlockBAMs/SelectRAMs 
    parameter ITEMS        = 1024;              // Number of items in the FIFO
@@ -54,7 +54,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 3;  // Count of transactions
+   parameter TRANSACTION_COUT = 300;  // Count of transactions
    parameter SEED1            = 1;  // Seed for PRNG
    parameter SEED2            = 2;  // Seed for PRNG
 endpackage

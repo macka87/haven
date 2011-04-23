@@ -60,7 +60,7 @@
             fltr.data[i][j] = ntr.data[j];
         end     
 
-        fltr.display("CREATED OUTPUT FRAMELINK");
+        //fltr.display("CREATED OUTPUT FRAMELINK");
           
         $cast(tr, fltr);
           

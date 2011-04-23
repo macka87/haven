@@ -20,7 +20,7 @@
     */
     string    inst;      //! Output Wrapper identification
     bit       enabled;   //! Output Wrapper enabling
-    bit       busy;      //! Output Wrapper busy signal
+    int       counter;   //! Output Wrapper busy signal
     tTransMbx outputMbx; //! NetCOPE transactions mailbox
         
    /*
@@ -37,7 +37,7 @@
                   tTransMbx outputMbx);
       this.inst        = inst;      //! Store wrapper identifier
       this.enabled     = 0;         //! Output Wrapper is disabled by default
-      this.busy        = 0;
+      this.counter     = 0;
       this.outputMbx   = outputMbx; //! Store pointer to mailbox
     endfunction: new          
    
@@ -71,15 +71,9 @@
       int res;
       int unsigned size;   
       NetCOPETransaction ntr;
-      
-			// create new transaction
-			//ntr = new();
-			//ntr.hwpacket = new[4096];
-
-      while (enabled) begin 
-        //busy = 1;
-        
-				size = 0;
+            
+			while (enabled) begin 
+        size = 0;
 				
 				ntr = new();
 			  ntr.hwpacket = new[4096];
@@ -87,12 +81,10 @@
         // we call C function (through DPI layer) for data transfer from hw
         res = c_receiveData(size, ntr.hwpacket);
         
-        if (res == 1) $write("CHYBAAAAA\n"); 
+        if (res == 1) $write("CHYBA\n"); 
         else begin
           if (size > 0) begin
-            busy = 1;
-          
-						// print received transaction
+            // print received transaction
 						$write(">>>>>   OUTPUT WRAPPER: HARDWARE PACKET: ");
 						for (int i=0; i<size; i++)
 							$write("%x ",ntr.hwpacket[i]);
@@ -104,21 +96,17 @@
 						for (int i=0; i<size; i++)
 						  ntr.data[i] = ntr.hwpacket[i]; 
 						  
-						//$write("data size: %d\n",ntr.data.size());  
-						
 						// put received data to output mailbox
 						$cast(tr, ntr);
 						
-						//tr.display("transaction putted to scoreboard");
-            outputMbx.put(tr); 
-					end
+						outputMbx.put(tr);  
+            counter++;
+            $write("number of received transactions: %d\n",counter);
+          end
 					else begin
 						#10ns;
 					end
-					
-        end  
-        
-        busy = 0;
+				end  
       end
     endtask : run 
  

@@ -115,7 +115,7 @@
     virtual task post_tr(Transaction transaction, byte id);
       bit status=0;
       
-      transaction.display("REMOVED TRANSACTION FROM SCOREBOARD");
+      //transaction.display("REMOVED TRANSACTION FROM SCOREBOARD");
       
       // Gets number of transaction table from ID number
       sc_table.remove(transaction, status);
