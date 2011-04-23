@@ -88,7 +88,7 @@ program TEST (
      //! Create Output Wrapper
      outputWrapper = new("Output Wrapper", outputMbx); 
      
-     //flOutCnt = new("Output Controller", 0, outputMbx);
+     flOutCnt = new("Output Controller", 0, outputMbx);
      
      //! Create checker
      flChecker = new("Checker", RX, TX, CTRL);
@@ -125,7 +125,7 @@ program TEST (
     if (FRAMEWORK == 1) begin
       inputWrapper.setEnabled();
       outputWrapper.setEnabled();
-      //flOutCnt.setEnabled();
+      flOutCnt.setEnabled();
     end  
   endtask : enableTestEnvironment
   
@@ -160,7 +160,7 @@ program TEST (
     if (FRAMEWORK == 1) begin
       inputWrapper.setDisabled();
       outputWrapper.setDisabled();
-      //flOutCnt.setDisabled();
+      flOutCnt.setDisabled();
     end  
   endtask : disableTestEnvironment
 
