@@ -108,7 +108,6 @@
      
       // software framework
       if (framework == 0) begin
-        $write("DISABLING DRIVER IN CONTROLLER\n");
         swFlDriver.setDisabled();
       end
     
