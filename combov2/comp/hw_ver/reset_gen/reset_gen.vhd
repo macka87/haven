@@ -46,6 +46,8 @@ signal reg_counter          : std_logic_vector(COUNTER_WIDTH-1 downto 0);
 
 signal reset_finished       : std_logic;
 
+signal reg_reset            : std_logic;
+
 begin
 
    reg_counter_p: process(TX_CLK, RESET)
@@ -68,6 +70,15 @@ begin
       end if;
    end process;
 
-   RESET_OUT <= NOT reset_finished;
+   reg_reset_p: process(TX_CLK, RESET)
+   begin
+      if (RESET = '1') then
+         reg_reset <= '1';
+      elsif (rising_edge(TX_CLK)) then
+         reg_reset <= NOT reset_finished;
+      end if;
+   end process;
+
+   RESET_OUT <= reg_reset;
 
 end architecture;
