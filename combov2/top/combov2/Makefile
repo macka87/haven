@@ -71,7 +71,8 @@ FIFO_PATH=$(FIRMWARE_BASE)/comp/cdc_fifo/xilinx_fifos
 FIFO_NGCS=$(FIFO_PATH)/asfifo_lut_1.ngc \
           $(FIFO_PATH)/asfifo_lut_8.ngc \
           $(FIFO_PATH)/asfifo_lut_9.ngc \
-          $(FIFO_PATH)/asfifo_lut_71.ngc
+          $(FIFO_PATH)/asfifo_lut_71.ngc \
+          $(FIFO_PATH)/asfifo_lut_136.ngc
 
 
 ##############################################################################
