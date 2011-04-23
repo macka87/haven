@@ -160,7 +160,8 @@ begin
    -- next state logic
    fsm_next_state_logic : process (state_reg, data_ready,
                                    sig_trans_type, sig_reg_last, RX_EOF_N,
-                                   sig_counter_is_zero, sig_set_delay_rdy_n)
+                                   sig_counter_is_zero, sig_set_delay_rdy_n,
+                                   sig_set_delay_rdy_n_final)
    begin
      state_next <= state_reg;  
      
@@ -330,7 +331,7 @@ begin
    sig_tx_dst_rdy_n   <= TX_DST_RDY_N;
    
    -- TODO: check if this is correct (I don't like the part for is_delaying=1)
-   mux1 : process (is_header, is_data, is_delay, is_delaying,
+   mux1 : process (is_header, is_data, is_delay, is_delaying, is_wait,
       sig_set_delay_rdy_n, is_cntr, sig_tx_dst_rdy_n,
       sig_set_delay_rdy_n_final)
    begin
@@ -339,6 +340,7 @@ begin
      if    (is_header   = '1') then sig_rx_dst_rdy_n <= '0';
      elsif (is_data     = '1') then sig_rx_dst_rdy_n <= sig_tx_dst_rdy_n;
      elsif (is_delay    = '1') then sig_rx_dst_rdy_n <= '0';
+     elsif (is_wait     = '1') then sig_rx_dst_rdy_n <= '0';
      elsif (is_delaying = '1') then sig_rx_dst_rdy_n <= sig_set_delay_rdy_n
         OR sig_set_delay_rdy_n_final;
      elsif (is_cntr     = '1') then sig_rx_dst_rdy_n <= '1'; 

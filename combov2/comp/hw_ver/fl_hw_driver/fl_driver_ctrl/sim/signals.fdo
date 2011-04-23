@@ -53,4 +53,9 @@ proc blk_FL_DRIVER_CTRL_INTERNALS { BASE } {
    add_wave "-noupdate -label sig_incremented -hex"      $BASE/sig_incremented
    add_wave "-noupdate -label sig_set_boundary -hex"     $BASE/sig_set_boundary
    add_wave "-noupdate -label sig_set_delay_rdy_n_final" $BASE/sig_set_delay_rdy_n_final
+   add_wave "-noupdate -label sig_select -hex"           $BASE/sig_select
+   add_wave "-noupdate -label sig_output_reg -hex"       $BASE/sig_output_reg
+
+      add wave -divider "Misc signals"
+   add_wave "-noupdate -label data_ready"       $BASE/data_ready
 }

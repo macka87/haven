@@ -66,4 +66,4 @@ add wave -divider "****************************"
 blk_VER_CORE_MONITOR      $VERIFICATION_CORE_PATH/fl_hw_monitor_i
 
 restart -f
-run 1 us
+run 5 us
