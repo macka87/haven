@@ -36,10 +36,17 @@
       NetCOPETransaction ntr;
       FrameLinkTransaction fltr;
       Transaction tr;
-      
+
+      int cnt = 0;
       while (enabled) begin 
         wait(outputMbx.num()!=0) 
         busy = 1;
+
+        ++cnt;
+        if (cnt % 1000 == 0) begin
+          $write("Output Controller: received %d transactions at ", cnt);
+          $system("date");
+        end
           
         // create new FrameLink packet
         fltr = new();
