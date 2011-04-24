@@ -85,12 +85,6 @@
         else begin
           if (size > 0) begin
             // store the right size of data
-						//ntr.data = new[size]; 
-						//for (int i=0; i<size; i++)
-						//  ntr.data[i] = ntr.hwpacket[i]; 
-						
-						//ntr.display("OUTPUT WRAPPER");
-						
 						ntr.size = size;
 						
             // put received data to output mailbox
@@ -98,7 +92,6 @@
 						
 						outputMbx.put(tr);  
             counter++;
-            //$write("number of received transactions: %d\n",counter);
           end
 					else begin
 						#10ns;

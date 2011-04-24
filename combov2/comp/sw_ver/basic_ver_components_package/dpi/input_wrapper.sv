@@ -80,13 +80,10 @@
         wait(inputMbx.num()!=0) 
         busy = 1;
         inputMbx.get(tr);
-        //inputMbx.get(ntr);
-        tr.display(); 
+        //tr.display(); 
         $cast(ntr,tr);
-        //ntr.createHardwarePacket();
         
         // data transfer to hardware through DMA channel
-        //res = c_sendData(ntr.hwpacket);
         res = c_sendData(ntr.data);
         if (res!=0) $fatal("SEND DATA in input wrapper failed!!!");
                 

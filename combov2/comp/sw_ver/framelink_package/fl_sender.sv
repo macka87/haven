@@ -129,10 +129,10 @@
       int size    = 1; // btDelay takes 1 Byte
       int counter = 0;
       
-      //controlTrans.endpointID  = id;
-      //controlTrans.transType   = 5;  // control src_rdy transaction
-      //controlTrans.ifcProtocol = 1;  // no protocol
-      //controlTrans.ifcInfo     = 0;  // no info
+      controlTrans.endpointID  = id;
+      controlTrans.transType   = 5;  // control src_rdy transaction
+      controlTrans.ifcProtocol = 1;  // no protocol
+      controlTrans.ifcInfo     = 0;  // no info
       
       if (tr.data[part].size%(pDataWidth/8) == 0) 
         size += (tr.data[part].size/(pDataWidth/8)) -1;

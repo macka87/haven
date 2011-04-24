@@ -74,10 +74,10 @@
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-     // controlTrans.endpointID  = id;
-     // controlTrans.transType   = 1;  // control start transaction
-     // controlTrans.ifcProtocol = 0;  // no protocol
-     // controlTrans.ifcInfo     = 0;  // no info
+      controlTrans.endpointID  = id;
+      controlTrans.transType   = 1;  // control start transaction
+      controlTrans.ifcProtocol = 0;  // no protocol
+      controlTrans.ifcInfo     = 0;  // no info
       
       //controlTrans.display("START CONTROL");
       inputMbx.put(controlTrans);    // put transaction to mailbox  
@@ -101,11 +101,11 @@
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      //controlTrans.endpointID  = id;
-      //controlTrans.endpointID  = 0;  // identifies driver protocol
-      //controlTrans.transType   = 4;  // control stop transaction
-      //controlTrans.ifcProtocol = 0;  // no protocol
-      //controlTrans.ifcInfo     = 0;  // no info
+      controlTrans.endpointID  = id;
+      controlTrans.endpointID  = 0;  // identifies driver protocol
+      controlTrans.transType   = 4;  // control stop transaction
+      controlTrans.ifcProtocol = 0;  // no protocol
+      controlTrans.ifcInfo     = 0;  // no info
       
       //controlTrans.display("STOP CONTROL");
       inputMbx.put(controlTrans);    // put transaction to mailbox  
@@ -130,12 +130,11 @@
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      //controlTrans.endpointID  = id;
-      //controlTrans.transType   = 2;  // control wait transaction
-      //controlTrans.ifcProtocol = 0;  // no protocol
-      //controlTrans.ifcInfo     = 0;  // no info
+      controlTrans.endpointID  = id;
+      controlTrans.transType   = 2;  // control wait transaction
+      controlTrans.ifcProtocol = 0;  // no protocol
+      controlTrans.ifcInfo     = 0;  // no info
       
-      //controlTrans.data        = new[8];
       for(int i=0; i<8; i++)
         for(int j=0; j<8; j++)
           controlTrans.data[i+8][j] = data[i*8+j];
@@ -162,10 +161,10 @@
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      //controlTrans.endpointID  = id;
-      //controlTrans.transType   = 3;  // control wait transaction
-      //controlTrans.ifcProtocol = 0;  // no protocol
-      //controlTrans.ifcInfo     = 0;  // no info
+      controlTrans.endpointID  = id;
+      controlTrans.transType   = 3;  // control wait transaction
+      controlTrans.ifcProtocol = 0;  // no protocol
+      controlTrans.ifcInfo     = 0;  // no info
       
       //controlTrans.display("WAIT FOREVER CONTROL");
       inputMbx.put(controlTrans);    // put transaction to mailbox
