@@ -58,4 +58,5 @@ proc blk_FL_DRIVER_CTRL_INTERNALS { BASE } {
 
       add wave -divider "Misc signals"
    add_wave "-noupdate -label data_ready"       $BASE/data_ready
+   add_wave "-noupdate -label sig_reg_last"     $BASE/sig_reg_last
 }

@@ -141,6 +141,7 @@ signal sig_set_delay_rdy_n : std_logic;
 signal sig_set_delay_rdy_n_final : std_logic;
 
 signal data_ready          : std_logic;
+signal sig_store_reg_last  : std_logic;
 
 -- ==========================================================================
 --                           ARCHITECTURE BODY
@@ -171,6 +172,8 @@ begin
      sig_out_eof_n <= '1';
      sig_out_eop_n <= '1';
 
+     sig_store_reg_last <= '0';
+
      case state_reg is
         
         when init_state =>
@@ -178,6 +181,7 @@ begin
             -- read header
           
             if (sig_trans_type = DATA_TYPE) then
+              sig_store_reg_last <= '1';
               if (sig_reg_last = '1') then
                 state_next <= sof_state;
               elsif (sig_reg_last = '0') then  
@@ -303,13 +307,13 @@ begin
    end process moore_output;
    
    -- register for fl_part_last value
-   reg1 : process (CLK, RESET)
+   reg1 : process (CLK)
    begin
-      if (RESET = '1') then 
-         sig_reg_last <= '1';
-      elsif (rising_edge(CLK)) then
-         if (data_ready = '1') then
-            sig_reg_last <= sig_new_last;   
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then 
+            sig_reg_last <= '1';
+         elsif (sig_store_reg_last = '1') then
+            sig_reg_last <= sig_new_last;
          end if;   
       end if;
    end process;
@@ -433,12 +437,12 @@ begin
    
    sig_incremented <= sig_select + 1;
    
-   reg4 : process (CLK, RESET)
+   reg4 : process (CLK)
    begin
-      if (RESET = '1') then 
-         sig_select <= (others => '0');
-      elsif (rising_edge(CLK)) then
-         if (data_ready = '1') then -- reset
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then 
+            sig_select <= (others => '0');
+         elsif (data_ready = '1') then -- reset
             sig_select <= (others => '0');
          elsif ((sig_delay_wr_n nor TX_DELAY_RDY_N) = '1') then -- enable
             sig_select <= sig_incremented;
