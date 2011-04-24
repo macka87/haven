@@ -9,7 +9,7 @@
 package test_pkg;
 
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK  = 0;                      // 0 = software framework
+   int FRAMEWORK  = 1;                      // 0 = software framework
                                             // 1 = sw/hw framework      
    // DUT GENERICS
    parameter DATA_WIDTH = 128;           // datova sirka RX
@@ -20,7 +20,7 @@ package test_pkg;
    // width of flow id (bits 32 - 128)
    parameter FLOWID_WIDTH = 128;
    // inicialisation vector of HGEN unit
-   bit[31:0] HGEN_INIT = 32'hFFFFFFFF;
+   bit[31:0] HGEN_INIT = 32'b10100101101001000101110111010111;
    // mask for masking bytes in UH header
    bit[UH_SIZE-1:0] HGEN_MASK = 64'hFFFFFFFFFFFFFFFF;
    // items in FL fifo
@@ -60,7 +60,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 1000;  // Count of transactions
+   parameter TRANSACTION_COUT = 50000;  // Count of transactions
    parameter SEED1            = 1;    // Seed for PRNG
    parameter SEED2            = 2;    // Seed for PRNG
 endpackage
