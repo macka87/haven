@@ -65,3 +65,4 @@ set COMPONENTS [list \
 set MOD "$MOD $ENTITY_BASE/hgen_core.vhd"
 set MOD "$MOD $ENTITY_BASE/hgen_ent.vhd"
 set MOD "$MOD $ENTITY_BASE/hgen_new.vhd"
+set MOD "$MOD $ENTITY_BASE/hgen_ver_cover.vhd"
