@@ -111,10 +111,6 @@ signal fifo_out_sof_n         : std_logic;
 signal fifo_out_eof_n         : std_logic;
 
 -- ---- delay fl_fifo ----------------------------------------------------
-signal delay_fifo_out_data          : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal delay_fifo_out_src_rdy_n     : std_logic;
-signal delay_fifo_out_dst_rdy_n     : std_logic;
-signal delay_fifo_out_sof_n         : std_logic;
 signal delay_fifo_in_rem            : std_logic_vector(-1 downto 0);
 
 -- ---- fl_driver_ctrl ----------------------------------------------------
