@@ -87,18 +87,20 @@ constant REM_INDEX  : integer := 4+log2(DATA_WIDTH/8);
 -- ==========================================================================
 
 -- data fifo signals
-signal sig_data_fifo_write    : std_logic;
-signal sig_data_fifo_data_in  : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
-signal sig_data_fifo_data_out : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
-signal sig_data_fifo_read     : std_logic;
-signal sig_data_fifo_rdy      : std_logic;
+signal sig_data_fifo_write        : std_logic;
+signal sig_data_fifo_data_in      : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
+signal sig_data_fifo_data_out     : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
+signal sig_data_fifo_read         : std_logic;
+signal sig_data_fifo_rdy          : std_logic;
+signal sig_data_fifo_almost_full  : std_logic;
 
 -- delay fifo signals
-signal sig_delay_fifo_write   : std_logic;
-signal sig_delay_fifo_data    : std_logic_vector(DELAY_WIDTH-1 downto 0);
-signal sig_delay_fifo_read    : std_logic;
-signal sig_delay_fifo_empty   : std_logic;
-signal sig_delay_fifo_rdy     : std_logic;
+signal sig_delay_fifo_write       : std_logic;
+signal sig_delay_fifo_data        : std_logic_vector(DELAY_WIDTH-1 downto 0);
+signal sig_delay_fifo_read        : std_logic;
+signal sig_delay_fifo_empty       : std_logic;
+signal sig_delay_fifo_rdy         : std_logic;
+signal sig_delay_fifo_almost_full : std_logic;
 
 signal sig_delay_fifo_data_only : std_logic_vector(DELAY_WIDTH-2 downto 0);
 signal sig_is_delay         : std_logic; 
@@ -139,7 +141,7 @@ begin
       WR_DATA         => sig_data_fifo_data_in,
       WR_WRITE        => sig_data_fifo_write,
       WR_FULL         => RX_DST_RDY_N,
-      WR_ALMOST_FULL  => open,
+      WR_ALMOST_FULL  => sig_data_fifo_almost_full,
       
       RD_CLK          => RD_CLK,
       RD_DATA         => sig_data_fifo_data_out,
@@ -161,7 +163,7 @@ begin
       WR_DATA         => RX_DELAY,
       WR_WRITE        => sig_delay_fifo_write,
       WR_FULL         => RX_DELAY_RDY_N,
-      WR_ALMOST_FULL  => open,
+      WR_ALMOST_FULL  => sig_delay_fifo_almost_full,
       
       RD_CLK          => RD_CLK,
       RD_DATA         => sig_delay_fifo_data,
@@ -271,6 +273,8 @@ begin
    sig_data_fifo_read <= sig_src_rdy nor TX_DST_RDY_N; 
    sig_delay_fifo_read <= sig_take;
    
-   OUTPUT_RDY <= RX_FINISH or ((not sig_data_fifo_rdy) and 
-                               (not sig_delay_fifo_rdy));    
+   OUTPUT_RDY <= RX_FINISH or (sig_data_fifo_almost_full and 
+                               sig_delay_fifo_almost_full);    
+--   OUTPUT_RDY <= RX_FINISH or ((not sig_data_fifo_rdy) and 
+--                               (not sig_delay_fifo_rdy));    
 end architecture;

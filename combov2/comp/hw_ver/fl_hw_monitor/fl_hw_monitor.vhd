@@ -86,6 +86,7 @@ signal sig_data_fifo_wr_full         : std_logic;
 signal sig_data_fifo_rd_data   : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
 signal sig_data_fifo_rd_read   : std_logic;
 signal sig_data_fifo_rd_empty  : std_logic;
+signal sig_data_fifo_rd_almost_empty : std_logic;
 
 -- FL_TRANSFORMER input
 signal rx_fl_transformer_data      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
@@ -141,7 +142,7 @@ begin
       RD_DATA         => sig_data_fifo_rd_data,
       RD_READ         => sig_data_fifo_rd_read,
       RD_EMPTY        => sig_data_fifo_rd_empty,
-      RD_ALMOST_EMPTY => open
+      RD_ALMOST_EMPTY => sig_data_fifo_rd_almost_empty
    );
 
 
@@ -206,6 +207,7 @@ begin
       OUTPUT  => lfsr_output
    );
 
-   OUTPUT_READY        <= not sig_data_fifo_wr_almost_full;
+   OUTPUT_READY        <= sig_data_fifo_rd_almost_empty;
+   --OUTPUT_READY        <= not sig_data_fifo_wr_almost_full;
 
 end architecture;
