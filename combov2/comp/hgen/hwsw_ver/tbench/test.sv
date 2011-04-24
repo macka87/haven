@@ -73,7 +73,7 @@ program TEST (
      scoreboard = new(FLOWID_WIDTH, HGEN_INIT, HGEN_MASK);
      
      //! Create Input and Output Mailbox
-     inputMbx   = new(0);
+     inputMbx   = new(1000);
      outputMbx  = new(0);
      
      //! Create Input Controller 

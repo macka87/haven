@@ -144,6 +144,7 @@
       bit[31:0]        hgen_init;
       bit[63:0]        hgen_mask;
 
+      int cnt;
      /*
       * Public Class Methods
       */
@@ -158,6 +159,7 @@
          this.flow_id_width = flow_id_width;
          this.hgen_init = hgen_init;
          this.hgen_mask = hgen_mask;
+         this.cnt = 0;
       endfunction
     
      /*! 
@@ -223,6 +225,15 @@
         res.data[0][1] = result[15:8];
         res.data[0][0] = result[7:0];
         sc_table.add(res);
+
+        ++cnt;
+
+        if (cnt % 4000 == 0)
+        begin
+          $write("generated %d scoreboard transactions at ", cnt);
+          $system("date");
+          #10ns;
+        end;
       endtask : post_tr
  endclass : ScoreboardInputCbs
     
@@ -260,6 +271,7 @@
       this.sc_table = sc_table;
     endfunction
    
+   int cnt = 0;
    /*! 
     * Transaction postprocessing
     *
@@ -278,6 +290,12 @@
       // Gets number of transaction table from ID number
       sc_table.remove(transaction, status);
             
+      ++cnt;
+      if (cnt % 1000 == 0) begin
+        $write("Removed %d transactions from scoreboard at ", cnt);
+        $system("date");
+      end
+
       if (status==0)begin
          $write("STATUS==0\n");
          $write("Unknown transaction received from monitor %d\n", inst);
