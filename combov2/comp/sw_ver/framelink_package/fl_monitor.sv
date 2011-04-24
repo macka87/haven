@@ -63,7 +63,7 @@
           cbs[i].pre_tr(tr, id);       
 
         receiveTransaction(transaction); //! Receive Transaction
-        transaction.display(inst);
+        //transaction.display(inst);
         
         // Necessary for not calling callback after monitor disabling
         if (!enabled) break;

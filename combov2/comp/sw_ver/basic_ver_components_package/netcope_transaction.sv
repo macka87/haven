@@ -73,25 +73,25 @@
       // size of hardware packet = header(8B) + data size  
       hwpacket = new[8 + data.size];
       
-      $write("<<<<<   INPUT  WRAPPER: HARDWARE PACKET: ");
+      //$write("<<<<<   INPUT  WRAPPER: HARDWARE PACKET: ");
       
       // copy of NetCOPE header
       hwpacket[0] = endpointID;
-      $write("%x ",hwpacket[0]);
+      //$write("%x ",hwpacket[0]);
       hwpacket[1] = endpointProtocol;
-      $write("%x ",hwpacket[1]);
+      //$write("%x ",hwpacket[1]);
       hwpacket[2] = 0; 
-      $write("%x ",hwpacket[2]);
+      //$write("%x ",hwpacket[2]);
       hwpacket[3] = 0;
-      $write("%x ",hwpacket[3]);
+      //$write("%x ",hwpacket[3]);
       hwpacket[4] = transType;
-      $write("%x ",hwpacket[4]);
+      //$write("%x ",hwpacket[4]);
       hwpacket[5] = 0;
-      $write("%x ",hwpacket[5]);
+      //$write("%x ",hwpacket[5]);
       hwpacket[6] = ifcProtocol;
-      $write("%x ",hwpacket[6]);
+      //$write("%x ",hwpacket[6]);
       hwpacket[7] = ifcInfo; 
-      $write("%x ",hwpacket[7]);
+      //$write("%x ",hwpacket[7]);
 
      /* hwpacket[7] = endpointID;
       hwpacket[6] = enpointProtocol;
@@ -106,9 +106,9 @@
       
       for (int i= 8; i<(data.size+8); i++)begin
         hwpacket[i] = data[i-8]; 
-        $write("%x ",hwpacket[i]);
+        //$write("%x ",hwpacket[i]);
       end  
-      $write("\n");
+      // $write("\n");
 
 
     endfunction : createHardwarePacket

@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Project Name: Software Framework for Functional Verification
+ * Project Name: FIFO Functional Verification
  * File Name:    test.sv - test cases
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011 
@@ -176,6 +176,10 @@ program TEST (
      
      $write("\n\n############ TEST CASE 1 ############\n\n");
      
+     // time measuring
+     $write("START TIME: ");
+     $system("date");
+     
      // Enable Test environment
      enableTestEnvironment();
      
@@ -188,8 +192,16 @@ program TEST (
      flGenInCnt.sendGenerated(TRANSACTION_COUT);
      flGenInCnt.stop();
      
+     // time measuring
+     $write("AFTER GENERATION TIME: ");
+     $system("date");
+     
      // Disable Test Enviroment
      disableTestEnvironment();
+     
+     // time measuring
+     $write("END TIME: ");
+     $system("date");
      
      // Display Scoreboard and Coverage
      scoreboard.display();

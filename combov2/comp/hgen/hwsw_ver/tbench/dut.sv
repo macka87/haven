@@ -28,7 +28,7 @@ module DUT (
  *  Module body
  */
  HGEN #(
-     .DATA_WIDTH     (RX_DATA_WIDTH),
+     .DATA_WIDTH     (DATA_WIDTH),
      .UH_SIZE        (UH_SIZE),
      .FLOWID_WIDTH   (FLOWID_WIDTH),
      .ITEMS          (ITEMS)

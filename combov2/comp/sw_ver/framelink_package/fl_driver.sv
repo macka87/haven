@@ -57,7 +57,6 @@
     * Enable Driver - eable driver and runs driver process
     */
     task setEnabled();
-      $write("ENABLING DRIVER\n");
       enabled = 1;  //! Driver Enabling
       @(fl.cb);  
     endtask : setEnabled
@@ -66,7 +65,6 @@
     * Disable Driver
     */
     task setDisabled();
-      $write("DISABLING DRIVER\n");
       enabled = 0;  
     endtask : setDisabled
     
@@ -108,7 +106,7 @@
           cbs[i].post_tr(to, id);
       
         fl.cb.SRC_RDY_N <= 1;          //! Set not ready
-        transaction.display(inst);     //! Display transaction
+        //transaction.display(inst);     //! Display transaction
         i++;
       end
     endtask : sendTransactions

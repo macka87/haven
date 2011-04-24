@@ -14,10 +14,10 @@ module testbench;
   // -- Testbench wires and interfaces ----------------------------------------
   logic            CLK   = 0;
   logic            RESET;
-  iFrameLinkRx #(RX_DATA_WIDTH, RX_DREM_WIDTH) RX  (CLK, RESET);
-  iFrameLinkTx #(TX_DATA_WIDTH, TX_DREM_WIDTH) TX  (CLK, RESET);
-  iFrameLinkTx #(TX_DATA_WIDTH, TX_DREM_WIDTH) MONITOR  (CLK, RESET);
-  iMi32                                        MI32_RXTX (CLK, RESET);
+  iFrameLinkRx #(DATA_WIDTH, DREM_WIDTH) RX  (CLK, RESET);
+  iFrameLinkTx #(DATA_WIDTH, DREM_WIDTH) TX  (CLK, RESET);
+  iFrameLinkTx #(DATA_WIDTH, DREM_WIDTH) MONITOR  (CLK, RESET);
+  iMi32                                  MI32_RXTX (CLK, RESET);
 
   //-- Clock generation -------------------------------------------------------
   always #(CLK_PERIOD/2) CLK = ~CLK;

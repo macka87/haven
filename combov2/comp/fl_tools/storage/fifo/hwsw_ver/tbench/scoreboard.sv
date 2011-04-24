@@ -62,7 +62,7 @@
     */
     
     virtual task post_tr(Transaction transaction, byte id);
-      transaction.display("ADDED TRANSACTION TO SCOREBOARD");
+     // transaction.display("ADDED TRANSACTION TO SCOREBOARD");
       sc_table.add(transaction);
     endtask : post_tr
  endclass : ScoreboardInputCbs

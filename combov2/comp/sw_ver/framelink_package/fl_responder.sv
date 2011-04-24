@@ -145,8 +145,8 @@
         if (enBtDelay == 0) break;
       end while((btDelay>btDelayHigh) || (btDelay<btDelayLow));
       
-      $write("enBtDelay: %b\n", enBtDelay);
-      $write("btDelay: %b\n", btDelay);
+      //$write("enBtDelay: %b\n", enBtDelay);
+      //$write("btDelay: %b\n", btDelay);
       
       if (enBtDelay) begin
         repeat (btDelay) begin

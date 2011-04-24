@@ -84,14 +84,7 @@
         if (res == 1) $fatal("RECEIVE DATA in output wrapper failed!!!"); 
         else begin
           if (size > 0) begin
-            // print received transaction
-						$write(">>>>>   OUTPUT WRAPPER: HARDWARE PACKET: ");
-						for (int i=0; i<size; i++)
-							$write("%x ",ntr.hwpacket[i]);
-						$write("\n"); 
-						
-						// store the right size of data
-						$write("size: %d\n",size);
+            // store the right size of data
 						ntr.data = new[size]; 
 						for (int i=0; i<size; i++)
 						  ntr.data[i] = ntr.hwpacket[i]; 
@@ -101,7 +94,7 @@
 						
 						outputMbx.put(tr);  
             counter++;
-            $write("number of received transactions: %d\n",counter);
+            //$write("number of received transactions: %d\n",counter);
           end
 					else begin
 						#10ns;

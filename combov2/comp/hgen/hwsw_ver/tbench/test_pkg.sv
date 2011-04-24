@@ -9,14 +9,12 @@
 package test_pkg;
 
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK  = 1;                      // 0 = software framework
+   int FRAMEWORK  = 0;                      // 0 = software framework
                                             // 1 = sw/hw framework      
    // DUT GENERICS
-   parameter RX_DATA_WIDTH = 128;           // datova sirka RX
-   parameter RX_DREM_WIDTH = 4;             // drem  sirka RX
-   parameter TX_DATA_WIDTH = 128;           // datova sirka TX
-   parameter TX_DREM_WIDTH = 4;             // drem sirka TX
-   
+   parameter DATA_WIDTH = 128;           // datova sirka RX
+   parameter DREM_WIDTH = 4;             // drem  sirka RX
+      
    // size of UH header (bytes 16 - 64)
    parameter UH_SIZE      = 64;
    // width of flow id (bits 32 - 128)
@@ -34,10 +32,10 @@ package test_pkg;
    parameter SIM_DELAY  = 100;
    
    // TRANSACTION FORMAT 
-   parameter GENERATOR0_FL_PACKET_COUNT      = 1;                // frame parts
-   int       GENERATOR0_FL_PACKET_SIZE_MAX[] = '{UH_SIZE};       // maximal size of part
-   int       GENERATOR0_FL_PACKET_SIZE_MIN[] = '{UH_SIZE};       // minimal size of part 
-   bit[63:0] DATA_IN                         = 'd6418;
+   parameter GENERATOR_FL_FRAME_COUNT       = 1;                // frame parts
+   int       GENERATOR_FL_PART_SIZE_MAX[]   = '{UH_SIZE};       // maximal size of part
+   int       GENERATOR_FL_PART_SIZE_MIN[]   = '{UH_SIZE};       // minimal size of part 
+   bit[63:0] DATA_IN                        = 'd6418;
 
    // SOFTWARE DRIVER PARAMETERS 
    // Enable/Disable weights of "delay between transactions" 
@@ -62,7 +60,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 300;  // Count of transactions
+   parameter TRANSACTION_COUT = 1000;  // Count of transactions
    parameter SEED1            = 1;    // Seed for PRNG
    parameter SEED2            = 2;    // Seed for PRNG
 endpackage

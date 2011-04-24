@@ -123,8 +123,6 @@
       else 
         size += (tr.data[part].size/(pDataWidth/8));
             
-      $write("size: %d\n",size);    
-        
       controlTrans.data    = new[size];
       
       if (tr.enBtDelay) controlTrans.data[counter] = tr.btDelay;

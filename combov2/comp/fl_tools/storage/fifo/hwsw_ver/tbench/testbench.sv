@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Project Name: NetCOPE Adder Functional Verification
+ * Project Name: FIFO Functional Verification
  * File Name:    testbench.sv - testbench file
  * Description:  Connection of the DUT to the verification environment. 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 

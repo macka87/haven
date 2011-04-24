@@ -5,11 +5,11 @@
  * Date:         24.4.2011 
  * ************************************************************************** */
 
-import sv_common_pkg::*;
-import sv_fl_pkg::*;
 import test_pkg::*;
+import sv_basic_comp_pkg::*;
+import sv_fl_pkg::*;
+import sv_hgen_pkg::*;
 import sv_mi32_pkg::*;
-
 
 /*
  * Test output and input interfaces of DUT.
@@ -70,7 +70,7 @@ program TEST (
   // Create Test Environment
   task createEnvironment(); 
      //! Create scoreboard
-     scoreboard = new();
+     scoreboard = new(FLOWID_WIDTH, HGEN_INIT, HGEN_MASK);
      
      //! Create Input and Output Mailbox
      inputMbx   = new(0);
@@ -99,7 +99,7 @@ program TEST (
      mi32TransMbx.put(mi32Blueprint);
      
      //! Create MI32 driver    
-     mi32Driver  = new ("Driver MI32", mi32TransMbx, MI32_RXTX);
+     mi32Driver  = new ("Driver MI32", 0, mi32TransMbx, MI32_RXTX);
      mi32Driver.setCallbacks(scoreboard.mi32DriverCbs);
                        
      //! Create Input Wrapper
@@ -110,9 +110,6 @@ program TEST (
      
      flOutCnt = new("Output Controller", 0, outputMbx, GENERATOR_FL_FRAME_COUNT);
      flOutCnt.setCallbacks(scoreboard.outputCbs);  
-     
-     //! Create checker
-     flChecker = new("Checker", RX, TX, CTRL);
      
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR);   

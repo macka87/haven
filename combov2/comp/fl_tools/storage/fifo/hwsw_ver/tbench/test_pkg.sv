@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Project Name: NetCOPE Adder Functional Verification
+ * Project Name: FIFO Functional Verification
  * File Name:    test_pkg.sv - test package
  * Description:  Definition of constants and parameters 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
@@ -54,7 +54,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 300;  // Count of transactions
+   parameter TRANSACTION_COUT = 50000;  // Count of transactions
    parameter SEED1            = 1;  // Seed for PRNG
    parameter SEED2            = 2;  // Seed for PRNG
 endpackage

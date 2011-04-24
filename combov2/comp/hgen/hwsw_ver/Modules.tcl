@@ -9,10 +9,12 @@
 if { $ARCHGRP == "FULL" } {
   set SV_FL_BASE      "$ENTITY_BASE/../../sw_ver/framelink_package"
   set SV_BASIC_BASE   "$ENTITY_BASE/../../sw_ver/basic_ver_components_package"
+  set SV_MI32_BASE    "$ENTITY_BASE/../../sw_ver/mi32_package"
   
   set COMPONENTS [list \
       [ list "SV_FL_BASE"     $SV_FL_BASE     "FULL"] \
       [ list "SV_BASIC_BASE"  $SV_BASIC_BASE  "FULL"] \
+      [ list "SV_MI32_BASE"   $SV_MI32_BASE   "FULL"] \
   ]
 
   # verification files

@@ -79,7 +79,6 @@
       while (enabled) begin 
         wait(inputMbx.num()!=0) 
         busy = 1;
-        $write("mailbox: %d\n", inputMbx.num());  
         inputMbx.get(tr);
         //tr.display(); 
         $cast(ntr,tr);

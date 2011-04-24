@@ -139,7 +139,7 @@
      /*
       * Public Class Atributes
       */
-      TransactionTable sc_table;
+      TransactionTable #(0) sc_table;
       int              flow_id_width;
       bit[31:0]        hgen_init;
       bit[63:0]        hgen_mask;
@@ -178,7 +178,7 @@
       * \param inst        - driver identification         
       */
       virtual task post_tr(Transaction transaction, byte id);
-        transaction.display("ADDED TRANSACTION TO SCOREBOARD");
+        FrameLinkTransaction tr;
         FrameLinkTransaction res;
         bit[95:0] result;
         BJHModel bjh;
@@ -204,7 +204,7 @@
         // output FrameLink frame assembly
         res = new;
         res.data = new[1];
-        res.packetCount = 1;
+        res.frameParts = 1;
         res.data[0] = new[tr.data[0].size + flow_id_width/8];
         for(int i=0; i < tr.data[0].size; i++)
           res.data[0][i+flow_id_width/8] = tr.data[0][i];
@@ -311,7 +311,7 @@
     //! Output callback
     ScoreboardOutputCbs   outputCbs;
     //! Monitor callback
-    DriverCbs             mi32DriverCbs;
+    InputCbs              mi32DriverCbs;
     
    /*! 
     * Constructor
@@ -320,9 +320,9 @@
     * 
     * \param inst - scoreboard identification
     */
-    function new ();
+    function new (int flow_id_width, bit[31:0] hgen_init, bit[63:0] hgen_mask);
       this.scoreTable    = new; 
-      this.inputCbs      = new(scoreTable);
+      this.inputCbs      = new(scoreTable,flow_id_width, hgen_init, hgen_mask);
       this.outputCbs     = new(scoreTable);
       this.mi32DriverCbs = new;
     endfunction
