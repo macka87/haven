@@ -76,14 +76,15 @@ type state_type is (init_state, sof_state, sop_state, data_state, delay_state,
 -- ==========================================================================
 --                                    CONSTANTS
 -- ==========================================================================
-constant DATA_TYPE  :  std_logic_vector(7 downto 0) := X"00";
-constant WAIT_TYPE  :  std_logic_vector(7 downto 0) := X"02";
-constant DELAY_TYPE :  std_logic_vector(7 downto 0) := X"05";
-constant STOP_TYPE  :  std_logic_vector(7 downto 0) := X"04";
+constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
+constant START_TYPE  :  std_logic_vector(7 downto 0) := X"01";
+constant WAIT_TYPE   :  std_logic_vector(7 downto 0) := X"02";
+constant STOP_TYPE   :  std_logic_vector(7 downto 0) := X"04";
+constant DELAY_TYPE  :  std_logic_vector(7 downto 0) := X"05";
 
 constant REM_INDEX  : integer := 4+log2(DATA_WIDTH/8);
-constant COMP_VALUE : std_logic_vector(DATA_WIDTH-1 downto 0) 
-                      := conv_std_logic_vector(255, DATA_WIDTH);
+constant COMP_VALUE : std_logic_vector(31 downto 0) 
+                      := conv_std_logic_vector(255, 32);
                       
 constant ZERO_VALUE : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0) 
                       := (others => '0');       
@@ -118,11 +119,11 @@ signal sig_out_eof_n       : std_logic;
 signal sig_out_eop_n       : std_logic; 
 
 -- wait processing 
-signal sig_difference      : std_logic_vector(DATA_WIDTH-1 downto 0);
-signal sig_mux_counter     : std_logic_vector(DATA_WIDTH-1 downto 0);
-signal sig_counter_reg     : std_logic_vector(DATA_WIDTH-1 downto 0);
+signal sig_difference      : std_logic_vector(31 downto 0);
+signal sig_mux_counter     : std_logic_vector(31 downto 0);
+signal sig_counter_reg     : std_logic_vector(31 downto 0);
 signal sig_counter_is_zero : std_logic; 
-signal sig_minimum         : std_logic_vector(DATA_WIDTH-1 downto 0);
+signal sig_minimum         : std_logic_vector(31 downto 0);
 signal sig_minimum_final   : std_logic_vector(7 downto 0);
 signal sig_wait            : std_logic_vector(8 downto 0);
 
@@ -158,7 +159,7 @@ begin
    end process;
    
    -- next state logic
-   fsm_next_state_logic : process (state_reg, data_ready,
+   fsm_next_state_logic : process (state_reg, data_ready, RX_SOF_N,
                                    sig_trans_type, sig_reg_last, RX_EOF_N,
                                    sig_counter_is_zero, sig_set_delay_rdy_n,
                                    sig_set_delay_rdy_n_final, RX_SRC_RDY_N)
@@ -253,7 +254,11 @@ begin
           end if;
           
         when stop_state =>
-          state_next <= stop_state;
+          if (RX_SRC_RDY_N = '0' AND RX_SOF_N = '0' AND sig_trans_type = START_TYPE) then
+            state_next <= delay_rdy_state;
+          else 
+             state_next <= stop_state;
+          end if;
         
         when wait_state =>
           if (data_ready = '1' and RX_EOF_N = '0') then
@@ -335,7 +340,7 @@ begin
    
    -- TODO: check if this is correct (I don't like the part for is_delaying=1)
    mux1 : process (is_header, is_data, is_delay, is_delaying, is_wait,
-      sig_set_delay_rdy_n, is_cntr, sig_tx_dst_rdy_n,
+      sig_set_delay_rdy_n, is_cntr, sig_tx_dst_rdy_n, is_stop,
       sig_set_delay_rdy_n_final)
    begin
       sig_rx_dst_rdy_n <= '1';
@@ -344,6 +349,7 @@ begin
      elsif (is_data     = '1') then sig_rx_dst_rdy_n <= sig_tx_dst_rdy_n;
      elsif (is_delay    = '1') then sig_rx_dst_rdy_n <= '0';
      elsif (is_wait     = '1') then sig_rx_dst_rdy_n <= '0';
+     elsif (is_stop     = '1') then sig_rx_dst_rdy_n <= '0';
      elsif (is_delaying = '1') then sig_rx_dst_rdy_n <= sig_set_delay_rdy_n
         OR sig_set_delay_rdy_n_final;
      elsif (is_cntr     = '1') then sig_rx_dst_rdy_n <= '1'; 
@@ -359,7 +365,7 @@ begin
 
       case is_wait is
          when '0'    => sig_mux_counter <= sig_difference;
-         when '1'    => sig_mux_counter <= RX_DATA;
+         when '1'    => sig_mux_counter <= RX_DATA(31 downto 0);
          when others => null;   
       end case;   
    end process;
