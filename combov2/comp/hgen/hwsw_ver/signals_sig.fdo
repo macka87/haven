@@ -1,0 +1,28 @@
+# ------------------------------------------------------------------------------
+# Project Name: HGEN Functional Verification
+# File Name:    signals_sig.fdo    
+# Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz>    
+# Date:         24.4.2011
+# ------------------------------------------------------------------------------
+
+# Global file with signals
+source "./signals.fdo"
+exec make
+view wave
+delete wave *
+
+# Wave divider + "name of signals' group"
+add wave -divider "HGEN"  
+add_wave "-noupdate -color yellow -label RESET"   /testbench/RESET
+add_wave "-noupdate -color yellow -label CLK"     /testbench/CLK
+
+# Set path to testbench instance of the DUT 
+set PATH "/testbench/DUT_U/VHDL_DUT_U"
+
+# Set DUT interfaces 
+rx  RX  $PATH
+tx  TX  $PATH
+mi  MI  $PATH
+
+restart -f
+run -all

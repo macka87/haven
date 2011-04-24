@@ -98,6 +98,6 @@ package test_pkg;
 
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 10000; // Count of transactions to generate
+   parameter TRANSACTION_COUT = 10; // Count of transactions to generate
 
 endpackage

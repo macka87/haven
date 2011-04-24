@@ -1,0 +1,33 @@
+# ------------------------------------------------------------------------------
+# Project Name: HGEN Functional Verification
+# File Name:    simulation.fdo 
+# Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz>    
+# Date:         24.4.2011
+# ------------------------------------------------------------------------------
+
+# Firmware location
+set FIRMWARE_BASE         "../../.."
+set FL_TOOLS_BASE         "$FIRMWARE_BASE/comp/fl_tools/"
+                                 
+set FL_DUT_BASE           "$FIRMWARE_BASE/comp/hgen"
+set FL_DUT_VER_BASE       "$FL_DUT_BASE/ver"
+
+set TB_FILE               "./tbench/testbench.sv"
+set SIG_FILE              "./signals_sig.fdo"
+
+set COMPONENTS [list [list "FL_DUT"      $FL_DUT_BASE       "FULL"]\
+                     [list "FL_DUT_VER"  $FL_DUT_VER_BASE  "FULL"]\
+                     ]
+
+# Enable Code Coverage
+set CODE_COVERAGE "true"
+
+# Global include file for compilation
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# File with signals
+source $SIG_FILE
