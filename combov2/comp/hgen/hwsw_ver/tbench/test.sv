@@ -199,6 +199,10 @@ program TEST (
      
      $write("\n\n############ TEST CASE 1 ############\n\n");
      
+     // time measuring
+     $write("START TIME: ");
+     $system("date");
+     
      // Enable Test environment
      enableTestEnvironment();
      
@@ -213,6 +217,10 @@ program TEST (
      
      // Disable Test Enviroment
      disableTestEnvironment();
+     
+     // time measuring
+     $write("END TIME: ");
+     $system("date");
      
      // Display Scoreboard and Coverage
      scoreboard.display();

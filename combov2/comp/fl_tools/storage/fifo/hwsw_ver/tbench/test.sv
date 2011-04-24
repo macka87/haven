@@ -192,10 +192,6 @@ program TEST (
      flGenInCnt.sendGenerated(TRANSACTION_COUT);
      flGenInCnt.stop();
      
-     // time measuring
-     $write("AFTER GENERATION TIME: ");
-     $system("date");
-     
      // Disable Test Enviroment
      disableTestEnvironment();
      
