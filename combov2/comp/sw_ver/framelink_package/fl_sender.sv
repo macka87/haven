@@ -86,16 +86,33 @@
                                input bit lastPart,
                                input bit allData,
                                input int part);
-      NetCOPETransaction dataTrans = new();
       
+      NetCOPETransaction dataTrans = new();
+      int size;
+      
+      // NetCOPE transaction settings      
       dataTrans.endpointID  = id;
-      //dataTrans.endpointID  = 0;  // identifies driver protocol
       dataTrans.transType   = 0;  // data transaction
       dataTrans.ifcProtocol = 1;  // identifies FrameLink protocol
       dataTrans.ifcInfo     = 2*allData + lastPart;  
       
-      dataTrans.data        = new[tr.data[part].size];
-      dataTrans.data        = tr.data[part];
+      // NetCOPE transaction transported data  
+      size = tr.data[part].size;
+      dataTrans.data    = new[size + 8];
+      
+      // NetCOPE header
+      dataTrans.data[0] = id;                   // endpointID
+      dataTrans.data[1] = 0;                    // endpointProtocol
+      dataTrans.data[2] = 0; 
+      dataTrans.data[3] = 0;
+      dataTrans.data[4] = 0;                    // transType
+      dataTrans.data[5] = 0;
+      dataTrans.data[6] = 1;                    // ifcProtocol
+      dataTrans.data[7] = 2*allData + lastPart; // ifcInfo
+      
+      // data
+      for (int i=0; i<size; i++)
+        dataTrans.data[8+i] = tr.data[part][i];
       
       //dataTrans.display("DATA");
       inputMbx.put(dataTrans);    // put transaction to mailbox
@@ -112,19 +129,31 @@
       int size    = 1; // btDelay takes 1 Byte
       int counter = 0;
       
-      controlTrans.endpointID  = id;
-      //controlTrans.endpointID  = 0;  // identifies driver protocol
-      controlTrans.transType   = 5;  // control src_rdy transaction
-      controlTrans.ifcProtocol = 1;  // no protocol
-      controlTrans.ifcInfo     = 0;  // no info
+      //controlTrans.endpointID  = id;
+      //controlTrans.transType   = 5;  // control src_rdy transaction
+      //controlTrans.ifcProtocol = 1;  // no protocol
+      //controlTrans.ifcInfo     = 0;  // no info
       
       if (tr.data[part].size%(pDataWidth/8) == 0) 
         size += (tr.data[part].size/(pDataWidth/8)) -1;
       else 
         size += (tr.data[part].size/(pDataWidth/8));
             
-      controlTrans.data    = new[size];
+      controlTrans.data    = new[size + 8];
       
+      // NetCOPE header
+      controlTrans.data[0] = id;  // endpointID
+      controlTrans.data[1] = 0;   // endpointProtocol
+      controlTrans.data[2] = 0; 
+      controlTrans.data[3] = 0;
+      controlTrans.data[4] = 5;   // transType
+      controlTrans.data[5] = 0;
+      controlTrans.data[6] = 1;   // ifcProtocol
+      controlTrans.data[7] = 0;   // ifcInfo
+      
+      counter = 8;
+      
+      // data
       if (tr.enBtDelay) controlTrans.data[counter] = tr.btDelay;
       else controlTrans.data[counter] = 0;
       

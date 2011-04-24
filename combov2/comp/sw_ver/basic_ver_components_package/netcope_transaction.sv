@@ -22,9 +22,9 @@
     // transported data 
     byte unsigned data[];
     
-    // hardware packet
-    byte unsigned hwpacket[];
-
+    // size of transported data
+    int size = 0;
+   
    /*
     * Public Class Methods
     */
@@ -42,7 +42,6 @@
         $write("---------------------------------------------------------\n");
       end
       
-      //$write("headerWidth in bytes : %d\n",headerWidth);
       $write("endpointID: %x\n",endpointID);
       $write("endpointProtocol: %x\n",endpointProtocol);
       
@@ -63,54 +62,4 @@
         
       $write("\n");    
     endfunction : display
-    
-    /*!
-    * Function prepares data for transfer to hardware - it connects NetCOPE
-    * header with data to one block.  
-    * !!! This function changes ENDIANITY for transfer through hardware !!!
-    */
-    virtual function void createHardwarePacket();
-      // size of hardware packet = header(8B) + data size  
-      hwpacket = new[8 + data.size];
-      
-      //$write("<<<<<   INPUT  WRAPPER: HARDWARE PACKET: ");
-      
-      // copy of NetCOPE header
-      hwpacket[0] = endpointID;
-      //$write("%x ",hwpacket[0]);
-      hwpacket[1] = endpointProtocol;
-      //$write("%x ",hwpacket[1]);
-      hwpacket[2] = 0; 
-      //$write("%x ",hwpacket[2]);
-      hwpacket[3] = 0;
-      //$write("%x ",hwpacket[3]);
-      hwpacket[4] = transType;
-      //$write("%x ",hwpacket[4]);
-      hwpacket[5] = 0;
-      //$write("%x ",hwpacket[5]);
-      hwpacket[6] = ifcProtocol;
-      //$write("%x ",hwpacket[6]);
-      hwpacket[7] = ifcInfo; 
-      //$write("%x ",hwpacket[7]);
-
-     /* hwpacket[7] = endpointID;
-      hwpacket[6] = enpointProtocol;
-      hwpacket[5] = 0;
-      hwpacket[4] = 0;
-      hwpacket[3] = transType;
-      hwpacket[2] = 0;
-      hwpacket[1] = ifcProtocol;
-      hwpacket[0] = ifcInfo;*/  
-      
-      // copy of data
-      
-      for (int i= 8; i<(data.size+8); i++)begin
-        hwpacket[i] = data[i-8]; 
-        //$write("%x ",hwpacket[i]);
-      end  
-      // $write("\n");
-
-
-    endfunction : createHardwarePacket
-    
  endclass: NetCOPETransaction

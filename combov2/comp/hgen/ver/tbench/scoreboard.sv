@@ -164,7 +164,7 @@ import sv_fl_pkg::*;
       // ---------------------
       // -- Class Variables --
       // ---------------------
-      TransactionTable sc_table;
+      TransactionTable #(1)sc_table;
       int              flow_id_width;
       bit[31:0]        hgen_init;
       bit[63:0]        hgen_mask;
@@ -175,7 +175,7 @@ import sv_fl_pkg::*;
 
       // -- Constructor ---------------------------------------------------------
       // Create a class 
-      function new (TransactionTable sc_table, int flow_id_width, bit[63:0] hgen_init, bit[63:0] hgen_mask);
+      function new (TransactionTable #(1) sc_table, int flow_id_width, bit[63:0] hgen_init, bit[63:0] hgen_mask);
          this.sc_table = sc_table;
          this.flow_id_width = flow_id_width;
          this.hgen_init = hgen_init;
@@ -244,11 +244,11 @@ import sv_fl_pkg::*;
       // ---------------------
       // -- Class Variables --
       // ---------------------
-      TransactionTable sc_table;
+      TransactionTable #(1) sc_table;
       
       // -- Constructor ---------------------------------------------------------
       // Create a class 
-      function new (TransactionTable sc_table);
+      function new (TransactionTable #(1) sc_table);
          this.sc_table = sc_table;
       endfunction
       
@@ -279,7 +279,7 @@ import sv_fl_pkg::*;
       // ---------------------
       // -- Class Variables --
       // ---------------------
-      TransactionTable     scoreTable;
+      TransactionTable     #(1) scoreTable;
       ScoreboardMonitorCbs monitorCbs;
       ScoreboardDriverCbs  driverCbs;
       DriverCbs            mi32DriverCbs;

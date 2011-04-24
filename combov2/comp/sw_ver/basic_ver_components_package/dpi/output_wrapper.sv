@@ -76,20 +76,24 @@
         size = 0;
 				
 				ntr = new();
-			  ntr.hwpacket = new[4096];
+			  ntr.data = new[4096];
         
         // we call C function (through DPI layer) for data transfer from hw
-        res = c_receiveData(size, ntr.hwpacket);
+        res = c_receiveData(size, ntr.data);
         
         if (res == 1) $fatal("RECEIVE DATA in output wrapper failed!!!"); 
         else begin
           if (size > 0) begin
             // store the right size of data
-						ntr.data = new[size]; 
-						for (int i=0; i<size; i++)
-						  ntr.data[i] = ntr.hwpacket[i]; 
-						  
-						// put received data to output mailbox
+						//ntr.data = new[size]; 
+						//for (int i=0; i<size; i++)
+						//  ntr.data[i] = ntr.hwpacket[i]; 
+						
+						//ntr.display("OUTPUT WRAPPER");
+						
+						ntr.size = size;
+						
+            // put received data to output mailbox
 						$cast(tr, ntr);
 						
 						outputMbx.put(tr);  

@@ -53,14 +53,15 @@
           
           $cast(ntr, tr);
           
+          $write("output size: %d\n", ntr.size);
           // creates one FrameLink part from received data 
-          fltr.data[i] = new[ntr.data.size];
+          fltr.data[i] = new[ntr.size];
             
-          for (int j=0; j<ntr.data.size; j++)
+          for (int j=0; j<ntr.size; j++)
             fltr.data[i][j] = ntr.data[j];
         end     
 
-        //fltr.display("CREATED OUTPUT FRAMELINK");
+        fltr.display("CREATED OUTPUT FRAMELINK");
           
         $cast(tr, fltr);
           
