@@ -7,16 +7,19 @@
 
 # Firmware location
 set FIRMWARE_BASE         "../../.."
-set FL_TOOLS_BASE         "$FIRMWARE_BASE/comp/fl_tools/"
-                                 
-set FL_DUT_BASE           "$FIRMWARE_BASE/comp/hgen"
-set FL_DUT_VER_BASE       "$FL_DUT_BASE/ver"
+ 
+# DUT location
+set DUT_BASE              "$FIRMWARE_BASE/comp/hgen"
 
+# Verification location                                 
+set DUT_VER_BASE          "$DUT_BASE/hwsw_ver"
 set TB_FILE               "./tbench/testbench.sv"
 set SIG_FILE              "./signals_sig.fdo"
 
-set COMPONENTS [list [list "FL_DUT"      $FL_DUT_BASE       "FULL"]\
-                     [list "FL_DUT_VER"  $FL_DUT_VER_BASE  "FULL"]\
+set SV_LIBS               [list "$FIRMWARE_BASE/comp/sw_ver/basic_ver_components_package/dpi/dpi_wrapper_pkg"]
+
+set COMPONENTS [list [list "DUT"      $DUT_BASE       "FULL"]\
+                     [list "DUT_VER"  $DUT_VER_BASE   "FULL"]\
                      ]
 
 # Enable Code Coverage
