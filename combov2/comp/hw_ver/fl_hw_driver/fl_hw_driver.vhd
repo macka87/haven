@@ -265,7 +265,7 @@ begin
       TX_DATA_WIDTH      => OUT_DATA_WIDTH
    )
    port map(
-      CLK             => TX_CLK,
+      CLK             => RX_CLK,
       RESET           => RESET,
       
       -- RX interface
