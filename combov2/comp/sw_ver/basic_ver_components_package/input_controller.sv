@@ -28,7 +28,7 @@
                  int framework,
                  tTransMbx inputMbx); 
       this.inst      = inst; 
-      this.transMbx  = new(0);
+      this.transMbx  = new(1);     // blocking mailbox
       this.inputMbx  = inputMbx;
       this.framework = framework;
     endfunction: new 
