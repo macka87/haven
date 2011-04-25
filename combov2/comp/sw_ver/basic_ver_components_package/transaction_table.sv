@@ -4,7 +4,8 @@
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011 
- * ************************************************************************** * 
+ * ************************************************************************** */
+
 
 /*!
  * Transaction's comparison rules 
@@ -23,7 +24,7 @@
  * \param behav     - selected comparison rule
  * \param TransType - type of transaction that is stored into the table     
  */
- class TransactionTable #(int behav = TR_TABLE_FIFO, 
+ class TransactionTable #(int behav = TR_TABLE_FIRST_ONLY, 
                           type TransType = Transaction);
    
    /*
@@ -33,6 +34,7 @@
     semaphore sem;          //! Semaphore solves problems with concurent acces
     integer added;          //! Items added to transaction table
     integer removed;        //! Items removed from transaction table
+    integer ind;
     
    /*
     * Public Class Methods
@@ -73,7 +75,6 @@
       if (behav==TR_TABLE_FIFO)begin  
       for(integer i=0; i < this.tr_table.size; i++) begin 
         if (this.tr_table[i].compare(transaction,diff, kind)==1) begin
-           //$write("MAZEM\n");
            this.tr_table.delete(i);
            status=1;
            removed++;
@@ -84,11 +85,13 @@
       
       // compares first transaction in the table with coming transaction
       if (behav==TR_TABLE_FIRST_ONLY && tr_table.size > 0) begin
-          if (this.tr_table[0].compare(transaction,diff, kind)==1) begin
-          //$write("MAZEM\n");
-          this.tr_table.delete(0);
-          status=1;
-          removed++;
+          TransType elem = this.tr_table.pop_front();
+          if (elem.compare(transaction,diff, kind)==1) begin
+            status=1;
+            removed++;
+          end
+          else begin
+            this.tr_table.push_front(elem);
           end
       end 
         

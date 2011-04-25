@@ -37,26 +37,18 @@
       FrameLinkTransaction fltr;
       Transaction tr;
 
-      int cnt = 0;
-      while (enabled) begin 
-        wait(outputMbx.num()!=0) 
-        busy = 1;
-
-        ++cnt;
-        if (cnt % 1000 == 0) begin
-          $write("Output Controller: received %d transactions at ", cnt);
-          $system("date");
-        end
-          
-        // create new FrameLink packet
-        fltr = new();
-        fltr.frameParts = frameCount;
-        fltr.data  = new[frameCount];
+      // create new FrameLink packet
+      fltr = new();
+      fltr.frameParts = frameCount;
+      fltr.data  = new[frameCount];
         
+      while (enabled) begin 
         // fill FrameLink packet with received data
         for (int i=0; i<frameCount; i++) begin
           // receive data from mailbox
+          busy = 0;
           outputMbx.get(tr);
+          busy = 1;
           
           $cast(ntr, tr);
           
@@ -74,8 +66,6 @@
         //! Call transaction postprocesing in scoreboard  
         foreach (cbs[i])          
           cbs[i].post_tr(tr, id); 
-          
-        busy = 0;   
       end
     endtask : run
  endclass : FrameLinkOutputController  
