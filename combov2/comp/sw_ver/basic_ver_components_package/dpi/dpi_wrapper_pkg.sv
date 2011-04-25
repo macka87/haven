@@ -33,4 +33,6 @@ package dpi_wrapper_pkg;
    */
   import "DPI-C" context function int c_receiveData(output int unsigned size, inout byte unsigned outhwpkt[]);
   
+  import "DPI-C" context function void c_putToScoreboard(input byte unsigned fltrans[]);
+
 endpackage : dpi_wrapper_pkg
