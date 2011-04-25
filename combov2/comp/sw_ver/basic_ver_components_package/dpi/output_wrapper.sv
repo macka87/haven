@@ -88,9 +88,7 @@
 						ntr.size = size;
 						
             // put received data to output mailbox
-						$cast(tr, ntr);
-						
-						outputMbx.put(tr);  
+						outputMbx.put(ntr);  
             counter++;
           end
 					else begin
