@@ -6,6 +6,9 @@
  * Date:         24.4.2011         
  * ************************************************************************** */
  
+import dpi_wrapper_pkg::*;
+import test_pkg::*;
+
 /*!
  * \brief Bob Jenkins Hash Model 
  */
@@ -226,11 +229,16 @@ typedef TransactionTable#(1) TransactionTableType;
         res.data[0][2] = result[23:16];
         res.data[0][1] = result[15:8];
         res.data[0][0] = result[7:0];
-        sc_table.add(res);
+
+        if (FRAMEWORK == 1) 
+          c_putToScoreboard(res.data[0]);
+        else
+          sc_table.add(res);
 
         ++cnt;
         if (cnt % 4000 == 0)
         begin
+					$write("Put             %d to scoreboard\n", cnt);
           #10ns;
         end;
       endtask : post_tr
@@ -290,7 +298,7 @@ typedef TransactionTable#(1) TransactionTableType;
       sc_table.remove(transaction, status);
             
       ++cnt;
-      if (cnt % 1000 == 0) begin
+      if (cnt % 4000 == 0) begin
         $write("Removed %d transactions from scoreboard at ", cnt);
         $system("date");
       end
