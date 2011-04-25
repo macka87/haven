@@ -13,6 +13,17 @@
 #include <libsze2.h>
 #include "dpi_wrapper_pkg.h"
 
+typedef struct ListNode
+{
+	size_t size;
+	char* data;
+	struct ListNode* next;
+	struct ListNode* prev;
+} TListNode;
+
+static TListNode* scoreboard_front = NULL;
+static TListNode* scoreboard_end = NULL;
+
 //-----------------------------------------------------------------------------
 //- GLOBAL VARIABLES
 //-----------------------------------------------------------------------------
@@ -106,9 +117,10 @@ int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt) {
   unsigned int len;
   unsigned char *data;
 	unsigned char *outData;
+	static int counter = 0;
 
 	// retrieve the pointer to the SystemVerilog array
-	outData = svGetArrayPtr(outhwpkt);
+//	outData = static_cast<unsigned char*>(svGetArrayPtr(outhwpkt));
 
 	// read next data from the buffer
   data = szedata_read_next(sze, &len);
@@ -124,10 +136,72 @@ int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt) {
 		// omit the first 8 bytes so that we can omit the NetCOPE header
 		data += 8;
 		len -= 8;
+		*size = len;
+
+		if (scoreboard_front == NULL)
+		{
+			printf("Scoreboard empty!!!!!!!!!!!!!\n");
+			return EXIT_FAILURE;
+		}
+		else
+		{
+			TListNode* node = scoreboard_front;
+			scoreboard_front = node->next;
+
+			if (scoreboard_front == NULL)
+			{
+				scoreboard_end = NULL;
+			}
+			else
+			{
+				scoreboard_front->prev = NULL;
+			}
+
+			if (len != node->size)
+			{
+				printf("Size doesn't match!!!!!!!!!!!!!\n");
+				return EXIT_FAILURE;
+			}
+			else
+			{
+				if (memcmp(node->data, data, len))
+				{
+					printf("Data don't match!!!!!!!!!!!!!\n");
+					return EXIT_FAILURE;
+				}
+			}
+
+			++counter;
+			if (counter % 4000 == 0)
+			{
+				printf("Matched packet:       %d\n", counter);
+			}
+			free(node);
+		}
 
 		// copy to the SystemVerilog array without the NetCOPE header
-		memcpy(outData, data, len);
-		*size = len;
+//		memcpy(outData, data, len);
+//		*size = len;
+
+//		if ((scoreboard == NULL) || (scoreboard->empty()))
+//		{
+//			return EXIT_FAILURE;
+//		}
+//		else
+//		{
+//			TransactionType* transFromSB = scoreboard->front();
+//			scoreboard->pop();
+//			for (size_t i = 0; i < len; ++i)
+//			{
+//				if (data[i] != (*transFromSB)[i])
+//				{
+//					printf("Invalid transaction!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+//					return EXIT_FAILURE;
+//				}
+//			}
+//
+//			delete transFromSB;
+//		}
 	}
 	else
 	{
@@ -136,3 +210,25 @@ int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt) {
 
   return EXIT_SUCCESS;
 } 
+
+void c_putToScoreboard(const svOpenArrayHandle fltrans)
+{
+	TListNode* newList = malloc(sizeof(TListNode));
+	newList->size = svSize(fltrans, 1);
+	newList->data = malloc(newList->size);
+	memcpy(newList->data, svGetArrayPtr(fltrans), newList->size);
+	newList->next = NULL;
+
+	if (scoreboard_front == NULL)
+	{	// list is empty
+		newList->prev = NULL;
+		scoreboard_front = newList;
+		scoreboard_end = newList;
+	}
+	else
+	{
+		newList->prev = scoreboard_end;
+		scoreboard_end->next = newList;
+		scoreboard_end = newList;
+	}
+}
