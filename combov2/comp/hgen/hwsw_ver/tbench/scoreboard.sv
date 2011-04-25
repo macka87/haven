@@ -125,6 +125,8 @@
     endfunction
   endclass : BJHModel
   
+typedef TransactionTable#(1) TransactionTableType;
+
 /*!
  * \brief FrameLink Input Callbacks 
  *
@@ -139,10 +141,10 @@
      /*
       * Public Class Atributes
       */
-      TransactionTable #(0) sc_table;
-      int              flow_id_width;
-      bit[31:0]        hgen_init;
-      bit[63:0]        hgen_mask;
+      TransactionTableType  sc_table;
+      int                   flow_id_width;
+      bit[31:0]             hgen_init;
+      bit[63:0]             hgen_mask;
 
       int cnt;
      /*
@@ -154,7 +156,7 @@
       *      
       * \param sc_table - transaction tables
       */ 
-      function new (TransactionTable #(0) sc_table, int flow_id_width, bit[63:0] hgen_init, bit[63:0] hgen_mask);
+      function new (TransactionTableType sc_table, int flow_id_width, bit[63:0] hgen_init, bit[63:0] hgen_mask);
          this.sc_table = sc_table;
          this.flow_id_width = flow_id_width;
          this.hgen_init = hgen_init;
@@ -227,11 +229,8 @@
         sc_table.add(res);
 
         ++cnt;
-
         if (cnt % 4000 == 0)
         begin
-          $write("generated %d scoreboard transactions at ", cnt);
-          $system("date");
           #10ns;
         end;
       endtask : post_tr
@@ -255,7 +254,7 @@
     //! Scoreboard identification
     string inst;
     //! Transaction Table
-    TransactionTable #(0) sc_table;
+    TransactionTableType sc_table;
       
    /*
     * Public Class Methods
@@ -267,7 +266,7 @@
     * \param sc_table - transaction tables
     * \param inst - scoreboard identification     
     */
-    function new (TransactionTable #(0) sc_table);
+    function new (TransactionTableType sc_table);
       this.sc_table = sc_table;
     endfunction
    
@@ -323,7 +322,7 @@
     * Public Class Atributes
     */
     //! Transaction Table
-    TransactionTable #(0) scoreTable;
+    TransactionTableType scoreTable;
     //! Input callback
     ScoreboardInputCbs    inputCbs;
     //! Output callback
