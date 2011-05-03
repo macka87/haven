@@ -96,7 +96,7 @@ proc GenSVLibs {SV_LIBS} {
       exec make -C $DIR
 
       if { [file exist "$i.so"] || [file exist "$i.dll"] } {
-         append SV_FLAGS "-sv_lib $i"
+         append SV_FLAGS "-sv_lib $i "
       } else {
          puts "Warning: SystemVerilog dynamic library $i was not found nor compiled."
       }

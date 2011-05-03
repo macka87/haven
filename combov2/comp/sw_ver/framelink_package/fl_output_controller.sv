@@ -3,7 +3,7 @@
  * File Name:    FrameLink Output Controller Class
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
- * Date:         27.2.2011 
+ * Date:         3.5.2011 
  * ************************************************************************** */
  
  class FrameLinkOutputController extends OutputController;

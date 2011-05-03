@@ -3,7 +3,7 @@
  * File Name:    SystemVerilog DPI layer package
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
- * Date:         27.2.2011 
+ * Date:         3.5.2011 
  * ************************************************************************** */
 
 /*!
@@ -22,17 +22,16 @@ package dpi_wrapper_pkg;
    *  Close DMA Channel after data transport. 
    */
   import "DPI-C" pure function int c_closeDMAChannel(); 
-   
+  
   /*
    *  Data transport through DMA Channel to HW. 
    */
   import "DPI-C" context function int c_sendData(input byte unsigned inhwpkt[]);
   
   /*
-   *  Data transport through DMA Channel from HW. 
+   *  Data transport through DMA Channel from HW and comparison in scoreboard 
+   *  table. 
    */
   import "DPI-C" context function int c_receiveData(output int unsigned size, inout byte unsigned outhwpkt[]);
   
-  import "DPI-C" context function void c_putToScoreboard(input byte unsigned fltrans[]);
-
 endpackage : dpi_wrapper_pkg

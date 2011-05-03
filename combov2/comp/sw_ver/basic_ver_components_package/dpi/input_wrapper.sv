@@ -76,8 +76,7 @@
       Transaction tr;
       NetCOPETransaction ntr;
       
-			int i = 0;
-      while (enabled) begin 
+			while (enabled) begin 
         wait(inputMbx.num()!=0) 
         busy = 1;
         inputMbx.get(tr);
@@ -88,12 +87,7 @@
         res = c_sendData(ntr.data);
         if (res!=0) $fatal("SEND DATA in input wrapper failed!!!");
                 
-				++i;
-				if (i % 4000 == 0) begin
-					$write("Sent            %d transactions from input ctrl at ", i);
-					$system("date");
-				end
-        busy = 0;
+				busy = 0;
       end
     endtask : run 
  

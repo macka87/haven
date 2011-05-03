@@ -30,8 +30,6 @@
    /*
     * Public Class Atributes
     */
-    //TransType tr_table[$];     //! Table of transactions
-    //semaphore sem;             //! Semaphore solves problems with concurent acces
     tTransMbx tr_table = new(0); //! Mailbox
     integer added;               //! Items added to transaction table
     integer removed;             //! Items removed from transaction table
@@ -44,7 +42,6 @@
     * Constructor - creates transaction table object  
     */
     function new();
-      //sem = new(1);
       added = 0;
       removed = 0;
     endfunction
@@ -57,11 +54,8 @@
     * Adds transaction items to the transaction table
     */    
     task add(TransType transaction);
-      //lock();
-      //this.tr_table.push_back(transaction);
       this.tr_table.put(transaction);
       added++;
-      //unlock();
     endtask: add
     
    /*! 
@@ -72,8 +66,6 @@
       Transaction tr;
       status=0;
     
-     // lock();
-
      //compares all transactions in the table with coming transaction
      /*if (behav==TR_TABLE_FIFO)begin  
        for(integer i=0; i < this.tr_table.size; i++) begin 
@@ -107,29 +99,12 @@
            removed++;
          end  
      end     
-    
-     //  unlock();     
    endtask: remove 
  
-   /*! 
-    * Lock scoreboard
-    */ 
-    //task lock();
-    //   sem.get(1);  //! Semaphore is set to lock 
-    //endtask: lock
-
-   /*! 
-    * Unlock scoreboard
-    */
-    //task unlock();
-    //   sem.put(1);  //! Semaphore is set to unlock
-    //endtask: unlock
-    
    /*! 
     * Display the actual state of transaction table
     */
     task display(integer full=1, string inst = "");
-      // lock();
       TransType tr;
        $write("------------------------------------------------------------\n");
        $write("-- %s TRANSACTION TABLE\n", inst);
@@ -147,7 +122,6 @@
           end  
        end   
        $write("------------------------------------------------------------\n");
-       //unlock();
     endtask: display
  endclass : TransactionTable
 

@@ -86,15 +86,11 @@
           if (size > 0) begin
             // store the right size of data
 						ntr.size = size;
-//						
-//            // put received data to output mailbox
-//						outputMbx.put(ntr);  
+						
+            // put received data to output mailbox
+						outputMbx.put(ntr);  
             counter++;
-						if (counter % 4000 == 0) begin
-							$write("Output wrapper: %d at time ", counter);
-              $system("date");
-						end
-          end
+					end
 					else begin
 						#10ns;
 					end

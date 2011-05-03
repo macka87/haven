@@ -23,7 +23,7 @@
     */
     
     //! Transaction Table
-    TransactionTable #(0) sc_table; 
+    TransactionTable #(1) sc_table; 
 
    /*
     * Public Class Methods
@@ -34,7 +34,7 @@
     *      
     * \param sc_table - transaction tables
     */
-    function new (TransactionTable #(0) sc_table);
+    function new (TransactionTable #(1) sc_table);
       this.sc_table = sc_table;
     endfunction
     
@@ -63,7 +63,17 @@
     
     virtual task post_tr(Transaction transaction, byte id);
      // transaction.display("ADDED TRANSACTION TO SCOREBOARD");
-      sc_table.add(transaction);
+     if (FRAMEWORK == 1) 
+       c_putToScoreboard(res.data[0]);
+     else
+       sc_table.add(res);
+
+     ++cnt;
+     if (cnt % 1000 == 0)
+     begin
+		   $write("Put             %d to scoreboard\n", cnt);
+       #10ns;
+     end;
     endtask : post_tr
  endclass : ScoreboardInputCbs
 
@@ -86,8 +96,8 @@
     //! Scoreboard identification
     string inst;
     //! Transaction Table
-    TransactionTable #(0) sc_table;
-    
+    TransactionTable #(1) sc_table;
+    int cnt;
    /*
     * Public Class Methods
     */
@@ -98,8 +108,9 @@
     * \param sc_table - transaction tables
     * \param inst - scoreboard identification     
     */
-    function new (TransactionTable #(0) sc_table);
+    function new (TransactionTable #(1) sc_table);
       this.sc_table = sc_table;
+      this.cnt = 0;
     endfunction
     
    /*! 
@@ -146,7 +157,7 @@
     * Public Class Atributes
     */
     //! Transaction Table
-    TransactionTable #(0) scoreTable;
+    TransactionTable #(1) scoreTable;
     //! Input callback
     ScoreboardInputCbs    inputCbs;
     //! Output callback

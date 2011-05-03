@@ -77,8 +77,6 @@
       for (int i=0; i<pOutputWidth; i++)
         fb[i] = lfsr[i][pOutputWidth-1];
       
-      //$write("polynomial: %b\n", polynomial); 
-            
       while (enabled) begin   //! Repeat while enabled
       
         // we use "pOutputWidth" number of LFSR registers to create random 
@@ -90,16 +88,12 @@
           for (int j=0; j<pOutputWidth-1; j++)
             if (polynomial[j] == 1) fb[i] = fb[i] ^ lfsr[i][j];
           
-          //$write("i: %d fb: %b\n", i, fb[i]); 
-          
           // actualization of LFSR registers
           lfsr[i] = (lfsr[i] >> 1);
           lfsr[i][pOutputWidth-1] = fb[i];
-          //$write("i: %d lfsr: %b\n", i, lfsr[i]);
         end 
         
         //! put created random number to mailbox 
-        //$write("fb: %b\n", fb); 
         lfsrMbx.put(fb);
       end
     endtask : run

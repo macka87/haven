@@ -17,8 +17,8 @@ if { $ARCHGRP == "FULL" } {
   ]
  
   # verification files
-  set MOD "$MOD $ENTITY_BASE/tbench/sv_fl_fifo_pkg.sv"
   set MOD "$MOD $ENTITY_BASE/tbench/test_pkg.sv"
+  set MOD "$MOD $ENTITY_BASE/tbench/sv_fl_fifo_pkg.sv"
   set MOD "$MOD $ENTITY_BASE/tbench/dut.sv"
   set MOD "$MOD $ENTITY_BASE/tbench/test.sv"  
 }

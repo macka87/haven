@@ -100,10 +100,6 @@
       Transaction trans;
       int counter = 0;
       while (enabled && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin          
-        if (data_id % 4000 == 0) begin
-          $write("Generated       %d new blueprint transactions at ", data_id);
-          $system("date");
-        end
         trans = blueprint.copy;   //! Copy from blueprint
         trans.data_id = data_id;  //! Set instance count
         assert(trans.randomize);  //! Randomize transaction

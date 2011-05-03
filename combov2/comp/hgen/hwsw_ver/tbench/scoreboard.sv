@@ -6,7 +6,7 @@
  * Date:         24.4.2011         
  * ************************************************************************** */
  
-import dpi_wrapper_pkg::*;
+import dpi_tr_table_pkg::*;
 import test_pkg::*;
 
 /*!
@@ -149,7 +149,6 @@ typedef TransactionTable#(1) TransactionTableType;
       bit[31:0]             hgen_init;
       bit[63:0]             hgen_mask;
 
-      int cnt;
      /*
       * Public Class Methods
       */
@@ -164,7 +163,6 @@ typedef TransactionTable#(1) TransactionTableType;
          this.flow_id_width = flow_id_width;
          this.hgen_init = hgen_init;
          this.hgen_mask = hgen_mask;
-         this.cnt = 0;
       endfunction
     
      /*! 
@@ -230,17 +228,12 @@ typedef TransactionTable#(1) TransactionTableType;
         res.data[0][1] = result[15:8];
         res.data[0][0] = result[7:0];
 
-        if (FRAMEWORK == 1) 
-          c_putToScoreboard(res.data[0]);
-        else
+        if (FRAMEWORK == 0)
           sc_table.add(res);
 
-        ++cnt;
-        if (cnt % 4000 == 0)
-        begin
-					$write("Put             %d to scoreboard\n", cnt);
-          #10ns;
-        end;
+        if (FRAMEWORK == 1) 
+          c_addToTable(res.data[0]);
+        
       endtask : post_tr
  endclass : ScoreboardInputCbs
     
@@ -278,7 +271,6 @@ typedef TransactionTable#(1) TransactionTableType;
       this.sc_table = sc_table;
     endfunction
    
-   int cnt = 0;
    /*! 
     * Transaction postprocessing
     *
@@ -290,28 +282,34 @@ typedef TransactionTable#(1) TransactionTableType;
     * \param inst - monitor identifier         
     */
     virtual task post_tr(Transaction transaction, byte id);
+      FrameLinkTransaction tr;
       bit status=0;
+      int res;
       
       //transaction.display("REMOVED TRANSACTION FROM SCOREBOARD");
       
-      // Gets number of transaction table from ID number
-      sc_table.remove(transaction, status);
-            
-      ++cnt;
-      if (cnt % 4000 == 0) begin
-        $write("Removed %d transactions from scoreboard at ", cnt);
-        $system("date");
-      end
+      if (FRAMEWORK == 0)begin
+        sc_table.remove(transaction, status);
+       
+        if (status==0)begin
+          $write("STATUS==0\n");
+          $write("Unknown transaction received from monitor %d\n", inst);
+          $timeformat(-9, 3, " ns", 8);
+          $write("Time: %t\n", $time);
+          transaction.display(); 
+          sc_table.display("scoreboard");
+          $stop;
+        end;
+      end  
 
-      if (status==0)begin
-         $write("STATUS==0\n");
-         $write("Unknown transaction received from monitor %d\n", inst);
-         $timeformat(-9, 3, " ns", 8);
-         $write("Time: %t\n", $time);
-         transaction.display(); 
-         sc_table.display("scoreboard");
-         $stop;
-      end;
+      if (FRAMEWORK == 1) begin 
+        $cast(tr, transaction);
+        res = c_removeFromTable(tr.data[0]);
+        if (res==1)begin 
+          $write("Unknown transaction received from output controller!\n");
+          c_displayTable(); 
+        end   
+      end
     endtask : post_tr 
  endclass : ScoreboardOutputCbs   
  
@@ -359,6 +357,9 @@ typedef TransactionTable#(1) TransactionTableType;
     * 
     */
     task display();
-      scoreTable.display();
+      if (FRAMEWORK == 0)
+        scoreTable.display();  
+      if (FRAMEWORK == 1)  
+        c_displayTable(); 
     endtask
  endclass : HGENScoreboard
