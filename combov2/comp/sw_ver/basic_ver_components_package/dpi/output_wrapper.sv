@@ -87,7 +87,7 @@
             // store the right size of data
 						ntr.size = size;
 						
-            // put received data to output mailbox
+						// put received data to output mailbox
 						outputMbx.put(ntr);  
             counter++;
 					end

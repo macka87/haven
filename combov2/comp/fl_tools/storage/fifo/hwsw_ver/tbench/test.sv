@@ -67,8 +67,8 @@ program TEST (
      scoreboard = new();
      
      //! Create Input and Output Mailbox
-     inputMbx   = new(0);
-     outputMbx  = new(0);
+     inputMbx   = new(1);
+     outputMbx  = new(1);
      
      //! Create Input Controller 
      flGenInCnt = new("Input Controller", FRAMEWORK, inputMbx,
@@ -145,7 +145,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || (outputWrapper.counter!=2*TRANSACTION_COUT) || flOutCnt.busy) busy = 1; 
+        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy) busy = 1; 
       end
         
       if (busy) i = 0;
@@ -188,8 +188,8 @@ program TEST (
      proc.srandom(SEED1);             
      flGenInCnt.sendGenerated(TRANSACTION_COUT);
      //flGenInCnt.waitFor(5);
-     proc.srandom(SEED2);       
-     flGenInCnt.sendGenerated(TRANSACTION_COUT);
+     //proc.srandom(SEED2);       
+     //flGenInCnt.sendGenerated(TRANSACTION_COUT);
      flGenInCnt.stop();
      
      // Disable Test Enviroment

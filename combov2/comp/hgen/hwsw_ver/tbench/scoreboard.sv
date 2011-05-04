@@ -286,8 +286,6 @@ typedef TransactionTable#(1) TransactionTableType;
       bit status=0;
       int res;
       
-      //transaction.display("REMOVED TRANSACTION FROM SCOREBOARD");
-      
       if (FRAMEWORK == 0)begin
         sc_table.remove(transaction, status);
        
@@ -328,7 +326,7 @@ typedef TransactionTable#(1) TransactionTableType;
     * Public Class Atributes
     */
     //! Transaction Table
-    TransactionTableType scoreTable;
+    TransactionTableType  scoreTable;
     //! Input callback
     ScoreboardInputCbs    inputCbs;
     //! Output callback

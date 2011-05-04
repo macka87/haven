@@ -2,7 +2,8 @@
  * Project Name: FIFO Functional Verification 
  * File Name:    fifo checker
  * Description: 
- * Authors:      Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
+ * Authors:      Marek Santa <xsanta06@stud.fit.vutbr.cz>
+ *               Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011         
  * ************************************************************************** */
  
