@@ -56,17 +56,12 @@
     * Enable Driver - eable driver and runs driver process
     */     
     virtual task setEnabled();
-      //enabled = 1;  //! Driver Enabling
-      //fork         
-      //   run();     //! Creating driver subprocess
-      //join_none;    //! Don't wait for ending
     endtask : setEnabled
         
    /*! 
     * Disable Driver
     */      
     virtual task setDisabled();
-      //enabled = 0;  //! Disable Driver
     endtask : setDisabled
 
    /*

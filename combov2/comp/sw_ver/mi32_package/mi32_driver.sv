@@ -3,7 +3,7 @@
  * File Name:    Software MI32 Driver Class
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
- * Date:         24.4.2011 
+ * Date:         5.5.2011 
  * ************************************************************************** */
  
 /*!
@@ -12,43 +12,15 @@
  * Unit must be enabled by "setEnable()" function call. Unit can be
  * stoped by "setDisable()" function call. You can send your custom
  * transaction by calling "sendTransaction" function.
- *
- * !!!! zatial nie je upraveny pre sw-hw verziu 
  */
- class Mi32Driver;
+ class MI32Driver extends Driver;
 
    /*
     * Public Class Atributes
     */
-    string    inst;                             // Driver identification
-    byte      id;
-    bit       enabled;                          // Driver is enabled
-    tTransMbx transMbx;                         // Transaction mailbox
-    InputCbs  cbs[$];                           // Callbacks list
+    //! FrameLink interface
     virtual iMi32.tb    mi;
-  
-    rand bit enTxDelay;   // Enable/Disable delays between transactions
-      // Enable/Disable delays between transaction (weights)
-      int txDelayEn_wt        = 1; 
-      int txDelayDisable_wt   = 3;
-
-    rand integer txDelay; // Delay between transactions
-      // Delay between transactions limits
-      int txDelayLow          = 0;
-      int txDelayHigh         = 3;
-    // ----
-
-    // -- Constrains --
-    constraint cDelays {
-      enTxDelay dist { 1'b1 := txDelayEn_wt,
-                       1'b0 := txDelayDisable_wt
-                     };
-
-      txDelay inside {
-                      [txDelayLow:txDelayHigh]
-                     };
-      }
-
+    
    /*
     * Public Class Methods
     */
@@ -65,12 +37,10 @@
                    tTransMbx transMbx, 
                    virtual iMi32.tb mi 
                          );
+      super.new(inst, id, transMbx);
       this.enabled     = 0;            // Driver is disabled by default
       this.mi          = mi;           // Store pointer interface 
-      this.transMbx    = transMbx;     // Store pointer to mailbox
-      this.inst        = inst;         // Store driver identifier
-      this.id          = id;
-
+      
       this.mi.cb.ADDR      <= 0;
       this.mi.cb.DRD       <= 0;
       this.mi.cb.DWR       <= 0;
@@ -81,81 +51,58 @@
       this.mi.cb.DRDY      <= 0;
     endfunction: new  
     
-    // -- Set Callbacks -------------------------------------------------------
-    // Put callback object into List 
-    function void setCallbacks(InputCbs cbs);
-      this.cbs.push_back(cbs);
-    endfunction : setCallbacks
-    
-    // -- Enable Driver -------------------------------------------------------
-    // Enable driver and runs driver process
+   /*! 
+    * Enable Driver - eable driver and runs driver process
+    */
     task setEnabled();
-      enabled = 1; // Driver Enabling
-      fork         
-        run();     // Creating driver subprocess
-      join_none;   // Don't wait for ending
+      enabled = 1;  //! Driver Enabling
+      @(mi.cb); 
     endtask : setEnabled
         
-    // -- Disable Driver ------------------------------------------------------
-    // Disable generator
+   /*! 
+    * Disable Driver
+    */
     task setDisabled();
-      enabled = 0; // Disable driver, after sending last transaction it ends
+      enabled = 0;  
     endtask : setDisabled
     
-    // -- Send Transaction ----------------------------------------------------
-    // Send transaction to mi32 interface
-    task sendTransaction( Mi32Transaction transaction );
-      Transaction tr;
-      $cast(tr, transaction);
-      
-      // Call transaction preprocesing, if is available
-      foreach (cbs[i]) cbs[i].pre_tr(tr, id);
+   /*
+    * Private Class Methods
+    */
+   
+   /*! 
+    * Send wait - waits for defined count of clock.    
+    */ 
+    task sendWait(int clocks);
+       repeat (clocks) @(mi.cb);
+    endtask : sendWait 
+    
+   /*! 
+    * Send transactions - takes transactions from mailbox and sends it 
+    * to interface.
+    */  
+    task sendTransaction(MI32Transaction transaction);
+      if (enabled) begin 
+        if (transaction.enBtDelay)     //! Delay between transactions
+          repeat (transaction.btDelay) 
+            @(mi.cb);
 
-      // Wait before sending transaction
-      if (enTxDelay) repeat (txDelay) @(mi.cb);
-      
-      // Send transaction
-      executeTransaction(transaction);
-      
-      // Set no request 
-      mi.cb.RD     <= 0;
-      mi.cb.WR     <= 0;
-    
-      // Call transaction postprocesing, if is available
-      foreach (cbs[i]) cbs[i].post_tr(tr, id);
-    endtask : sendTransaction
-    
-    // -- Private Class Methods --
-    
-    // -- Run Driver ----------------------------------------------------------
-    // Take transactions from mailbox and generate them to interface
-    task run();
-      Mi32Transaction transaction;
-      Transaction to;
-      @(mi.cb);                        // Wait for clock
-      while (enabled) begin            // Repeat while enabled
-        transMbx.get(to);              // Get transaction from mailbox
-        $cast(transaction,to);
-        assert(randomize());
-        sendTransaction(transaction);  // Send Transaction
-//        transaction.display();
+        sendData(transaction);         //! Send transaction
+        
+        // Set no request 
+        mi.cb.RD     <= 0;
+        mi.cb.WR     <= 0;
+        
+        //transaction.display("MI trans");     //! Display transaction
       end
-    endtask : run
-    
+    endtask : sendTransaction 
 
-    // -- Wait for ARDY -----------------------------------------------------
-    // Wait for address ready signal
-    task waitForARDY();
-      while (mi.cb.ARDY == 0) begin
-        @(mi.cb);
-      end;
-    endtask : waitForARDY
-
-    // -- Execute transaction -----------------------------------------------
-    // Send transaction command and data
-    task executeTransaction(Mi32Transaction tr);
-    
-      // Allign data from transaction to fl.DATA
+   /*!
+    * Send transaction data 
+    * 
+    * \param tr - MI32 transaction
+    */
+    task sendData(MI32Transaction tr);
       mi.cb.ADDR      <= tr.address;
       mi.cb.DWR       <= tr.data;    
       mi.cb.BE        <= tr.be;     
@@ -168,8 +115,16 @@
       // clear pending request signals
       mi.cb.WR        <= 0;
       mi.cb.RD        <= 0;
-
-    endtask : executeTransaction
+    endtask : sendData
+    
+   /*!
+    * Wait for ARDY
+    */      
+    task waitForARDY();
+      while (mi.cb.ARDY == 0) begin
+        @(mi.cb);
+      end;
+    endtask : waitForARDY
      
-  endclass : Mi32Driver 
+  endclass : MI32Driver 
 

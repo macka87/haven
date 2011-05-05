@@ -6,7 +6,6 @@
  * Date:         24.4.2011 
  * ************************************************************************** */
  
-
 /*
  *  MI32 Interface
  */
@@ -41,15 +40,19 @@ interface iMi32 (input logic CLK, RESET);
                 output DRDY,
                 output DRD);
   
-  // Driver Modport
-  modport tb (clocking cb);
+  /*
+   * Driver Modport
+   */   
+   modport tb (clocking cb);
 
-  // Monitor Modport
-  modport monitor (clocking monitor_cb);
+  /*
+   * Monitor Modport
+   */    
+   modport monitor (clocking monitor_cb);
   
- /*
-  * Interface properties/assertions
-  */
+  /*
+   * Interface properties/assertions
+   */
   
   // -- While RESET RD inactive ----------------------------------------
   // RD may be active only if RESET is inactive. 

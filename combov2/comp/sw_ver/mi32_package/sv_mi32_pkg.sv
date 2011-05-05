@@ -16,5 +16,6 @@ package sv_mi32_pkg;
   `include "mi32_transaction.sv"
   `include "mi32_driver.sv"
   `include "mi32_monitor.sv"
+  `include "mi32_input_controller.sv"
 
 endpackage : sv_mi32_pkg

@@ -3,28 +3,52 @@
  * File Name:    mi32_transaction
  * Description:  MI32 Transaction Class
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
- * Date:         24.4.2011 
+ * Date:         5.5.2011 
  * ************************************************************************** */
 
- class Mi32Transaction extends Transaction;
+ class MI32Transaction extends Transaction;
       
    /*
     * Public Class Atributes
     */
     
    //! --- RANDOMIZATION OF TRANSACTION PARAMETERS ---
+   logic [31:0] maxAddress = '1;
    
-     logic [31:0] maxAddress = '1;
-   
-     rand logic [31:0]  address;
-     rand logic [31:0]  data;
-     rand logic [3:0]   be;
-     rand logic         rw; // rw==0 => read request, rw==1 => write request
+   rand logic [31:0] address;
+   rand logic [31:0] data;
+   rand logic [3:0]  be;
+   rand logic        rw;      // rw==0 => read request, rw==1 => write request
 
-     // -- Constrains --
-     constraint c1 {
-       address       <= maxAddress;
-       };
+   //! Transaction data constraint
+   constraint c1 {
+     address       <= maxAddress;
+   };
+   
+   //! --- RANDOMIZATION OF DELAY PARAMETERS ---
+   
+   //! Enable/Disable delays "between transactions" according to weights
+    rand bit enBtDelay;   
+         byte btDelayEn_wt  = 1; 
+         byte btDelayDi_wt  = 3;
+
+    //! Value of delay "between transactions" randomized inside boundaries
+    rand byte btDelay; 
+         byte btDelayLow    = 0;
+         byte btDelayHigh   = 3;
+    
+    //! Constraints for randomized values 
+    constraint cDelay1 {
+      enBtDelay dist { 1'b1 := btDelayEn_wt,
+                       1'b0 := btDelayDi_wt
+                     };
+    };                 
+
+    constraint cDelay2 {
+      btDelay inside {
+                      [btDelayLow:btDelayHigh]
+                     };
+    };                 
 
    /*
     * Public Class Methods
@@ -37,18 +61,17 @@
     * \param prefix - transaction type
     */
     virtual function void display(string prefix = "");
-       if (prefix != "")
-       begin
-         $write("---------------------------------------------------------\n");
-         $write("-- %s\n",prefix);
-         $write("---------------------------------------------------------\n");
-       end
+      if (prefix != "")
+      begin
+        $write("---------------------------------------------------------\n");
+        $write("-- %s\n",prefix);
+        $write("---------------------------------------------------------\n");
+      end
        
-       if (rw == 0) // read request
-         $write("Read from address: %0x data: %0x\n", address, data);
-       else // write request
-         $write("Write to address: %0x data: %0x BE: %0x\n", address, data, be);
-
+      if (rw == 0) // read request
+        $write("Read from address: %0x data: %0x\n", address, data);
+      else // write request
+        $write("Write to address: %0x data: %0x BE: %0x\n", address, data, be);
     endfunction : display
  
    /*!
@@ -58,7 +81,7 @@
     * \param to - original transaction        
     */
      virtual function Transaction copy(Transaction to = null);
-       Mi32Transaction tr;
+       MI32Transaction tr;
        if (to == null)
          tr = new();
        else 
@@ -71,7 +94,7 @@
        tr.rw            = rw;
 
        copy = tr;
-       endfunction: copy
+     endfunction: copy
        
  	 /*!
     * Compares the current value of the object instance with the current value
@@ -90,7 +113,7 @@
     virtual function bit compare(input Transaction to, 
                                   output string diff, input int kind = -1);
        bit same = 1; // Suppose that are same
-       Mi32Transaction tr;
+       MI32Transaction tr;
        if (! $cast(tr, to))
           $display("Cast error\n");
        
@@ -120,5 +143,5 @@
 
        compare = same;
     endfunction: compare 
- endclass: Mi32Transaction
+ endclass: MI32Transaction
 

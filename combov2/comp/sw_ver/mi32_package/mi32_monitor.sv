@@ -3,7 +3,7 @@
  * File Name:    Software MI32 Monitor Class
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
- * Date:         24.4.2011 
+ * Date:         5.5.2011 
  * ************************************************************************** */
  
 /*!
@@ -19,28 +19,6 @@
     */
     virtual iMi32.tb    mi;
   
-    rand bit enTxDelay;   // Enable/Disable delays between transactions
-      // Enable/Disable delays between transaction (weights)
-      int txDelayEn_wt             = 1; 
-      int txDelayDisable_wt        = 3;
-
-    rand integer txDelay; // Delay between transactions
-      // Delay between transactions limits
-      int txDelayLow          = 0;
-      int txDelayHigh         = 3;
-    // ----
-
-    // -- Constrains --
-    constraint cDelays {
-      enTxDelay dist { 1'b1 := txDelayEn_wt,
-                       1'b0 := txDelayDisable_wt
-                     };
-
-      txDelay inside {
-                      [txDelayLow:txDelayHigh]
-                     };
-      }
-
    /*
     * Public Class Methods
     */
@@ -48,8 +26,8 @@
    /*! 
     * Constructor - creates monitor object  
     *
-    * \param inst     - monitor instance name
-    * \param id       - identification number     
+    * \param inst - monitor instance name
+    * \param id   - identification number     
     */
     function new (string inst, 
                   byte id,
@@ -69,25 +47,28 @@
       this.mi.cb.DRDY      <= 0;
     endfunction: new  
     
-    // -- Wait for ARDY -----------------------------------------------------
-    // Wait for address ready signal
+   /*!
+    * Wait for ARDY 
+    */
     task waitForARDY();
       while (mi.cb.ARDY == 0) begin
         @(mi.cb);
       end;
     endtask : waitForARDY
 
-    // -- Wait for DRDY -----------------------------------------------------
-    // Wait for data ready signal
-   task waitForDRDY();
+   /*!
+    * Wait for DRDY 
+    */
+    task waitForDRDY();
       while (mi.cb.DRDY == 0) begin
         @(mi.cb);
       end;
     endtask : waitForDRDY
 
-    // -- Execute transaction -----------------------------------------------
-    // Send transaction command and receive data
-    task executeTransaction(Mi32Transaction tr);
+   /*!
+    * Send transaction command and receive data
+    */     
+    task receiveTransaction(MI32Transaction tr);
     
       // Allign data from transaction to fl.DATA
       mi.cb.ADDR      <= tr.address;
@@ -105,8 +86,6 @@
       waitForDRDY();  // Wait until oposit side set data ready
 
       tr.data = mi.cb.DRD;   // Store received data
-      
-    endtask : executeTransaction
-     
+    endtask : receiveTransaction
   endclass : Mi32Monitor 
 

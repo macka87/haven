@@ -33,16 +33,13 @@ program TEST (
   //! Mailbox for Output controller's transactions
   tTransMbx                                              outputMbx; 
   
-  //! MI32 Mailbox
-  tTransMbx                                              mi32TransMbx;
-  
-  //! MI32 Driver
-  Mi32Driver                                             mi32Driver;
-  
   //! MI32 Transaction                                   
-  Mi32Transaction                                        mi32Blueprint;
+  MI32Transaction                                        mi32Trans;
   
-  //! Input Controller of generated input  
+  //! MI23 Input Controller 
+  MI32InputController                                    mi32InCnt;
+  
+  //! FrameLink Input Controller of generated input  
   FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH)  flGenInCnt; 
   
   //! Input Wrapper
@@ -76,8 +73,12 @@ program TEST (
      inputMbx   = new(1);
      outputMbx  = new(1);
      
-     //! Create Input Controller 
-     flGenInCnt = new("Input Controller", FRAMEWORK, inputMbx,
+     //! Create MI32 Input Controller
+     mi32InCnt = new("MI32 Input Controller", FRAMEWORK, inputMbx, MI32_RXTX);
+     mi32InCnt.setCallbacks(scoreboard.mi32DriverCbs); 
+     
+     //! Create FrameLink Input Controller 
+     flGenInCnt = new("FrameLink Input Controller", FRAMEWORK, inputMbx,
                       GENERATOR_FL_FRAME_COUNT, GENERATOR_FL_PART_SIZE_MAX,
                       GENERATOR_FL_PART_SIZE_MIN,
                       DRIVER_BT_DELAY_EN_WT, DRIVER_BT_DELAY_DI_WT,
@@ -88,20 +89,6 @@ program TEST (
                       );
      flGenInCnt.setCallbacks(scoreboard.inputCbs);
      
-     //! MI32 driver                 
-     mi32Blueprint = new;
-     mi32Blueprint.address = '0;
-     mi32Blueprint.data    = HGEN_INIT[31:0];
-     mi32Blueprint.be      = 4'hF;
-     mi32Blueprint.rw      = 1;
-      
-     mi32TransMbx = new(0);
-     mi32TransMbx.put(mi32Blueprint);
-     
-     //! Create MI32 driver    
-     mi32Driver  = new ("Driver MI32", 0, mi32TransMbx, MI32_RXTX);
-     mi32Driver.setCallbacks(scoreboard.mi32DriverCbs);
-                       
      //! Create Input Wrapper
      inputWrapper = new("Input Wrapper", inputMbx); 
      
@@ -185,15 +172,7 @@ program TEST (
    */
   
   // Test Case 1
-  task initcrc();
-     $write("\n\n########## LOAD Bob Jenkins Hash INIT VIA MI32 ##########\n\n");
-     mi32Driver.setEnabled();
-     #(2000*CLK_PERIOD);
-     mi32Driver.setDisabled();
-  endtask: initcrc
-  
-  // Test Case 2
-  task test2();
+  task test1();
      process proc;
      proc = process::self();
      
@@ -206,7 +185,27 @@ program TEST (
      // Enable Test environment
      enableTestEnvironment();
      
-     // Sending of transactions
+     // --- Initialization through MI32 ---
+     
+     //! Init MI32 transaction                 
+     mi32Trans = new;
+     mi32Trans.address = '0;
+     mi32Trans.data    = HGEN_INIT[31:0];
+     mi32Trans.be      = 4'hF;
+     mi32Trans.rw      = 1;
+     mi32Trans.btDelayEn_wt  = DRIVER_BT_DELAY_EN_WT;
+     mi32Trans.btDelayDi_wt  = DRIVER_BT_DELAY_DI_WT;
+     mi32Trans.btDelayLow    = DRIVER_BT_DELAY_LOW;
+     mi32Trans.btDelayHigh   = DRIVER_BT_DELAY_HIGH;
+     
+     assert(randomize());           //! randomize random values  
+          
+     mi32InCnt.start(); 
+     mi32InCnt.sendTransaction(mi32Trans);
+     mi32InCnt.stop();
+    
+     // --- Sending of FRAMELINK transactions ---
+     
      flGenInCnt.start(); 
      proc.srandom(SEED1);             
      flGenInCnt.sendGenerated(TRANSACTION_COUT);
@@ -225,7 +224,7 @@ program TEST (
      // Display Scoreboard and Coverage
      scoreboard.display();
      //coverage.display();
-  endtask: test2
+  endtask: test1
 
   /*
    *  Main test part
@@ -236,8 +235,7 @@ program TEST (
     createEnvironment(); 
     
     // Testing
-    initcrc();
-    test2();
+    test1();
     
     // Stop testing
     $stop();
