@@ -111,4 +111,3 @@ void c_displayTable(){
   printf("Items removed: %d\n", removed);
   printf("\n");
 }
- 
