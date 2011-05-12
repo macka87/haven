@@ -148,6 +148,7 @@ typedef TransactionTable#(1) TransactionTableType;
         if (res==1)begin 
           $write("Unknown transaction received from output controller!\n");
           c_displayTable(); 
+          $stop;
         end   
       end
     endtask : post_tr 
