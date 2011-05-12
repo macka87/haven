@@ -24,7 +24,7 @@ import test_pkg::*; // Test constants
 /*
  *  Module body
  */
- FL_FIFO #(
+ ERRONEOUS_FL_FIFO #(
      .DATA_WIDTH    (DATA_WIDTH),
      .USE_BRAMS     (USE_BRAMS),
      .ITEMS         (ITEMS),
