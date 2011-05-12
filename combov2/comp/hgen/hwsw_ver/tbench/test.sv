@@ -55,10 +55,15 @@ program TEST (
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
   
   //! Responder
-  FrameLinkResponder #(DATA_WIDTH, DREM_WIDTH)           flResponder; 
+  //FrameLinkResponder #(DATA_WIDTH, DREM_WIDTH)           flResponder; 
+  FrameLinkResponderSimple #(DATA_WIDTH, DREM_WIDTH)     flResponder; 
   
   //! Scoreboard
   HGENScoreboard                                         scoreboard; 
+  
+  //! Coverage
+  FrameLinkCoverage #(DATA_WIDTH, DREM_WIDTH, 
+                      DATA_WIDTH, DREM_WIDTH)            flCoverage;
        
   /*
    *  Environment tasks 
@@ -68,6 +73,9 @@ program TEST (
   task createEnvironment(); 
      //! Create scoreboard
      scoreboard = new(FLOWID_WIDTH, HGEN_INIT, HGEN_MASK);
+     
+     //! Create coverage
+     flCoverage = new();
      
      //! Create Input and Output Mailbox
      inputMbx   = new(1);
@@ -88,6 +96,7 @@ program TEST (
                       RX
                       );
      flGenInCnt.setCallbacks(scoreboard.inputCbs);
+     flCoverage.addFrameLinkInterfaceRx(RX,"RX Command Coverage");
      
      //! Create Input Wrapper
      inputWrapper = new("Input Wrapper", inputMbx); 
@@ -101,13 +110,14 @@ program TEST (
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR);   
      flMonitor.setCallbacks(scoreboard.outputCbs);  
+     flCoverage.addFrameLinkInterfaceTx(MONITOR,"TX Command Coverage");
      
      //! Create Responder 
      flResponder  = new("FrameLink Responder", 0, TX);
-       flResponder.btDelayLow   = RESPONDER_BT_DELAY_LOW;
-       flResponder.btDelayHigh  = RESPONDER_BT_DELAY_HIGH;
-       flResponder.itDelayLow   = RESPONDER_IT_DELAY_LOW;
-       flResponder.itDelayHigh  = RESPONDER_IT_DELAY_HIGH;             
+       //flResponder.btDelayLow   = RESPONDER_BT_DELAY_LOW;
+       //flResponder.btDelayHigh  = RESPONDER_BT_DELAY_HIGH;
+       //flResponder.itDelayLow   = RESPONDER_IT_DELAY_LOW;
+       //flResponder.itDelayHigh  = RESPONDER_IT_DELAY_HIGH;             
   endtask : createEnvironment
   
   /*
@@ -125,6 +135,7 @@ program TEST (
     if (FRAMEWORK == 0) begin
       flMonitor.setEnabled();
       flResponder.setEnabled();
+      flCoverage.setEnabled();
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setEnabled();
@@ -159,6 +170,7 @@ program TEST (
     if (FRAMEWORK == 0) begin
       flMonitor.setDisabled();
       flResponder.setDisabled();
+      flCoverage.setDisabled();
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setDisabled();
@@ -223,7 +235,7 @@ program TEST (
      
      // Display Scoreboard and Coverage
      scoreboard.display();
-     //coverage.display();
+     if (FRAMEWORK == 0) flCoverage.display();
   endtask: test1
 
   /*

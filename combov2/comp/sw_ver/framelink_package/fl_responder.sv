@@ -58,7 +58,7 @@
       
       logic [8:0][8:0] btseed;
       logic [8:0][8:0] itseed;
-      
+            
       this.enabled     = 0;     //! Responder is disabled by default  
       this.busy        = 0;     //! Responder is not busy by default  
       this.fl          = fl;    //! Store pointer interface 
@@ -72,12 +72,12 @@
       
       btseed = {9'h1ff, 9'h1fe, 9'h1fc, 9'h1f8, 
                 9'h1f0, 9'h1e0, 9'h1c0, 9'h180,
-                9'h100};  
+                9'h100}; 
       //!!! zatial rovnake potom treba zmenit !!!!           
       itseed = {9'h100, 9'h180, 9'h1c0, 9'h1e0, 
                 9'h1f0, 9'h1f8, 9'h1fc, 9'h1fe,
-                9'h1ff};       
-      
+                9'h1ff};    
+                
       //! Create btDelay generator
       btDelayGenerator = new("BtDelay Generator", btDelayMbx, btseed, 9'h12c);
       itDelayGenerator = new("ItDelay Generator", itDelayMbx, itseed, 9'h12c);
@@ -140,6 +140,7 @@
       
       do begin
         btDelayMbx.get(btDelayFull);
+        //$write("btDelayFull: %b\n", btDelayFull);
         enBtDelay = btDelayFull[8];    // 9. bit is enable bit
         btDelay   = btDelayFull[7:0];  // 8. - 7. bits represent delay 
         if (enBtDelay == 0) break;
@@ -174,8 +175,8 @@
         if (enItDelay == 0) break;
       end while((itDelay>itDelayHigh) || (itDelay<itDelayLow));
        
-      $write("enItDelay: %b\n", enItDelay);
-      $write("itDelay: %b\n", itDelay);
+      //$write("enItDelay: %b\n", enItDelay);
+      //$write("itDelay: %b\n", itDelay);
       
       if (enItDelay)
         repeat (itDelay) begin

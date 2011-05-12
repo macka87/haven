@@ -22,4 +22,5 @@ package sv_basic_comp_pkg;
   `include "monitor.sv"
   `include "transaction_table.sv"
   `include "lfsr.sv"
+  `include "lfsr_1.sv"
 endpackage : sv_basic_comp_pkg
