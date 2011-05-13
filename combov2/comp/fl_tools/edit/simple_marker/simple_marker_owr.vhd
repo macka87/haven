@@ -114,7 +114,7 @@ architecture full of SIMPLE_FL_MARKER_OWR is
       END_PAD := (DATA_SIZE - ((BEG_PAD + MARK_SIZE) mod DATA_SIZE)) mod DATA_SIZE;
      
       -- 1 word if BEG_PAD exists and 1 word if END_PAD exists
-      return min(BEG_PAD, 1) + min(END_PAD, 1) + (MARK_SIZE - BEG_PAD - END_PAD)/DATA_SIZE;
+      return minimum(BEG_PAD, 1) + minimum(END_PAD, 1) + (MARK_SIZE - BEG_PAD - END_PAD)/DATA_SIZE;
    end function;
 
    -- number of words that mark affects
