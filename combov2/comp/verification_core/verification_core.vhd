@@ -195,12 +195,17 @@ begin
    -- ------------------------------------------------------------------------
    --                              DUT
    -- ------------------------------------------------------------------------
-   dut_i: entity work.fl_fifo
+--   dut_i: entity work.fl_fifo
+--   generic map(
+--      DATA_WIDTH  => DUT_DATA_WIDTH,
+--      USE_BRAMS   => false,
+--      ITEMS       => 16,
+--      PARTS       => 1
+--   )
+--   dut_i: entity work.HGEN_VER_COVER
+   dut_i: entity work.ERRONEOUS_FL_FIFO
    generic map(
-      DATA_WIDTH  => DUT_DATA_WIDTH,
-      USE_BRAMS   => false,
-      ITEMS       => 16,
-      PARTS       => 1
+      DATA_WIDTH  => DUT_DATA_WIDTH
    )
    port map(
       CLK           => clk_dut,
