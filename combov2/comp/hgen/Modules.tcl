@@ -44,6 +44,8 @@ set MASK_BASE           "$COMP_BASE/hgen/comp/mask"
 set TRANSFORMER_BASE    "$COMP_BASE/fl_tools/flow/transformer"
 set CONV_BASE           "$COMP_BASE/hgen/comp/128_to_96"
 set MARKER_BASE         "$COMP_BASE/fl_tools/edit/simple_marker"
+set SPLITTER_BASE       "$COMP_BASE/fl_tools/flow/splitter"
+set SEQUENCER_BASE      "$COMP_BASE/fl_tools/flow/sequencer"
 
 set PACKAGES "$PACKAGES $COMP_BASE/base/pkg/math_pack.vhd"
 
@@ -59,6 +61,8 @@ set COMPONENTS [list \
     [list "TRANSFORMER"    $TRANSFORMER_BASE    "FULL"] \
     [list "128_TO_96"      $CONV_BASE           "FULL"] \
     [list "MARKER"         $MARKER_BASE         "FULL"] \
+    [list "SPLITTER"       $SPLITTER_BASE       "TICKET"] \
+    [list "SEQUENCER"      $SEQUENCER_BASE      "TICKET"] \
 ]
 
 #set MOD "$MOD $ENTITY_BASE/hgen_mark_fsm.vhd"
@@ -66,3 +70,4 @@ set MOD "$MOD $ENTITY_BASE/hgen_core.vhd"
 set MOD "$MOD $ENTITY_BASE/hgen_ent.vhd"
 set MOD "$MOD $ENTITY_BASE/hgen_new.vhd"
 set MOD "$MOD $ENTITY_BASE/hgen_ver_cover.vhd"
+set MOD "$MOD $ENTITY_BASE/multi_hgen_ver_cover.vhd"
