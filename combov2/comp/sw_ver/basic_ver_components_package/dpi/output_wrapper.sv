@@ -81,7 +81,9 @@
         // we call C function (through DPI layer) for data transfer from hw
         res = c_receiveData(size, ntr.data);
         
-        if (res == 1) $fatal("RECEIVE DATA in output wrapper failed!!!"); 
+        if (res == 1) begin
+           $error("RECEIVE DATA in output wrapper failed!!!"); 
+        end
         else begin
           if (size > 0) begin
             // store the right size of data
