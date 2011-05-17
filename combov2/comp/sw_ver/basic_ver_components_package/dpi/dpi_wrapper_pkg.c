@@ -115,6 +115,15 @@ int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt){
 		if (len <= 8){	
       // in case the length read is smaller than expected
 			// (i.e. there is not complete header or any data)
+			fprintf(stderr, "Received data too small! (%d)\n", len);
+			return EXIT_FAILURE;
+		}
+
+		if (len > 4096)
+		{
+      // in case the length read is bigger than expected
+			// (i.e. there is some other problem)
+			fprintf(stderr, "Received data too large! (%d)\n", len);
 			return EXIT_FAILURE;
 		}
 
