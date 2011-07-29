@@ -1,0 +1,253 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[draft]{llncs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage{url}
+\usepackage[usenames]{color}
+\usepackage{pslatex}
+\usepackage{epsfig}
+\usepackage{paralist}
+\usepackage{wrapfig}
+%\usepackage[a]{esvect}
+
+%\overfullrule=5pt
+
+\newcommand{\notice}[1]{\textcolor{red}{#1}}
+
+\newcommand{\nat}{{N}}
+\newcommand{\bool}{{B}}
+\newcommand{\tr}{\rightarrow} % transition ->
+\newcommand{\ltr}[1]{\stackrel{#1}{\longrightarrow}} % labelled->
+\newcommand{\run}{\Longrightarrow}
+\newcommand{\lrun}[1]{\stackrel{#1}{\Longrightarrow}} % labelled->
+\newcommand{\ltrlow}[1]{\mathrel{\raisebox{0pt}[-0.10ex][0pt]
+  {\ensuremath{\stackrel{#1}{\raisebox{0pt}[0.57ex][0pt]{
+  \ensuremath{\longrightarrow}}}}}}} % labelled->
+\newcommand{\nset}[1]{\{1,\ldots,#1\}}
+\def\asym<#1>{\langle#1\rangle}
+
+\newcommand{\lang}{\mathcal{L}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\sem}[1]{\[ #1 \]}
+\newcommand{\ic}[3]{#2 \rightarrow_#1 #3}
+\newcommand{\br}{\mathit{br}}
+\newcommand{\subs}[1]{\tilde{#1}}
+\newcommand{\powerset}[1]{2^{#1}}
+
+\newcommand{\states}{Q}
+\newcommand{\alphabet}{\Sigma}
+\newcommand{\trans}{\Delta}
+\newcommand{\transbu}{\trans^{bu}}
+\newcommand{\transtd}{\trans^{td}}
+\newcommand{\final}{F}
+\newcommand{\automaton}[1][]{\A_{#1} = (\states_{#1}, \alphabet, \trans_{#1}, \final_{#1})}
+\newcommand{\automatonbu}[1][]{\A_{#1} = (\states_{#1}, \alphabet, \transbu_{#1}, \final_{#1})}
+\newcommand{\automatontd}[1][]{\A_{#1} = (\states_{#1}, \alphabet, \transtd_{#1}, \final_{#1})}
+
+\newcommand{\issimby}[1][]{\preceq_{#1}}
+\newcommand{\isnotsimby}[1][]{\not\issimby[#1]}
+\newcommand{\issimbyfe}[1][]{\issimby[#1]^{\forall\exists}}
+\newcommand{\isnotsimbyfe}{\isnotsimby^{\forall\exists}}
+\newcommand{\simulates}{\succeq}
+\newcommand{\simulatesfe}{\simulates^{\exists\forall}}
+
+\newcommand{\rank}[1][]{\#{#1}}
+\newcommand{\dom}{\mathit{dom}}
+
+% the such that symbol for set definitions: |
+\newcommand{\suchthat}{\;|\;}
+% sequences: x_1, ..., x_n
+\newcommand{\seq}[2][n]{{#2}_1, \dots, {#2}_{#1}}
+
+\newcommand{\apply}[1][]{\mathit{Apply_{#1}}}
+\newcommand{\createmtbdd}{\mathit{CreateMTBDD}}
+
+\newcommand{\op}{\mathit{op}}
+\newcommand{\var}{\mathit{var}}
+\newcommand{\low}{\mathit{low}}
+\newcommand{\high}{\mathit{high}}
+\newcommand{\rootnode}{\mathit{root}}
+\newcommand{\bddeval}[1]{[#1]}
+\newcommand{\bddfromfunc}[1]{\langle#1\rangle}
+\newcommand{\zerobddnode}{\mathbf{0}}
+\newcommand{\onebddnode}{\mathbf{1}}
+\renewcommand{\vec}[1]{\vv{#1}}
+\newcommand{\lhss}[1]{\bar{#1}}
+\newcommand{\alltrees}{T_{\Sigma}}
+
+\newcommand{\isaccessiblefromthrough}[2]{down_{#2}(#1)}
+%\newcommand{\isaccessiblefromthrough}[2]{#1 \triangledown #2}
+\newcommand{\isaccessibleupwardsfromthrough}[2]{up_{#2}(#1)}
+\newcommand{\choicefunctions}[2]{\mathit{cf}(#1, #2)}
+\def\tuplify(#1,#2,#3){\Lambda(#1,#2,#3)}
+\newcommand{\maximumtuples}[1]{#1^{\#}}
+
+\newcommand{\algstyle}{\fontsize{8.6}{8.3}\selectfont}
+
+% \pagestyle{plain}
+\pagestyle{empty}
+
+%\pdfpagesattr{/CropBox [92 62 523 728]} % LNCS page made big 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Better-than-Veloce Accelerated Verification
+  \thanks{This work was supported by FILL IN.}\vspace*{-0mm}}
+
+\author{Put\inst{1} your\inst{2} names\inst{3} here\inst{1,2,3}}
+
+\institute{
+  {FIT, Brno University of Technology, Czech Republic}
+\and
+  {Institution 2}
+\and
+  {Institution 3}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\maketitle
+
+\vspace*{-0mm}\begin{abstract}Here should be the abstract.\end{abstract}
+
+%===============================================================================
+\vspace*{-0mm}\section{Introduction}\vspace*{-0mm}
+%===============================================================================
+
+Here should be introduction
+
+
+%===============================================================================
+\vspace*{-0mm}\section{Conclusion}\vspace*{-0mm} \label{sec:conclusion}
+%===============================================================================
+
+Here should be the conclusion.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \bibliographystyle{splncs03}
+% \bibliographystyle{plain}
+
+%\bibliography{literature}
+
+{
+\begin{thebibliography}{10}
+
+%\fontsize{9pt}{10pt}\selectfont
+
+%\vspace*{-2mm}
+
+\bibitem{parosh-tree-simulations}
+P.~A. Abdulla, A.~Bouajjani, L.~Hol\'{\i}k, L.~Kaati, and T.~Vojnar.
+\newblock Computing Simulations over Tree Automata: Efficient Techniques for
+  Reducing Tree Automata.
+\newblock In {\em Proc. of TACAS'08}, LNCS 5148, Springer, 2008.
+
+\bibitem{parosh-tacas10}
+P.~A. Abdulla, L.~Hol\'{i}k, Y.-F. Chen, R.~Mayr, and T.~Vojnar.
+\newblock When Simulation Meets Antichains (On Checking Language Inclusion of
+  Nondeterministic Finite (Tree) Automata).
+\newblock In {\em Proc. of TACAS'10}, LNCS 6015, Springer, 2010.
+
+\bibitem{parosh-rtmc}
+P.~A. Abdulla, B.~Jonsson, P.~Mahata, and J.~d'Orso.
+\newblock Regular Tree Model Checking.
+\newblock In {\em Proc. of CAV'02}, LNCS 2404, Springer, 2002.
+
+\bibitem{antichain}
+A.~Bouajjani, P.~Habermehl, L.~Hol\'{i}k, T.~Touili, and T.~Vojnar.
+\newblock {Antichain-based Universality and Inclusion Testing over
+  Nondeterministic Finite Tree Automata}.
+\newblock In {\em Proc. of CIAA'08}, LNCS~5148, Springer, 2008.
+
+\bibitem{bouajjani-artmc}
+A.~Bouajjani, P.~Habermehl, A.~Rogalewicz, and T.~Vojnar.
+\newblock Abstract Regular Tree Model Checking.
+\newblock {\em ENTCS}, 149, Elsevier, 2006.
+
+\bibitem{bouajjani-complex}
+A.~Bouajjani, P.~Habermehl, A.~Rogalewicz, T.~Vojnar.
+\newblock Abstract Regular Tree Model Checking of Complex Dynamic Data
+  Structures.
+\newblock In {\em Proc. of SAS'06}, LNCS 4134, Springer, 2006.
+
+\bibitem{bourdier-firewalls}
+T.~Bourdier.
+\newblock Tree Automata-based Semantics of Firewalls.
+\newblock In {\em Proc. of SAR-SSI'11}, IEEE, 2011.
+
+\bibitem{bryant86}
+R.~E. Bryant.
+\newblock Graph-based Algorithms for {Boolean} Function Manipulation.
+\newblock {\em IEEE Trans. Computers}, 1986.
+
+\bibitem{mtbdds}
+E.M. Clarke, K.L. McMillan, X.~Zhao, M.~Fujita, and J.~Yang.
+\newblock Spectral Transforms for Large Boolean Functions with Applications to
+  Technology Mapping.
+\newblock {\em FMSD}, 10, Springer, 1997.
+
+\bibitem{doyen:antichain}
+L.~Doyen and J.~F. Raskin.
+\newblock {Antichain Algorithms for Finite Automata}.
+\newblock In {\em Proc. of TACAS'10}, LNCS 6015, Springer, 2010.
+
+\bibitem{habermehl-forest}
+P.~Habermehl, L.~Hol{\'i}k, A.~Rogalewicz, J.~{\v S}im{\'a}{\v c}ek, and
+  T.~Vojnar.
+\newblock Forest Automata for Verification of Heap Manipulation.
+\newblock In {\em Proc. of CAV'11}, LNCS 6806, Springer, 2011
+
+\bibitem{top-down-TR-11}
+L.~Hol\'{i}k, O.~Leng\'{a}l, J.~\v{S}im\'{a}\v{c}ek, and T. Vojnar.
+\newblock Efficient Inclusion Checking on Explicit and Semi-Symbolic Tree
+  Automata.
+\newblock Tech. rep. FIT-TR-2011-04, FIT BUT, Czech Rep., 2011.
+
+\bibitem{hosoya05}
+H.~Hosoya, J.~Vouillon, and B.~C. Pierce.
+\newblock Regular Expression Types for {XML}.
+\newblock {\em ACM Trans. Program. Lang. Syst.}, 27, 2005.
+
+\bibitem{ilie04}
+L.~Ilie, G.~Navarro, and S.~Yu.
+\newblock On {NFA} Reductions.
+\newblock In {\em Proc. of Theory is Forever}, LNCS 3113, Springer, 2004.
+
+\bibitem{monasecrets}
+N.~Klarlund, A.~M\o{}ller, and M.~I. Schwartzbach.
+\newblock {MONA} Implementation Secrets.
+\newblock {\em International Journal of Foundations of Computer Science},
+  13(4), 2002.
+
+\bibitem{madhusudan-decidable}
+P.~Madhusudan, G.~Parlato, and X.~Qiu.
+\newblock Decidable Logics Combining Heap Structures and Data.
+\newblock {\em SIGPLAN Not.}, 46, 2011.
+
+\bibitem{cudd}
+F.~Somenzi.
+\newblock {CUDD: CU Decision Diagram Package Release 2.4.2}, May 2011.
+
+\bibitem{tozawa-xml}
+A.~Tozawa and M.~Hagiya.
+\newblock XML Schema Containment Checking Based on Semi-implicit Techniques.
+\newblock In {\em Proc. of CIAA'03}, LNCS 2759, Springer, 2003.
+
+\bibitem{wulf:antichains}
+M.~De Wulf, L.~Doyen, T.~A. Henzinger, J.-F. Raskin.
+\newblock {Antichains: A New Algorithm for Checking Universality of Finite
+  Automata}.
+\newblock In {\em Proc. of CAV'06}, LNCS 4144, Springer, 2006.
+
+\end{thebibliography}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
