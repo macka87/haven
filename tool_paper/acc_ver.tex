@@ -95,20 +95,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{Better-than-Veloce Accelerated Verification
-  \thanks{This work was supported by FILL IN.}\vspace*{-0mm}}
+\thanks{This work was supported by the FIT grant FIT-11-S-1 and the research plan 
+MSM0021630528.}\vspace*{-0mm}}
+
+
+\author{Marcela ©imková\inst{1} Michal Kajan\inst{2} Ondøej Lengál\inst{3} here\inst{1,2,3}}
 
 \author{Michal Kajan\inst{1}
 \and  Ond\v{r}ej Leng\'{a}l\inst{1}
 \and  Marcela \v{S}imkov\'{a}\inst{1}
 }
 
-\institute{
-  {Faculty of Information Technology, Brno University of Technology, Bozetechova 2, 612 66 Brno, Czech Republic}
-\and
-  {Institution 2}
-\and
-  {Institution 3}
-}
+\institute{ {Faculty of Information Technology, Brno University of Technology, 
+Bo\v{z}et\v{e}chova 2, 612 66 Brno, Czech Republic} \and {Institution 2} \and 
+{Institution 3} }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document} 
@@ -116,20 +116,77 @@
 
 \maketitle
 
-\vspace*{-0mm}\begin{abstract}Here should be the abstract.\end{abstract}
-
+\vspace*{-0mm}\begin{abstract}Functional verification is a widespread technique 
+to check whether a hardware system satisfies a given correctness specification. 
+The complexity of modern computer systems is rapidly rising and the 
+verification process takes a significant amount of time. It is a challenging 
+task to find appropriate acceleration techniques for this process. In this 
+paper we present a design of a verification framework that exploits the 
+field-programmable gate array (FPGA) technology, while retaining the 
+possibility to run verification in the user-friendly debugging environment of a 
+simulator. The main advantages (or it is unique in that it) of the framework 
+are that it does not require investments in expensive specialized hardware and 
+is free to the community for further research and development. According to the 
+experiments carried out on a prototype implementation, the achieved 
+acceleration is proportional to the number of checked transactions and the 
+complexity of the verified system. The maximum acceleration achieved on the set 
+of experiments was over 130 times.\end{abstract}
 %===============================================================================
 \vspace*{-0mm}\section{Introduction}\vspace*{-0mm}
 %===============================================================================
+Today's highly competitive market of consumer electronics is very sensitive to the 
+time it takes to introduce a new product (the so-called time to market). This has 
+driven the demand for fast, efficient and cost-effective methods of verification 
+of hardware systems. Simulation-based approaches like functional verification 
+suffer from the fact that software simulation of inherently parallel hardware is 
+extremely slow when compared to the speed of real hardware. The gap between the 
+speed of simulation and the speed of real hardware widens with the increasing 
+complexity of the hardware design. An effort to increase efficiency and speed of 
+simulation or functional verification poses a considerable challenge not only for 
+research teams but also for commercial sphere (scope, area, field) (e.g. Mentor 
+Graphics' Veloce technology). As representatives of the first mentioned community 
+we introduce an open framework that exploits the inherent parallelism of hardware 
+designs to accelerate functional verification of these designs by targeting 
+special components of the verification environment to the FPGA. This is possible 
+because the generic nature of verification methodologies (OVM, UVM) and 
+transaction-based communication among their subcomponents make it possible to 
+transparently move these subcomponents to a specialized hardware, while 
+maintaining the same level of readability to verification engineers.
+%===============================================================================
+%===============================================================================
+\vspace*{-0mm}\section{Related Work}\vspace*{-0mm}
+%===============================================================================
 
-Here should be introduction
+%===============================================================================
 
+%===============================================================================
+\vspace*{-0mm}\section{Design of a Verification Framework}\vspace*{-0mm}
+%===============================================================================
+
+%===============================================================================
+
+%===============================================================================
+\vspace*{-0mm}\section{Experimental Results}\vspace*{-0mm}
+%===============================================================================
+
+%===============================================================================
+
+%===============================================================================
+\vspace*{-0mm}\subsection{Bug hunting}\vspace*{-0mm}
+%===============================================================================
+
+%===============================================================================
 
 %===============================================================================
 \vspace*{-0mm}\section{Conclusion}\vspace*{-0mm} \label{sec:conclusion}
-%===============================================================================
 
 Here should be the conclusion.
+
+%===============================================================================
+\vspace*{-0mm}\subsection{Future Work}\vspace*{-0mm}
+%===============================================================================
+
+%===============================================================================
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
