@@ -1,7 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass[draft]{llncs}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 \usepackage{url}
 \usepackage[usenames]{color}
@@ -11,81 +10,8 @@
 \usepackage{wrapfig}
 %\usepackage[a]{esvect}
 
-%\overfullrule=5pt
+\overfullrule=5pt
 
-\newcommand{\notice}[1]{\textcolor{red}{#1}}
-
-\newcommand{\nat}{{N}}
-\newcommand{\bool}{{B}}
-\newcommand{\tr}{\rightarrow} % transition ->
-\newcommand{\ltr}[1]{\stackrel{#1}{\longrightarrow}} % labelled->
-\newcommand{\run}{\Longrightarrow}
-\newcommand{\lrun}[1]{\stackrel{#1}{\Longrightarrow}} % labelled->
-\newcommand{\ltrlow}[1]{\mathrel{\raisebox{0pt}[-0.10ex][0pt]
-  {\ensuremath{\stackrel{#1}{\raisebox{0pt}[0.57ex][0pt]{
-  \ensuremath{\longrightarrow}}}}}}} % labelled->
-\newcommand{\nset}[1]{\{1,\ldots,#1\}}
-\def\asym<#1>{\langle#1\rangle}
-
-\newcommand{\lang}{\mathcal{L}}
-\newcommand{\F}{\mathcal{F}}
-\newcommand{\A}{\mathcal{A}}
-\newcommand{\B}{\mathcal{B}}
-\newcommand{\sem}[1]{\[ #1 \]}
-\newcommand{\ic}[3]{#2 \rightarrow_#1 #3}
-\newcommand{\br}{\mathit{br}}
-\newcommand{\subs}[1]{\tilde{#1}}
-\newcommand{\powerset}[1]{2^{#1}}
-
-\newcommand{\states}{Q}
-\newcommand{\alphabet}{\Sigma}
-\newcommand{\trans}{\Delta}
-\newcommand{\transbu}{\trans^{bu}}
-\newcommand{\transtd}{\trans^{td}}
-\newcommand{\final}{F}
-\newcommand{\automaton}[1][]{\A_{#1} = (\states_{#1}, \alphabet, \trans_{#1}, \final_{#1})}
-\newcommand{\automatonbu}[1][]{\A_{#1} = (\states_{#1}, \alphabet, \transbu_{#1}, \final_{#1})}
-\newcommand{\automatontd}[1][]{\A_{#1} = (\states_{#1}, \alphabet, \transtd_{#1}, \final_{#1})}
-
-\newcommand{\issimby}[1][]{\preceq_{#1}}
-\newcommand{\isnotsimby}[1][]{\not\issimby[#1]}
-\newcommand{\issimbyfe}[1][]{\issimby[#1]^{\forall\exists}}
-\newcommand{\isnotsimbyfe}{\isnotsimby^{\forall\exists}}
-\newcommand{\simulates}{\succeq}
-\newcommand{\simulatesfe}{\simulates^{\exists\forall}}
-
-\newcommand{\rank}[1][]{\#{#1}}
-\newcommand{\dom}{\mathit{dom}}
-
-% the such that symbol for set definitions: |
-\newcommand{\suchthat}{\;|\;}
-% sequences: x_1, ..., x_n
-\newcommand{\seq}[2][n]{{#2}_1, \dots, {#2}_{#1}}
-
-\newcommand{\apply}[1][]{\mathit{Apply_{#1}}}
-\newcommand{\createmtbdd}{\mathit{CreateMTBDD}}
-
-\newcommand{\op}{\mathit{op}}
-\newcommand{\var}{\mathit{var}}
-\newcommand{\low}{\mathit{low}}
-\newcommand{\high}{\mathit{high}}
-\newcommand{\rootnode}{\mathit{root}}
-\newcommand{\bddeval}[1]{[#1]}
-\newcommand{\bddfromfunc}[1]{\langle#1\rangle}
-\newcommand{\zerobddnode}{\mathbf{0}}
-\newcommand{\onebddnode}{\mathbf{1}}
-\renewcommand{\vec}[1]{\vv{#1}}
-\newcommand{\lhss}[1]{\bar{#1}}
-\newcommand{\alltrees}{T_{\Sigma}}
-
-\newcommand{\isaccessiblefromthrough}[2]{down_{#2}(#1)}
-%\newcommand{\isaccessiblefromthrough}[2]{#1 \triangledown #2}
-\newcommand{\isaccessibleupwardsfromthrough}[2]{up_{#2}(#1)}
-\newcommand{\choicefunctions}[2]{\mathit{cf}(#1, #2)}
-\def\tuplify(#1,#2,#3){\Lambda(#1,#2,#3)}
-\newcommand{\maximumtuples}[1]{#1^{\#}}
-
-\newcommand{\algstyle}{\fontsize{8.6}{8.3}\selectfont}
 
 % \pagestyle{plain}
 \pagestyle{empty}
@@ -106,9 +32,10 @@ MSM0021630528.}\vspace*{-0mm}}
 \and  Marcela \v{S}imkov\'{a}\inst{1}
 }
 
-\institute{ {Faculty of Information Technology, Brno University of Technology, 
-Bo\v{z}et\v{e}chova 2, 612 66 Brno, Czech Republic} \and {Institution 2} \and 
-{Institution 3} }
+\institute{ {FIT, Brno University of Technology, Czech Republic}
+\and {Institution 2}
+\and {Institution 3}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document} 
