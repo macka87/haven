@@ -12,6 +12,7 @@
 
 \overfullrule=5pt
 
+\newcommand{\notice}[1]{\textcolor{red}{#1}}
 
 % \pagestyle{plain}
 \pagestyle{empty}
@@ -20,7 +21,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Better-than-Veloce Accelerated Verification
+\title{$<$name$>$: An Open Framework for FPGA-Accelerated Functional Verification 
+of Hardware
 \thanks{This work was supported by the Czech Ministry of Education (project
 MSM 0021630528), and the BUT FIT project FIT-11-S-1.}\vspace*{-0mm}}
 
@@ -42,20 +44,19 @@ MSM 0021630528), and the BUT FIT project FIT-11-S-1.}\vspace*{-0mm}}
 \maketitle
 
 \vspace*{-0mm}\begin{abstract}Functional verification is a widespread technique 
-to check whether a hardware system satisfies a given correctness specification. 
-The complexity of modern computer systems is rapidly rising and the 
-verification process takes a significant amount of time. It is a challenging 
-task to find appropriate acceleration techniques for this process. In this 
-paper we present a design of a verification framework that exploits the 
-field-programmable gate array (FPGA) technology, while retaining the 
-possibility to run verification in the user-friendly debugging environment of a 
-simulator. The main advantages (or it is unique in that it) of the framework 
-are that it does not require investments in expensive specialized hardware and 
-is free to the community for further research and development. According to the 
-experiments carried out on a prototype implementation, the achieved 
-acceleration is proportional to the number of checked transactions and the 
-complexity of the verified system. The maximum acceleration achieved on the set 
-of experiments was over 130 times.\end{abstract}
+for checking whether a hardware system satisfies a given correctness specification. 
+As the complexity of modern computer systems rises rapidly, it is a challenging 
+task to find appropriate acceleration techniques for this process.
+In this paper we present $<$name$>$, a freely available open functional
+verification framework that exploits the field-programmable gate array (FPGA)
+technology for cycle-accurate acceleration of simulation runs.
+$<$name$>$ moves the design under test (DUT) together with transaction-based
+interface drivers and monitors from the simulator into an FPGA environment built
+upon the NetCOPE platform.
+Our experiments show that the achieved acceleration is proportional to the
+complexity of the verified system, with the peak value being over 130 times.
+\end{abstract}
+
 %===============================================================================
 \vspace*{-0mm}\section{Introduction}\vspace*{-0mm}
 %===============================================================================
