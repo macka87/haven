@@ -2,13 +2,12 @@
 \documentclass[draft]{llncs}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-\usepackage{url}
 \usepackage[usenames]{color}
 \usepackage{pslatex}
 \usepackage{epsfig}
 \usepackage{paralist}
 \usepackage{wrapfig}
-%\usepackage[a]{esvect}
+\usepackage{hyperref}
 
 \overfullrule=5pt
 
@@ -70,7 +69,7 @@ speed of simulation and the speed of real hardware widens with the increasing
 complexity of the hardware design. An effort to increase efficiency and speed of 
 simulation or functional verification poses a considerable challenge not only for 
 research teams but also for commercial sphere (scope, area, field) (e.g. Mentor 
-Graphics' Veloce technology). As representatives of the first mentioned community 
+Graphics' Veloce technology~\cite{mentor-veloce}). As representatives of the first mentioned community 
 we introduce an open framework that exploits the inherent parallelism of hardware 
 designs to accelerate functional verification of these designs by targeting 
 special components of the verification environment to the FPGA. This is possible 
@@ -78,10 +77,12 @@ because the generic nature of verification methodologies (OVM, UVM) and
 transaction-based communication among their subcomponents make it possible to 
 transparently move these subcomponents to a specialized hardware, while 
 maintaining the same level of readability to verification engineers.
-%===============================================================================
-%===============================================================================
-\vspace*{-0mm}\section{Related Work}\vspace*{-0mm}
-%===============================================================================
+
+\notice{Here is to be related work (as a part of introduction, not separate section)}
+During the development of the framework, we noticed the work of Huang
+\textit{et al}~\cite{huang-soc-hw-verification}, but because \notice{sth}, we
+believe that our contribution is still valuable.
+
 
 %===============================================================================
 
@@ -108,9 +109,7 @@ maintaining the same level of readability to verification engineers.
 
 Here should be the conclusion.
 
-%===============================================================================
-\vspace*{-0mm}\subsection{Future Work}\vspace*{-0mm}
-%===============================================================================
+\notice{Here is to be future work (as a part of conclusion, not separate section)}
 
 %===============================================================================
 
@@ -128,17 +127,15 @@ Here should be the conclusion.
 
 %\vspace*{-2mm}
 
-\bibitem{parosh-tree-simulations}
-P.~A. Abdulla, A.~Bouajjani, L.~Hol\'{\i}k, L.~Kaati, and T.~Vojnar.
-\newblock Computing Simulations over Tree Automata: Efficient Techniques for
-  Reducing Tree Automata.
-\newblock In {\em Proc. of TACAS'08}, LNCS 5148, Springer, 2008.
+\bibitem{mentor-veloce}
+Mentor Graphics.
+\newblock Veloce.\\
+\newblock \url{http://www.mentor.com/products/fv/emulation-systems/veloce/}
 
-\bibitem{parosh-tacas10}
-P.~A. Abdulla, L.~Hol\'{i}k, Y.-F. Chen, R.~Mayr, and T.~Vojnar.
-\newblock When Simulation Meets Antichains (On Checking Language Inclusion of
-  Nondeterministic Finite (Tree) Automata).
-\newblock In {\em Proc. of TACAS'10}, LNCS 6015, Springer, 2010.
+\bibitem{huang-soc-hw-verification}
+C.-Y.~Huang, Y.-F.~Yin, C.-J.~Hsu, T.~B.~Huang, and T.~M.~Chang.
+\newblock SoC HW/SW Verification and Validation.
+\newblock In {\em Proc. of ASPDAC'11}, IEEE, 2011.
 
 \bibitem{parosh-rtmc}
 P.~A. Abdulla, B.~Jonsson, P.~Mahata, and J.~d'Orso.
@@ -155,33 +152,6 @@ A.~Bouajjani, P.~Habermehl, L.~Hol\'{i}k, T.~Touili, and T.~Vojnar.
 A.~Bouajjani, P.~Habermehl, A.~Rogalewicz, and T.~Vojnar.
 \newblock Abstract Regular Tree Model Checking.
 \newblock {\em ENTCS}, 149, Elsevier, 2006.
-
-\bibitem{bouajjani-complex}
-A.~Bouajjani, P.~Habermehl, A.~Rogalewicz, T.~Vojnar.
-\newblock Abstract Regular Tree Model Checking of Complex Dynamic Data
-  Structures.
-\newblock In {\em Proc. of SAS'06}, LNCS 4134, Springer, 2006.
-
-\bibitem{bourdier-firewalls}
-T.~Bourdier.
-\newblock Tree Automata-based Semantics of Firewalls.
-\newblock In {\em Proc. of SAR-SSI'11}, IEEE, 2011.
-
-\bibitem{bryant86}
-R.~E. Bryant.
-\newblock Graph-based Algorithms for {Boolean} Function Manipulation.
-\newblock {\em IEEE Trans. Computers}, 1986.
-
-\bibitem{mtbdds}
-E.M. Clarke, K.L. McMillan, X.~Zhao, M.~Fujita, and J.~Yang.
-\newblock Spectral Transforms for Large Boolean Functions with Applications to
-  Technology Mapping.
-\newblock {\em FMSD}, 10, Springer, 1997.
-
-\bibitem{doyen:antichain}
-L.~Doyen and J.~F. Raskin.
-\newblock {Antichain Algorithms for Finite Automata}.
-\newblock In {\em Proc. of TACAS'10}, LNCS 6015, Springer, 2010.
 
 \end{thebibliography}
 }
