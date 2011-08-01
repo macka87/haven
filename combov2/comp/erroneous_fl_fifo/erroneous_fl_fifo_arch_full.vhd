@@ -246,6 +246,8 @@ sig_frame_rdy <= '0' when (cnt_frame = 0) or (cnt_frame = 1) else
                  '1';
    
 RX_DST_RDY_N  <= RESET;
+-- correct value: changed to introduce bug
+--RX_DST_RDY_N  <= sig_full OR RESET;
 TX_SRC_RDY_N  <= sig_tx_src_rdy_n;
 
 TX_DATA     <= sig_data_rd(DATA_WIDTH-1 downto 0);
