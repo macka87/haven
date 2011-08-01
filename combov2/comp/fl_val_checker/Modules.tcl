@@ -9,9 +9,10 @@ set COMP_BASE              "$ENTITY_BASE/.."
 set BASE_BASE              "$COMP_BASE/base"
 
 # Source files
+set MOD "$MOD $ENTITY_BASE/fl_val_guard.vhd"
 set MOD "$MOD $ENTITY_BASE/fl_val_checker.vhd"
 
- Componentss
+# Components
 set COMPONENTS [list \
    [ list "PKG_MATH"       $BASE_BASE/pkg       "MATH"] \
 ]
