@@ -86,6 +86,7 @@ signal sig_header_tx_sop_n     : std_logic;
 signal sig_header_tx_eop_n     : std_logic;
 -- frame RX signals ----------------------------------------------------------
 signal sig_frame_rx_dst_rdy_n  : std_logic;
+signal sig_frame_rx_src_rdy_n  : std_logic;
 -- frame TX signals ----------------------------------------------------------
 signal sig_frame_tx_data       : std_logic_vector(FRAME_WIDTH-1 downto 0);
 signal sig_frame_tx_rem        : std_logic_vector(log2(FRAME_WIDTH/8)-1 downto 0);
@@ -141,13 +142,15 @@ begin
       STATUS         => open,
       FRAME_RDY      => open
    );
+
+   sig_frame_rx_src_rdy_n <= RX_SRC_RDY_N OR sig_header_rx_dst_rdy_n;
    
    -- --------------- FRAME FIFO INSTANCE -----------------------------------
    frame_fifo : entity work.fl_fifo
    generic map(
       DATA_WIDTH  => FRAME_WIDTH,
       USE_BRAMS   => true,
-      ITEMS       => 16,
+      ITEMS       => 1024,
       PARTS       => 1
    )
    port map (
@@ -157,7 +160,7 @@ begin
       -- Write interface
       RX_DATA        => RX_DATA,
       RX_REM         => RX_REM,
-      RX_SRC_RDY_N   => RX_SRC_RDY_N, 
+      RX_SRC_RDY_N   => sig_frame_rx_src_rdy_n, 
       RX_DST_RDY_N   => sig_frame_rx_dst_rdy_n,
       RX_SOP_N       => RX_SOP_N,
       RX_EOP_N       => RX_EOP_N,
