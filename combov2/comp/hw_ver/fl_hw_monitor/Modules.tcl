@@ -14,6 +14,10 @@ set FL_TRANSFORMER_BASE    "$COMP_BASE/fl_tools/flow/transformer"
 # Source files
 set MOD "$MOD $ENTITY_BASE/fl_hw_monitor.vhd"
 
+# Smart monitor
+set MOD "$MOD $ENTITY_BASE/monitor_packetizer.vhd"
+set MOD "$MOD $ENTITY_BASE/fl_hw_monitor_smart.vhd"
+
 # Componentss
 set COMPONENTS [list \
    [ list "CDC_FIFO"       $CDC_FIFO_BASE        "FULL"] \
