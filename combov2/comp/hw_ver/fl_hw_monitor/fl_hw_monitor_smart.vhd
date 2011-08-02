@@ -22,7 +22,8 @@ entity FL_HW_MONITOR_SMART is
    (
       -- data width
       IN_DATA_WIDTH  : integer := 64;
-      OUT_DATA_WIDTH : integer := 64
+      OUT_DATA_WIDTH : integer := 64;
+      ENDPOINT_ID    : integer
    );
 
    port
@@ -228,7 +229,8 @@ begin
    -- --------------- MONITOR_PACKETIZER instance -------------------------------
    monitor_packetizer_i : entity work.MONITOR_PACKETIZER
    generic map(
-      DATA_WIDTH      => OUT_DATA_WIDTH
+      DATA_WIDTH      => OUT_DATA_WIDTH,
+      ENDPOINT_ID     => ENDPOINT_ID
    )
    port map(
       CLK             => TX_CLK,
