@@ -29,9 +29,10 @@ entity FL_VAL_GUARD is
       DST_RDY_N      : in std_logic;
       SRC_RDY_N      : in std_logic;      
 
-      INVALID        : out std_logic
+      INVALID        : out std_logic;
+      ERROR_BITMAP   : out std_logic_vector(15 downto 0)
  );
-end entity FL_VAL_GUARD;
+end entity;
 
 -- ----------------------------------------------------------------------------
 --                               Architecture
@@ -44,15 +45,13 @@ signal reg_eop_n  : std_logic;
 signal reg_was_sof: std_logic;
 signal reg_fend   : std_logic;
 
-signal part1      : std_logic;
-signal part2      : std_logic;
-signal part3      : std_logic;
-signal part4      : std_logic;
-
 signal invld      : std_logic;
 signal reg_invld  : std_logic;
 
 begin
+
+   assert(false)
+   severity failure;
 
 -- Register EOF_N to get desired SOF_N
 reg_eof_n_p : process(CLK, RESET)
@@ -110,71 +109,9 @@ begin
    end if;
 end process;
 
--- Set this register to 1 when firt frame part starts, set to 0 when frame ends
-part1_p : process(CLK, RESET)
-begin
-   if RESET = '1' then
-      part1 <= '0';
-   elsif CLK'event and CLK = '1' then
-      if SRC_RDY_N = '0' and DST_RDY_N = '0' and
-         EOF_N = '0' then -- EOF has greater priority than SOF - with shortest
-         part1 <= '0';    -- frames, this register will stay at 0
-      elsif SRC_RDY_N = '0' and DST_RDY_N = '0' and SOF_N = '0' then
-         part1 <= '1';
-      end if;
-   end if;
-end process;
-
--- Set this register to 1 when second frame part starts,set to 0 when frame ends
-part2_p : process(CLK, RESET)
-begin
-   if RESET = '1' then
-      part2 <= '0';
-   elsif CLK'event and CLK = '1' then
-      if SRC_RDY_N = '0' and DST_RDY_N = '0' and 
-         EOF_N = '0' then 
-         part2 <= '0';   
-      elsif SRC_RDY_N = '0' and DST_RDY_N = '0' and SOP_N = '0' and
-         part1 = '1' then
-         part2 <= '1';
-      end if;
-   end if;
-end process;
-
--- Set this register to 1 when third frame part starts,set to 0 when frame ends
-part3_p : process(CLK, RESET)
-begin
-   if RESET = '1' then
-      part3 <= '0';
-   elsif CLK'event and CLK = '1' then
-      if SRC_RDY_N = '0' and DST_RDY_N = '0' and 
-         EOF_N = '0' then 
-         part3 <= '0';   
-      elsif SRC_RDY_N = '0' and DST_RDY_N = '0' and SOP_N = '0' and
-         part2 = '1' then
-         part3 <= '1';
-      end if;
-   end if;
-end process;
-
--- Set this register to 1 when fourth frame part starts,set to 0 when frame ends
-part4_p : process(CLK, RESET)
-begin
-   if RESET = '1' then
-      part4 <= '0';
-   elsif CLK'event and CLK = '1' then
-      if SRC_RDY_N = '0' and DST_RDY_N = '0' and 
-         EOF_N = '0' then 
-         part4 <= '0';   
-      elsif SRC_RDY_N = '0' and DST_RDY_N = '0' and SOP_N = '0' and
-         part3 = '1' then
-         part4 <= '1';
-      end if;
-   end if;
-end process;
 
 detect_invld : process(SOF_N, EOF_N, SOP_N, EOP_N, DST_RDY_N, SRC_RDY_N,
-                       part1, part2, part3, part4, reg_eof_n, reg_eop_n)
+                       reg_eof_n, reg_eop_n)
 begin
    invld <= '0';
 
@@ -194,45 +131,6 @@ begin
       
       if EOF_N = '0' and EOP_N = '1' then
          invld <= '1';  -- With every EOF, EOP must also come
-      end if;
-      
-      if PARTS = 1 then -- All frames must have 1 part
-         if SOF_N = '1' and SOP_N = '0' then
-            invld <= '1'; -- SOP not together with SOF means next part.
-         end if;
-      end if;
-
-      if PARTS = 2 then -- All frames must have 2 parts
-         if part2 = '1' and SOP_N = '0' then
-            invld <= '1'; -- SOP, but the second part has already started
-         end if;
-
-         if EOF_N = '0' and 
-            ((part2 = '0' and SOP_N = '1') or part1 = '0') then
-            invld <= '1'; -- Frame had only one part
-         end if;
-      end if;
-
-      if PARTS = 3 then -- All frames must have 3 parts
-         if part3 = '1' and SOP_N = '0' then
-            invld <= '1'; -- SOP, but the third part has already started
-         end if;
-
-         if EOF_N = '0' and 
-            ((part3 = '0' and SOP_N = '1') or part2 = '0') then
-            invld <= '1'; -- Frame had only one or two parts
-         end if;
-      end if;
-
-      if PARTS = 4 then -- All frames must have 4 parts
-         if part4 = '1' and SOP_N = '0' then
-            invld <= '1'; -- SOP, but the fourth part has already started
-         end if;
-
-         if EOF_N = '0' and 
-            ((part4 = '0' and SOP_N = '1') or part3 = '0') then
-            invld <= '1'; -- Frame had only one, two or three parts
-         end if;
       end if;
 
    end if;
