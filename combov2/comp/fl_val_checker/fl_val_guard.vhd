@@ -48,7 +48,7 @@ constant EOF_WITHOUT_EOP           : integer := 1;
 constant DATA_BETWEEN_EOP_AND_SOP  : integer := 2;
 constant DATA_BETWEEN_EOF_AND_SOF  : integer := 3;
 constant NO_EOP_BEFORE_SOP         : integer := 4;
-constant NO_EOF_BEFORE_SOF         : integer := 4;
+constant NO_EOF_BEFORE_SOF         : integer := 5;
 
 
 -- ----------------------------------------------------------------------------
