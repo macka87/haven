@@ -4,7 +4,7 @@
 # $Id$
 #
 
-XILINX_VERSION=xilinx123
+XILINX_VERSION=xilinx124
 COREGEN=coregen
 
 all: $(patsubst %.xco, %.ngc, $(wildcard *.xco))
