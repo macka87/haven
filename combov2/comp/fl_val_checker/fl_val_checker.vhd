@@ -95,13 +95,10 @@ architecture arch of FL_VAL_CHECKER is
    -- cdc fifo signals write ifc
    signal sig_cdc_fifo_wr_data         : std_logic_vector(ERROR_BITMAP_WIDTH-1 downto 0);
    signal sig_cdc_fifo_wr_write        : std_logic;
-   signal sig_cdc_fifo_wr_almost_full  : std_logic;
-   signal sig_cdc_fifo_wr_full         : std_logic;
    
    -- cdc fifo signals read ifc
    signal sig_cdc_fifo_rd_data   : std_logic_vector(ERROR_BITMAP_WIDTH-1 downto 0);
    signal sig_cdc_fifo_rd_read   : std_logic;
-   signal sig_cdc_fifo_rd_empty  : std_logic;
    signal sig_cdc_fifo_rd_almost_empty : std_logic;
 
    -- output signals
@@ -149,7 +146,9 @@ begin
    );
 
 
-
+   -- CDC FIFO input mapping
+   sig_cdc_fifo_wr_data  <= guard_error_bitmap;
+   sig_cdc_fifo_wr_write <= guard_invalid;
 
    -- --------------- CDC_FIFO INSTANCE -----------------------------------
    cdc_fifo_i : entity work.cdc_fifo
@@ -163,13 +162,13 @@ begin
       WR_CLK          => PR_CLK,
       WR_DATA         => sig_cdc_fifo_wr_data,
       WR_WRITE        => sig_cdc_fifo_wr_write,
-      WR_FULL         => sig_cdc_fifo_wr_full,
-      WR_ALMOST_FULL  => sig_cdc_fifo_wr_almost_full,
+      WR_FULL         => open,
+      WR_ALMOST_FULL  => open,
       
       RD_CLK          => OUT_CLK,
       RD_DATA         => sig_cdc_fifo_rd_data,
       RD_READ         => sig_cdc_fifo_rd_read,
-      RD_EMPTY        => sig_cdc_fifo_rd_empty,
+      RD_EMPTY        => open,
       RD_ALMOST_EMPTY => sig_cdc_fifo_rd_almost_empty
    );
 
