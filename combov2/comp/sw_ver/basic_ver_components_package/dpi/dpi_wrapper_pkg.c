@@ -111,6 +111,10 @@ int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt){
   data = szedata_read_next(sze, &len);
 
 	if (data) {
+		unsigned short print_options =
+			SZE2_PRINT_OPTION_SW | SZE2_PRINT_OPTION_HW | SZE2_PRINT_OPTION_ALL;
+		szedata_print_packet(data, print_options);
+
 		// in case something was read, copy it to the SystemVerilog array
 		if (len <= 8){	
       // in case the length read is smaller than expected
@@ -128,8 +132,17 @@ int c_receiveData(unsigned int* size, const svOpenArrayHandle outhwpkt){
 		}
 
 		// omit the first 8 bytes so that we can omit the NetCOPE header
-		data += 8;
-		len -= 8;
+
+		// !!!!!!!!!!!!!!!!!! ATTENTION !!!!!!!!!!!!!!!!!!!!!!!!!!
+		// the following is ONLY for debugging purposes, so that the wrapper would
+		// work with FL_HW_MONITOR_SMART without changes to the SystemVerilog
+		// code! After the SystemVerilog code is changed to reflect this, delete
+		// the following two lines and uncomment the other ones.
+		data += 16;
+		len -= 16;
+
+		//data += 8;
+		//len -= 8;
 		*size = len;
 		
     // copy to the SystemVerilog array without the NetCOPE header
