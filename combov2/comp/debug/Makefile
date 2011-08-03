@@ -33,6 +33,7 @@
 TARGET0=icon3
 TARGET1=ila144
 TARGET2=ila72
+TARGET2=ila73
 
 COREGEN=coregen
 
@@ -47,7 +48,11 @@ $(TARGET1).ngc: $(TARGET1)/$(TARGET1).xco
 $(TARGET2).ngc: $(TARGET2)/$(TARGET2).xco
 	cd $(TARGET2); make
 
+$(TARGET3).ngc: $(TARGET3)/$(TARGET3).xco
+	cd $(TARGET3); make
+
 clean:
 	cd $(TARGET0); make clean && cd ..; \
   cd $(TARGET1); make clean && cd ..; \
-  cd $(TARGET2); make clean
+  cd $(TARGET2); make clean && cd ..; \
+  cd $(TARGET3); make clean
