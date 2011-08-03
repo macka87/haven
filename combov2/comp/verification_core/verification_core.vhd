@@ -26,6 +26,9 @@ architecture arch of verification_core is
    constant DUT_DATA_WIDTH  : integer := DATA_WIDTH;
    --constant DUT_DATA_WIDTH  : integer := 128;
 
+   -- number of endpoints that transmit data to SW
+   constant OUTPUT_ENDPOINTS : integer := 2;
+
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
@@ -93,6 +96,38 @@ architecture arch of verification_core is
    signal fl_hw_monitor_tx_dst_rdy_n: std_logic;
 
    signal fl_hw_monitor_output_ready    : std_logic;
+
+   -- FrameLink Validity Checker output
+   signal fl_val_checker_tx_data        : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
+   signal fl_val_checker_tx_rem         : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
+   signal fl_val_checker_tx_sof_n       : std_logic;
+   signal fl_val_checker_tx_sop_n       : std_logic;
+   signal fl_val_checker_tx_eop_n       : std_logic;
+   signal fl_val_checker_tx_eof_n       : std_logic;
+   signal fl_val_checker_tx_src_rdy_n   : std_logic;
+   signal fl_val_checker_tx_dst_rdy_n   : std_logic;
+
+   signal fl_val_checker_output_ready   : std_logic;
+
+   -- FrameLink Binder input
+   signal fl_binder_in_data     : std_logic_vector(OUTPUT_ENDPOINTS*ENV_DATA_WIDTH-1 downto 0);
+   signal fl_binder_in_rem      : std_logic_vector(OUTPUT_ENDPOINTS*log2(ENV_DATA_WIDTH/8)-1 downto 0);
+   signal fl_binder_in_sof_n    : std_logic_vector(OUTPUT_ENDPOINTS-1 downto 0);
+   signal fl_binder_in_sop_n    : std_logic_vector(OUTPUT_ENDPOINTS-1 downto 0);
+   signal fl_binder_in_eop_n    : std_logic_vector(OUTPUT_ENDPOINTS-1 downto 0);
+   signal fl_binder_in_eof_n    : std_logic_vector(OUTPUT_ENDPOINTS-1 downto 0);
+   signal fl_binder_in_src_rdy_n: std_logic_vector(OUTPUT_ENDPOINTS-1 downto 0);
+   signal fl_binder_in_dst_rdy_n: std_logic_vector(OUTPUT_ENDPOINTS-1 downto 0);
+
+   -- FrameLink Binder output
+   signal fl_binder_out_data        : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
+   signal fl_binder_out_rem         : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
+   signal fl_binder_out_sof_n       : std_logic;
+   signal fl_binder_out_sop_n       : std_logic;
+   signal fl_binder_out_eop_n       : std_logic;
+   signal fl_binder_out_eof_n       : std_logic;
+   signal fl_binder_out_src_rdy_n   : std_logic;
+   signal fl_binder_out_dst_rdy_n   : std_logic;
 
    -- FrameLink NetCOPE Adder component input
    signal fl_netcope_adder_in_data      : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
@@ -370,14 +405,103 @@ icon_i : icon3
    );
 
 
-   fl_netcope_adder_in_data       <= fl_hw_monitor_tx_data;
-   fl_netcope_adder_in_rem        <= fl_hw_monitor_tx_rem;
-   fl_netcope_adder_in_sof_n      <= fl_hw_monitor_tx_sof_n;
-   fl_netcope_adder_in_sop_n      <= fl_hw_monitor_tx_sop_n;
-   fl_netcope_adder_in_eop_n      <= fl_hw_monitor_tx_eop_n;
-   fl_netcope_adder_in_eof_n      <= fl_hw_monitor_tx_eof_n;
-   fl_netcope_adder_in_src_rdy_n  <= fl_hw_monitor_tx_src_rdy_n;
-   fl_hw_monitor_tx_dst_rdy_n     <= fl_netcope_adder_in_dst_rdy_n;
+   -- ------------------------------------------------------------------------
+   --                    Output FrameLink Validity Checker
+   -- ------------------------------------------------------------------------
+  fl_val_checker_i: entity work.FL_VAL_CHECKER
+   generic map(
+      -- FrameLink data width
+     OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
+     ENDPOINT_ID     => 170   -- AA hexa
+   )
+   port map(
+      -- input clock domain
+      PR_CLK         => clk_dut,
+      PR_RESET       => reset_dut,
+
+      -- input interface
+      PR_SOF_N       => dut_out_sof_n,
+      PR_SOP_N       => dut_out_sop_n,
+      PR_EOP_N       => dut_out_eop_n,
+      PR_EOF_N       => dut_out_eof_n,
+      PR_SRC_RDY_N   => dut_out_src_rdy_n, 
+      PR_DST_RDY_N   => dut_out_dst_rdy_n, 
+      
+      -- output clock domain
+      OUT_CLK        => CLK,
+      OUT_RESET      => RESET,
+
+      -- output interface
+      OUT_DATA       => fl_val_checker_tx_data,
+      OUT_REM        => fl_val_checker_tx_rem,
+      OUT_SOF_N      => fl_val_checker_tx_sof_n,
+      OUT_SOP_N      => fl_val_checker_tx_sop_n,
+      OUT_EOP_N      => fl_val_checker_tx_eop_n,
+      OUT_EOF_N      => fl_val_checker_tx_eof_n,
+      OUT_SRC_RDY_N  => fl_val_checker_tx_src_rdy_n,
+      OUT_DST_RDY_N  => fl_val_checker_tx_dst_rdy_n,
+
+      -- output ready signal
+      OUTPUT_READY  => fl_val_checker_output_ready
+   );
+
+   -- FL_BINDER input mapping
+   fl_binder_in_data       <= fl_val_checker_tx_data      & fl_hw_monitor_tx_data;
+   fl_binder_in_rem        <= fl_val_checker_tx_rem       & fl_hw_monitor_tx_rem;
+   fl_binder_in_sof_n      <= fl_val_checker_tx_sof_n     & fl_hw_monitor_tx_sof_n;
+   fl_binder_in_sop_n      <= fl_val_checker_tx_sop_n     & fl_hw_monitor_tx_sop_n;
+   fl_binder_in_eop_n      <= fl_val_checker_tx_eop_n     & fl_hw_monitor_tx_eop_n;
+   fl_binder_in_eof_n      <= fl_val_checker_tx_eof_n     & fl_hw_monitor_tx_eof_n;
+   fl_binder_in_src_rdy_n  <= fl_val_checker_tx_src_rdy_n & fl_hw_monitor_tx_src_rdy_n;
+   fl_val_checker_tx_dst_rdy_n     <= fl_binder_in_dst_rdy_n(1);
+   fl_hw_monitor_tx_dst_rdy_n      <= fl_binder_in_dst_rdy_n(0);
+
+   -- ------------------------------------------------------------------------
+   --                              FL_BINDER
+   -- ------------------------------------------------------------------------
+   binder_i: entity work.FL_BINDER
+   generic map(
+      INPUT_WIDTH   => ENV_DATA_WIDTH,
+      INPUT_COUNT   => OUTPUT_ENDPOINTS,
+      OUTPUT_WIDTH  => ENV_DATA_WIDTH,
+      FRAME_PARTS   => 1,
+      STUPID_BINDER => true
+   )
+   port map(
+      CLK           => CLK,
+      RESET         => RESET,
+
+      -- input interface
+      RX_DATA       => fl_binder_in_data,
+      RX_REM        => fl_binder_in_rem,
+      RX_SOF_N      => fl_binder_in_sof_n,
+      RX_SOP_N      => fl_binder_in_sop_n,
+      RX_EOP_N      => fl_binder_in_eop_n,
+      RX_EOF_N      => fl_binder_in_eof_n,
+      RX_SRC_RDY_N  => fl_binder_in_src_rdy_n,
+      RX_DST_RDY_N  => fl_binder_in_dst_rdy_n,
+      
+      -- output interface
+      TX_DATA       => fl_binder_out_data,
+      TX_REM        => fl_binder_out_rem,
+      TX_SOF_N      => fl_binder_out_sof_n,
+      TX_SOP_N      => fl_binder_out_sop_n,
+      TX_EOP_N      => fl_binder_out_eop_n,
+      TX_EOF_N      => fl_binder_out_eof_n,
+      TX_SRC_RDY_N  => fl_binder_out_src_rdy_n,
+      TX_DST_RDY_N  => fl_binder_out_dst_rdy_n
+   );
+
+
+   -- NetCOPE Adder input mapping
+   fl_netcope_adder_in_data       <= fl_binder_out_data;
+   fl_netcope_adder_in_rem        <= fl_binder_out_rem;
+   fl_netcope_adder_in_sof_n      <= fl_binder_out_sof_n;
+   fl_netcope_adder_in_sop_n      <= fl_binder_out_sop_n;
+   fl_netcope_adder_in_eop_n      <= fl_binder_out_eop_n;
+   fl_netcope_adder_in_eof_n      <= fl_binder_out_eof_n;
+   fl_netcope_adder_in_src_rdy_n  <= fl_binder_out_src_rdy_n;
+   fl_binder_out_dst_rdy_n        <= fl_netcope_adder_in_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
    --                              NetCOPE Adder
@@ -480,7 +604,9 @@ icon_i : icon3
       AND (NOT RESET);
    --clock_enable <= reg_clock_enable OR RESET;
 
-   output_ready_all <= fl_hw_driver_output_ready AND fl_hw_monitor_output_ready;
+   output_ready_all <= fl_hw_driver_output_ready AND
+                       fl_hw_monitor_output_ready AND
+                       fl_val_checker_output_ready;
 
    -- ------------------------------------------------------------------------
    --                            MI32 Connection
