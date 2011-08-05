@@ -333,14 +333,14 @@ icon_i : icon3
       TRIG0 => ila1_trig0
    );
 
-   ila2_trig0(0)            <= fl_netcope_adder_out_src_rdy_n;
-   ila2_trig0(1)            <= fl_netcope_adder_out_dst_rdy_n;
-   ila2_trig0(2)            <= fl_netcope_adder_out_sof_n;
-   ila2_trig0(3)            <= fl_netcope_adder_out_sop_n;
-   ila2_trig0(4)            <= fl_netcope_adder_out_eof_n;
-   ila2_trig0(5)            <= fl_netcope_adder_out_eop_n;
-   ila2_trig0(8 downto 6)   <= fl_netcope_adder_out_rem;
-   ila2_trig0(72 downto 9)  <= fl_netcope_adder_out_data;
+   ila2_trig0(0)            <= fl_hw_driver_rx_src_rdy_n;
+   ila2_trig0(1)            <= fl_hw_driver_rx_dst_rdy_n;
+   ila2_trig0(2)            <= fl_hw_driver_rx_sof_n;
+   ila2_trig0(3)            <= fl_hw_driver_rx_sop_n;
+   ila2_trig0(4)            <= fl_hw_driver_rx_eof_n;
+   ila2_trig0(5)            <= fl_hw_driver_rx_eop_n;
+   ila2_trig0(8 downto 6)   <= fl_hw_driver_rx_rem;
+   ila2_trig0(72 downto 9)  <= fl_hw_driver_rx_data;
 
    ila2_i : ila73
    port map (
