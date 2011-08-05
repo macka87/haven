@@ -17,7 +17,13 @@ work
 _xmsgs
 fifo_generator_readme.txt
 fifo_generator_ug175.pdf
+*.prj
+*.xst
+*.xcf
 
 # Compilation output files
 *.o
 *.so
+
+# Other generated files
+Makefile.gen
