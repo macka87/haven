@@ -17,7 +17,7 @@ package test_pkg;
    parameter DATA_WIDTH   = 64;                // FrameLink data width
    parameter DREM_WIDTH   = log2(DATA_WIDTH/8);// drem width
    parameter USE_BRAMS    = 1;                 // Use BlockBAMs/SelectRAMs 
-   parameter ITEMS        = 1024;              // Number of items in the FIFO
+   parameter ITEMS        = 16;                // Number of items in the FIFO
    parameter BLOCK_SIZE   = 16;                // Size of block (for LSTBLK signal)
    parameter STATUS_WIDTH = 7;                 // Width of STATUS signal available
    
