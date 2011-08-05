@@ -31,21 +31,7 @@
 #
 
 set COMP_BASE        "$ENTITY_BASE/.."
-set FL_FIFO_BASE     "$COMP_BASE/fl_tools/storage/fifo"
 
 # Entities
-set MOD "$MOD $ENTITY_BASE/erroneous_fl_fifo_ent.vhd"
-
-# Local FIFO package
-set PACKAGES "$PACKAGES $FL_FIFO_BASE/fifo_pkg.vhd"
-# Global FrameLink package
-set PACKAGES "$PACKAGES $FL_FIFO_BASE/../../pkg/fl_pkg.vhd"
-
-
-if { $ARCHGRP == "FULL" } {
-      # Full architectures
-      set MOD "$MOD $ENTITY_BASE/erroneous_fl_fifo_arch_full.vhd"
-
-      # Subcomponents
-      set COMPONENTS [list [list "FIFO" $FL_FIFO_BASE "FULL"]]
-   }
+set MOD "$MOD $ENTITY_BASE/xilinx_fifo/sync_fifo_71.vhd"
+set MOD "$MOD $ENTITY_BASE/erroneous_fl_fifo.vhd"
