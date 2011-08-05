@@ -31,7 +31,13 @@
 #
 
 set COMP_BASE        "$ENTITY_BASE/.."
+set BASE_BASE        "$COMP_BASE/base"
 
 # Entities
 set MOD "$MOD $ENTITY_BASE/xilinx_fifo/sync_fifo_71.vhd"
 set MOD "$MOD $ENTITY_BASE/erroneous_fl_fifo.vhd"
+
+# Components
+set COMPONENTS [list \
+   [ list "PKG_MATH"       $BASE_BASE/pkg       "MATH"] \
+]

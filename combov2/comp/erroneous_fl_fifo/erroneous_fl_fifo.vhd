@@ -23,7 +23,9 @@ entity ERRONEOUS_FL_FIFO is
       -- Should be multiple of 16: only 16,32,64,128 supported
       DATA_WIDTH     : integer := 64;
       -- Number of items
-      ITEMS          : integer := 16
+      ITEMS          : integer := 16;
+      -- Width of STATUS signal available
+      STATUS_WIDTH   : integer := 1
    );
    port(
       CLK            : in  std_logic;
@@ -103,11 +105,11 @@ architecture full of ERRONEOUS_FL_FIFO is
 begin
 
    -- Assertions
-   assert(DATA_WIDTH == 64)
+   assert (DATA_WIDTH = 64)
       report "Unsupported DATA_WIDTH!"
       severity failure;
 
-   assert(ITEMS == 16)
+   assert (ITEMS = 16)
       report "Unsupported ITEMS!"
       severity failure;
 
@@ -118,6 +120,8 @@ begin
    rx_fifo_din(2)           <= RX_SOP_N;
    rx_fifo_din(1)           <= RX_EOF_N;
    rx_fifo_din(0)           <= RX_EOP_N;
+   rx_fifo_wr               <= NOT RX_SRC_RDY_N;
+   RX_DST_RDY_N             <= rx_fifo_full;
 
    -- --------------- Xilinx FIFO instance ----------------------------------
    fifo71 : sync_fifo_71
@@ -133,11 +137,20 @@ begin
    );
 
    -- mapping FIFO output ports
-   RX_DATA  <= rx_fifo_din(70 downto 7);
-   RX_REM   <= rx_fifo_din( 6 downto 4);
-   RX_SOF_N <= rx_fifo_din(3);
-   RX_SOP_N <= rx_fifo_din(2);
-   RX_EOF_N <= rx_fifo_din(1);
-   RX_EOP_N <= rx_fifo_din(0);
+   TX_DATA      <= tx_fifo_dout(70 downto 7);
+   TX_REM       <= tx_fifo_dout( 6 downto 4);
+   TX_SOF_N     <= tx_fifo_dout(3);
+   TX_SOP_N     <= tx_fifo_dout(2);
+   TX_EOF_N     <= tx_fifo_dout(1);
+   TX_EOP_N     <= tx_fifo_dout(0);
+   TX_SRC_RDY_N <= tx_fifo_empty;
+   tx_fifo_rd   <= NOT TX_DST_RDY_N;
+
+   -- mapping FIFO status signals
+   LSTBLK         <= '0';
+   FULL           <= '0';
+   EMPTY          <= '0';
+   FRAME_RDY      <= '0';
+   STATUS         <= (others => '0');
 
 end architecture;
