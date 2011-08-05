@@ -129,7 +129,7 @@ program TEST (
   // Enable test Environment
   task enableTestEnvironment();
     if (FRAMEWORK == 0) begin
-      flChecker.setEnabled();
+      //flChecker.setEnabled();
       flMonitor.setEnabled();
       flResponder.setEnabled();
       flCoverage.setEnabled();
