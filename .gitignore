@@ -14,12 +14,40 @@ work
 *.log
 *_xmdf.tcl
 *_flist.txt
-_xmsgs
-fifo_generator_readme.txt
-fifo_generator_ug175.pdf
 *.prj
 *.xst
 *.xcf
+*.xrpt
+*.lso
+*.xwbt
+*.xpi
+*.ncd
+*.map
+*.pcf
+*.prm
+*.mcs
+*.psr
+*.ngm
+*.ngd
+*.ngr
+*.pad
+*.par
+*.ptwx
+*.unroutes
+*.srp
+*.bgn
+*.bit
+*.bld
+*.drc
+*.cfi
+*.cdc
+*.mrp
+*.lst
+fifo_generator_readme.txt
+fifo_generator_ug175.pdf
+_xmsgs
+xlnx_auto_0_xdb
+*.par_pad.*
 
 # Compilation output files
 *.o
@@ -27,3 +55,5 @@ fifo_generator_ug175.pdf
 
 # Other generated files
 Makefile.gen
+*.gen.ucf
+xst
