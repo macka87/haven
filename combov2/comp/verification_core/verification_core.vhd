@@ -268,7 +268,7 @@ begin
    dut_i: entity work.ERRONEOUS_FL_FIFO
    generic map(
       DATA_WIDTH  => DUT_DATA_WIDTH,
-      ITEMS => 64
+      ITEMS => 16
    )
    port map(
       CLK           => clk_dut,
