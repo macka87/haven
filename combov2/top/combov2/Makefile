@@ -75,6 +75,9 @@ FIFO_NGCS=$(FIFO_PATH)/asfifo_lut_1.ngc \
           $(FIFO_PATH)/asfifo_lut_71.ngc \
           $(FIFO_PATH)/asfifo_lut_136.ngc
 
+ERR_FIFO_PATH=$(FIRMWARE_BASE)/comp/erroneous_fl_fifo/xilinx_fifo
+ERR_FIFO_NGCS=$(ERR_FIFO_PATH)/sync_fifo_71.ngc
+
 
 ##############################################################################
 # Translation parameters 
@@ -164,6 +167,7 @@ APP_MODULES=$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ICON) \
 	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA73) \
 	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA144) \
 	$(FIFO_NGCS) \
+	$(ERR_FIFO_NGCS) \
 
 
 ifeq ($(MODS),1)
