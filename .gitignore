@@ -2,6 +2,9 @@
 transcript
 *.wlf
 work
+*compxlib*
+*.mti_se.version
+modelsim.ini
 
 # ISE generated files
 *.cgc
@@ -48,6 +51,7 @@ fifo_generator_ug175.pdf
 _xmsgs
 xlnx_auto_0_xdb
 *.par_pad.*
+usage_statistics_webtalk.html
 
 # Compilation output files
 *.o
@@ -57,3 +61,4 @@ xlnx_auto_0_xdb
 Makefile.gen
 *.gen.ucf
 xst
+.*.swp
