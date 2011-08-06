@@ -157,6 +157,16 @@
       tr.partSizeMin   = partSizeMin;
       tr.data          = data;
       
+      tr.btDelayEn_wt  = btDelayEn_wt;
+      tr.btDelayDi_wt  = btDelayDi_wt;
+      tr.btDelayLow    = btDelayLow;
+      tr.btDelayHigh   = btDelayHigh;
+
+      tr.itDelayEn_wt  = itDelayEn_wt;
+      tr.itDelayDi_wt  = itDelayDi_wt;
+      tr.itDelayLow    = itDelayLow;
+      tr.itDelayHigh   = itDelayHigh;
+
       tr.enBtDelay     = enBtDelay;   
       tr.btDelay       = btDelay; 
       tr.enItDelay     = enItDelay;     
