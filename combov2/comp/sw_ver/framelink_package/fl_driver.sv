@@ -120,6 +120,7 @@
       int m = 0;
       int counter = 0;
       logic[pDataWidth-1:0] dataToSend = 0;
+      bit firstWord = 1;
       
       //! for all frame parts 
       for (int i=0; i < tr.frameParts; i++) begin              
@@ -154,8 +155,15 @@
           //! when data word is ready to send
           if (m==pDataWidth) begin
             fl.cb.DATA <= dataToSend;
-            randomWait(tr, i, counter);  //! create not ready
-            counter++;
+            fl.cb.SRC_RDY_N <= 1;
+            if (!firstWord) begin
+              randomWait(tr, i, counter);  //! create not ready
+              counter++;
+            end
+            fl.cb.SRC_RDY_N <= 0;
+
+            firstWord = 0;
+
             @(fl.cb);                    //! send data
             waitForAccept();             //! wait until oposite side set ready
 
@@ -184,12 +192,11 @@
     * Random wait after every transaction word (Sets SRC_RDY_N to 1)
     */    
     task randomWait(FrameLinkTransaction tr, int part, int counter);
-      if (tr.enItDelay)
+      if (tr.enItDelay) begin
         repeat (tr.itDelay[part][counter]) begin
-          fl.cb.SRC_RDY_N <= 1;
           @(fl.cb); 
         end
-      fl.cb.SRC_RDY_N <= 0;
+      end
     endtask : randomWait 
         
  endclass : FrameLinkDriver 
