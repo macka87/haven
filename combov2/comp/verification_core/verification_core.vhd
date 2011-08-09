@@ -214,13 +214,13 @@ begin
       OUT_DATA_WIDTH  => DUT_DATA_WIDTH
    )
    port map(
-      RESET         => RESET,
-
       -- input clock domain
       RX_CLK        => CLK,
+      RX_RESET      => RESET,
 
       -- output clock domain
       TX_CLK        => clk_dut,
+      TX_RESET      => reset_dut,
 
       -- input interface
       RX_DATA       => fl_hw_driver_rx_data,
@@ -373,13 +373,13 @@ icon_i : icon3
      ENDPOINT_ID     => 136   -- 88 hexa
    )
    port map(
-      RESET         => RESET,
-
       -- input clock domain
       RX_CLK        => clk_dut,
+      RX_RESET      => reset_dut,
 
       -- output clock domain
       TX_CLK        => CLK,
+      TX_RESET      => RESET,
 
       -- input interface
       RX_DATA       => fl_hw_monitor_rx_data,

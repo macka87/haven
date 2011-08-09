@@ -29,8 +29,9 @@ entity FL_HW_MONITOR_SMART is
    port
    (
       RX_CLK         : in  std_logic;
+      RX_RESET       : in  std_logic;
       TX_CLK         : in  std_logic;
-      RESET          : in  std_logic;
+      TX_RESET       : in  std_logic;
 
       -- ----------------- INPUT INTERFACE ----------------------------------
       -- input FrameLink interface
@@ -158,7 +159,7 @@ begin
       DATA_WIDTH      => FIFO_DATA_WIDTH
    )
    port map(
-      RESET           => RESET,
+      RESET           => TX_RESET,
       
       -- Write interface
       WR_CLK          => RX_CLK,
@@ -193,7 +194,7 @@ begin
    )
    port map(
       CLK             => TX_CLK,
-      RESET           => RESET,
+      RESET           => TX_RESET,
       
       -- RX interface
       RX_DATA         => rx_fl_transformer_data,
@@ -234,7 +235,7 @@ begin
    )
    port map(
       CLK             => TX_CLK,
-      RESET           => RESET,
+      RESET           => TX_RESET,
       
       -- RX interface
       RX_DATA         => rx_packetizer_data,
@@ -272,7 +273,7 @@ begin
    lfsr : entity work.prng_8
    port map(
       CLK     => RX_CLK,
-      RESET   => RESET,
+      RESET   => RX_RESET,
       SEED    => LFSR_GENERATOR_SEED,
       OUTPUT  => lfsr_output
    );

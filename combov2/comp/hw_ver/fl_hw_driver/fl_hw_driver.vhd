@@ -28,8 +28,9 @@ entity FL_HW_DRIVER is
    port
    (
       RX_CLK         : in  std_logic;
+      RX_RESET       : in  std_logic;
       TX_CLK         : in  std_logic;
-      RESET          : in  std_logic;
+      TX_RESET       : in  std_logic;
 
       -- ----------------- INPUT INTERFACE ----------------------------------
       -- input FrameLink interface
@@ -157,7 +158,7 @@ begin
    )
    port map(
       CLK            => RX_CLK,
-      RESET          => RESET,
+      RESET          => RX_RESET,
 
       -- ----------------- INPUT INTERFACE ----------------------------------
       -- input FrameLink interface
@@ -200,7 +201,7 @@ begin
    )
    port map(
       CLK           => RX_CLK,
-      RESET         => RESET,
+      RESET         => RX_RESET,
 
       -- input interface
       RX_DATA       => ctrl_tx_data,
@@ -235,7 +236,7 @@ begin
    )
    port map(
       CLK           => RX_CLK,
-      RESET         => RESET,
+      RESET         => RX_RESET,
 
       -- input interface
       RX_DATA       => ctrl_tx_delay(DELAY_WIDTH-2 downto 0),
@@ -266,7 +267,7 @@ begin
    )
    port map(
       CLK             => RX_CLK,
-      RESET           => RESET,
+      RESET           => RX_RESET,
       
       -- RX interface
       RX_DATA         => fifo_out_data,
@@ -303,7 +304,7 @@ begin
    port map(
       WR_CLK         => RX_CLK,
       RD_CLK         => TX_CLK,
-      RESET          => RESET,
+      RESET          => RX_RESET,
 
       -- ----------------- INPUT INTERFACE ----------------------------------
       -- input FrameLink interface
