@@ -245,7 +245,9 @@ end process;
 sig_frame_rdy <= '0' when (cnt_frame = 0) or (cnt_frame = 1) else
                  '1';
    
-RX_DST_RDY_N  <= sig_full OR RESET;
+RX_DST_RDY_N  <= RESET;
+-- correct value: changed to introduce bug
+--RX_DST_RDY_N  <= sig_full OR RESET;
 TX_SRC_RDY_N  <= sig_tx_src_rdy_n;
 
 TX_DATA     <= sig_data_rd(DATA_WIDTH-1 downto 0);
@@ -254,9 +256,7 @@ sig_juice_out<=sig_data_rd(MEM_WIDTH-1 downto MEM_WIDTH-JUICE_WIDTH);
 
 TX_SOF_N <= sig_sof_n_rd;
 TX_EOF_N <= sig_eof_n_rd;
-TX_SOP_N <= sig_sop_n_rd or sig_full;
--- correct value: changed to introduce bug
---TX_SOP_N <= sig_sop_n_rd;
+TX_SOP_N <= sig_sop_n_rd;
 TX_EOP_N <= sig_eop_n_rd;
 
 EMPTY    <= sig_empty;
