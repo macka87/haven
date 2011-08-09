@@ -16,6 +16,7 @@ entity PRNG_8 is
      CLK    : in  std_logic;
      RESET  : in  std_logic;
      SEED   : in  std_logic_vector(7 downto 0);
+     EN     : in  std_logic;
      OUTPUT : out std_logic
   );
 end entity PRNG_8;
@@ -40,7 +41,9 @@ begin
     if (RESET = '1') then
       r_reg <= SEED;
     elsif (CLK'event and CLK = '1') then
-      r_reg <= r_next;
+      if (EN = '1') then
+        r_reg <= r_next;
+      end if;
     end if;
   end process;   
   

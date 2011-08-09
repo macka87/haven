@@ -16,10 +16,11 @@ view wave
 
   # ------------------------ RAM ---------------------------
   add  wave -divider "PRNG_8" 
-  add wave -hex -label "clk"     sim:/testbench/uut/clk 
-  add wave -hex -label "reset"   sim:/testbench/uut/reset 
-  add wave -hex -label "seed"    sim:/testbench/uut/seed
-  add wave -hex -label "output"  sim:/testbench/uut/output 
+  add wave -hex -label "clk"     sim:/testbench/clk 
+  add wave -hex -label "reset"   sim:/testbench/reset 
+  add wave -hex -label "seed"    sim:/testbench/seed
+  add wave -hex -label "ened"    sim:/testbench/en
+  add wave -hex -label "output"  sim:/testbench/uut/fb
   
 view structure
 view signals
