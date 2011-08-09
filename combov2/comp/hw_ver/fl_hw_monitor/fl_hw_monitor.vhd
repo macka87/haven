@@ -111,6 +111,10 @@ signal tx_fl_transformer_dst_rdy_n : std_logic;
 
 -- LFSR signals
 signal lfsr_output       : std_logic;
+signal lfsr_en           : std_logic;
+
+signal lfsr_en_reg       : std_logic;
+signal lfsr_enable       : std_logic;
 
 begin
 
@@ -199,12 +203,29 @@ begin
    TX_SRC_RDY_N    <= tx_fl_transformer_src_rdy_n;
    tx_fl_transformer_dst_rdy_n    <= TX_DST_RDY_N;
 
+   lfsr_enable <= NOT RX_SRC_RDY_N;
+
+   -- --------------- LFSR enable bit register -----------------------------
+   lfrs_en_reg_p: process(RX_RESET, RX_CLK)
+   begin
+      if (rising_edge(RX_CLK)) then
+         if (RX_RESET = '1') then
+            lfsr_en_reg <= '0';
+         else
+            lfsr_en_reg <= lfsr_en_reg OR lfsr_enable;
+         end if;
+      end if;
+   end process;
+
+   lfsr_en <= lfsr_en_reg OR lfsr_enable;
+
    -- --------------- LFSR RANDOM BITSTREAM GENERATOR INSTANCE --------------
    lfsr : entity work.prng_8
    port map(
       CLK     => RX_CLK,
       RESET   => RX_RESET,
       SEED    => LFSR_GENERATOR_SEED,
+      EN      => lfsr_en,
       OUTPUT  => lfsr_output
    );
 
