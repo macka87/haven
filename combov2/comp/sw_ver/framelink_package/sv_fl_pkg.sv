@@ -17,8 +17,8 @@ package sv_fl_pkg;
   `include "fl_sender.sv"
   `include "fl_gen_input_controller.sv"
   `include "fl_output_controller.sv"
-  `include "fl_monitor.sv"
   `include "fl_responder.sv"
   `include "fl_responder_simple.sv"
+  `include "fl_monitor.sv"
   `include "fl_command_coverage.sv"
 endpackage : sv_fl_pkg
