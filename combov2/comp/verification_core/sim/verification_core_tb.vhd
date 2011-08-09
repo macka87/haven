@@ -197,20 +197,25 @@ begin
 
       wait for RESET_TIME;
 
---      SendWriteFile("./input.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+      SendWriteFile("./start.txt", RND, flCmd_0, 0);
+
+      SendWriteFile("./boggus.txt", RND, flCmd_0, 0);
+
+----      SendWriteFile("./input.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+--      SendWriteFile("./small.txt", RND, flCmd_0, 0);
+
       SendWriteFile("./stop.txt", RND, flCmd_0, 0);
 
       wait;
