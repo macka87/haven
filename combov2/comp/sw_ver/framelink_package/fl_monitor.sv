@@ -22,7 +22,11 @@
     * Public Class Atributes
     */
     //! FrameLink interface
-    virtual iFrameLinkTx.monitor #(pDataWidth,pDremWidth) fl;
+    virtual iFrameLinkTx.monitor #(pDataWidth, pDremWidth) fl;
+    virtual iFrameLinkTx.tb #(pDataWidth, pDremWidth) fl_resp;
+   
+    //! FrameLink Simple Responder
+    FrameLinkResponderSimple #(pDataWidth, pDremWidth) flResponder; 
     
    /*
     * Public Class Methods
@@ -36,11 +40,16 @@
     */
     function new (string inst,
                   byte id,
-                  virtual iFrameLinkTx.monitor #(pDataWidth,pDremWidth) fl
+                  virtual iFrameLinkTx.monitor #(pDataWidth,pDremWidth) fl,
+                  virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) fl_resp
                   );
                   
       super.new(inst, id);
-      this.fl = fl;  //! Store pointer interface 
+      //! Store pointers interfaces 
+      this.fl      = fl; 
+      this.fl_resp = fl_resp;
+      //! Responder instance
+      flResponder  = new("FrameLink Responder", 0, fl_resp); 
     endfunction
 
    /*
@@ -55,6 +64,8 @@
       FrameLinkTransaction transaction; 
       Transaction tr;
 
+      waitForSrcRdy(); //! Wait for Source Ready (SRC_RDY_N)
+      
       while (enabled) begin              
         transaction = new();             
         $cast(tr, transaction);
@@ -75,6 +86,8 @@
 
         busy = 0;                        //! Monitor is not busy now
       end
+
+      flResponder.setDisabled();
     endtask : run
     
    /*!
@@ -87,6 +100,7 @@
       int byte_no, inLastWord;
       byte unsigned aux[];
       
+     // waitForSrcRdy(); //! Wait for Source Ready (SRC_RDY_N)
       waitForSOF();  //! Wait for Start of Frame (SOF) 
       busy = 1;      //! Monitor is receiving transaction
                                                 
@@ -145,6 +159,19 @@
       @(fl.monitor_cb);
     endtask : receiveTransaction
     
+   /*!
+    * Wait for Source Ready (SRC_RDY_N)
+    */
+    task waitForSrcRdy();
+      do begin
+        if (fl.monitor_cb.SRC_RDY_N)
+          @(fl.monitor_cb);
+        if (!enabled) return;
+      end while (fl.monitor_cb.SRC_RDY_N);
+      $write("RESPONDER IS ENABLED!!!!!!!\n");
+      flResponder.setEnabled(); 
+    endtask : waitForSrcRdy
+   
    /*!
     * Wait for Start of Frame (SOF)
     */

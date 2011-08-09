@@ -53,7 +53,7 @@ program TEST (
   
   //! Responder
   //FrameLinkResponder #(DATA_WIDTH, DREM_WIDTH)           flResponder; 
-  FrameLinkResponderSimple #(DATA_WIDTH, DREM_WIDTH)      flResponder; 
+  //FrameLinkResponderSimple #(DATA_WIDTH, DREM_WIDTH)      flResponder; 
   
   //! Scoreboard
   FIFOScoreboard                                         scoreboard; 
@@ -104,12 +104,12 @@ program TEST (
      flChecker = new("Checker", RX, TX, CTRL);
      
      //! Create Monitor 
-     flMonitor    = new("FrameLink Monitor", 0, MONITOR);   
+     flMonitor    = new("FrameLink Monitor", 0, MONITOR, TX);   
      flMonitor.setCallbacks(scoreboard.outputCbs);  
      flCoverage.addFrameLinkInterfaceTx(MONITOR,"TX Command Coverage");
      
      //! Create Responder 
-     flResponder  = new("FrameLink Responder", 0, TX);
+     //flResponder  = new("FrameLink Responder", 0, TX);
        //flResponder.btDelayLow   = RESPONDER_BT_DELAY_LOW;
        //flResponder.btDelayHigh  = RESPONDER_BT_DELAY_HIGH;
        //flResponder.itDelayLow   = RESPONDER_IT_DELAY_LOW;
@@ -131,7 +131,7 @@ program TEST (
     if (FRAMEWORK == 0) begin
       flChecker.setEnabled();
       flMonitor.setEnabled();
-      flResponder.setEnabled();
+      //flResponder.setEnabled();
       flCoverage.setEnabled();
     end
     if (FRAMEWORK == 1) begin
@@ -152,7 +152,7 @@ program TEST (
       busy = 0;
       
       if (FRAMEWORK == 0) begin
-        if (flMonitor.busy || flResponder.busy) busy = 1;
+        if (flMonitor.busy) busy = 1; //  || flResponder.busy) busy = 1;
       end
       
       if (FRAMEWORK == 1) begin
@@ -167,7 +167,7 @@ program TEST (
     if (FRAMEWORK == 0) begin
       flChecker.setDisabled();
       flMonitor.setDisabled();
-      flResponder.setDisabled();
+      //flResponder.setDisabled();
       flCoverage.setDisabled();
     end
     if (FRAMEWORK == 1) begin

@@ -58,7 +58,8 @@
       fl.cb.DST_RDY_N <= 1;     //! Ready ONLY IF enabled
       
       dstMbx     = new(1);
-      seed       = 8'hff;
+      //seed       = 8'hff;
+      seed       = 8'h9b;
       polynomial = 8'h8e;
             
       //! Create generator
@@ -96,6 +97,7 @@
     
       while (enabled) begin
         dstMbx.get(dst);
+        $write("DST: %b\n",dst);
         fl.cb.DST_RDY_N <= dst;  //! destination ready active for one cycle
         @(fl.cb);
       end
