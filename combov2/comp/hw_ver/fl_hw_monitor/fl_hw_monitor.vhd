@@ -115,6 +115,7 @@ signal lfsr_en           : std_logic;
 
 signal lfsr_en_reg       : std_logic;
 signal lfsr_enable       : std_logic;
+signal dst_rdy_generator : std_logic;
 
 begin
 
@@ -126,7 +127,7 @@ begin
    sig_data_fifo_wr_data(2)  <= RX_EOF_N;
    sig_data_fifo_wr_data(3)  <= RX_EOP_N;
    sig_data_fifo_wr_write    <= not (RX_SRC_RDY_N or lfsr_output);
-   RX_DST_RDY_N              <= lfsr_output OR sig_data_fifo_wr_full;
+   RX_DST_RDY_N              <= dst_rdy_generator;
 
    -- --------------- DATA FIFO INSTANCE ------------------------------------
    data_async_fifo : entity work.cdc_fifo
@@ -217,7 +218,18 @@ begin
       end if;
    end process;
 
-   lfsr_en <= lfsr_en_reg OR lfsr_enable;
+   dst_rdy_generator_p: process (lfsr_en_reg, lfsr_output)
+   begin
+      dst_rdy_generator <= '1';
+
+      if (lfsr_en_reg = '0') then
+         dst_rdy_generator <= '1';
+      else
+         dst_rdy_generator <= lfsr_output;
+      end if;
+   end process;
+
+   lfsr_en <= lfsr_en_reg;
 
    -- --------------- LFSR RANDOM BITSTREAM GENERATOR INSTANCE --------------
    lfsr : entity work.prng_8
