@@ -63,15 +63,18 @@ architecture arch of SIGNAL_OBSERVER is
 --                                    CONSTANTS
 -- ==========================================================================
 
+-- maximum length of a FrameLink frame (depends on the size of DMA buffers)
+constant MAX_FRAME_LENGTH       : integer := 4096;
+
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
 -- data fifo signals write ifc
-signal sig_data_fifo_wr_data         : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
+signal sig_data_fifo_wr_data         : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal sig_data_fifo_wr_write        : std_logic;
 
 -- data fifo signals read ifc
-signal sig_data_fifo_rd_data   : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
+signal sig_data_fifo_rd_data   : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal sig_data_fifo_rd_read   : std_logic;
 signal sig_data_fifo_rd_empty  : std_logic;
 signal sig_data_fifo_rd_almost_empty : std_logic;
@@ -79,13 +82,8 @@ signal sig_data_fifo_rd_almost_empty : std_logic;
 
 -- OBSERVER_PACKETIZER input
 signal rx_packetizer_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-signal rx_packetizer_rem       : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
-signal rx_packetizer_sof_n     : std_logic;
-signal rx_packetizer_sop_n     : std_logic;
-signal rx_packetizer_eof_n     : std_logic;
-signal rx_packetizer_eop_n     : std_logic;
-signal rx_packetizer_src_rdy_n : std_logic;
-signal rx_packetizer_dst_rdy_n : std_logic;
+signal rx_packetizer_valid     : std_logic;
+signal rx_packetizer_read_next : std_logic;
 
 -- OBSERVER_PACKETIZER output
 signal tx_packetizer_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
@@ -96,6 +94,50 @@ signal tx_packetizer_eof_n     : std_logic;
 signal tx_packetizer_eop_n     : std_logic;
 signal tx_packetizer_src_rdy_n : std_logic;
 signal tx_packetizer_dst_rdy_n : std_logic;
+
+-- Buffer FIFO input
+signal rx_buffer_fifo_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal rx_buffer_fifo_rem       : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+signal rx_buffer_fifo_sof_n     : std_logic;
+signal rx_buffer_fifo_sop_n     : std_logic;
+signal rx_buffer_fifo_eof_n     : std_logic;
+signal rx_buffer_fifo_eop_n     : std_logic;
+signal rx_buffer_fifo_src_rdy_n : std_logic;
+signal rx_buffer_fifo_dst_rdy_n : std_logic;
+
+-- Buffer FIFO output
+signal tx_buffer_fifo_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal tx_buffer_fifo_rem       : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+signal tx_buffer_fifo_sof_n     : std_logic;
+signal tx_buffer_fifo_sop_n     : std_logic;
+signal tx_buffer_fifo_eof_n     : std_logic;
+signal tx_buffer_fifo_eop_n     : std_logic;
+signal tx_buffer_fifo_src_rdy_n : std_logic;
+signal tx_buffer_fifo_dst_rdy_n : std_logic;
+
+signal tx_buffer_fifo_frame_rdy : std_logic;
+
+-- Frame Sender input
+signal rx_sender_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal rx_sender_rem       : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+signal rx_sender_sof_n     : std_logic;
+signal rx_sender_sop_n     : std_logic;
+signal rx_sender_eof_n     : std_logic;
+signal rx_sender_eop_n     : std_logic;
+signal rx_sender_src_rdy_n : std_logic;
+signal rx_sender_dst_rdy_n : std_logic;
+
+signal rx_sender_send_next : std_logic;
+
+-- Frame Sender output
+signal tx_sender_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal tx_sender_rem       : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+signal tx_sender_sof_n     : std_logic;
+signal tx_sender_sop_n     : std_logic;
+signal tx_sender_eof_n     : std_logic;
+signal tx_sender_eop_n     : std_logic;
+signal tx_sender_src_rdy_n : std_logic;
+signal tx_sender_dst_rdy_n : std_logic;
 
 begin
 
@@ -145,7 +187,7 @@ begin
    generic map(
       DATA_WIDTH      => OUT_DATA_WIDTH,
       ENDPOINT_ID     => ENDPOINT_ID,
-      MAX_FRAME_LENGTH=> 4096
+      MAX_FRAME_LENGTH=> MAX_FRAME_LENGTH
    )
    port map(
       CLK             => TX_CLK,
