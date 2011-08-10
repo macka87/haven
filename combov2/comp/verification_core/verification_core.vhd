@@ -27,7 +27,11 @@ architecture arch of verification_core is
    --constant DUT_DATA_WIDTH  : integer := 128;
 
    -- number of endpoints that transmit data to SW
-   constant OUTPUT_ENDPOINTS : integer := 2;
+   constant OUTPUT_ENDPOINTS : integer := 3;
+
+   -- input width of output signal observer
+   constant OUT_SIG_OBSERVER_IN_DATA_WIDTH : integer := DUT_DATA_WIDTH
+      + log2(DUT_DATA_WIDTH/8) + 6;
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -108,6 +112,22 @@ architecture arch of verification_core is
    signal fl_val_checker_tx_dst_rdy_n   : std_logic;
 
    signal fl_val_checker_output_ready   : std_logic;
+
+   -- Output Signal Observer output
+   signal out_sig_observer_rx_data
+      : std_logic_vector(OUT_SIG_OBSERVER_IN_DATA_WIDTH-1 downto 0);
+
+   -- Output Signal Observer output
+   signal out_sig_observer_tx_data        : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
+   signal out_sig_observer_tx_rem         : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
+   signal out_sig_observer_tx_sof_n       : std_logic;
+   signal out_sig_observer_tx_sop_n       : std_logic;
+   signal out_sig_observer_tx_eop_n       : std_logic;
+   signal out_sig_observer_tx_eof_n       : std_logic;
+   signal out_sig_observer_tx_src_rdy_n   : std_logic;
+   signal out_sig_observer_tx_dst_rdy_n   : std_logic;
+
+   signal out_sig_observer_output_ready   : std_logic;
 
    -- FrameLink Binder input
    signal fl_binder_in_data     : std_logic_vector(OUTPUT_ENDPOINTS*ENV_DATA_WIDTH-1 downto 0);
@@ -445,14 +465,81 @@ icon_i : icon3
       OUTPUT_READY  => fl_val_checker_output_ready
    );
 
+   out_sig_observer_rx_data   <= dut_out_data &
+                                 dut_out_rem & 
+                                 dut_out_sof_n &
+                                 dut_out_sop_n &
+                                 dut_out_eof_n &
+                                 dut_out_eop_n &
+                                 dut_out_src_rdy_n &
+                                 dut_out_dst_rdy_n;
+
+   -- ------------------------------------------------------------------------
+   --                    Output FrameLink Signal Observer
+   -- ------------------------------------------------------------------------
+  out_signal_observer_i: entity work.SIGNAL_OBSERVER
+   generic map(
+      -- FrameLink data width
+     IN_DATA_WIDTH   => OUT_SIG_OBSERVER_IN_DATA_WIDTH,
+     OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
+     ENDPOINT_ID     => 187   -- BB hexa
+   )
+   port map(
+      -- input clock domain
+      RX_CLK         => clk_dut,
+      RX_RESET       => reset_dut,
+
+      -- input interface
+      RX_DATA        => out_sig_observer_rx_data,
+      
+      -- output clock domain
+      OUT_CLK        => CLK,
+      OUT_RESET      => RESET,
+
+      -- output interface
+      OUT_DATA       => out_sig_observer_tx_data,
+      OUT_REM        => out_sig_observer_tx_rem,
+      OUT_SOF_N      => out_sig_observer_tx_sof_n,
+      OUT_SOP_N      => out_sig_observer_tx_sop_n,
+      OUT_EOP_N      => out_sig_observer_tx_eop_n,
+      OUT_EOF_N      => out_sig_observer_tx_eof_n,
+      OUT_SRC_RDY_N  => out_sig_observer_tx_src_rdy_n,
+      OUT_DST_RDY_N  => out_sig_observer_tx_dst_rdy_n,
+
+      -- output ready signal
+      OUTPUT_READY  => out_sig_observer_output_ready
+   );
+
    -- FL_BINDER input mapping
-   fl_binder_in_data       <= fl_val_checker_tx_data      & fl_hw_monitor_tx_data;
-   fl_binder_in_rem        <= fl_val_checker_tx_rem       & fl_hw_monitor_tx_rem;
-   fl_binder_in_sof_n      <= fl_val_checker_tx_sof_n     & fl_hw_monitor_tx_sof_n;
-   fl_binder_in_sop_n      <= fl_val_checker_tx_sop_n     & fl_hw_monitor_tx_sop_n;
-   fl_binder_in_eop_n      <= fl_val_checker_tx_eop_n     & fl_hw_monitor_tx_eop_n;
-   fl_binder_in_eof_n      <= fl_val_checker_tx_eof_n     & fl_hw_monitor_tx_eof_n;
-   fl_binder_in_src_rdy_n  <= fl_val_checker_tx_src_rdy_n & fl_hw_monitor_tx_src_rdy_n;
+   fl_binder_in_data       <= out_sig_observer_tx_data &
+                              fl_val_checker_tx_data &
+                              fl_hw_monitor_tx_data;
+
+   fl_binder_in_rem        <= out_sig_observer_tx_rem &
+                              fl_val_checker_tx_rem &
+                              fl_hw_monitor_tx_rem;
+
+   fl_binder_in_sof_n      <= out_sig_observer_tx_sof_n &
+                              fl_val_checker_tx_sof_n &
+                              fl_hw_monitor_tx_sof_n;
+
+   fl_binder_in_sop_n      <= out_sig_observer_tx_sop_n &
+                              fl_val_checker_tx_sop_n &
+                              fl_hw_monitor_tx_sop_n;
+
+   fl_binder_in_eop_n      <= out_sig_observer_tx_eop_n &
+                              fl_val_checker_tx_eop_n &
+                              fl_hw_monitor_tx_eop_n;
+
+   fl_binder_in_eof_n      <= out_sig_observer_tx_eof_n &
+                              fl_val_checker_tx_eof_n &
+                              fl_hw_monitor_tx_eof_n;
+
+   fl_binder_in_src_rdy_n  <= out_sig_observer_tx_src_rdy_n &
+                              fl_val_checker_tx_src_rdy_n &
+                              fl_hw_monitor_tx_src_rdy_n;
+
+   out_sig_observer_tx_dst_rdy_n   <= fl_binder_in_dst_rdy_n(2);
    fl_val_checker_tx_dst_rdy_n     <= fl_binder_in_dst_rdy_n(1);
    fl_hw_monitor_tx_dst_rdy_n      <= fl_binder_in_dst_rdy_n(0);
 

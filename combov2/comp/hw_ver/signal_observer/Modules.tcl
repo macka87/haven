@@ -22,6 +22,5 @@ set MOD "$MOD $ENTITY_BASE/frame_sender.vhd"
 # Componentss
 set COMPONENTS [list \
    [ list "CDC_FIFO"       $CDC_FIFO_BASE        "FULL"] \
-   [ list "LFSR_PRNG"      $LFSR_PRNG_BASE       "FULL"] \
    [ list "FL_FIFO"        $FL_FIFO_BASE         "FULL"] \
 ]
