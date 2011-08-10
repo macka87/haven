@@ -168,7 +168,7 @@
           @(fl.monitor_cb);
         if (!enabled) return;
       end while (fl.monitor_cb.SRC_RDY_N);
-      $write("RESPONDER IS ENABLED!!!!!!!\n");
+      //$write("RESPONDER IS ENABLED!!!!!!!\n");
       flResponder.setEnabled(); 
     endtask : waitForSrcRdy
    

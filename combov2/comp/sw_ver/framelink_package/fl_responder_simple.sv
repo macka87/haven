@@ -97,7 +97,7 @@
     
       while (enabled) begin
         dstMbx.get(dst);
-        $write("DST: %b\n",dst);
+        //$write("DST: %b\n",dst);
         fl.cb.DST_RDY_N <= dst;  //! destination ready active for one cycle
         @(fl.cb);
       end
