@@ -17,6 +17,7 @@ package sv_basic_comp_pkg;
   `include "sender.sv"
   `include "dpi/input_wrapper.sv"
   `include "dpi/output_wrapper.sv"
+  `include "sorter.sv"
   `include "output_cbs.sv"
   `include "output_controller.sv"
   `include "monitor.sv"

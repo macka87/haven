@@ -90,7 +90,7 @@
 						ntr.size = size;
 						
 						// put received data to output mailbox
-						outputMbx.put(ntr);  
+            outputMbx.put(ntr);  
             counter++;
 					end
 					else begin

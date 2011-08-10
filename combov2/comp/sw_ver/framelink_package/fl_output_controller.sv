@@ -12,7 +12,8 @@
     * Public Class Atributes
     */ 
     int frameCount;
-    
+    tTransMbx mbx;    // Mailbox for transactions received from Sorter
+    OutputCbs cbs[$]; // Output callback list
    /*
     * Public Class Methods
     */ 
@@ -22,11 +23,19 @@
     */    
     function new(string inst,
                  byte id,
-                 tTransMbx outputMbx, 
+                 tTransMbx mbx, 
                  int frameCount); 
-       super.new(inst, id, outputMbx);
+       super.new(inst, id);
        this.frameCount = frameCount;
+       this.mbx        = mbx;
     endfunction: new
+   
+   /*! 
+    * Set Controller Callback - put callback object into List 
+    */
+    virtual function void setCallbacks(OutputCbs cbs);
+      this.cbs.push_back(cbs);
+    endfunction : setCallbacks
     
    /*! 
     * Run Controller - receives transactions and sends them for processing by 
@@ -39,7 +48,7 @@
 
       // create new FrameLink packet
       fltr = new();
-      fltr.frameParts = frameCount;
+      fltr.frameParts = frameCount; // plus netcope header
       fltr.data  = new[frameCount];
         
       while (enabled) begin 
@@ -47,20 +56,19 @@
         for (int i=0; i<frameCount; i++) begin
           // receive data from mailbox
           busy = 0;
-          outputMbx.get(tr);
+          mbx.get(tr);
           busy = 1;
           
           $cast(ntr, tr);
           
-          // creates one FrameLink part from received data 
-          fltr.data[i] = new[ntr.size];
+          // creates one FrameLink part from received data - NetCOPE Header Size 
+          fltr.data[i] = new[ntr.size-8]; 
             
-          for (int j=0; j<ntr.size; j++)
-            fltr.data[i][j] = ntr.data[j];
+          // jump over NetCOPE header  
+          for (int j=0; j<ntr.size-8; j++)
+            fltr.data[i][j] = ntr.data[j+8];
         end     
 
-        //fltr.display("CREATED OUTPUT FRAMELINK");
-          
         $cast(tr, fltr);
           
         //! Call transaction postprocesing in scoreboard  

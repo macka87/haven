@@ -30,8 +30,11 @@ program TEST (
   tTransMbx                                              inputMbx; 
   
   //! Mailbox for Output controller's transactions
-  tTransMbx                                              outputMbx; 
+  tTransMbx                                              outputMbx;
   
+  //! Sorter's mailboxes
+  tTransMbx                                              mbx[];  
+
   //! Input Controller of generated input  
   FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH)  flGenInCnt; 
   
@@ -44,16 +47,14 @@ program TEST (
   //! Checker
   FrameLinkFifoChecker #(DATA_WIDTH, DREM_WIDTH, BLOCK_SIZE, 
                          STATUS_WIDTH, ITEMS, USE_BRAMS) flChecker;                                                       
+  //! Sorter
+  Sorter                                                 sorter; 
   
   //! Output Controller 
   FrameLinkOutputController                              flOutCnt;
   
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
-  
-  //! Responder
-  //FrameLinkResponder #(DATA_WIDTH, DREM_WIDTH)           flResponder;
-  //FrameLinkResponderSimple #(DATA_WIDTH, DREM_WIDTH)      flResponder;
   
   //! Scoreboard
   FIFOScoreboard                                         scoreboard; 
@@ -97,23 +98,25 @@ program TEST (
      //! Create Output Wrapper
      outputWrapper = new("Output Wrapper", outputMbx); 
      
-     flOutCnt = new("Output Controller", 0, outputMbx, GENERATOR_FL_FRAME_COUNT);
+     //! Create Sorter and Output Controllers' mailboxes
+     mbx = new[2];
+       // FL Output Controller mailbox
+       mbx[0] = new(1); 
+       // pokusny mailbox
+       mbx[1] = new(1);
+     sorter = new(outputMbx, mbx, 2);
+     
+     //! Create FrameLink Output Controller
+     flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
      flOutCnt.setCallbacks(scoreboard.outputCbs);  
      
-     //! Create checker
+     //! Create Checker
      flChecker = new("Checker", RX, TX, CTRL);
      
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR, TX);
      flMonitor.setCallbacks(scoreboard.outputCbs);  
      flCoverage.addFrameLinkInterfaceTx(MONITOR,"TX Command Coverage");
-     
-     //! Create Responder 
-     //flResponder  = new("FrameLink Responder", 0, TX);
-       //flResponder.btDelayLow   = RESPONDER_BT_DELAY_LOW;
-       //flResponder.btDelayHigh  = RESPONDER_BT_DELAY_HIGH;
-       //flResponder.itDelayLow   = RESPONDER_IT_DELAY_LOW;
-       //flResponder.itDelayHigh  = RESPONDER_IT_DELAY_HIGH;     
   endtask : createEnvironment
 
   /*
@@ -131,12 +134,12 @@ program TEST (
     if (FRAMEWORK == 0) begin
       flChecker.setEnabled();
       flMonitor.setEnabled();
-      //flResponder.setEnabled();
       flCoverage.setEnabled();
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setEnabled();
       outputWrapper.setEnabled();
+      sorter.setEnabled();
       flOutCnt.setEnabled();
     end  
   endtask : enableTestEnvironment
@@ -152,7 +155,7 @@ program TEST (
       busy = 0;
       
       if (FRAMEWORK == 0) begin
-        if (flMonitor.busy/* || flResponder.busy*/) busy = 1;
+        if (flMonitor.busy) busy = 1;
       end
       
       if (FRAMEWORK == 1) begin
@@ -167,12 +170,12 @@ program TEST (
     if (FRAMEWORK == 0) begin
       flChecker.setDisabled();
       flMonitor.setDisabled();
-      //flResponder.setDisabled();
       flCoverage.setDisabled();
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setDisabled();
       outputWrapper.setDisabled();
+      sorter.setDisabled();
       flOutCnt.setDisabled();
     end  
   endtask : disableTestEnvironment
