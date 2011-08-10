@@ -1,0 +1,9 @@
+:%s/CSET\ data_count_width=.*$/CSET\ data_count_width=6/c
+:%s/CSET\ empty_threshold_assert_value=.*$/CSET\ empty_threshold_assert_value=32/c
+:%s/CSET\ empty_threshold_negate_value=.*$/CSET\ empty_threshold_negate_value=33/c
+:%s/CSET\ full_threshold_assert_value=.*$/CSET\ full_threshold_assert_value=32/c
+:%s/CSET\ full_threshold_negate_value=.*$/CSET\ full_threshold_negate_value=31/c
+:%s/CSET\ input_depth=.*/CSET\ input_depth=64/c
+:%s/CSET\ output_depth=.*/CSET\ output_depth=64/c
+:%s/CSET\ read_data_count_width=.*/CSET\ read_data_count_width=6/c
+:%s/CSET\ write_data_count_width=.*/CSET\ write_data_count_width=6/c
