@@ -151,11 +151,6 @@ signal tx_sender_dst_rdy_n : std_logic;
 begin
 
    -- Assertions
-   assert (IN_DATA_WIDTH = 64)
-      report "Unsupported IN_DATA_WIDTH!"
-      severity failure;
-
-   -- Assertions
    assert (OUT_DATA_WIDTH = 64)
       report "Unsupported OUT_DATA_WIDTH!"
       severity failure;
