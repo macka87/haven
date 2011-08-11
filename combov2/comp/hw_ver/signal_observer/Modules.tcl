@@ -13,11 +13,10 @@ set FL_FIFO_BASE           "$FL_BASE/storage/fifo"
 
 
 # Source files
-set MOD "$MOD $ENTITY_BASE/signal_observer.vhd"
-
-# Smart monitor
 set MOD "$MOD $ENTITY_BASE/observer_packetizer.vhd"
 set MOD "$MOD $ENTITY_BASE/frame_sender.vhd"
+
+set MOD "$MOD $ENTITY_BASE/signal_observer.vhd"
 
 # Componentss
 set COMPONENTS [list \
