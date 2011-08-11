@@ -66,6 +66,9 @@ architecture arch of SIGNAL_OBSERVER is
 -- maximum length of a FrameLink frame (depends on the size of DMA buffers)
 constant MAX_FRAME_LENGTH       : integer := 4096;
 
+-- depth of the buffer FIFO
+constant BUFFER_FIFO_DEPTH      : integer := MAX_FRAME_LENGTH / (OUT_DATA_WIDTH/8);
+
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
@@ -253,8 +256,8 @@ begin
    buffer_fifo_i : entity work.FL_FIFO
    generic map(
       DATA_WIDTH      => OUT_DATA_WIDTH,
-      ITEMS           => MAX_FRAME_LENGTH,
-      USE_BRAMS       => false,
+      ITEMS           => BUFFER_FIFO_DEPTH,
+      USE_BRAMS       => true,
       PARTS           => 1
    )
    port map(
