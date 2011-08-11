@@ -493,18 +493,18 @@ icon_i : icon3
       RX_DATA        => out_sig_observer_rx_data,
       
       -- output clock domain
-      OUT_CLK        => CLK,
-      OUT_RESET      => RESET,
+      TX_CLK        => CLK,
+      TX_RESET      => RESET,
 
       -- output interface
-      OUT_DATA       => out_sig_observer_tx_data,
-      OUT_REM        => out_sig_observer_tx_rem,
-      OUT_SOF_N      => out_sig_observer_tx_sof_n,
-      OUT_SOP_N      => out_sig_observer_tx_sop_n,
-      OUT_EOP_N      => out_sig_observer_tx_eop_n,
-      OUT_EOF_N      => out_sig_observer_tx_eof_n,
-      OUT_SRC_RDY_N  => out_sig_observer_tx_src_rdy_n,
-      OUT_DST_RDY_N  => out_sig_observer_tx_dst_rdy_n,
+      TX_DATA       => out_sig_observer_tx_data,
+      TX_REM        => out_sig_observer_tx_rem,
+      TX_SOF_N      => out_sig_observer_tx_sof_n,
+      TX_SOP_N      => out_sig_observer_tx_sop_n,
+      TX_EOP_N      => out_sig_observer_tx_eop_n,
+      TX_EOF_N      => out_sig_observer_tx_eof_n,
+      TX_SRC_RDY_N  => out_sig_observer_tx_src_rdy_n,
+      TX_DST_RDY_N  => out_sig_observer_tx_dst_rdy_n,
 
       -- output ready signal
       OUTPUT_READY  => out_sig_observer_output_ready
