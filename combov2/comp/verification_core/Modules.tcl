@@ -13,7 +13,7 @@ set FL_ADDER_BASE          "$FL_BASE/edit/netcope_adder"
 set CLOCK_GATE_BASE        "$COMP_BASE/clock_gate"
 set FL_HW_DRIVER_BASE      "$COMP_BASE/hw_ver/fl_hw_driver"
 set FL_HW_MONITOR_BASE     "$COMP_BASE/hw_ver/fl_hw_monitor"
-set FL_VAL_CHECKER_BASE    "$COMP_BASE/fl_val_checker"
+set FL_VAL_CHECKER_BASE    "$COMP_BASE/hw_ver/fl_val_checker"
 set RESET_GEN_BASE         "$COMP_BASE/hw_ver/reset_gen"
 
 set FL_FIFO_BASE           "$FL_BASE/storage/fifo"

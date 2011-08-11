@@ -5,7 +5,7 @@
 #
 
 # Set paths
-set COMP_BASE              "$ENTITY_BASE/.."
+set COMP_BASE              "$ENTITY_BASE/../.."
 set BASE_BASE              "$COMP_BASE/base"
 set CDC_FIFO_BASE          "$COMP_BASE/cdc_fifo"
 
