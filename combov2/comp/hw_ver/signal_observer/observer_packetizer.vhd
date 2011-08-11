@@ -47,7 +47,9 @@ entity OBSERVER_PACKETIZER is
       TX_SOF_N       : out std_logic;
       TX_EOF_N       : out std_logic;
       TX_SRC_RDY_N   : out std_logic;
-      TX_DST_RDY_N   : in  std_logic
+      TX_DST_RDY_N   : in  std_logic;
+
+      PACKET_SENT    : out std_logic
    );
    
 end entity;
@@ -95,6 +97,8 @@ signal sig_tx_fl_eof_n     : std_logic;
 signal sig_tx_fl_eop_n     : std_logic;
 signal sig_tx_fl_src_rdy_n : std_logic;
 signal sig_tx_fl_dst_rdy_n : std_logic;
+
+signal sig_packet_sent     : std_logic;
 
 -- is_sending_header register
 signal reg_is_sending_header      : std_logic;
@@ -207,6 +211,10 @@ begin
    sig_tx_fl_eop_n        <= NOT is_word_cnt_max;
    sig_tx_fl_src_rdy_n    <= NOT sig_rx_valid;
 
+   sig_packet_sent     <= (NOT sig_tx_fl_src_rdy_n) AND
+                          (NOT sig_tx_fl_dst_rdy_n) AND
+                          (NOT sig_tx_fl_eof_n);
+
    -- mapping of output signals
    TX_DATA             <= sig_tx_fl_data;
    TX_REM              <= sig_tx_fl_rem;
@@ -216,5 +224,7 @@ begin
    TX_EOP_N            <= sig_tx_fl_eop_n;
    TX_SRC_RDY_N        <= sig_tx_fl_src_rdy_n;
    sig_tx_fl_dst_rdy_n <= TX_DST_RDY_N;
+
+   PACKET_SENT         <= sig_packet_sent;
 
 end architecture;

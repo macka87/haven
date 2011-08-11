@@ -155,6 +155,13 @@ signal tx_sender_eop_n     : std_logic;
 signal tx_sender_src_rdy_n : std_logic;
 signal tx_sender_dst_rdy_n : std_logic;
 
+signal packetizer_sent     : std_logic;
+signal observer_stopped    : std_logic;
+
+-- packet sent register
+signal reg_packet_sent     : std_logic;
+signal reg_packet_sent_set : std_logic;
+
 begin
 
    -- Assertions
@@ -189,9 +196,9 @@ begin
    );
 
    -- mapping of rearranger inputs
-   rx_rearranger_data         <= sig_data_fifo_rd_data;
-   rx_rearranger_valid        <= NOT sig_data_fifo_rd_empty;
-   sig_data_fifo_rd_read      <= rx_rearranger_read_next;
+   rx_rearranger_data      <= sig_data_fifo_rd_data;
+   rx_rearranger_valid     <= NOT (sig_data_fifo_rd_empty OR observer_stopped);
+   sig_data_fifo_rd_read   <= rx_rearranger_read_next OR observer_stopped;
 
    -- --------------- OBSERVER_REARRANGER instance ---------------------------
    observer_rearranger_i : entity work.OBSERVER_REARRANGER
@@ -243,7 +250,9 @@ begin
       TX_SOP_N        => tx_packetizer_sop_n,
       TX_EOP_N        => tx_packetizer_eop_n,
       TX_SRC_RDY_N    => tx_packetizer_src_rdy_n,
-      TX_DST_RDY_N    => tx_packetizer_dst_rdy_n
+      TX_DST_RDY_N    => tx_packetizer_dst_rdy_n,
+
+      PACKET_SENT     => packetizer_sent
    );
  
    -- mapping observer outputs
@@ -335,6 +344,22 @@ begin
       TX_SRC_RDY_N    => tx_sender_src_rdy_n,
       TX_DST_RDY_N    => tx_sender_dst_rdy_n
    );
+
+   reg_packet_sent_set <= packetizer_sent;
+
+   -- -------------- packet sent register ----------------------------------
+   reg_packet_sent_p: process (TX_CLK)
+   begin
+      if (rising_edge(TX_CLK)) then
+         if (TX_RESET = '1') then
+            reg_packet_sent <= '0';
+         elsif (reg_packet_sent_set = '1') then
+            reg_packet_sent <= '1';
+         end if;
+      end if;
+   end process;
+
+   observer_stopped <= reg_packet_sent;
 
    -- mapping of outputs
    TX_DATA         <= tx_sender_data;
