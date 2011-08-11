@@ -64,10 +64,14 @@ architecture arch of SIGNAL_OBSERVER is
 -- ==========================================================================
 
 -- maximum length of a FrameLink frame (depends on the size of DMA buffers)
-constant MAX_FRAME_LENGTH       : integer := 4096;
+constant MAX_FRAME_LENGTH       : integer := 4000;
+
+-- length of NetCOPE protocol header
+constant HEADER_LENGTH          : integer := 1;
 
 -- depth of the buffer FIFO
-constant BUFFER_FIFO_DEPTH      : integer := MAX_FRAME_LENGTH / (OUT_DATA_WIDTH/8);
+constant BUFFER_FIFO_DEPTH      : integer :=
+   MAX_FRAME_LENGTH / (OUT_DATA_WIDTH/8) + HEADER_LENGTH;
 
 -- ==========================================================================
 --                                     SIGNALS
