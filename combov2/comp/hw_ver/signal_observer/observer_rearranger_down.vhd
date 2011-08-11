@@ -94,6 +94,8 @@ begin
    sig_rx_valid  <= RX_VALID;
    RX_READ_NEXT  <= sig_rx_read_next;
 
+   padding <= (others => '0');
+
    -- mapping multiplexer inputs
    mux_data_in   <= padding & sig_rx_data;
    mux_addr_in   <= cnt_addr;
