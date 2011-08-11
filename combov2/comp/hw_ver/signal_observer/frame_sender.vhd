@@ -21,7 +21,7 @@ entity FRAME_SENDER is
    generic
    (
       -- data width
-      DATA_WIDTH  : integer := 64;
+      DATA_WIDTH  : integer := 64
    );
 
    port
@@ -52,10 +52,7 @@ entity FRAME_SENDER is
       TX_SOF_N       : out std_logic;
       TX_EOF_N       : out std_logic;
       TX_SRC_RDY_N   : out std_logic;
-      TX_DST_RDY_N   : in  std_logic;
-
-      -- ------------------ ready signal ------------------------------------
-      OUTPUT_READY   : out std_logic
+      TX_DST_RDY_N   : in  std_logic
    );
    
 end entity;
@@ -126,9 +123,9 @@ begin
 
 
    -- is_sending register input signals
-   reg_is_sending_clr = NOT (sig_rx_fl_dst_rdy_n OR sig_tx_fl_src_rdy_n OR
+   reg_is_sending_clr <= NOT (sig_rx_fl_dst_rdy_n OR sig_tx_fl_src_rdy_n OR
       sig_rx_fl_eof_n);
-   reg_is_sending_set = sig_rx_send_next;
+   reg_is_sending_set <= sig_rx_send_next;
 
    -- the is_sending register
    reg_is_sending_p: process (CLK)
