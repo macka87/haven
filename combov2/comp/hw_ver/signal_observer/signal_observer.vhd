@@ -41,12 +41,12 @@ entity SIGNAL_OBSERVER is
       -- output FrameLink interface
       TX_DATA        : out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
       TX_REM         : out std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
-      TX_SRC_RDY_N   : out std_logic;
-      TX_DST_RDY_N   : in  std_logic;
       TX_SOP_N       : out std_logic;
       TX_EOP_N       : out std_logic;
       TX_SOF_N       : out std_logic;
       TX_EOF_N       : out std_logic;
+      TX_SRC_RDY_N   : out std_logic;
+      TX_DST_RDY_N   : in  std_logic;
 
       -- ------------------ ready signal ------------------------------------
       OUTPUT_READY   : out std_logic
@@ -79,6 +79,15 @@ signal sig_data_fifo_rd_read   : std_logic;
 signal sig_data_fifo_rd_empty  : std_logic;
 signal sig_data_fifo_rd_almost_empty : std_logic;
 
+-- OBSERVER_REARRANGER input
+signal rx_rearranger_data      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal rx_rearranger_valid     : std_logic;
+signal rx_rearranger_read_next : std_logic;
+
+-- OBSERVER_REARRANGER output
+signal tx_rearranger_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal tx_rearranger_valid     : std_logic;
+signal tx_rearranger_read_next : std_logic;
 
 -- OBSERVER_PACKETIZER input
 signal rx_packetizer_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
@@ -177,10 +186,36 @@ begin
       RD_ALMOST_EMPTY => sig_data_fifo_rd_almost_empty
    );
 
+   -- mapping of rearranger inputs
+   rx_rearranger_data         <= sig_data_fifo_rd_data;
+   rx_rearranger_valid        <= NOT sig_data_fifo_rd_empty;
+   sig_data_fifo_rd_read      <= rx_rearranger_read_next;
+
+   -- --------------- OBSERVER_REARRANGER instance ---------------------------
+   observer_rearranger_i : entity work.OBSERVER_REARRANGER
+   generic map(
+      IN_DATA_WIDTH   => IN_DATA_WIDTH,
+      OUT_DATA_WIDTH  => OUT_DATA_WIDTH
+   )
+   port map(
+      CLK             => TX_CLK,
+      RESET           => TX_RESET,
+
+      -- RX interface
+      RX_DATA         => rx_rearranger_data,
+      RX_READ_NEXT    => rx_rearranger_read_next,
+      RX_VALID        => rx_rearranger_valid,
+
+      -- TX interface
+      TX_DATA         => tx_rearranger_data,
+      TX_READ_NEXT    => tx_rearranger_read_next,
+      TX_VALID        => tx_rearranger_valid
+   );
+
    -- mapping of packetizer inputs
-   rx_packetizer_data         <= sig_data_fifo_rd_data;
-   rx_packetizer_valid        <= NOT sig_data_fifo_rd_empty;
-   sig_data_fifo_rd_read      <= rx_packetizer_read_next;
+   rx_packetizer_data         <= tx_rearranger_data;
+   rx_packetizer_valid        <= tx_rearranger_valid;
+   tx_rearranger_read_next    <= rx_packetizer_read_next;
 
    -- --------------- OBSERVER_PACKETIZER instance -------------------------------
    observer_packetizer_i : entity work.OBSERVER_PACKETIZER
