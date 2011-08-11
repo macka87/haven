@@ -31,13 +31,13 @@ entity OBSERVER_REARRANGER is
 
       -- ----------------- INPUT INTERFACE ----------------------------------
       RX_DATA        : in  std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-      RX_READ_NEXT   : out std_logic;
       RX_VALID       : in  std_logic;
+      RX_READ_NEXT   : out std_logic;
       
       -- ----------------- OUTPUT INTERFACE ---------------------------------      
-      TX_DATA        : in  std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-      TX_READ_NEXT   : out std_logic;
-      TX_VALID       : in  std_logic
+      TX_DATA        : out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+      TX_VALID       : out std_logic;
+      TX_READ_NEXT   : in  std_logic
    );
    
 end entity;
@@ -47,12 +47,58 @@ end entity;
 -- ==========================================================================
 architecture arch of OBSERVER_REARRANGER is
 
--- ==========================================================================
---                                     SIGNALS
--- ==========================================================================
-
-
 begin
 
+   -- data widths are equal
+   GEN_ARCH_EQUAL:
+   if (IN_DATA_WIDTH = OUT_DATA_WIDTH) generate
+      TX_DATA        <= RX_DATA;
+      TX_VALID       <= RX_VALID;
+      RX_READ_NEXT   <= TX_READ_NEXT;
+   end generate;
+
+   -- RX data width > TX data width
+   GEN_ARCH_DOWN:
+   if (IN_DATA_WIDTH > OUT_DATA_WIDTH) generate
+      observer_rearranger_down_i: entity work.OBSERVER_REARRANGER_DOWN
+         generic map(
+            IN_DATA_WIDTH  => IN_DATA_WIDTH,
+            OUT_DATA_WIDTH => OUT_DATA_WIDTH
+         )
+         port map(
+            CLK            => CLK,
+            RESET          => RESET,
+            --
+            RX_DATA        => RX_DATA,
+            RX_VALID       => RX_VALID,
+            RX_READ_NEXT   => RX_READ_NEXT,
+            --
+            TX_DATA        => TX_DATA,
+            TX_VALID       => TX_VALID,
+            TX_READ_NEXT   => TX_READ_NEXT
+         );
+   end generate;
+
+   -- RX data width < TX data width
+   GEN_ARCH_UP:
+   if (IN_DATA_WIDTH < OUT_DATA_WIDTH) generate
+      observer_rearranger_up_i: entity work.OBSERVER_REARRANGER_UP
+         generic map(
+            IN_DATA_WIDTH  => IN_DATA_WIDTH,
+            OUT_DATA_WIDTH => OUT_DATA_WIDTH
+         )
+         port map(
+            CLK            => CLK,
+            RESET          => RESET,
+            --
+            RX_DATA        => RX_DATA,
+            RX_VALID       => RX_VALID,
+            RX_READ_NEXT   => RX_READ_NEXT,
+            --
+            TX_DATA        => TX_DATA,
+            TX_VALID       => TX_VALID,
+            TX_READ_NEXT   => TX_READ_NEXT
+         );
+   end generate;
 
 end architecture;
