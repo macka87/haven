@@ -9,6 +9,7 @@ set MOD "$MOD $ENTITY_BASE/xilinx_fifos/asfifo_lut_8.vhd"
 set MOD "$MOD $ENTITY_BASE/xilinx_fifos/asfifo_lut_9.vhd"
 set MOD "$MOD $ENTITY_BASE/xilinx_fifos/asfifo_lut_16.vhd"
 set MOD "$MOD $ENTITY_BASE/xilinx_fifos/asfifo_lut_71.vhd"
+set MOD "$MOD $ENTITY_BASE/xilinx_fifos/asfifo_lut_73.vhd"
 set MOD "$MOD $ENTITY_BASE/xilinx_fifos/asfifo_lut_136.vhd"
 
 # Source files
