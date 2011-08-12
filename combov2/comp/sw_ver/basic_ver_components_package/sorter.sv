@@ -73,16 +73,10 @@
         $cast(ntr, tr);
         monitorID =  ntr.data[0];
 
-        /*if (monitorID == 8'h88) mbx[0].put(tr); 
-        else if (monitorID == 8'hAA) mbx[1].put(tr); 
-        else if (monitorID == 8'hBB) mbx[2].put(tr);
-        else $error("!!!SORTER: Unknown Output Controller Identifier!!!\n");
-        */
-
         priority case (monitorID)
           8'h88 : mbx[0].put(tr);
-          8'h88 : mbx[0].put(tr);
-          8'h88 : mbx[0].put(tr);
+          8'hAA : mbx[1].put(tr);
+          8'hBB : mbx[2].put(tr);
           default : $error("!!!SORTER: Unknown Output Controller Identifier!!!\n");
         endcase
       end  

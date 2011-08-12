@@ -74,6 +74,6 @@
         //! Call transaction postprocesing in scoreboard  
         foreach (cbs[i])          
           cbs[i].post_tr(tr, id); 
-      end
+      end  
     endtask : run
  endclass : FrameLinkOutputController  
