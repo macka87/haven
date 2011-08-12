@@ -127,7 +127,7 @@
    /*! 
     * Display the actual state of transaction table
     */
-    function displayState(integer full=1, string inst = "");
+    function void displayState(integer full=1, string inst = "");
       TransType tr;
        $write("------------------------------------------------------------\n");
        $write("-- %s TRANSACTION TABLE\n", inst);
@@ -137,7 +137,7 @@
        $write("Items removed: %d\n", removed);
        $write("\n");
        $write("------------------------------------------------------------\n");
-    endfunction: displayState
+     endfunction: displayState
 
  endclass : TransactionTable
 

@@ -206,8 +206,8 @@ typedef TransactionTable#(1) TransactionTableType;
     * Prints Transaction Table after assertion Failure
     * 
     */
-    function displayTrans();
-       scoreTable.displayState();
+    function void displayTrans();
+      scoreTable.displayState();
     endfunction
 
  endclass : FIFOScoreboard

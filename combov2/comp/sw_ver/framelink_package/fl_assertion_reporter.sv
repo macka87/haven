@@ -82,8 +82,8 @@
           
           if (assertRep[5]) 
             $write("\nTX FrameLink Assertion Error: No EOF_N before SOF_N\n");
-          $write("----------------------------------------\n");
-          $stop();
+          $write("----------------------------------------\n\n");
+          $finish();
         end  
       end
     endtask : run

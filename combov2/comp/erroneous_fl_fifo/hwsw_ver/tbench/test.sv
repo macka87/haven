@@ -9,7 +9,7 @@ import test_pkg::*;
 import sv_basic_comp_pkg::*;
 import sv_fl_pkg::*;
 import sv_fl_fifo_pkg::*;
-
+import dpi_wrapper_pkg::*;
 /*
  * Test output and input interfaces of DUT.
  */ 
@@ -265,8 +265,15 @@ program TEST (
 
   // final section for assertion reports
   final begin
-    if (FRAMEWORK == 0)
-        scoreboard.displayTrans();
+	  int res;
+    if (FRAMEWORK == 0) begin
+      scoreboard.displayTrans();
+    end
+		
+		if (FRAMEWORK == 1) begin 
+		  res = c_closeDMAChannel();  
+      $write("CLOSING CHANNEL (musi byt 0): %d\n",res); 
+    end    
   end
 endprogram
 
