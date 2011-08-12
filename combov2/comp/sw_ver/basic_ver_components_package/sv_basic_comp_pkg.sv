@@ -20,6 +20,7 @@ package sv_basic_comp_pkg;
   `include "sorter.sv"
   `include "output_cbs.sv"
   `include "output_controller.sv"
+  `include "assertion_reporter.sv"
   `include "monitor.sv"
   `include "transaction_table.sv"
   `include "lfsr.sv"

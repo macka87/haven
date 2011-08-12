@@ -52,6 +52,12 @@ program TEST (
   
   //! Output Controller 
   FrameLinkOutputController                              flOutCnt;
+ 
+  //! Assertion Checker
+  //FrameLinkAssertionChecker                              assertChecker;
+
+  //! Assertion Reporter
+  FrameLinkAssertionReporter                             assertReporter;               
   
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
@@ -102,7 +108,7 @@ program TEST (
      mbx = new[2];
        // FL Output Controller mailbox
        mbx[0] = new(1); 
-       // pokusny mailbox
+       // Assertion Reporter mailbox
        mbx[1] = new(1);
      sorter = new(outputMbx, mbx, 2);
      
@@ -110,6 +116,12 @@ program TEST (
      flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
      flOutCnt.setCallbacks(scoreboard.outputCbs);  
      
+     //! Create Assertion Checker
+    // assertChecker = new("Assertion Checker", RX, TX);
+
+     //! Create Assertion Reporter
+     assertReporter = new("Assertion Reporter", 0, mbx[1]);
+
      //! Create Checker
      flChecker = new("Checker", RX, TX, CTRL);
      
@@ -132,6 +144,7 @@ program TEST (
   // Enable test Environment
   task enableTestEnvironment();
     if (FRAMEWORK == 0) begin
+      //assertChecker.setEnabled();
       flChecker.setEnabled();
       flMonitor.setEnabled();
       flCoverage.setEnabled();
@@ -141,6 +154,7 @@ program TEST (
       outputWrapper.setEnabled();
       sorter.setEnabled();
       flOutCnt.setEnabled();
+      assertReporter.setEnabled();
     end  
   endtask : enableTestEnvironment
   
@@ -159,7 +173,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy) busy = 1; 
+        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy || assertReporter.busy) busy = 1; 
       end
         
       if (busy) i = 0;
@@ -168,6 +182,7 @@ program TEST (
     end
     
     if (FRAMEWORK == 0) begin
+      //assertChecker.setDisabled();
       flChecker.setDisabled();
       flMonitor.setDisabled();
       flCoverage.setDisabled();
@@ -177,6 +192,7 @@ program TEST (
       outputWrapper.setDisabled();
       sorter.setDisabled();
       flOutCnt.setDisabled();
+      assertReporter.setDisabled();
     end  
   endtask : disableTestEnvironment
 
@@ -216,7 +232,10 @@ program TEST (
      
      // Display Scoreboard and Coverage
      scoreboard.display();
-     if (FRAMEWORK == 0) flCoverage.display();
+     if (FRAMEWORK == 0) begin
+        flCoverage.display();
+     end
+
   endtask: test1
 
   /*
@@ -232,6 +251,11 @@ program TEST (
         
     // Stop testing
     $stop();       
+  end
+
+  final begin
+    if (FRAMEWORK == 0)
+        scoreboard.displayTrans();
   end
 endprogram
 

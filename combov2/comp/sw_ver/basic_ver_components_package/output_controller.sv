@@ -12,9 +12,7 @@
     * Public Class Atributes
     */ 
     string     inst;       //! Controller identification
-    byte      id;          //! Controller ID number
-    tTransMbx  outputMbx;  //! Output Transaction Mailbox
-    OutputCbs  cbs[$];     //! Output callback list 
+    byte       id;         //! Controller ID number
     bit        enabled;    //! Controller enabling
     bit        busy;       //! Controller is receiving transaction
     
@@ -26,23 +24,14 @@
     * Constructor 
     */    
     function new(string inst,
-                 byte id,
-                 tTransMbx outputMbx); 
+                 byte id);
       // Create mailbox
       this.inst      = inst;      //! Store controller identifier
       this.id        = id;
-      this.outputMbx = outputMbx;
       this.enabled   = 0;         //! Controller is disabled by default
       this.busy      = 0;         //! Controller is not busy by default 
     endfunction: new 
     
-   /*! 
-    * Set Controller Callback - put callback object into List 
-    */
-    virtual function void setCallbacks(OutputCbs cbs);
-      this.cbs.push_back(cbs);
-    endfunction : setCallbacks
-       
    /*! 
     * Enable Controller - enable controller and runs controller process
     */    
