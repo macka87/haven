@@ -128,10 +128,12 @@ begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
             cnt_addr <= (others => '0');
-         elsif (cnt_addr_clr = '1') then
-            cnt_addr <= (others => '0');
          elsif (cnt_addr_en = '1') then
-            cnt_addr <= cnt_addr + 1;
+            if (cnt_addr_clr = '1') then
+               cnt_addr <= (others => '0');
+            else
+               cnt_addr <= cnt_addr + 1;
+            end if;
          end if;
       end if;
    end process;
