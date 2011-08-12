@@ -53,6 +53,9 @@
         for (int i=0; i<15; i++)
           if (assertRep[i] == 1) error = 1;
 
+        // !!!!!! it will be necessary to add division between RX and TX reports later,
+        // if there will be assertion reporters on both FrameLink interfaces!!!
+
         // create assertion report
         if (error == 1) begin
           $write("\n");
@@ -63,22 +66,22 @@
           $write("------------ ASSERTION REPORT -----------\n");
 
           if (assertRep[0]) 
-            $write("\nFrameLink Assertion Error: SOF_N without SOP_N\n");
+            $write("\nTX FrameLink Assertion Error: SOF_N without SOP_N\n");
         
           if (assertRep[1]) 
-            $write("\nFrameLink Assertion Error: EOF_N without EOP_N\n");
+            $write("\nTX FrameLink Assertion Error: EOF_N without EOP_N\n");
         
           if (assertRep[2]) 
-            $write("\nFrameLink Assertion Error: Data between EOP_N and SOP_N\n");
+            $write("\nTX FrameLink Assertion Error: Data between EOP_N and SOP_N\n");
         
           if (assertRep[3]) 
-            $write("\nFrameLink Assertion Error: Data between EOF_N and SOF_N\n");
+            $write("\nTX FrameLink Assertion Error: Data between EOF_N and SOF_N\n");
         
           if (assertRep[4]) 
-            $write("\nFrameLink Assertion Error: No EOP_N before SOP_N\n");
+            $write("\nTX FrameLink Assertion Error: No EOP_N before SOP_N\n");
           
           if (assertRep[5]) 
-            $write("\nFrameLink Assertion Error: No EOF_N before SOF_N\n");
+            $write("\nTX FrameLink Assertion Error: No EOF_N before SOF_N\n");
           $write("----------------------------------------\n");
           $stop();
         end  

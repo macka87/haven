@@ -58,6 +58,9 @@ program TEST (
 
   //! Assertion Reporter
   FrameLinkAssertionReporter                             assertReporter;               
+
+  //! Signal Reporter
+  SignalReporter                                         sigReporter;
   
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
@@ -105,12 +108,14 @@ program TEST (
      outputWrapper = new("Output Wrapper", outputMbx); 
      
      //! Create Sorter and Output Controllers' mailboxes
-     mbx = new[2];
+     mbx = new[3];
        // FL Output Controller mailbox
        mbx[0] = new(1); 
        // Assertion Reporter mailbox
        mbx[1] = new(1);
-     sorter = new(outputMbx, mbx, 2);
+       // Signal Reporter
+       mbx[2] = new(1);
+     sorter = new(outputMbx, mbx, 3);
      
      //! Create FrameLink Output Controller
      flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
@@ -121,6 +126,9 @@ program TEST (
 
      //! Create Assertion Reporter
      assertReporter = new("Assertion Reporter", 0, mbx[1]);
+
+     //! Create Signal Reporter
+     sigReporter = new("Signal Reporter", 0, mbx[2]);
 
      //! Create Checker
      flChecker = new("Checker", RX, TX, CTRL);
@@ -155,6 +163,7 @@ program TEST (
       sorter.setEnabled();
       flOutCnt.setEnabled();
       assertReporter.setEnabled();
+      sigReporter.setEnabled();
     end  
   endtask : enableTestEnvironment
   
@@ -173,7 +182,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy || assertReporter.busy) busy = 1; 
+        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy || assertReporter.busy || sigReporter.busy) busy = 1; 
       end
         
       if (busy) i = 0;
@@ -193,6 +202,7 @@ program TEST (
       sorter.setDisabled();
       flOutCnt.setDisabled();
       assertReporter.setDisabled();
+      sigReporter.setDisabled();
     end  
   endtask : disableTestEnvironment
 
@@ -253,6 +263,7 @@ program TEST (
     $stop();       
   end
 
+  // final section for assertion reports
   final begin
     if (FRAMEWORK == 0)
         scoreboard.displayTrans();
