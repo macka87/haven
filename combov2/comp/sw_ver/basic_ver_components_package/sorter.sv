@@ -77,7 +77,10 @@
           8'h88 : mbx[0].put(tr);
           8'hAA : mbx[1].put(tr);
           8'hBB : mbx[2].put(tr);
-          default : $error("!!!SORTER: Unknown Output Controller Identifier!!!\n");
+          default : begin
+                      $error("!!!SORTER: Unknown Output Controller Identifier!!!\n");
+                      $finish();
+                    end  
         endcase
       end  
     endtask : run

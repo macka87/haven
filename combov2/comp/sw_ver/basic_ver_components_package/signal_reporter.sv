@@ -63,13 +63,10 @@
     virtual task run();
       NetCOPETransaction ntr;
       Transaction tr;
-      logic[15:0] assertRep;
-      bit error = 0; 
 
       while (enabled) begin 
         // receive data from mailbox
         busy  = 0;
-        error = 0;
         mbx.get(tr);
         busy  = 1;
         
