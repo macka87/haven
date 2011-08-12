@@ -465,14 +465,14 @@ icon_i : icon3
       OUTPUT_READY  => fl_val_checker_output_ready
    );
 
-   out_sig_observer_rx_data   <= dut_out_data &
-                                 dut_out_rem & 
+   out_sig_observer_rx_data   <= dut_out_rem &
                                  dut_out_sof_n &
                                  dut_out_sop_n &
                                  dut_out_eof_n &
                                  dut_out_eop_n &
                                  dut_out_src_rdy_n &
-                                 dut_out_dst_rdy_n;
+                                 dut_out_dst_rdy_n &
+                                 dut_out_data;
 
    -- ------------------------------------------------------------------------
    --                    Output FrameLink Signal Observer
