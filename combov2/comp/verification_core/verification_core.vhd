@@ -436,30 +436,30 @@ icon_i : icon3
    )
    port map(
       -- input clock domain
-      PR_CLK         => clk_dut,
-      PR_RESET       => reset_dut,
+      RX_CLK         => clk_dut,
+      RX_RESET       => reset_dut,
 
       -- input interface
-      PR_SOF_N       => dut_out_sof_n,
-      PR_SOP_N       => dut_out_sop_n,
-      PR_EOP_N       => dut_out_eop_n,
-      PR_EOF_N       => dut_out_eof_n,
-      PR_SRC_RDY_N   => dut_out_src_rdy_n, 
-      PR_DST_RDY_N   => dut_out_dst_rdy_n, 
+      RX_SOF_N       => dut_out_sof_n,
+      RX_SOP_N       => dut_out_sop_n,
+      RX_EOP_N       => dut_out_eop_n,
+      RX_EOF_N       => dut_out_eof_n,
+      RX_SRC_RDY_N   => dut_out_src_rdy_n, 
+      RX_DST_RDY_N   => dut_out_dst_rdy_n, 
       
       -- output clock domain
-      OUT_CLK        => CLK,
-      OUT_RESET      => RESET,
+      TX_CLK         => CLK,
+      TX_RESET       => RESET,
 
       -- output interface
-      OUT_DATA       => fl_val_checker_tx_data,
-      OUT_REM        => fl_val_checker_tx_rem,
-      OUT_SOF_N      => fl_val_checker_tx_sof_n,
-      OUT_SOP_N      => fl_val_checker_tx_sop_n,
-      OUT_EOP_N      => fl_val_checker_tx_eop_n,
-      OUT_EOF_N      => fl_val_checker_tx_eof_n,
-      OUT_SRC_RDY_N  => fl_val_checker_tx_src_rdy_n,
-      OUT_DST_RDY_N  => fl_val_checker_tx_dst_rdy_n,
+      TX_DATA        => fl_val_checker_tx_data,
+      TX_REM         => fl_val_checker_tx_rem,
+      TX_SOF_N       => fl_val_checker_tx_sof_n,
+      TX_SOP_N       => fl_val_checker_tx_sop_n,
+      TX_EOP_N       => fl_val_checker_tx_eop_n,
+      TX_EOF_N       => fl_val_checker_tx_eof_n,
+      TX_SRC_RDY_N   => fl_val_checker_tx_src_rdy_n,
+      TX_DST_RDY_N   => fl_val_checker_tx_dst_rdy_n,
 
       -- output ready signal
       OUTPUT_READY  => fl_val_checker_output_ready
