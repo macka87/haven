@@ -61,7 +61,20 @@
     * prints corresponding reports .
     */ 
     virtual task run();
-     // assert (0) 
-     //   $fatal("Reporter: Task run must be implemented in derived class"); 
+      NetCOPETransaction ntr;
+      Transaction tr;
+      logic[15:0] assertRep;
+      bit error = 0; 
+
+      while (enabled) begin 
+        // receive data from mailbox
+        busy  = 0;
+        error = 0;
+        mbx.get(tr);
+        busy  = 1;
+        
+        $cast(ntr, tr);
+        ntr.display("SIGNAL REPORTER:");
+      end
     endtask : run
  endclass : SignalReporter  
