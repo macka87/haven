@@ -25,28 +25,28 @@ entity FL_VAL_CHECKER is
    port
    (
       -- probe interface
-      PR_CLK         : in  std_logic;
-      PR_RESET       : in  std_logic;
+      RX_CLK         : in  std_logic;
+      RX_RESET       : in  std_logic;
 
-      PR_SRC_RDY_N   : in  std_logic;
-      PR_DST_RDY_N   : in  std_logic;
-      PR_SOP_N       : in  std_logic;
-      PR_EOP_N       : in  std_logic;
-      PR_SOF_N       : in  std_logic;
-      PR_EOF_N       : in  std_logic;
+      RX_SRC_RDY_N   : in  std_logic;
+      RX_DST_RDY_N   : in  std_logic;
+      RX_SOP_N       : in  std_logic;
+      RX_EOP_N       : in  std_logic;
+      RX_SOF_N       : in  std_logic;
+      RX_EOF_N       : in  std_logic;
       
       -- output interface
-      OUT_CLK        : in  std_logic;
-      OUT_RESET      : in  std_logic;
+      TX_CLK         : in  std_logic;
+      TX_RESET       : in  std_logic;
 
-      OUT_DATA       : out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-      OUT_REM        : out std_logic_vector(log2(OUT_DATA_WIDTH/8) - 1 downto 0);
-      OUT_SRC_RDY_N  : out std_logic;
-      OUT_DST_RDY_N  : in  std_logic;
-      OUT_SOP_N      : out std_logic;
-      OUT_EOP_N      : out std_logic;
-      OUT_SOF_N      : out std_logic;
-      OUT_EOF_N      : out std_logic;
+      TX_DATA        : out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+      TX_REM         : out std_logic_vector(log2(OUT_DATA_WIDTH/8) - 1 downto 0);
+      TX_SOP_N       : out std_logic;
+      TX_EOP_N       : out std_logic;
+      TX_SOF_N       : out std_logic;
+      TX_EOF_N       : out std_logic;
+      TX_SRC_RDY_N   : out std_logic;
+      TX_DST_RDY_N   : in  std_logic;
 
       -- output ready signal
       OUTPUT_READY   : out std_logic
@@ -65,6 +65,16 @@ architecture arch of FL_VAL_CHECKER is
 
    -- width of the bitmap determining errors
    constant ERROR_BITMAP_WIDTH : integer := 16;
+
+   -- width of the time counter
+   constant TIME_CNT_WIDTH : integer := 64;
+
+   -- width of the frame counter
+   constant FRAME_CNT_WIDTH : integer := 64;
+
+   -- width of the data FIFO
+   constant DATA_FIFO_WIDTH : integer := ERROR_BITMAP_WIDTH + TIME_CNT_WIDTH
+      + FRAME_CNT_WIDTH;
 
    -- FrameLink protocol ID
    constant FL_VAL_CHECKER_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"10";
@@ -111,6 +121,13 @@ architecture arch of FL_VAL_CHECKER is
    signal sig_out_eof_n       : std_logic;
    signal sig_out_eop_n       : std_logic;
 
+   -- time counter
+   signal time_cnt            : std_logic_vector(TIME_CNT_WIDTH-1 downto 0);
+
+   -- frame counter
+   signal frame_cnt           : std_logic_vector(FRAME_CNT_WIDTH-1 downto 0);
+   signal frame_cnt_en        : std_logic;
+
 begin
 
    -- Assertions
@@ -119,18 +136,18 @@ begin
       severity failure;
 
    -- FL_VAL_GUARD input
-   guard_src_rdy_n  <= PR_SRC_RDY_N;
-   guard_dst_rdy_n  <= PR_DST_RDY_N;
-   guard_sof_n      <= PR_SOF_N;
-   guard_sop_n      <= PR_SOP_N;
-   guard_eof_n      <= PR_EOF_N;
-   guard_eop_n      <= PR_EOP_N;
+   guard_src_rdy_n  <= RX_SRC_RDY_N;
+   guard_dst_rdy_n  <= RX_DST_RDY_N;
+   guard_sof_n      <= RX_SOF_N;
+   guard_sop_n      <= RX_SOP_N;
+   guard_eof_n      <= RX_EOF_N;
+   guard_eop_n      <= RX_EOP_N;
 
    -- --------------- FL_VAL_GUARD INSTANCE -----------------------------------
    fl_val_guard_i : entity work.fl_val_guard
    port map (
-      RESET          => PR_RESET,
-      CLK            => PR_CLK,
+      RESET          => RX_RESET,
+      CLK            => RX_CLK,
 
       -- Probe interface
       SRC_RDY_N      => guard_src_rdy_n, 
@@ -151,36 +168,64 @@ begin
    sig_cdc_fifo_wr_write <= guard_invalid;
 
    -- --------------- CDC_FIFO INSTANCE -----------------------------------
-   cdc_fifo_i : entity work.cdc_fifo
+   data_fifo_i : entity work.cdc_fifo
    generic map(
-      DATA_WIDTH      => ERROR_BITMAP_WIDTH
+      DATA_WIDTH      => DATA_FIFO_WIDTH
    )
    port map(
-      RESET           => OUT_RESET,
+      RESET           => TX_RESET,
       
       -- Write interface
-      WR_CLK          => PR_CLK,
-      WR_DATA         => sig_cdc_fifo_wr_data,
-      WR_WRITE        => sig_cdc_fifo_wr_write,
+      WR_CLK          => RX_CLK,
+      WR_DATA         => sig_data_fifo_wr_data,
+      WR_WRITE        => sig_data_fifo_wr_write,
       WR_FULL         => open,
       WR_ALMOST_FULL  => open,
       
-      RD_CLK          => OUT_CLK,
-      RD_DATA         => sig_cdc_fifo_rd_data,
-      RD_READ         => sig_cdc_fifo_rd_read,
+      RD_CLK          => TX_CLK,
+      RD_DATA         => sig_bitmap_fifo_rd_data,
+      RD_READ         => sig_bitmap_fifo_rd_read,
       RD_EMPTY        => open,
-      RD_ALMOST_EMPTY => sig_cdc_fifo_rd_almost_empty
+      RD_ALMOST_EMPTY => sig_bitmap_fifo_rd_almost_empty
    );
 
+   -- ------------------------- Time counter  --------------------------------
+   time_cnt_p: process (RX_CLK)
+   begin
+      if (rising_edge(RX_CLK)) then
+         if (RX_RESET = '1') then
+            time_cnt <= (others => '0');
+         else
+            time_cnt <= time_cnt + 1;
+         end if;
+      end if;
+   end process;
+
+   -- ------------------------- Frame counter  --------------------------------
+   frame_cnt_en <= NOT (guard_src_rdy_n OR guard_dst_rdy_n OR guard_sof_n);
+
+   -- frame counter
+   frame_cnt_p: process (RX_CLK)
+   begin
+      if (rising_edge(RX_CLK)) then
+         if (RX_RESET = '1') then
+            frame_cnt <= (others => '0');
+         elsif (frame_cnt_en = '1') then
+            frame_cnt <= frame_cnt + 1;
+         end if;
+      end if;
+   end process;
+
+   -- create the header
+   header_data(63 downto 48) <= sig_data_fifo_rd_data;
+   header_data(47 downto 40) <= X"00";
+   header_data(39 downto 32) <= INVALID_TRANS_TYPE;
+   header_data(31 downto 24) <= X"00";
+   header_data(23 downto 16) <= X"00";
+   header_data(15 downto  8) <= FL_VAL_CHECKER_PROTOCOL_ID;
+   header_data( 7 downto  0) <= ENDPOINT_TAG;
 
    -- create the transmitted frame
-   sig_out_data(63 downto 48)  <= sig_cdc_fifo_rd_data;
-   sig_out_data(47 downto 40) <= X"00";
-   sig_out_data(39 downto 32) <= INVALID_TRANS_TYPE;
-   sig_out_data(31 downto 24) <= X"00";
-   sig_out_data(23 downto 16) <= X"00";
-   sig_out_data(15 downto  8) <= FL_VAL_CHECKER_PROTOCOL_ID;
-   sig_out_data( 7 downto  0) <= ENDPOINT_TAG;
 
    sig_out_rem           <= (others => '1');
    sig_out_sop_n         <= '0';
