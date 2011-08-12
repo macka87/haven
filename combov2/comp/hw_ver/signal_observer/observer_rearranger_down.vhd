@@ -120,7 +120,7 @@ begin
 
    -- address counter inputs
    cnt_addr_clr  <= is_addr_max;
-   cnt_addr_en   <= sig_tx_read_next;
+   cnt_addr_en   <= sig_tx_read_next AND sig_rx_valid;
 
    -- ------------------------ address counter -----------------------------
    cnt_addr_p: process (CLK)
