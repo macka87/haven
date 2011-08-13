@@ -125,7 +125,7 @@ program TEST (
     // assertChecker = new("Assertion Checker", RX, TX);
 
      //! Create Assertion Reporter
-     assertReporter = new("Assertion Reporter", 0, mbx[1]);
+     assertReporter = new("Assertion Reporter", 0, mbx[1], CLK_PERIOD, RESET_TIME);
 
      //! Create Signal Reporter
      sigReporter = new("Signal Reporter", 0, mbx[2]);

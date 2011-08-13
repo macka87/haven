@@ -8,6 +8,9 @@
  
  class FrameLinkAssertionReporter extends AssertionReporter;
 
+   time clkPer;
+   time rstTime;
+
    /*
     * Public Class Methods
     */ 
@@ -17,9 +20,13 @@
     */    
     function new(string inst,
                  byte id,
-                 tTransMbx mbx 
+                 tTransMbx mbx,
+                 time clkPer,
+                 time rstTime
                 ); 
        super.new(inst, id, mbx);
+       this.clkPer = clkPer;
+       this.rstTime = rstTime;
     endfunction: new
 
    /*
@@ -38,6 +45,7 @@
       longint timeStamp;
       longint transNum;
       longint checkerId;
+      longint realTimeStamp;
 
       while (enabled) begin 
         // receive data from mailbox
@@ -61,12 +69,15 @@
         timeStamp =
           ntr.data[ 8] + 256 * (ntr.data[ 9] + 256 * (ntr.data[10] + 256 * (
           ntr.data[11] + 256 * (ntr.data[12] + 256 * (ntr.data[13] + 256 * (
-          ntr.data[14] + 256 * (ntr.data[15])))))));
+          ntr.data[14] + 256 * (ntr.data[15])))))));// Note: this is not LISP
+
+        // in nanoseconds
+        realTimeStamp = (timeStamp * clkPer + rstTime) / 1000;
 
         transNum =
           ntr.data[16] + 256 * (ntr.data[17] + 256 * (ntr.data[18] + 256 * (
           ntr.data[19] + 256 * (ntr.data[20] + 256 * (ntr.data[21] + 256 * (
-          ntr.data[22] + 256 * (ntr.data[23])))))));
+          ntr.data[22] + 256 * (ntr.data[23])))))));// Note: this is not LISP
 
         // !!!!!! it will be necessary to add division between RX and TX reports later,
         // if there will be assertion reporters on both FrameLink interfaces!!!
@@ -76,7 +87,7 @@
           $write("\n");
           $write("!!!!!! Assertion error !!!!!!\n");
           $write("Violation of FrameLink protocol at checker: %d\n", checkerId);
-          $write("Clock cycle of violation:                   %d\n", timeStamp);
+          $write("Time of violation:                          %d ns\n", realTimeStamp);
           $write("Violated transaction #:                     %d\n", transNum);
           $system("date"); 
           $write("\n\n");
