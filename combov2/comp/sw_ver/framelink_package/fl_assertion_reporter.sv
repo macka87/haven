@@ -35,6 +35,9 @@
       Transaction tr;
       logic[15:0] assertRep;
       bit error = 0; 
+      longint timeStamp;
+      longint transNum;
+      longint checkerId;
 
       while (enabled) begin 
         // receive data from mailbox
@@ -53,6 +56,18 @@
         for (int i=0; i<15; i++)
           if (assertRep[i] == 1) error = 1;
 
+        checkerId = ntr.data[0];
+
+        timeStamp =
+          ntr.data[ 8] + 256 * (ntr.data[ 9] + 256 * (ntr.data[10] + 256 * (
+          ntr.data[11] + 256 * (ntr.data[12] + 256 * (ntr.data[13] + 256 * (
+          ntr.data[14] + 256 * (ntr.data[15])))))));
+
+        transNum =
+          ntr.data[16] + 256 * (ntr.data[17] + 256 * (ntr.data[18] + 256 * (
+          ntr.data[19] + 256 * (ntr.data[20] + 256 * (ntr.data[21] + 256 * (
+          ntr.data[22] + 256 * (ntr.data[23])))))));
+
         // !!!!!! it will be necessary to add division between RX and TX reports later,
         // if there will be assertion reporters on both FrameLink interfaces!!!
 
@@ -60,7 +75,9 @@
         if (error == 1) begin
           $write("\n");
           $write("!!!!!! Assertion error !!!!!!\n");
-          $write("Receiving of %d. transaction failed!\n", ntr.timeStamp);
+          $write("Violation of FrameLink protocol at checker: %d\n", checkerId);
+          $write("Clock cycle of violation:                   %d\n", timeStamp);
+          $write("Violated transaction #:                     %d\n", transNum);
           $system("date"); 
           $write("\n\n");
           $write("------------ ASSERTION REPORT -----------\n");
