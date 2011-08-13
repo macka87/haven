@@ -6,7 +6,7 @@
  * Date:         12.8.2011 
  * ************************************************************************** */
  
- class SignalReporter;
+virtual class SignalReporter;
    
    /*
     * Public Class Atributes
@@ -51,8 +51,11 @@
       fileName = {"sig_rep_", idStr, ".vcd"};
       fileId = $fopen(fileName, "w");
       if (fileId == 0) begin
-        $display("Could not open file %s!", fileName);
+        $display("Could not open file %s for writing!", fileName);
       end
+
+      writeVCDHeader(fileId);
+      writeProtocolHeader(fileId);
 
       enabled = 1;  //! Reporter Enabling
       fork         
@@ -93,8 +96,33 @@
       end
     endtask : run
 
-    virtual function void writeReport(ref NetCOPETransaction ntr, integer fId);
-      ntr.display("SIGNAL REPORTER:");
+    /*! Pure virtual function for writing the protocol-specific signal dump @p
+     * ntr into the file assigned to @p fId.
+     *
+     * @param[in]  ntr  Signal dump in the form of a NetCOPE transaction
+     * @param[in]  fId  ID of the output file
+     */
+    pure virtual function void writeReport(ref NetCOPETransaction ntr, integer fId);
+
+    /*! Function that writes the VCD format header into given file
+     *
+     * @param[in]  fId  ID of the output file
+     */
+    virtual function void writeVCDHeader(integer fId);
+
+      // see   http://en.wikipedia.org/wiki/Value_change_dump   for the
+      // description of the VCD format
+
+      $fwrite(fId, "$version\n");
+      $fwrite(fId, "  Haven 0.1\n");
+      $fwrite(fId, "$end\n");
     endfunction
+
+    /*! Pure virtual function for writing the protocol-specific header into
+     * given file.
+     *
+     * @param[in]  fId  ID of the output file
+     */
+    pure virtual function void writeProtocolHeader(integer fId);
 
  endclass : SignalReporter  

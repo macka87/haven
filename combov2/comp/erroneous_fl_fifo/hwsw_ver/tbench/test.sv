@@ -60,7 +60,7 @@ program TEST (
   FrameLinkAssertionReporter                             assertReporter;               
 
   //! Signal Reporter
-  FrameLinkSignalReporter                                sigReporter;
+  FrameLinkSignalReporter #(DATA_WIDTH)                  sigReporter;
   
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
@@ -128,7 +128,7 @@ program TEST (
      assertReporter = new("Assertion Reporter", 0, mbx[1], CLK_PERIOD, RESET_TIME);
 
      //! Create Signal Reporter
-     sigReporter = new("Signal Reporter", 0, mbx[2]);
+     sigReporter = new("Signal Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
 
      //! Create Checker
      flChecker = new("Checker", RX, TX, CTRL);
