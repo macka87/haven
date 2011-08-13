@@ -12,8 +12,12 @@ class FrameLinkSignalReporter #(int FL_WIDTH = 0) extends SignalReporter;
 
   time clkPer;
   time rstTime;
-  time timeCnt;
+  time timeCnt = 0ps;
+  bit clkVal = 0;
 
+  byte buffer [15:0];
+  integer bufferStart = 0;
+  const integer bufferEnd = 16;
 
   const integer REM_WIDTH = log2(FL_WIDTH/8);
  /*! 
@@ -28,7 +32,6 @@ class FrameLinkSignalReporter #(int FL_WIDTH = 0) extends SignalReporter;
     super.new(inst, id, mbx);
     this.clkPer  = clkPer;
     this.rstTime = rstTime;
-    this.timeCnt = 0ps;
 
     // general assert
     if ((FL_WIDTH != 8) && (FL_WIDTH != 16) && (FL_WIDTH != 32) &&
@@ -46,8 +49,61 @@ class FrameLinkSignalReporter #(int FL_WIDTH = 0) extends SignalReporter;
 
   virtual function void writeReport(ref NetCOPETransaction ntr, integer fId);
 
+    if (ntr.size % 8 != 0) begin
+      $display("Invalid size of reporter packet!\n");
+      $fatal;
+    end
+
+    for (int i = 8; i < ntr.size; ++i) begin
+      buffer[bufferStart++] = ntr.data[i];
+
+      if (bufferStart == bufferEnd) begin
+        writeCycle(fId);
+        bufferStart = 0;
+      end
+    end
+
+  endfunction
+
+  function void writeCycle(integer fId);
+
     // see   http://en.wikipedia.org/wiki/Value_change_dump   for the
     // description of the VCD format
+
+    string dta;
+    string drem;
+    string tmpStr;
+
+    for (int i = FL_WIDTH-1; i >= 0; --i) begin
+      tmpStr.itoa(buffer[i / 8][i % 8]);
+      dta = {dta, tmpStr};
+    end
+
+    for (int i = 6+REM_WIDTH-1; i >= 6; --i) begin
+      tmpStr.itoa(buffer[8 + i / 8][i % 8]);
+      drem = {drem, tmpStr};
+    end
+
+    // write values of signals
+    $fwrite(fId, "b%s d\n", dta);
+    $fwrite(fId, "b%s r\n", drem);
+    $fwrite(fId, "%b[\n", buffer[8][5]);
+    $fwrite(fId, "%b(\n", buffer[8][4]);
+    $fwrite(fId, "%b]\n", buffer[8][3]);
+    $fwrite(fId, "%b)\n", buffer[8][2]);
+    $fwrite(fId, "%b>\n", buffer[8][1]);
+    $fwrite(fId, "%b<\n", buffer[8][0]);
+
+    // write time and clock
+    $fwrite(fId, "#%d\n", timeCnt);
+    $fwrite(fId, "%bc\n", clkVal);
+    // perform a clock half-period
+    timeCnt += clkPer / 2;
+    clkVal ^= 1;
+    $fwrite(fId, "#%d\n", timeCnt);
+    $fwrite(fId, "%bc\n", clkVal);
+    timeCnt += clkPer / 2;
+    clkVal ^= 1;
 
   endfunction
 
@@ -55,7 +111,6 @@ class FrameLinkSignalReporter #(int FL_WIDTH = 0) extends SignalReporter;
 
     string initData;
     string initRem;
-    bit clkVal = 1;
 
     for (int i = 0; i < FL_WIDTH; ++i) begin
       initData = {initData, "0"};
