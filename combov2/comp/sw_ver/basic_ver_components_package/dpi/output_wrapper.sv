@@ -90,7 +90,6 @@
           if (size > 0) begin
             // store the right size of data
 						ntr.size = size;
-						ntr.timeStamp = counter++;
 						
             // put received data to output mailbox
             outputMbx.put(ntr);  

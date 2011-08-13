@@ -11,9 +11,6 @@
    /*
     * Public Class Atributes
     */
-   
-    // Timestamp
-    int timeStamp         = 0;  //! timestamp identification
 
     // NetCOPE header
     byte endpointID       = 0;  //! hardware endpoint indentification
