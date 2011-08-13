@@ -60,7 +60,7 @@ program TEST (
   FrameLinkAssertionReporter                             assertReporter;               
 
   //! Signal Reporter
-  SignalReporter                                         sigReporter;
+  FrameLinkSignalReporter                                sigReporter;
   
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
