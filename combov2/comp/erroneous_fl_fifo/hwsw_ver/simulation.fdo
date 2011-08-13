@@ -5,6 +5,8 @@
 # Date:         27.2.2011
 # ------------------------------------------------------------------------------
 
+
+
 # Firmware location
 set FIRMWARE_BASE         "../../.."
 
@@ -29,9 +31,15 @@ set CODE_COVERAGE "true"
 # Global include file for compilation
 source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
 
+onfinish final
+
+# Firmware location
 # Suppress warnings from arithm library
 puts "Std Arith Warnings - Disabled"
 set  StdArithNoWarnings 1
 
 # File with signals
 source $SIG_FILE
+
+#set VSIM_FLAGS "-onfinish final -coverage -t 1ps -L xilinxcorelib -lib work"
+#onFinish final

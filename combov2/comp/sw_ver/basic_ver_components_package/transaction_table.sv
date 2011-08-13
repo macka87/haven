@@ -123,5 +123,21 @@
        end   
        $write("------------------------------------------------------------\n");
     endtask: display
+
+   /*! 
+    * Display the actual state of transaction table
+    */
+    function void displayState(integer full=1, string inst = "");
+      TransType tr;
+       $write("------------------------------------------------------------\n");
+       $write("-- %s TRANSACTION TABLE\n", inst);
+       $write("------------------------------------------------------------\n");
+       $write("Size: %d\n", tr_table.num());
+       $write("Items added: %d\n", added);
+       $write("Items removed: %d\n", removed);
+       $write("\n");
+       $write("------------------------------------------------------------\n");
+     endfunction: displayState
+
  endclass : TransactionTable
 

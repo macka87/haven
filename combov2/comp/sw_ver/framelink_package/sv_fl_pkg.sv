@@ -12,11 +12,13 @@
 package sv_fl_pkg; 
   import sv_basic_comp_pkg::*;        // Import SV basic classes
   
+  //`include "fl_assertion_checker.sv"
   `include "fl_transaction.sv"
   `include "fl_driver.sv"
   `include "fl_sender.sv"
   `include "fl_gen_input_controller.sv"
   `include "fl_output_controller.sv"
+  `include "fl_assertion_reporter.sv"
   `include "fl_responder.sv"
   `include "fl_responder_simple.sv"
   `include "fl_monitor.sv"

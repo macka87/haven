@@ -12,48 +12,51 @@
  interface iFrameLinkRx #(DWIDTH=32, DREMWIDTH=2) (input logic CLK, RESET);  
    logic [DWIDTH-1:0] DATA    = 0;  // Data
    logic [DREMWIDTH-1:0] DREM = 0;  // Data Reminder
-   logic SOF_N                = 1;  // Start of Frame active in low
-   logic EOF_N                = 1;  // End of Frame active in low
-   logic SOP_N                = 1;  // Start of Packet active in low
-   logic EOP_N                = 1;  // End of Packet active in low
-   logic SRC_RDY_N            = 1;  // Source data ready active in low
-   logic DST_RDY_N;                 // Destination data ready active in low
-  
-   clocking cb @(posedge CLK);
-     input  DST_RDY_N;
-     output DATA, DREM, SOF_N, EOF_N, SOP_N, EOP_N, SRC_RDY_N;  
-   endclocking: cb;
+     logic SOF_N                = 1;  // Start of Frame active in low
+     logic EOF_N                = 1;  // End of Frame active in low
+     logic SOP_N                = 1;  // Start of Packet active in low
+     logic EOP_N                = 1;  // End of Packet active in low
+     logic SRC_RDY_N            = 1;  // Source data ready active in low
+     logic DST_RDY_N;                 // Destination data ready active in low
+    
+     clocking cb @(posedge CLK);
+       input  DST_RDY_N;
+       output DATA, DREM, SOF_N, EOF_N, SOP_N, EOP_N, SRC_RDY_N;  
+     endclocking: cb;
 
-  /*
-   * Receive Modport
-   */    
-   modport dut (input  DATA,
-                input  DREM,
-                input  SOF_N,
-                input  EOF_N,
-                input  SOP_N,
-                input  EOP_N,
-                input  SRC_RDY_N,
-                output DST_RDY_N);
-  
-  /*
-   * Transitive Modport
-   */
-   modport tb (clocking cb);
+    /*
+     * Receive Modport
+     */    
+     modport dut (input  DATA,
+                  input  DREM,
+                  input  SOF_N,
+                  input  EOF_N,
+                  input  SOP_N,
+                  input  EOP_N,
+                  input  SRC_RDY_N,
+                  output DST_RDY_N);
+    
+    /*
+     * Transitive Modport
+     */
+     modport tb (clocking cb);
 
-  /*
-   * Interface properties/assertions
-   */
-  
-   // -- While RESET, SRC_RDY_N inactive ---------------------------------------
-   // SRC_RDY_N may be active only if RESET is inactive. 
-  
-   property RESETSRC;
+    /*
+     * Interface properties/assertions
+     */
+    
+     // -- While RESET, SRC_RDY_N inactive ---------------------------------------
+     // SRC_RDY_N may be active only if RESET is inactive. 
+    
+     property RESETSRC;
      @(posedge CLK) (RESET)|->(SRC_RDY_N); 
    endproperty   
   
    assert property (RESETSRC)
-     else $error("RX_SRC_RDY_N is active during reset.");
+     else begin
+       $error("RX_SRC_RDY_N is active during reset.");
+       $finish();
+     end  
   
    // -- SOF together with SOP -------------------------------------------------
    // SOF may be active only if SOP is active. 
@@ -63,8 +66,11 @@
    endproperty   
   
    assert property (SOFSOP)
-     else $error("RX_SOF_N is not active the same time as RX_SOP_N.");
-
+     else begin
+       $error("RX_SOF_N is not active the same time as RX_SOP_N.");
+       $finish();
+     end  
+ 
    // -- EOF together with EOP -------------------------------------------------
    // EOF may be active only if EOP is active.
   
@@ -73,7 +79,10 @@
    endproperty    
   
    assert property (EOFEOP)
-     else $error("RX_EOF_N is not active the same time as RX_EOP_N.");   
+     else begin
+       $error("RX_EOF_N is not active the same time as RX_EOP_N.");   
+       $finish();
+     end  
 
    // -- No data after EOP ----------------------------------------------------
    // After EOP, data cannot be sent, until SOP is sent. EOP marks end of
@@ -92,8 +101,11 @@
    endproperty
 
    assert property (NoDataAfterEOP)
-     else $error("FrameLink transaction continued after RX_EOP_N.");
-  
+     else begin
+       $error("FrameLink transaction continued after RX_EOP_N.");
+       $finish();
+     end  
+
    // -- Matching EOP after SOP ------------------------------------------------
    // Each SOP must be, after some time, followed by EOP. Each transaction must
    // have its end. First, we define a sequence of waiting for the first active
@@ -111,7 +123,10 @@
    endproperty
 
    assert property (EOPMatchSOP)
-     else $error("RX_SOP_N was not followed by matching RX_EOP_N.");
+     else begin
+       $error("RX_SOP_N was not followed by matching RX_EOP_N.");
+       $finish();
+     end  
 
    // -- Matching EOF after SOF ------------------------------------------------
    // Each SOF must be, after some time, followed by EOF. Each transaction must
@@ -130,7 +145,10 @@
    endproperty
 
    assert property (EOFMatchSOF)
-     else $error("RX_SOF_N was not followed by matching RX_EOF_N.");     
+     else begin
+       $error("RX_SOF_N was not followed by matching RX_EOF_N.");     
+       $finish();
+     end  
  endinterface : iFrameLinkRx
 
 /*
@@ -189,8 +207,10 @@
    endproperty   
   
    assert property (RESETDST)
-     else $error("TX_DST_RDY_N is active during reset.");
-  
+     else begin
+       $error("TX_DST_RDY_N is active during reset.");
+       $finish();
+     end  
    // -- SOF together with SOP -------------------------------------------------
    // SOF may be active only if SOP is active. 
   
@@ -199,8 +219,10 @@
    endproperty   
   
    assert property (SOFSOP)
-     else $error("TX_SOF_N is not active the same time as TX_SOP_N.");
-
+     else begin
+       $error("TX_SOF_N is not active the same time as TX_SOP_N.");
+       $finish();
+     end  
    // -- EOF together with EOP -------------------------------------------------
    // EOF may be active only if EOP is active. 
   
@@ -209,8 +231,10 @@
    endproperty    
   
    assert property (EOFEOP)
-     else $error("TX_EOF_N is not active the same time as TX_EOP_N.");  
-  
+     else begin
+       $error("TX_EOF_N is not active the same time as TX_EOP_N.");  
+       $finish();
+     end  
    // -- No data after EOP ----------------------------------------------------
    // After EOP, data cannot be sent, until SOP is sent. EOP marks end of
    // transaction. First, we define a sequence of waiting for the first active
@@ -228,8 +252,10 @@
    endproperty
 
    assert property (NoDataAfterEOP)
-     else $error("FrameLink transaction continued after TX_EOP_N.");
-  
+     else begin
+       $error("FrameLink transaction continued after TX_EOP_N.");
+       $finish();
+     end  
    // -- Matching EOP after SOP ------------------------------------------------
    // Each SOP must be, after some time, followed by EOP. Each transaction must
    // have its end. First, we define a sequence of waiting for the first active
@@ -247,8 +273,10 @@
    endproperty
 
    assert property (EOPMatchSOP)
-     else $error("TX_SOP_N was not followed by matching TX_EOP_N.");
-
+     else begin
+       $error("TX_SOP_N was not followed by matching TX_EOP_N.");
+       $finish();
+     end  
    // -- Matching EOF after SOF ------------------------------------------------
    // Each SOF must be, after some time, followed by EOF. Each transaction must
    // have its end. First, we define a sequence of waiting for the first active
@@ -266,5 +294,8 @@
    endproperty
 
    assert property (EOFMatchSOF)
-     else $error("TX_SOF_N was not followed by matching TX_EOF_N.");    
+     else begin
+       $error("TX_SOF_N was not followed by matching TX_EOF_N.");    
+       $finish();
+     end  
  endinterface : iFrameLinkTx

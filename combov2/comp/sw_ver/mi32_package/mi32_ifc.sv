@@ -61,7 +61,10 @@ interface iMi32 (input logic CLK, RESET);
   endproperty   
   
   assert property (RESETR)
-     else $error("RD is active during reset.");
+     else begin
+       $error("RD is active during reset.");
+       $finish();
+     end  
 
   // -- While RESET WR inactive ----------------------------------------
   // WR may be active only if RESET is inactive. 
@@ -70,8 +73,10 @@ interface iMi32 (input logic CLK, RESET);
   endproperty   
   
   assert property (RESETW)
-     else $error("WR is active during reset.");
-  
+     else begin
+       $error("WR is active during reset.");
+       $finish();
+     end  
   // -- ARDY together with RD or WR -------------------------------------
   // ARDY must be active together with RD or WR.
   property ARDYWRRD;
@@ -79,8 +84,10 @@ interface iMi32 (input logic CLK, RESET);
   endproperty
   
   assert property (ARDYWRRD)
-     else $error("ARDY and WR or RD signals are not active at the same cycle.");
-     
+     else begin
+       $error("ARDY and WR or RD signals are not active at the same cycle.");
+       $finish();
+     end  
   // -- WR never together with RD ---------------------------------------
   // WR can not be active together with RD.
   property RDnottogetherWR;
@@ -88,5 +95,8 @@ interface iMi32 (input logic CLK, RESET);
   endproperty
   
   assert property (RDnottogetherWR)
-     else $error("RD and WR signals can not be active at the same cycle.");   
+     else begin
+       $error("RD and WR signals can not be active at the same cycle.");   
+       $finish();
+     end  
 endinterface : iMi32

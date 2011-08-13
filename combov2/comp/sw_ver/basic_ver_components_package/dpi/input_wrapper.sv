@@ -85,8 +85,10 @@
         
         // data transfer to hardware through DMA channel
         res = c_sendData(ntr.data);
-        if (res!=0) $fatal("SEND DATA in input wrapper failed!!!");
-                
+        if (res!=0) begin
+					$error("SEND DATA in input wrapper failed!!!");
+          $finish();
+				end	      
 				busy = 0;
       end
     endtask : run 

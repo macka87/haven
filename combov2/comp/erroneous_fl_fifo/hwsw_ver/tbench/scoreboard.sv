@@ -199,5 +199,15 @@ typedef TransactionTable#(1) TransactionTableType;
       if (FRAMEWORK == 1)  
         c_displayTable(); 
     endtask
- endclass : FIFOScoreboard   
 
+   /*!
+    * Display
+    *     
+    * Prints Transaction Table after assertion Failure
+    * 
+    */
+    function void displayTrans();
+      scoreTable.displayState();
+    endfunction
+
+ endclass : FIFOScoreboard

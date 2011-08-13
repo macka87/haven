@@ -71,6 +71,7 @@
       int res;
       int unsigned size;   
       NetCOPETransaction ntr;
+      int counter = 0;
             
 			while (enabled) begin 
         size = 0;
@@ -83,14 +84,16 @@
         
         if (res == 1) begin
            $error("RECEIVE DATA in output wrapper failed!!!"); 
-        end
+           $finish();
+				end
         else begin
           if (size > 0) begin
             // store the right size of data
 						ntr.size = size;
+						ntr.timeStamp = counter++;
 						
-						// put received data to output mailbox
-						outputMbx.put(ntr);  
+            // put received data to output mailbox
+            outputMbx.put(ntr);  
             counter++;
 					end
 					else begin

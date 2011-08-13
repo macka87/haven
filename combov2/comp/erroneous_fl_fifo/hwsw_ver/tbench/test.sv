@@ -9,7 +9,7 @@ import test_pkg::*;
 import sv_basic_comp_pkg::*;
 import sv_fl_pkg::*;
 import sv_fl_fifo_pkg::*;
-
+import dpi_wrapper_pkg::*;
 /*
  * Test output and input interfaces of DUT.
  */ 
@@ -30,8 +30,11 @@ program TEST (
   tTransMbx                                              inputMbx; 
   
   //! Mailbox for Output controller's transactions
-  tTransMbx                                              outputMbx; 
+  tTransMbx                                              outputMbx;
   
+  //! Sorter's mailboxes
+  tTransMbx                                              mbx[];  
+
   //! Input Controller of generated input  
   FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH)  flGenInCnt; 
   
@@ -44,16 +47,23 @@ program TEST (
   //! Checker
   FrameLinkFifoChecker #(DATA_WIDTH, DREM_WIDTH, BLOCK_SIZE, 
                          STATUS_WIDTH, ITEMS, USE_BRAMS) flChecker;                                                       
+  //! Sorter
+  Sorter                                                 sorter; 
   
   //! Output Controller 
   FrameLinkOutputController                              flOutCnt;
+ 
+  //! Assertion Checker
+  //FrameLinkAssertionChecker                              assertChecker;
+
+  //! Assertion Reporter
+  FrameLinkAssertionReporter                             assertReporter;               
+
+  //! Signal Reporter
+  SignalReporter                                         sigReporter;
   
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
-  
-  //! Responder
-  //FrameLinkResponder #(DATA_WIDTH, DREM_WIDTH)           flResponder;
-  //FrameLinkResponderSimple #(DATA_WIDTH, DREM_WIDTH)      flResponder;
   
   //! Scoreboard
   FIFOScoreboard                                         scoreboard; 
@@ -97,23 +107,36 @@ program TEST (
      //! Create Output Wrapper
      outputWrapper = new("Output Wrapper", outputMbx); 
      
-     flOutCnt = new("Output Controller", 0, outputMbx, GENERATOR_FL_FRAME_COUNT);
+     //! Create Sorter and Output Controllers' mailboxes
+     mbx = new[3];
+       // FL Output Controller mailbox
+       mbx[0] = new(1); 
+       // Assertion Reporter mailbox
+       mbx[1] = new(1);
+       // Signal Reporter
+       mbx[2] = new(1);
+     sorter = new(outputMbx, mbx, 3);
+     
+     //! Create FrameLink Output Controller
+     flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
      flOutCnt.setCallbacks(scoreboard.outputCbs);  
      
-     //! Create checker
+     //! Create Assertion Checker
+    // assertChecker = new("Assertion Checker", RX, TX);
+
+     //! Create Assertion Reporter
+     assertReporter = new("Assertion Reporter", 0, mbx[1]);
+
+     //! Create Signal Reporter
+     sigReporter = new("Signal Reporter", 0, mbx[2]);
+
+     //! Create Checker
      flChecker = new("Checker", RX, TX, CTRL);
      
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR, TX);
      flMonitor.setCallbacks(scoreboard.outputCbs);  
      flCoverage.addFrameLinkInterfaceTx(MONITOR,"TX Command Coverage");
-     
-     //! Create Responder 
-     //flResponder  = new("FrameLink Responder", 0, TX);
-       //flResponder.btDelayLow   = RESPONDER_BT_DELAY_LOW;
-       //flResponder.btDelayHigh  = RESPONDER_BT_DELAY_HIGH;
-       //flResponder.itDelayLow   = RESPONDER_IT_DELAY_LOW;
-       //flResponder.itDelayHigh  = RESPONDER_IT_DELAY_HIGH;     
   endtask : createEnvironment
 
   /*
@@ -129,15 +152,18 @@ program TEST (
   // Enable test Environment
   task enableTestEnvironment();
     if (FRAMEWORK == 0) begin
+      //assertChecker.setEnabled();
       flChecker.setEnabled();
       flMonitor.setEnabled();
-      //flResponder.setEnabled();
       flCoverage.setEnabled();
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setEnabled();
       outputWrapper.setEnabled();
+      sorter.setEnabled();
       flOutCnt.setEnabled();
+      assertReporter.setEnabled();
+      sigReporter.setEnabled();
     end  
   endtask : enableTestEnvironment
   
@@ -152,11 +178,11 @@ program TEST (
       busy = 0;
       
       if (FRAMEWORK == 0) begin
-        if (flMonitor.busy/* || flResponder.busy*/) busy = 1;
+        if (flMonitor.busy) busy = 1;
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy) busy = 1; 
+        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy || assertReporter.busy || sigReporter.busy) busy = 1; 
       end
         
       if (busy) i = 0;
@@ -165,15 +191,18 @@ program TEST (
     end
     
     if (FRAMEWORK == 0) begin
+      //assertChecker.setDisabled();
       flChecker.setDisabled();
       flMonitor.setDisabled();
-      //flResponder.setDisabled();
       flCoverage.setDisabled();
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setDisabled();
       outputWrapper.setDisabled();
+      sorter.setDisabled();
       flOutCnt.setDisabled();
+      assertReporter.setDisabled();
+      sigReporter.setDisabled();
     end  
   endtask : disableTestEnvironment
 
@@ -213,7 +242,10 @@ program TEST (
      
      // Display Scoreboard and Coverage
      scoreboard.display();
-     if (FRAMEWORK == 0) flCoverage.display();
+     if (FRAMEWORK == 0) begin
+        flCoverage.display();
+     end
+
   endtask: test1
 
   /*
@@ -229,6 +261,19 @@ program TEST (
         
     // Stop testing
     $stop();       
+  end
+
+  // final section for assertion reports
+  final begin
+	  int res;
+    if (FRAMEWORK == 0) begin
+      scoreboard.displayTrans();
+    end
+		
+		if (FRAMEWORK == 1) begin 
+		  res = c_closeDMAChannel();  
+      $write("CLOSING CHANNEL (musi byt 0): %d\n",res); 
+    end    
   end
 endprogram
 
