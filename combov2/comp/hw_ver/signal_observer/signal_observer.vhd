@@ -23,6 +23,8 @@ entity SIGNAL_OBSERVER is
       -- data width
       IN_DATA_WIDTH  : integer := 64;
       OUT_DATA_WIDTH : integer := 64;
+      -- how many frames should the observer send (0 is unlimited)
+      SEND_X_FRAMES  : integer := 0;
       ENDPOINT_ID    : integer
    );
 
@@ -64,7 +66,7 @@ architecture arch of SIGNAL_OBSERVER is
 -- ==========================================================================
 
 -- maximum length of a FrameLink frame (depends on the size of DMA buffers)
-constant MAX_FRAME_LENGTH       : integer := 4000;
+constant MAX_FRAME_LENGTH       : integer := 4080;
 
 -- length of NetCOPE protocol header
 constant HEADER_LENGTH          : integer := 1;
@@ -72,6 +74,11 @@ constant HEADER_LENGTH          : integer := 1;
 -- depth of the buffer FIFO
 constant BUFFER_FIFO_DEPTH      : integer :=
    MAX_FRAME_LENGTH / (OUT_DATA_WIDTH/8) + HEADER_LENGTH;
+
+-- the packet counter
+constant PACKET_CNT_WIDTH       : integer := log2(SEND_X_FRAMES);
+constant PACKET_CNT_INIT_VALUE  : integer :=
+   conv_std_logic_vector(SEND_X_FRAMES, PACKET_CNT_WIDTH);
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -158,9 +165,10 @@ signal tx_sender_dst_rdy_n : std_logic;
 signal packetizer_sent     : std_logic;
 signal observer_stopped    : std_logic;
 
--- packet sent register
-signal reg_packet_sent     : std_logic;
-signal reg_packet_sent_set : std_logic;
+-- packet counter
+signal packet_cnt          : std_logic_vector(PACKET_CNT_WIDTH-1 downto 0);
+signal packet_cnt_en       : std_logic;
+signal packet_cnt_is_zero  : std_logic;
 
 begin
 
@@ -345,21 +353,39 @@ begin
       TX_DST_RDY_N    => tx_sender_dst_rdy_n
    );
 
-   reg_packet_sent_set <= packetizer_sent;
+   packet_cnt_en <= packetizer_sent;
 
    -- -------------- packet sent register ----------------------------------
-   reg_packet_sent_p: process (TX_CLK)
+   packet_cnt_p: process (TX_CLK)
    begin
       if (rising_edge(TX_CLK)) then
          if (TX_RESET = '1') then
-            reg_packet_sent <= '0';
-         elsif (reg_packet_sent_set = '1') then
-            reg_packet_sent <= '1';
+            packet_cnt <= PACKET_CNT_INIT_VALUE;
+         elsif ((packet_cnt_en = '1') AND (packet_cnt_is_zero = '0')) then
+            packet_cnt <= packet_cnt - 1;
          end if;
       end if;
    end process;
 
-   observer_stopped <= reg_packet_sent;
+   packet_cnt_iszero_cmp_p: process (packet_cnt)
+   begin
+      packet_cnt_is_zero <= '0';
+
+      if (packet_cnt = 0) then
+         packet_cnt_is_zero <= '1';
+      else
+         packet_cnt_is_zero <= '0';
+      end if;
+   end process;
+
+
+   observer_stopped_gen_en: if (SEND_X_FRAMES /= 0) generate
+      observer_stopped <= packet_cnt_is_zero;
+   end generate;
+
+   observer_stopped_gen_dis: if (SEND_X_FRAMES /= 0) generate
+      observer_stopped <= '0';
+   end generate;
 
    -- mapping of outputs
    TX_DATA         <= tx_sender_data;
