@@ -77,7 +77,8 @@ constant BUFFER_FIFO_DEPTH      : integer :=
 
 -- the packet counter
 constant PACKET_CNT_WIDTH       : integer := log2(SEND_X_FRAMES);
-constant PACKET_CNT_INIT_VALUE  : integer :=
+constant PACKET_CNT_INIT_VALUE  : 
+   std_logic_vector(PACKET_CNT_WIDTH-1 downto 0) :=
    conv_std_logic_vector(SEND_X_FRAMES, PACKET_CNT_WIDTH);
 
 -- ==========================================================================
@@ -383,7 +384,7 @@ begin
       observer_stopped <= packet_cnt_is_zero;
    end generate;
 
-   observer_stopped_gen_dis: if (SEND_X_FRAMES /= 0) generate
+   observer_stopped_gen_dis: if (SEND_X_FRAMES = 0) generate
       observer_stopped <= '0';
    end generate;
 

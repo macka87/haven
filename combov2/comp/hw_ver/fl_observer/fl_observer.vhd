@@ -118,7 +118,7 @@ begin
    sig_rx_dst_rdy_n    <= RX_DST_RDY_N;
 
    -- mapping inputs of Signal Observer
-   observer_tx_data <= sig_rx_rem &
+   observer_rx_data <= sig_rx_rem &
                        sig_rx_sof_n &
                        sig_rx_sop_n &
                        sig_rx_eof_n &
