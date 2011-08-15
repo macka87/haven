@@ -29,10 +29,6 @@ architecture arch of verification_core is
    -- number of endpoints that transmit data to SW
    constant OUTPUT_ENDPOINTS : integer := 3;
 
-   -- input width of output signal observer
-   constant OUT_SIG_OBSERVER_IN_DATA_WIDTH : integer := DUT_DATA_WIDTH
-      + log2(DUT_DATA_WIDTH/8) + 6;
-
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
@@ -112,10 +108,6 @@ architecture arch of verification_core is
    signal fl_val_checker_tx_dst_rdy_n   : std_logic;
 
    signal fl_val_checker_output_ready   : std_logic;
-
-   -- Output Signal Observer output
-   signal out_sig_observer_rx_data
-      : std_logic_vector(OUT_SIG_OBSERVER_IN_DATA_WIDTH-1 downto 0);
 
    -- Output Signal Observer output
    signal out_sig_observer_tx_data        : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
@@ -465,22 +457,14 @@ icon_i : icon3
       OUTPUT_READY  => fl_val_checker_output_ready
    );
 
-   out_sig_observer_rx_data   <= dut_out_rem &
-                                 dut_out_sof_n &
-                                 dut_out_sop_n &
-                                 dut_out_eof_n &
-                                 dut_out_eop_n &
-                                 dut_out_src_rdy_n &
-                                 dut_out_dst_rdy_n &
-                                 dut_out_data;
 
    -- ------------------------------------------------------------------------
    --                    Output FrameLink Signal Observer
    -- ------------------------------------------------------------------------
-  out_signal_observer_i: entity work.SIGNAL_OBSERVER
+  out_signal_observer_i: entity work.FL_OBSERVER
    generic map(
       -- FrameLink data width
-     IN_DATA_WIDTH   => OUT_SIG_OBSERVER_IN_DATA_WIDTH,
+     IN_DATA_WIDTH   => DUT_DATA_WIDTH,
      OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
      ENDPOINT_ID     => 187,   -- BB hexa
      SEND_X_FRAMES   => 4
@@ -491,7 +475,14 @@ icon_i : icon3
       RX_RESET       => reset_dut,
 
       -- input interface
-      RX_DATA        => out_sig_observer_rx_data,
+      RX_DATA       => dut_out_data,
+      RX_REM        => dut_out_rem,
+      RX_SOF_N      => dut_out_sof_n,
+      RX_SOP_N      => dut_out_sop_n,
+      RX_EOP_N      => dut_out_eop_n,
+      RX_EOF_N      => dut_out_eof_n,
+      RX_SRC_RDY_N  => dut_out_src_rdy_n,
+      RX_DST_RDY_N  => dut_out_dst_rdy_n,
       
       -- output clock domain
       TX_CLK        => CLK,
