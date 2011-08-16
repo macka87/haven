@@ -71,7 +71,6 @@
       int res;
       int unsigned size;   
       NetCOPETransaction ntr;
-      int counter = 0;
             
 			while (enabled) begin 
         size = 0;
