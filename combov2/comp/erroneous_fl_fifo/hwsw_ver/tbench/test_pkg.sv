@@ -36,14 +36,14 @@ package test_pkg;
    parameter byte DRIVER_BT_DELAY_EN_WT  = 1;
    parameter byte DRIVER_BT_DELAY_DI_WT  = 1;
    // Low/High limit of "delay between transactions" value
-   parameter byte DRIVER_BT_DELAY_LOW    = 1;
-   parameter byte DRIVER_BT_DELAY_HIGH   = 2;
+   parameter byte DRIVER_BT_DELAY_LOW    = 10;
+   parameter byte DRIVER_BT_DELAY_HIGH   = 20;
    // Enable/Disable weights of "delays inside transaction"
    parameter byte DRIVER_IT_DELAY_EN_WT  = 1;
    parameter byte DRIVER_IT_DELAY_DI_WT  = 1;
    // Low/High limit of "delay inside transaction" values
-   parameter byte DRIVER_IT_DELAY_LOW    = 1;
-   parameter byte DRIVER_IT_DELAY_HIGH   = 2;
+   parameter byte DRIVER_IT_DELAY_LOW    = 10;
+   parameter byte DRIVER_IT_DELAY_HIGH   = 20;
 
    // SOFTWARE RESPONDER PARAMETERS
    // Low/High limit of "delay between transactions" value
