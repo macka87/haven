@@ -161,10 +161,10 @@ begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
             reg_is_sending_header <= '1';
-         elsif (reg_is_sending_header_clr = '1') then
-            reg_is_sending_header <= '0';
          elsif (reg_is_sending_header_set = '1') then
             reg_is_sending_header <= '1';
+         elsif (reg_is_sending_header_clr = '1') then
+            reg_is_sending_header <= '0';
          end if;
       end if;
    end process;
