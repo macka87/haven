@@ -14,7 +14,7 @@ set CLOCK_GATE_BASE        "$COMP_BASE/clock_gate"
 set FL_HW_DRIVER_BASE      "$COMP_BASE/hw_ver/fl_hw_driver"
 set FL_HW_MONITOR_BASE     "$COMP_BASE/hw_ver/fl_hw_monitor"
 set FL_VAL_CHECKER_BASE    "$COMP_BASE/hw_ver/fl_val_checker"
-set SIGNAL_OBSERVER_BASE   "$COMP_BASE/hw_ver/signal_observer"
+set FL_OBSERVER_BASE       "$COMP_BASE/hw_ver/fl_observer"
 set RESET_GEN_BASE         "$COMP_BASE/hw_ver/reset_gen"
 
 set FL_FIFO_BASE           "$FL_BASE/storage/fifo"
@@ -39,5 +39,5 @@ set COMPONENTS [list \
    [ list "HGEN"               $HGEN_BASE                "FULL"] \
    [ list "ERRONEOUS_FL_FIFO"  $ERRONEOUS_FL_FIFO_BASE   "FULL"] \
    [ list "FL_VAL_CHECKER"     $FL_VAL_CHECKER_BASE      "FULL"] \
-   [ list "SIGNAL_OBSERVER"    $SIGNAL_OBSERVER_BASE     "FULL"] \
+   [ list "FL_OBSERVER"        $FL_OBSERVER_BASE         "FULL"] \
 ]

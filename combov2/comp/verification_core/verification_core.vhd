@@ -467,7 +467,7 @@ icon_i : icon3
      IN_DATA_WIDTH   => DUT_DATA_WIDTH,
      OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
      ENDPOINT_ID     => 187,   -- BB hexa
-     SEND_X_FRAMES   => 4
+     SEND_X_FRAMES   => 0
    )
    port map(
       -- input clock domain
