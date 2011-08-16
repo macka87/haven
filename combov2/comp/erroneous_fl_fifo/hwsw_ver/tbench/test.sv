@@ -182,12 +182,27 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy || assertReporter.busy || sigReporter.busy) busy = 1; 
+        if (inputWrapper.busy || (outputWrapper.counter < TRANSACTION_COUT) ||
+          flOutCnt.busy || assertReporter.busy) busy = 1;
       end
-        
+
+      $write("Looping at time %t ps\n", $time);
+      $write("InputWrapper busy: %d\n", inputWrapper.busy);
+      $write("OutputWrapper counter: %d/%d\n", outputWrapper.counter,
+        TRANSACTION_COUT);
+      $write("FlOutCnt busy: %d\n", flOutCnt.busy);
+      $write("AssertReporter busy: %d\n", assertReporter.busy);
+      $write("SignalReporter busy: %d\n", sigReporter.busy);
+      $write("--------------------------------------------------\n");
+
       if (busy) i = 0;
       else i++;
-      #(CLK_PERIOD); 
+      if (FRAMEWORK == 0) begin
+        #(CLK_PERIOD);
+      end
+      if (FRAMEWORK == 1) begin
+        #1ps;
+      end
     end
     
     if (FRAMEWORK == 0) begin

@@ -86,6 +86,7 @@ virtual class SignalReporter;
 
       while (enabled) begin 
         // receive data from mailbox
+        #1ps;         // wait to enable other components some work
         busy  = 0;
         mbx.get(tr);
         busy  = 1;
