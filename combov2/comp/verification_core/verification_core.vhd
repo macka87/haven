@@ -373,13 +373,9 @@ icon_i : icon3
    -- ------------------------------------------------------------------------
    --                        Output FrameLink Monitor
    -- ------------------------------------------------------------------------
--- NOTE: uncomment lines labelled "-- smart --" in order to use smart monitor
--- smart --   fl_hw_monitor_i: entity work.FL_HW_MONITOR
   fl_hw_monitor_i: entity work.FL_HW_MONITOR_SMART
    generic map(
       -- FrameLink data width
--- smart --      IN_DATA_WIDTH   => DUT_DATA_WIDTH,
--- smart --      OUT_DATA_WIDTH  => ENV_DATA_WIDTH
      IN_DATA_WIDTH   => DUT_DATA_WIDTH,
      OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
      ENDPOINT_ID     => 136   -- 88 hexa
