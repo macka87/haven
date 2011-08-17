@@ -23,8 +23,10 @@ entity SIGNAL_OBSERVER is
       -- data width
       IN_DATA_WIDTH  : integer := 64;
       OUT_DATA_WIDTH : integer := 64;
-      -- how many frames should the observer send (0 is unlimited)
-      SEND_X_FRAMES  : integer := 0;
+      -- should be the number of sent frames limited?
+      LIMIT_FRAMES   : boolean := false;
+      -- how many frames should the observer send
+      SEND_X_FRAMES  : integer := 1;
       ENDPOINT_ID    : integer
    );
 
@@ -76,7 +78,7 @@ constant BUFFER_FIFO_DEPTH      : integer :=
    MAX_FRAME_LENGTH / (OUT_DATA_WIDTH/8) + HEADER_LENGTH;
 
 -- the packet counter
-constant PACKET_CNT_WIDTH       : integer := log2(SEND_X_FRAMES-1)+1;
+constant PACKET_CNT_WIDTH       : integer := max(log2(SEND_X_FRAMES-1)+1, 1);
 constant PACKET_CNT_INIT_VALUE  : 
    std_logic_vector(PACKET_CNT_WIDTH-1 downto 0) :=
    conv_std_logic_vector(SEND_X_FRAMES, PACKET_CNT_WIDTH);
@@ -380,11 +382,11 @@ begin
    end process;
 
 
-   observer_stopped_gen_en: if (SEND_X_FRAMES /= 0) generate
+   observer_stopped_gen_en: if (LIMIT_FRAMES) generate
       observer_stopped <= packet_cnt_is_zero;
    end generate;
 
-   observer_stopped_gen_dis: if (SEND_X_FRAMES = 0) generate
+   observer_stopped_gen_dis: if (NOT LIMIT_FRAMES) generate
       observer_stopped <= '0';
    end generate;
 
