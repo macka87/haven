@@ -202,7 +202,7 @@ architecture arch of verification_core is
    signal ila2_trig0     : std_logic_vector(72 downto 0);
 
 begin
- 
+
    -- ------------------------------------------------------------------------
    --                           Mapping of inputs
    -- ------------------------------------------------------------------------
@@ -241,9 +241,9 @@ begin
       RX_SOP_N      => fl_hw_driver_rx_sop_n,
       RX_EOP_N      => fl_hw_driver_rx_eop_n,
       RX_EOF_N      => fl_hw_driver_rx_eof_n,
-      RX_SRC_RDY_N  => fl_hw_driver_rx_src_rdy_n, 
-      RX_DST_RDY_N  => fl_hw_driver_rx_dst_rdy_n, 
-      
+      RX_SRC_RDY_N  => fl_hw_driver_rx_src_rdy_n,
+      RX_DST_RDY_N  => fl_hw_driver_rx_dst_rdy_n,
+
       -- output interface
       TX_DATA       => fl_hw_driver_tx_data,
       TX_REM        => fl_hw_driver_tx_rem,
@@ -293,9 +293,9 @@ begin
       RX_SOP_N      => dut_in_sop_n,
       RX_EOP_N      => dut_in_eop_n,
       RX_EOF_N      => dut_in_eof_n,
-      RX_SRC_RDY_N  => dut_in_src_rdy_n, 
-      RX_DST_RDY_N  => dut_in_dst_rdy_n, 
-      
+      RX_SRC_RDY_N  => dut_in_src_rdy_n,
+      RX_DST_RDY_N  => dut_in_dst_rdy_n,
+
       -- output interface
       TX_DATA       => dut_out_data,
       TX_REM        => dut_out_rem,
@@ -396,9 +396,9 @@ icon_i : icon3
       RX_SOP_N      => fl_hw_monitor_rx_sop_n,
       RX_EOP_N      => fl_hw_monitor_rx_eop_n,
       RX_EOF_N      => fl_hw_monitor_rx_eof_n,
-      RX_SRC_RDY_N  => fl_hw_monitor_rx_src_rdy_n, 
-      RX_DST_RDY_N  => fl_hw_monitor_rx_dst_rdy_n, 
-      
+      RX_SRC_RDY_N  => fl_hw_monitor_rx_src_rdy_n,
+      RX_DST_RDY_N  => fl_hw_monitor_rx_dst_rdy_n,
+
       -- output interface
       TX_DATA       => fl_hw_monitor_tx_data,
       TX_REM        => fl_hw_monitor_tx_rem,
@@ -432,9 +432,9 @@ icon_i : icon3
       RX_SOP_N       => dut_out_sop_n,
       RX_EOP_N       => dut_out_eop_n,
       RX_EOF_N       => dut_out_eof_n,
-      RX_SRC_RDY_N   => dut_out_src_rdy_n, 
-      RX_DST_RDY_N   => dut_out_dst_rdy_n, 
-      
+      RX_SRC_RDY_N   => dut_out_src_rdy_n,
+      RX_DST_RDY_N   => dut_out_dst_rdy_n,
+
       -- output clock domain
       TX_CLK         => CLK,
       TX_RESET       => RESET,
@@ -480,7 +480,7 @@ icon_i : icon3
       RX_EOF_N      => dut_out_eof_n,
       RX_SRC_RDY_N  => dut_out_src_rdy_n,
       RX_DST_RDY_N  => dut_out_dst_rdy_n,
-      
+
       -- output clock domain
       TX_CLK        => CLK,
       TX_RESET      => RESET,
@@ -556,7 +556,7 @@ icon_i : icon3
       RX_EOF_N      => fl_binder_in_eof_n,
       RX_SRC_RDY_N  => fl_binder_in_src_rdy_n,
       RX_DST_RDY_N  => fl_binder_in_dst_rdy_n,
-      
+
       -- output interface
       TX_DATA       => fl_binder_out_data,
       TX_REM        => fl_binder_out_rem,
@@ -599,7 +599,7 @@ icon_i : icon3
       RX_EOF_N      => fl_netcope_adder_in_eof_n,
       RX_SRC_RDY_N  => fl_netcope_adder_in_src_rdy_n,
       RX_DST_RDY_N  => fl_netcope_adder_in_dst_rdy_n,
-      
+
       -- output interface
       TX_DATA       => fl_netcope_adder_out_data,
       TX_REM        => fl_netcope_adder_out_rem,
@@ -692,7 +692,7 @@ icon_i : icon3
    MI32_ARDY <= MI32_RD OR MI32_WR;
 
    -- The data ready signal
-   MI32_DRDY <= MI32_RD; 
+   MI32_DRDY <= MI32_RD;
 
    -- output MI32 data
    MI32_DRD <= X"00011ACA";
