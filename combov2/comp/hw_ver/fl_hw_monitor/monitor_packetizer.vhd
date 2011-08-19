@@ -153,7 +153,6 @@ signal header_data    : std_logic_vector(DATA_WIDTH-1 downto 0);
 signal header_rem     : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
 
 -- miscellaneous signals
-signal input_ready_n  : std_logic;
 signal sending_header : std_logic;
 
 begin
@@ -175,9 +174,6 @@ begin
 
    -- component readiness
    sig_rx_dst_rdy_n    <= rx_frame_fifo_dst_rdy_n OR rx_header_fifo_dst_rdy_n;
-   -- input ready signal
-   input_ready_n <= sig_rx_src_rdy_n OR sig_rx_dst_rdy_n;
-
 
    -- FRAME FIFO input
    rx_frame_fifo_data         <= sig_rx_data;
@@ -186,7 +182,7 @@ begin
    rx_frame_fifo_eof_n        <= sig_rx_eof_n;
    rx_frame_fifo_sop_n        <= sig_rx_sop_n;
    rx_frame_fifo_eop_n        <= sig_rx_eop_n;
-   rx_frame_fifo_src_rdy_n    <= sig_rx_src_rdy_n;
+   rx_frame_fifo_src_rdy_n    <= sig_rx_src_rdy_n OR rx_header_fifo_dst_rdy_n;
 
    -- --------------- FRAME FIFO INSTANCE -----------------------------------
    frame_fifo : entity work.fl_fifo
@@ -235,7 +231,8 @@ begin
    rx_header_fifo_eop_n       <= '1';
    rx_header_fifo_sof_n       <= '0';
    rx_header_fifo_eof_n       <= '1';
-   rx_header_fifo_src_rdy_n   <= input_ready_n OR sig_rx_eop_n;
+   rx_header_fifo_src_rdy_n   <= rx_frame_fifo_dst_rdy_n OR  sig_rx_src_rdy_n
+                                 OR sig_rx_eop_n;
 
    -- --------------- HEADER FIFO INSTANCE ----------------------------------
    header_fifo : entity work.fl_fifo
