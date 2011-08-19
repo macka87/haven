@@ -29,6 +29,8 @@ set CODE_COVERAGE "true"
 # Global include file for compilation
 source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
 
+onfinish final
+
 # Suppress warnings from arithm library
 puts "Std Arith Warnings - Disabled"
 set  StdArithNoWarnings 1
