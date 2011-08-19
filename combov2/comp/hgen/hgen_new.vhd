@@ -211,7 +211,7 @@ begin
       DATA_WIDTH     => DATA_WIDTH,
       -- True => use BlockBAMs
       -- False => use SelectRAMs
-      USE_BRAMS      => true,
+      USE_BRAMS      => USE_BRAMS_FOR_FIFO,
       -- number of items in the FIFO
       ITEMS          => ITEMS,
       -- Size of block (for LSTBLK signal)
