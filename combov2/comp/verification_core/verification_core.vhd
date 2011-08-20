@@ -273,15 +273,27 @@ begin
 --   generic map(
 --      DATA_WIDTH  => DUT_DATA_WIDTH,
 --      USE_BRAMS   => false,
---      ITEMS       => 16,
+--      ITEMS       => 64,
 --      PARTS       => 1
 --   )
---   dut_i: entity work.HGEN_VER_COVER
-   dut_i: entity work.ERRONEOUS_FL_FIFO
+   --dut_i: entity work.HGEN_VER_COVER
+--   dut_i: entity work.MULTI_HGEN_VER_COVER
+--   generic map(
+--      DATA_WIDTH              => DUT_DATA_WIDTH,
+--      BRANCH_COUNT            => 8,
+--      USE_BRAMS_FOR_HGEN_FIFO => true
+--   )
+   dut_i: entity work.DOUBLE_MULTI_HGEN_VER_COVER
    generic map(
-      DATA_WIDTH  => DUT_DATA_WIDTH,
-      ITEMS => 64
+      DATA_WIDTH            => DUT_DATA_WIDTH,
+      FIRST_STAGE_BRANCHES  => 8,
+      SECOND_STAGE_BRANCHES => 8
    )
+--   dut_i: entity work.ERRONEOUS_FL_FIFO
+--   generic map(
+--      DATA_WIDTH  => DUT_DATA_WIDTH,
+--      ITEMS => 64
+--   )
    port map(
       CLK           => clk_dut,
       RESET         => reset_dut,
@@ -463,7 +475,7 @@ icon_i : icon3
      IN_DATA_WIDTH   => DUT_DATA_WIDTH,
      OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
      ENDPOINT_ID     => 187,   -- BB hexa
-     LIMIT_FRAMES    => false,
+     LIMIT_FRAMES    => true,
      SEND_X_FRAMES   => 0
    )
    port map(
