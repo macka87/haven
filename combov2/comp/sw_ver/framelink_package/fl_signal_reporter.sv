@@ -95,12 +95,12 @@ class FrameLinkSignalReporter #(int FL_WIDTH = 0) extends SignalReporter;
     $fwrite(fId, "%b<\n", buffer[8][0]);
 
     // write time and clock
-    $fwrite(fId, "#%d\n", timeCnt);
+    $fwrite(fId, "#%0d\n", timeCnt);
     $fwrite(fId, "%bc\n", clkVal);
     // perform a clock half-period
     timeCnt += clkPer / 2;
     clkVal ^= 1;
-    $fwrite(fId, "#%d\n", timeCnt);
+    $fwrite(fId, "#%0d\n", timeCnt);
     $fwrite(fId, "%bc\n", clkVal);
     timeCnt += clkPer / 2;
     clkVal ^= 1;
@@ -125,7 +125,7 @@ class FrameLinkSignalReporter #(int FL_WIDTH = 0) extends SignalReporter;
 
     // the boring part
     $fwrite(fId, "$comment\n");
-    $fwrite(fId, "  FrameLink signal dump from reporter %d\n", id);
+    $fwrite(fId, "  FrameLink signal dump from reporter %0d\n", id);
     $fwrite(fId, "$end\n");
     $fwrite(fId, "\n");
     $fwrite(fId, "$timescale 1ps $end\n");
@@ -135,8 +135,8 @@ class FrameLinkSignalReporter #(int FL_WIDTH = 0) extends SignalReporter;
     $fwrite(fId, "$scope module top $end\n");
     $fwrite(fId, "$var wire  1 c clk $end\n");
     $fwrite(fId, "$var wire  1 ^ reset $end\n");
-    $fwrite(fId, "$var wire %d d data $end\n", FL_WIDTH);
-    $fwrite(fId, "$var wire %d r rem $end\n", REM_WIDTH);
+    $fwrite(fId, "$var wire %0d d data $end\n", FL_WIDTH);
+    $fwrite(fId, "$var wire %0d r rem $end\n", REM_WIDTH);
     $fwrite(fId, "$var wire  1 [ sof_n $end\n");
     $fwrite(fId, "$var wire  1 ( sop_n $end\n");
     $fwrite(fId, "$var wire  1 ] eof_n $end\n");
@@ -162,13 +162,13 @@ class FrameLinkSignalReporter #(int FL_WIDTH = 0) extends SignalReporter;
 
     // process reset
     while (timeCnt < rstTime) begin
-      $fwrite(fId, "#%d\n", timeCnt);
+      $fwrite(fId, "#%0d\n", timeCnt);
       $fwrite(fId, "%bc\n", clkVal);
       timeCnt += clkPer / 2;
       clkVal ^= 1;
     end
 
-    $fwrite(fId, "#%d\n", rstTime);
+    $fwrite(fId, "#%0d\n", rstTime);
     $fwrite(fId, "0^\n");
     $fwrite(fId, "%bc\n", clkVal);
 

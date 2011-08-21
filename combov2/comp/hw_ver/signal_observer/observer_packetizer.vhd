@@ -153,7 +153,7 @@ begin
 
    -- ---------------- is_sending_header register ----------------
    reg_is_sending_header_clr <= sig_rx_valid AND (NOT sig_tx_fl_dst_rdy_n);
-   reg_is_sending_header_set <= is_word_cnt_max;
+   reg_is_sending_header_set <= is_word_cnt_max AND (NOT sig_tx_fl_dst_rdy_n);
 
    -- is_sending_header register
    reg_is_sending_header_p: process (CLK)
@@ -172,7 +172,7 @@ begin
    is_sending_header <= reg_is_sending_header;
 
    -- --------------------- word counter -------------------------
-   word_cnt_clr <= is_word_cnt_max;
+   word_cnt_clr <= is_word_cnt_max AND (NOT sig_tx_fl_dst_rdy_n);
    word_cnt_en <= sig_rx_valid AND (NOT is_sending_header) AND (NOT
                   sig_tx_fl_dst_rdy_n);
 

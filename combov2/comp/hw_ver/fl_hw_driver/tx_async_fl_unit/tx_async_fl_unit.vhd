@@ -116,6 +116,8 @@ signal sig_reg_out          : std_logic_vector(DELAY_WIDTH-2 downto 0);
 signal sig_taken            : std_logic;
 signal sig_reg_taken        : std_logic;
 
+signal sig_delay_fifo_is_zero : std_logic;
+
 -- ==========================================================================
 --                           ARCHITECTURE BODY
 -- ==========================================================================
@@ -236,7 +238,7 @@ begin
      end if;
    end process;
    
-   sig_neg_comp_output <= not sig_comp_output;
+   sig_neg_comp_output <= not (sig_comp_output OR sig_delay_fifo_is_zero);
    sig_taken <= sig_neg_comp_output nor TX_DST_RDY_N;
       
    -- register for decrement 
@@ -267,6 +269,19 @@ begin
       end if;
    end process;
    
+   -- register for comparison of delay FIFO data
+   comp_delay_fifo_is_zero_p: process (sig_delay_fifo_data_only)
+   begin
+      sig_delay_fifo_is_zero <= '0';
+
+      if (sig_delay_fifo_data_only = 0) then
+         sig_delay_fifo_is_zero <= '1';
+      else
+         sig_delay_fifo_is_zero <= '0';
+      end if;
+   end process;
+
+
    sig_take <= sig_reg_taken and (not sig_delay_fifo_empty); 
    sig_src_rdy <= (sig_neg_comp_output or sig_mux_is_delay) or (sig_delay_fifo_empty and sig_reg_taken);
    TX_SRC_RDY_N <= sig_src_rdy;

@@ -23,8 +23,10 @@ entity FL_OBSERVER is
       -- data width
       IN_DATA_WIDTH  : integer := 64;
       OUT_DATA_WIDTH : integer := 64;
-      -- how many frames should the observer send (0 is unlimited)
-      SEND_X_FRAMES  : integer := 0;
+      -- should be the number of sent frames limited?
+      LIMIT_FRAMES   : boolean := false;
+      -- how many frames should the observer send
+      SEND_X_FRAMES  : integer := 1;
       ENDPOINT_ID    : integer
    );
 
@@ -133,8 +135,9 @@ begin
       -- FrameLink data width
      IN_DATA_WIDTH   => SIG_OBSERVER_IN_WIDTH,
      OUT_DATA_WIDTH  => OUT_DATA_WIDTH,
-     ENDPOINT_ID     => ENDPOINT_ID,
-     SEND_X_FRAMES   => SEND_X_FRAMES
+     LIMIT_FRAMES    => LIMIT_FRAMES,
+     SEND_X_FRAMES   => SEND_X_FRAMES,
+     ENDPOINT_ID     => ENDPOINT_ID
    )
    port map(
       -- input clock domain
