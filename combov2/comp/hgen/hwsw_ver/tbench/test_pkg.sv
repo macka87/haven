@@ -8,12 +8,14 @@
 
 package test_pkg;
 
+   import math_pkg::*;
+   
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK  = 0;                      // 0 = software framework
+   int FRAMEWORK  = 1;                      // 0 = software framework
                                             // 1 = sw/hw framework      
    // DUT GENERICS
-   parameter DATA_WIDTH = 128;           // datova sirka RX
-   parameter DREM_WIDTH = 4;             // drem  sirka RX
+   parameter DATA_WIDTH = 128;              // datova sirka RX
+   parameter DREM_WIDTH = log2(DATA_WIDTH/8); // drem  sirka RX
       
    // size of UH header (bytes 16 - 64)
    parameter UH_SIZE      = 64;
