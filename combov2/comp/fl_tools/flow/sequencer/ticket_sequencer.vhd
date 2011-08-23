@@ -346,7 +346,7 @@ begin
    out_tx_rem <= out_rx_rem;
 
    -- generate FrameLink pipe to achieve better timing
-   GEN_PIPE: if (INPUT_WIDTH*INPUT_COUNT_I = OUTPUT_WIDTH) generate
+--   GEN_PIPE: if (INPUT_WIDTH*INPUT_COUNT_I = OUTPUT_WIDTH) generate
       OUTPUT_PIPE : entity work.FL_PIPE
          generic map(
             -- FrameLink Data Width
@@ -377,16 +377,16 @@ begin
             TX_DATA        => TX_DATA,
             TX_REM         => TX_REM
          );
-   end generate;
+ --  end generate;
 
-   GEN_NOPIPE: if (INPUT_WIDTH*INPUT_COUNT_I /= OUTPUT_WIDTH) generate
-      TX_SOF_N       <= out_tx_sof_n;
-      TX_EOP_N       <= out_tx_eop_n;
-      TX_SOP_N       <= out_tx_sop_n;
-      TX_EOF_N       <= out_tx_eof_n;
-      TX_SRC_RDY_N   <= out_tx_src_rdy_n;
-      out_tx_dst_rdy_n   <= TX_DST_RDY_N;
-      TX_DATA        <= out_tx_data;
-      TX_REM         <= out_tx_rem;
-   end generate;
+ --  GEN_NOPIPE: if (INPUT_WIDTH*INPUT_COUNT_I /= OUTPUT_WIDTH) generate
+ --     TX_SOF_N       <= out_tx_sof_n;
+ --     TX_EOP_N       <= out_tx_eop_n;
+ --     TX_SOP_N       <= out_tx_sop_n;
+ --     TX_EOF_N       <= out_tx_eof_n;
+ --     TX_SRC_RDY_N   <= out_tx_src_rdy_n;
+ --     out_tx_dst_rdy_n   <= TX_DST_RDY_N;
+ --     TX_DATA        <= out_tx_data;
+ --     TX_REM         <= out_tx_rem;
+ --  end generate;
 end architecture full;
