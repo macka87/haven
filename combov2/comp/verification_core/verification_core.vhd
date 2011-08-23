@@ -276,7 +276,10 @@ begin
 --      ITEMS       => 64,
 --      PARTS       => 1
 --   )
-   --dut_i: entity work.HGEN_VER_COVER
+--   dut_i: entity work.HGEN_VER_COVER
+--   generic map(
+--      DATA_WIDTH              => DUT_DATA_WIDTH
+--   )
 --   dut_i: entity work.MULTI_HGEN_VER_COVER
 --   generic map(
 --      DATA_WIDTH              => DUT_DATA_WIDTH,
