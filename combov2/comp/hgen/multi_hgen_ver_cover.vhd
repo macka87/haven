@@ -14,7 +14,9 @@ use work.math_pack.all;
 entity MULTI_HGEN_VER_COVER is
    generic(
       -- the data width of the data input/output
-      DATA_WIDTH     : integer   := 128
+      DATA_WIDTH     : integer   := 128;
+      BRANCH_COUNT   : integer   := 8;
+      USE_BRAMS_FOR_HGEN_FIFO : boolean := true
    );
    port(
       CLK            : in std_logic;
@@ -45,7 +47,6 @@ end entity;
 
 architecture arch of MULTI_HGEN_VER_COVER is
 
-   constant BRANCH_COUNT      : integer := 2;
    constant INPUT_PARTS       : integer := 1;
    constant BRANCH_PARTS      : integer := 1;
    constant TICKET_WIDTH      : integer := 12; -- bits
@@ -181,7 +182,8 @@ gen_hgen: for i in 0 to BRANCH_COUNT-1 generate
       hgen_ver_cover_i: entity work.HGEN_VER_COVER
       generic map(
          -- the data width of the data input/output
-         DATA_WIDTH     => DATA_WIDTH
+         DATA_WIDTH     => DATA_WIDTH,
+         USE_BRAMS_FOR_HGEN_FIFO => USE_BRAMS_FOR_HGEN_FIFO
       )
       port map(
          -- common signals
