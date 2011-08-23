@@ -52,6 +52,7 @@ architecture arch of MULTI_HGEN_VER_COVER is
    constant TICKET_WIDTH      : integer := 12; -- bits
    constant TICKET_FIFO_ITEMS : integer := 16;
 
+   constant HGEN_DATA_WIDTH   : integer := 128;
 
    -- Ticket counter
    signal cnt_ticket          : std_logic_vector(TICKET_WIDTH-1 downto 0);
@@ -65,8 +66,8 @@ architecture arch of MULTI_HGEN_VER_COVER is
    signal ticket_full         : std_logic_vector(BRANCH_COUNT-1 downto 0);
 
    -- FL Splitter input
-   signal split_rx_data        : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal split_rx_rem         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal split_rx_data        : std_logic_vector(HGEN_DATA_WIDTH-1 downto 0);
+   signal split_rx_rem         : std_logic_vector(log2(HGEN_DATA_WIDTH/8)-1 downto 0);
    signal split_rx_sof_n       : std_logic;
    signal split_rx_eof_n       : std_logic;
    signal split_rx_sop_n       : std_logic;
@@ -75,8 +76,8 @@ architecture arch of MULTI_HGEN_VER_COVER is
    signal split_rx_dst_rdy_n   : std_logic;
 
    -- FL Splitter output
-   signal split_tx_data        : std_logic_vector(BRANCH_COUNT*DATA_WIDTH-1 downto 0);
-   signal split_tx_rem         : std_logic_vector(BRANCH_COUNT*log2(DATA_WIDTH/8)-1 downto 0);
+   signal split_tx_data        : std_logic_vector(BRANCH_COUNT*HGEN_DATA_WIDTH-1 downto 0);
+   signal split_tx_rem         : std_logic_vector(BRANCH_COUNT*log2(HGEN_DATA_WIDTH/8)-1 downto 0);
    signal split_tx_sof_n       : std_logic_vector(BRANCH_COUNT-1 downto 0);
    signal split_tx_eof_n       : std_logic_vector(BRANCH_COUNT-1 downto 0);
    signal split_tx_sop_n       : std_logic_vector(BRANCH_COUNT-1 downto 0);
@@ -85,8 +86,8 @@ architecture arch of MULTI_HGEN_VER_COVER is
    signal split_tx_dst_rdy_n   : std_logic_vector(BRANCH_COUNT-1 downto 0);
 
    -- FL Sequencer input
-   signal seq_rx_data        : std_logic_vector(BRANCH_COUNT*DATA_WIDTH-1 downto 0);
-   signal seq_rx_rem         : std_logic_vector(BRANCH_COUNT*log2(DATA_WIDTH/8)-1 downto 0);
+   signal seq_rx_data        : std_logic_vector(BRANCH_COUNT*HGEN_DATA_WIDTH-1 downto 0);
+   signal seq_rx_rem         : std_logic_vector(BRANCH_COUNT*log2(HGEN_DATA_WIDTH/8)-1 downto 0);
    signal seq_rx_sof_n       : std_logic_vector(BRANCH_COUNT-1 downto 0);
    signal seq_rx_eof_n       : std_logic_vector(BRANCH_COUNT-1 downto 0);
    signal seq_rx_sop_n       : std_logic_vector(BRANCH_COUNT-1 downto 0);
@@ -95,8 +96,8 @@ architecture arch of MULTI_HGEN_VER_COVER is
    signal seq_rx_dst_rdy_n   : std_logic_vector(BRANCH_COUNT-1 downto 0);
 
    -- FL Sequencer output
-   signal seq_tx_data        : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal seq_tx_rem         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal seq_tx_data        : std_logic_vector(HGEN_DATA_WIDTH-1 downto 0);
+   signal seq_tx_rem         : std_logic_vector(log2(HGEN_DATA_WIDTH/8)-1 downto 0);
    signal seq_tx_sof_n       : std_logic;
    signal seq_tx_eof_n       : std_logic;
    signal seq_tx_sop_n       : std_logic;
@@ -106,15 +107,41 @@ architecture arch of MULTI_HGEN_VER_COVER is
 
 begin
 
-   -- Input interface
-   split_rx_data       <= RX_DATA;
-   split_rx_rem        <= RX_REM;
-   split_rx_sof_n      <= RX_SOF_N;
-   split_rx_eof_n      <= RX_EOF_N;
-   split_rx_sop_n      <= RX_SOP_N;
-   split_rx_eop_n      <= RX_EOP_N;
-   split_rx_src_rdy_n  <= RX_SRC_RDY_N;
-   RX_DST_RDY_N        <= split_rx_dst_rdy_n;
+   -- input transformer
+   input_trans_i: entity work.FL_TRANSFORMER
+   generic map(
+      -- the data width of the data input
+      RX_DATA_WIDTH  => DATA_WIDTH,
+      TX_DATA_WIDTH  => HGEN_DATA_WIDTH
+   )
+   port map(
+      -- common signals
+      -- global FGPA clock
+      CLK               => CLK,
+
+      -- global synchronous reset
+      RESET             => RESET,
+
+      -- RX Framelink interface
+      RX_DATA           => RX_DATA,
+      RX_REM            => RX_REM,
+      RX_SOP_N          => RX_SOP_N,
+      RX_EOP_N          => RX_EOP_N,
+      RX_SOF_N          => RX_SOF_N,
+      RX_EOF_N          => RX_EOF_N,
+      RX_SRC_RDY_N      => RX_SRC_RDY_N,
+      RX_DST_RDY_N      => RX_DST_RDY_N,
+
+      -- TX FrameLink interface
+      TX_DATA           => split_rx_data,
+      TX_REM            => split_rx_rem,
+      TX_SOP_N          => split_rx_sop_n,
+      TX_EOP_N          => split_rx_eop_n,
+      TX_SOF_N          => split_rx_sof_n,
+      TX_EOF_N          => split_rx_eof_n,
+      TX_SRC_RDY_N      => split_rx_src_rdy_n,
+      TX_DST_RDY_N      => split_rx_dst_rdy_n
+   );
 
    -- Ticket counter
    cnt_ticketp: process(CLK)
@@ -134,8 +161,8 @@ begin
    -- Ticket splitter
    splitter: entity work.FL_TICKET_SPLITTER_FIFO2NFIFO
       generic map (
-         RX_DATA_WIDTH     => DATA_WIDTH,
-         TX_DATA_WIDTH     => DATA_WIDTH,
+         RX_DATA_WIDTH     => HGEN_DATA_WIDTH,
+         TX_DATA_WIDTH     => HGEN_DATA_WIDTH,
          OUTPUT_COUNT      => BRANCH_COUNT,
          FRAME_PARTS       => INPUT_PARTS,
          TICKET_WIDTH      => TICKET_WIDTH,
@@ -182,7 +209,7 @@ gen_hgen: for i in 0 to BRANCH_COUNT-1 generate
       hgen_ver_cover_i: entity work.HGEN_VER_COVER
       generic map(
          -- the data width of the data input/output
-         DATA_WIDTH     => DATA_WIDTH,
+         DATA_WIDTH     => HGEN_DATA_WIDTH,
          USE_BRAMS_FOR_HGEN_FIFO => USE_BRAMS_FOR_HGEN_FIFO
       )
       port map(
@@ -194,8 +221,10 @@ gen_hgen: for i in 0 to BRANCH_COUNT-1 generate
          RESET             => RESET,
          
          -- RX Framelink interface
-         RX_DATA           => split_tx_data((i+1)*DATA_WIDTH-1 downto i*DATA_WIDTH),
-         RX_REM            => split_tx_rem((i+1)*log2(DATA_WIDTH/8)-1 downto i*log2(DATA_WIDTH/8)),
+         RX_DATA           => split_tx_data((i+1)*HGEN_DATA_WIDTH-1 downto
+         i*HGEN_DATA_WIDTH),
+         RX_REM            => split_tx_rem((i+1)*log2(HGEN_DATA_WIDTH/8)-1
+         downto i*log2(HGEN_DATA_WIDTH/8)),
          RX_SRC_RDY_N      => split_tx_src_rdy_n(i),
          RX_DST_RDY_N      => split_tx_dst_rdy_n(i),
          RX_SOP_N          => split_tx_sop_n(i),
@@ -204,8 +233,10 @@ gen_hgen: for i in 0 to BRANCH_COUNT-1 generate
          RX_EOF_N          => split_tx_eof_n(i),
 
          -- TX FrameLink interface
-         TX_DATA           => seq_rx_data((i+1)*DATA_WIDTH-1 downto i*DATA_WIDTH),
-         TX_REM            => seq_rx_rem((i+1)*log2(DATA_WIDTH/8)-1 downto i*log2(DATA_WIDTH/8)),
+         TX_DATA           => seq_rx_data((i+1)*HGEN_DATA_WIDTH-1 downto
+         i*HGEN_DATA_WIDTH),
+         TX_REM            => seq_rx_rem((i+1)*log2(HGEN_DATA_WIDTH/8)-1
+         downto i*log2(HGEN_DATA_WIDTH/8)),
          TX_SRC_RDY_N      => seq_rx_src_rdy_n(i),
          TX_DST_RDY_N      => seq_rx_dst_rdy_n(i),
          TX_SOP_N          => seq_rx_sop_n(i),
@@ -218,9 +249,9 @@ gen_hgen: for i in 0 to BRANCH_COUNT-1 generate
    -- Ticket sequencer
    sequencer: entity work.FL_TICKET_SEQUENCER
       generic map (
-         INPUT_WIDTH          => DATA_WIDTH,
+         INPUT_WIDTH          => HGEN_DATA_WIDTH,
          INPUT_COUNT          => BRANCH_COUNT,
-         OUTPUT_WIDTH         => DATA_WIDTH,
+         OUTPUT_WIDTH         => HGEN_DATA_WIDTH,
          PARTS                => BRANCH_PARTS,
          TICKET_WIDTH         => TICKET_WIDTH,
          TICKET_FIFO_ITEMS    => TICKET_FIFO_ITEMS
@@ -254,14 +285,40 @@ gen_hgen: for i in 0 to BRANCH_COUNT-1 generate
          TX_DST_RDY_N   => seq_tx_dst_rdy_n
       );
 
-   -- Output interface
-   TX_DATA           <= seq_tx_data;
-   TX_REM            <= seq_tx_rem;
-   TX_SOF_N          <= seq_tx_sof_n;
-   TX_EOF_N          <= seq_tx_eof_n;
-   TX_SOP_N          <= seq_tx_sop_n;
-   TX_EOP_N          <= seq_tx_eop_n;
-   TX_SRC_RDY_N      <= seq_tx_src_rdy_n;
-   seq_tx_dst_rdy_n  <= TX_DST_RDY_N;
+   -- output transformer
+   output_trans_i: entity work.FL_TRANSFORMER
+   generic map(
+      -- the data width of the data input
+      RX_DATA_WIDTH  => HGEN_DATA_WIDTH,
+      TX_DATA_WIDTH  => DATA_WIDTH
+   )
+   port map(
+      -- common signals
+      -- global FGPA clock
+      CLK               => CLK,
+
+      -- global synchronous reset
+      RESET             => RESET,
+
+      -- RX Framelink interface
+      RX_DATA           => seq_tx_data,
+      RX_REM            => seq_tx_rem,
+      RX_SOP_N          => seq_tx_sop_n,
+      RX_EOP_N          => seq_tx_eop_n,
+      RX_SOF_N          => seq_tx_sof_n,
+      RX_EOF_N          => seq_tx_eof_n,
+      RX_SRC_RDY_N      => seq_tx_src_rdy_n,
+      RX_DST_RDY_N      => seq_tx_dst_rdy_n,
+
+      -- TX FrameLink interface
+      TX_DATA           => TX_DATA,
+      TX_REM            => TX_REM,
+      TX_SOP_N          => TX_SOP_N,
+      TX_EOP_N          => TX_EOP_N,
+      TX_SOF_N          => TX_SOF_N,
+      TX_EOF_N          => TX_EOF_N,
+      TX_SRC_RDY_N      => TX_SRC_RDY_N,
+      TX_DST_RDY_N      => TX_DST_RDY_N
+   );
 
 end architecture;
