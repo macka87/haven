@@ -71,6 +71,8 @@ int c_closeDMAChannel(){
   return EXIT_SUCCESS;
 }
 
+#define min(x, y) (((x) < (y))? (x) : (y))
+
 /*
  *  Data transport through DMA Channel - transaction is sent to hardware. 
  */
@@ -81,10 +83,24 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
   unsigned int len;
   bool ret;
   unsigned short ifc  = 0;
+//	size_t iter;
+//	int iterIn;
   
   // set pointer to hwpacket  
   auxPkt = (unsigned char*) svGetArrayPtr(inhwpkt);
   
+//	for (iter = 0; iter < pktSize; iter += 4)
+//	{
+//		for (iterIn = min(3, pktSize - iter - 1); iterIn >= 0; --iterIn)
+//		{
+//			fprintf(stderr, "%0.2hhX", auxPkt[iter + iterIn]);
+//		}
+//
+//		fprintf(stderr, "\n");
+//	}
+//
+//	fprintf(stderr, "\n#\n\n");
+
   // prepare packet for transfer to hardware    
   test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, pktSize, &len);  
 
