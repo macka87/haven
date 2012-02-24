@@ -58,7 +58,6 @@ program TEST (
 
   //! Assertion Reporter
   FrameLinkAssertionReporter                             assertReporter;               
-
   //! Signal Reporter
   FrameLinkSignalReporter #(DATA_WIDTH)                  sigReporter;
   
@@ -121,9 +120,6 @@ program TEST (
      flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
      flOutCnt.setCallbacks(scoreboard.outputCbs);  
      
-     //! Create Assertion Checker
-    // assertChecker = new("Assertion Checker", RX, TX);
-
      //! Create Assertion Reporter
      assertReporter = new("Assertion Reporter", 0, mbx[1], CLK_PERIOD, RESET_TIME);
 
@@ -206,7 +202,6 @@ program TEST (
     end
     
     if (FRAMEWORK == 0) begin
-      //assertChecker.setDisabled();
       flChecker.setDisabled();
       flMonitor.setDisabled();
       flCoverage.setDisabled();

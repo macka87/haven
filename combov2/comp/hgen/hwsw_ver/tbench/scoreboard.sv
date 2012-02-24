@@ -305,7 +305,9 @@ typedef TransactionTable#(1) TransactionTableType;
         res = c_removeFromTable(tr.data[0]);
         if (res==1)begin 
           $write("Unknown transaction received from output controller!\n");
-          c_displayTable(); 
+          transaction.display();
+          c_displayTable();
+          $fatal(); 
         end   
       end
     endtask : post_tr 
@@ -360,4 +362,15 @@ typedef TransactionTable#(1) TransactionTableType;
       if (FRAMEWORK == 1)  
         c_displayTable(); 
     endtask
+
+   /*!
+    * Display
+    *     
+    * Prints Transaction Table after assertion Failure
+    * 
+    */
+    function void displayTrans();
+      scoreTable.displayState();
+    endfunction
+
  endclass : HGENScoreboard

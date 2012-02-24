@@ -138,7 +138,7 @@ typedef TransactionTable#(1) TransactionTableType;
           $write("Time: %t\n", $time);
           transaction.display(); 
           sc_table.display("scoreboard");
-          $stop;
+          $fatal();
         end;
       end  
 
@@ -147,7 +147,9 @@ typedef TransactionTable#(1) TransactionTableType;
         res = c_removeFromTable(tr.data[0]);
         if (res==1)begin 
           $write("Unknown transaction received from output controller!\n");
-          c_displayTable(); 
+          transaction.display();
+          c_displayTable();
+          $fatal(); 
         end   
       end
     endtask : post_tr 
@@ -198,5 +200,15 @@ typedef TransactionTable#(1) TransactionTableType;
       if (FRAMEWORK == 1)  
         c_displayTable(); 
     endtask
- endclass : FIFOScoreboard   
 
+   /*!
+    * Display
+    *     
+    * Prints Transaction Table after assertion Failure
+    * 
+    */
+    function void displayTrans();
+      scoreTable.displayState();
+    endfunction
+ 
+ endclass : FIFOScoreboard   

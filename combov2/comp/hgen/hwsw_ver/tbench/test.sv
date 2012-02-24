@@ -10,6 +10,7 @@ import sv_basic_comp_pkg::*;
 import sv_fl_pkg::*;
 import sv_hgen_pkg::*;
 import sv_mi32_pkg::*;
+import dpi_wrapper_pkg::*;
 
 /*
  * Test output and input interfaces of DUT.
@@ -33,6 +34,9 @@ program TEST (
   //! Mailbox for Output controller's transactions
   tTransMbx                                              outputMbx; 
   
+  //! Sorter's mailboxes
+  tTransMbx                                              mbx[];  
+
   //! MI32 Transaction                                   
   MI32Transaction                                        mi32Trans;
   
@@ -48,15 +52,19 @@ program TEST (
   //! Output Wrapper
   OutputWrapper                                          outputWrapper; 
   
+  //! Sorter
+  Sorter                                                 sorter; 
+  
   //! Output Controller 
   FrameLinkOutputController                              flOutCnt;
   
+  //! Assertion Reporter
+  FrameLinkAssertionReporter                             assertReporter;               
+  //! Signal Reporter
+  FrameLinkSignalReporter #(DATA_WIDTH)                  sigReporter;
+  
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
-  
-  //! Responder
-  //FrameLinkResponder #(DATA_WIDTH, DREM_WIDTH)           flResponder; 
-  FrameLinkResponderSimple #(DATA_WIDTH, DREM_WIDTH)     flResponder; 
   
   //! Scoreboard
   HGENScoreboard                                         scoreboard; 
@@ -104,20 +112,29 @@ program TEST (
      //! Create Output Wrapper
      outputWrapper = new("Output Wrapper", outputMbx); 
      
-     flOutCnt = new("Output Controller", 0, outputMbx, GENERATOR_FL_FRAME_COUNT);
+     //! Create Sorter and Output Controllers' mailboxes
+     mbx = new[3];
+       // FL Output Controller mailbox
+       mbx[0] = new(1); 
+       // Assertion Reporter mailbox
+       mbx[1] = new(1);
+       // Signal Reporter
+       mbx[2] = new(1);
+     sorter = new(outputMbx, mbx, 3);
+     
+     flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
      flOutCnt.setCallbacks(scoreboard.outputCbs);  
      
+     //! Create Assertion Reporter
+     assertReporter = new("Assertion Reporter", 0, mbx[1], CLK_PERIOD, RESET_TIME);
+
+     //! Create Signal Reporter
+     sigReporter = new("Signal Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
+
      //! Create Monitor 
-     flMonitor    = new("FrameLink Monitor", 0, MONITOR);   
+     flMonitor    = new("FrameLink Monitor", 0, MONITOR, TX);   
      flMonitor.setCallbacks(scoreboard.outputCbs);  
      flCoverage.addFrameLinkInterfaceTx(MONITOR,"TX Command Coverage");
-     
-     //! Create Responder 
-     flResponder  = new("FrameLink Responder", 0, TX);
-       //flResponder.btDelayLow   = RESPONDER_BT_DELAY_LOW;
-       //flResponder.btDelayHigh  = RESPONDER_BT_DELAY_HIGH;
-       //flResponder.itDelayLow   = RESPONDER_IT_DELAY_LOW;
-       //flResponder.itDelayHigh  = RESPONDER_IT_DELAY_HIGH;             
   endtask : createEnvironment
   
   /*
@@ -134,13 +151,15 @@ program TEST (
   task enableTestEnvironment();
     if (FRAMEWORK == 0) begin
       flMonitor.setEnabled();
-      flResponder.setEnabled();
       flCoverage.setEnabled();
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setEnabled();
       outputWrapper.setEnabled();
+      sorter.setEnabled();
       flOutCnt.setEnabled();
+      assertReporter.setEnabled();
+      sigReporter.setEnabled();
     end  
   endtask : enableTestEnvironment
   
@@ -155,27 +174,44 @@ program TEST (
       busy = 0;
       
       if (FRAMEWORK == 0) begin
-        if (flMonitor.busy || flResponder.busy) busy = 1;
+        if (flMonitor.busy) busy = 1;
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || flOutCnt.busy) busy = 1; 
+        if (inputWrapper.busy || (outputWrapper.counter < TRANSACTION_COUT) ||
+          flOutCnt.busy || assertReporter.busy) busy = 1;
       end
-        
+
+      /*$write("Looping at time %t ps\n", $time);
+      $write("InputWrapper busy: %d\n", inputWrapper.busy);
+      $write("OutputWrapper counter: %d/%d\n", outputWrapper.counter,
+        TRANSACTION_COUT);
+      $write("FlOutCnt busy: %d\n", flOutCnt.busy);
+      $write("AssertReporter busy: %d\n", assertReporter.busy);
+      $write("SignalReporter busy: %d\n", sigReporter.busy);
+      $write("--------------------------------------------------\n");*/
+
       if (busy) i = 0;
       else i++;
-      #(CLK_PERIOD); 
+      if (FRAMEWORK == 0) begin
+        #(CLK_PERIOD);
+      end
+      if (FRAMEWORK == 1) begin
+        #1ps;
+      end
     end
     
     if (FRAMEWORK == 0) begin
       flMonitor.setDisabled();
-      flResponder.setDisabled();
       flCoverage.setDisabled();
     end
     if (FRAMEWORK == 1) begin
       inputWrapper.setDisabled();
       outputWrapper.setDisabled();
       flOutCnt.setDisabled();
+      sorter.setDisabled();
+      assertReporter.setDisabled();
+      sigReporter.setDisabled();
     end  
   endtask : disableTestEnvironment
 
@@ -251,6 +287,19 @@ program TEST (
     
     // Stop testing
     $stop();
+  end
+  
+  // final section for assertion reports
+  final begin
+	  int res;
+    if (FRAMEWORK == 0) begin
+      scoreboard.displayTrans();
+    end
+		
+		if (FRAMEWORK == 1) begin 
+		  res = c_closeDMAChannel();  
+      $write("CLOSING CHANNEL (musi byt 0): %d\n",res); 
+    end    
   end
 endprogram
 
