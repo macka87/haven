@@ -1,0 +1,40 @@
+#   1) pøepnout se do adresáøe, kde se skript "simulation.fdo" nachází.
+#      vsim -do simulation.fdo
+
+vlib work
+
+# Kompilace potøebných zdrojových kódù
+vcom mult.vhd testbench.vhd 
+
+# Spustìní simulace 
+vsim -t 1ps -lib work testbench
+
+view wave
+
+# Pøidání rùzných skupin signálù do okna waveform 
+#add  wave -hex * 
+
+  # ------------------------ RAM ---------------------------
+  add  wave -divider "MULT" 
+  add wave -hex -label "clk"          sim:/testbench/clk 
+  add wave -hex -label "rst"          sim:/testbench/rst
+  add wave -hex -label "input_a"      sim:/testbench/input_a
+  add wave -hex -label "input_b"      sim:/testbench/input_b
+  add wave -hex -label "start"        sim:/testbench/start
+  add wave -hex -label "sig_counter"  sim:/testbench/UUT/sig_counter
+  add wave -hex -label "sig_mult_finish"      sim:/testbench/UUT/sig_mult_finish 
+  add wave -hex -label "sig_reg_operand_A"    sim:/testbench/UUT/sig_reg_operand_A  
+  add wave -hex -label "sig_shift_operand_A"  sim:/testbench/UUT/sig_shift_operand_A
+  add wave -hex -label "sig_reg_exp_A"      sim:/testbench/UUT/sig_reg_exp_A  
+  add wave -hex -label "sig_shift_operand_B"  sim:/testbench/UUT/sig_shift_operand_B
+  add wave -hex -label "sig_reg_operand_B"  sim:/testbench/UUT/sig_reg_operand_B
+  add wave -hex -label "sig_add_result"     sim:/testbench/UUT/sig_add_result
+  add wave -hex -label "sig_and_result"     sim:/testbench/UUT/sig_and_result 
+  add wave -hex -label "sig_reg_result"     sim:/testbench/UUT/sig_reg_result 
+  add wave -hex -label "mult_result"        sim:/testbench/mult_result
+  add wave -hex -label "mult_vld"           sim:/testbench/uut/sig_mult_finish
+  
+view structure
+view signals
+
+run 800 ns 
