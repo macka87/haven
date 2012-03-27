@@ -1,0 +1,40 @@
+# --------------------------------------------------------------------------
+# Project Name: ALU Functional Verification
+# File Name:    alu.fdo 
+# Description:  Compilation of the DUT and the verification environment. 
+# Author:       Marcela Simkova <isimkova@fit.vutbr.cz>    
+# Date:         22.3.2012
+# --------------------------------------------------------------------------
+
+# Firmware location
+set FIRMWARE_BASE         "../../combov2/"
+
+# DUT location
+set DUT_BASE              "../alu"
+
+# Verification location
+set DUT_VER_BASE          "./"
+set TB_FILE               "./tbench/testbench.sv"
+set SIG_FILE              "./signals_sig.fdo"
+
+set SV_LIBS [list "$FIRMWARE_BASE/comp/sw_ver/basic_ver_components_package/dpi/dpi_wrapper_pkg"]          
+set SV_LIBS "$SV_LIBS $FIRMWARE_BASE/comp/sw_ver/basic_ver_components_package/dpi_scoreboard/dpi_tr_table_pkg"
+
+set COMPONENTS [list [list "DUT"      $DUT_BASE       "FULL"]\
+                     [list "DUT_VER"  $DUT_VER_BASE   "FULL"]\
+                     ]
+
+# Enable Code Coverage
+set CODE_COVERAGE "true"
+
+# Global include file for compilation
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+onfinish final
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# File with signals
+source $SIG_FILE
