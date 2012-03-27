@@ -12,8 +12,7 @@
     * Public Class Atributes
     */ 
     int frameCount;
-    tTransMbx mbx;    // Mailbox for transactions received from Sorter
-    OutputCbs cbs[$]; // Output callback list
+    
    /*
     * Public Class Methods
     */ 
@@ -23,20 +22,12 @@
     */    
     function new(string inst,
                  byte id,
-                 tTransMbx mbx, 
+                 tTransMbx outputMbx, 
                  int frameCount); 
-       super.new(inst, id);
+       super.new(inst, id, outputMbx);
        this.frameCount = frameCount;
-       this.mbx        = mbx;
     endfunction: new
    
-   /*! 
-    * Set Controller Callback - put callback object into List 
-    */
-    virtual function void setCallbacks(OutputCbs cbs);
-      this.cbs.push_back(cbs);
-    endfunction : setCallbacks
-    
    /*! 
     * Run Controller - receives transactions and sends them for processing by 
     * callback.

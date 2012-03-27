@@ -11,7 +11,7 @@ all: $(patsubst %.xco, %.ngc, $(wildcard *.xco))
 
 %.ngc: %.xco
 	cp $< $<.bak
-	. $(XILINX_VERSION)
+#	. $(XILINX_VERSION)
 	$(COREGEN) -b $<
 	mv $<.bak $<
 

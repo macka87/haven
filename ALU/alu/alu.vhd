@@ -251,5 +251,7 @@ begin
                                     sig_output_sel <= '1';
       end case;   
    end process moore_output;
+   
+   ALU_RDY <= sig_alu_rdy;
 
 end architecture;
