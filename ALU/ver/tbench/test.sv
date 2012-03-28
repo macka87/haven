@@ -57,10 +57,10 @@ program TEST (
   // Create Test Environment
   task createEnvironment(); 
      //! Create scoreboard
-     scoreboard = new();
+     scoreboard = new("ALU Scoreboard");
      
      //! Create coverage
-     aluCoverage = new();
+     aluCoverage = new("ALU Coverage");
      
      //! Create Input and Output Mailbox
      inputMbx   = new(1);
@@ -97,6 +97,7 @@ program TEST (
   // Resets design
   task resetDesign();
     RST   = 1;                  // Init Reset variable
+    ALU_IN.cb.ACT <= 0;         // No activity during reset
     #RESET_TIME      RST = 0;   // Deactivate reset after reset_time
   endtask : resetDesign
   

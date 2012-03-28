@@ -148,7 +148,7 @@ begin
    port map(
       CLK           => CLK,
       RST           => RST,
-
+      
       -- input interface
       INPUT_A       => sig_operand_A, 
       INPUT_B       => sig_operand_B, 
@@ -251,7 +251,7 @@ begin
                                     sig_output_sel <= '1';
       end case;   
    end process moore_output;
-   
+
    ALU_RDY <= sig_alu_rdy;
 
 end architecture;

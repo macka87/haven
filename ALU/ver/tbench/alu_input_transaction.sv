@@ -81,7 +81,6 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
        $write("operandIMM: %d\n", operandIMM); 
        $write("operandMEM: %d\n", operandMEM); 
        
-       $write("movi:\n");
        priority case (movi) 
          2'b00 : $write("MOVI: REGISTER B\n");
          2'b01 : $write("MOVI: MEMORY OPERAND\n");
@@ -89,7 +88,7 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
          2'b11 : $write("UNSUPPORTED!!!!!\n");
        endcase
        
-       $write("operation: \n");
+       $write("operation: ");
        priority case (operation) 
          4'b0000 : $write("ADD\n");
          4'b0001 : $write("SUB\n");

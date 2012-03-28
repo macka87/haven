@@ -27,6 +27,6 @@ proc alu_in {NAME PATH} {
 proc alu_out {NAME PATH} {
     add wave -divider "$NAME"      
      add wave -noupdate  -label      ALU_RDY          $PATH/ALU_RDY
-     add wave -noupdate  -label      EX_ALU           $PATH/EX_ALU
-     add wave -noupdate  -label      EX_ALU_VLD       $PATH/EX_ALU_VLD
+     add wave -noupdate  -hex -label EX_ALU           $PATH/EX_ALU
+     add wave -noupdate  -hex -label EX_ALU_VLD       $PATH/EX_ALU_VLD
 }

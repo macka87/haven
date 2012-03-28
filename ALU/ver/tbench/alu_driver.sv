@@ -19,8 +19,8 @@
     * Public Class Atributes
     */
     //! ALU input interface
-    virtual iAluIn #(pDataWidth) aluIn; //virtual iAluIn.aluin_tb aluIn;
-    
+    virtual iAluIn #(pDataWidth) aluIn; 
+        
    /*
     * Public Class Methods
     */
@@ -47,8 +47,22 @@
       this.aluIn.cb.REG_B   <= 0;
       this.aluIn.cb.IMM     <= 0;
       this.aluIn.cb.MEM     <= 0;
-     
     endfunction: new  
+    
+   /*! 
+    * Enable Driver - eable driver and runs driver process
+    */
+    task setEnabled();
+      enabled = 1;  //! Driver Enabling
+      @(aluIn.cb);  
+    endtask : setEnabled
+        
+   /*! 
+    * Disable Driver
+    */
+    task setDisabled();
+      enabled = 0;  
+    endtask : setDisabled 
     
    /*
     * Private Class Methods
@@ -77,19 +91,18 @@
           cbs[i].pre_tr(to, id);
         
         $cast(transaction,to);
-          
+        
         // Set ACT signal and wait before sending next transaction
         // $write("enBtDelay: %d\n",enBtDelay);
-        // $write("btDelay: %d\n",btDelay);
+        //$write("btDelay: %d\n",btDelay);
         if (!transaction.enBtDelay) aluIn.cb.ACT <= 1;
         else begin
           repeat (transaction.btDelay) @(aluIn.cb);
           aluIn.cb.ACT <= 1;
-        end 
+        end
       
-        waitForAluRdy(); 
-      
-        sendData(transaction);         //! Send transaction
+        waitForAluRdy();
+        sendData(transaction);
         
         foreach (cbs[i])               //! Call transaction postprocessing
           cbs[i].post_tr(to, id);
@@ -119,12 +132,10 @@
     * Wait for ALU_RDY
     */
     task waitForAluRdy();
-      do begin
-        // Wait if ALU_RDY
-        if (!aluIn.cb.ALU_RDY)
-          @(aluIn.cb);
+      while (!aluIn.cb.ALU_RDY) begin
         if (!enabled) return;
-      end while (!aluIn.cb.ALU_RDY); 
+        @(aluIn.cb);
+      end;
     endtask : waitForAluRdy     
         
  endclass : ALUDriver 

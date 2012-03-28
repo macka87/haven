@@ -19,18 +19,18 @@
    logic [DATA_WIDTH-1:0] IMM      ;   // Immediate operand
    logic [DATA_WIDTH-1:0] MEM      ;   // Memory operand
    
-   // Clocking blocks  
+   // Clocking block  
    clocking cb @(posedge CLK);
      input ALU_RDY;
      output ACT, OP, MOVI, REG_A, REG_B, IMM, MEM;  
    endclocking: cb;
    
-   // Clocking blocks for coverage
+   // Clocking block for coverage
    clocking cover_cb @(posedge CLK);
-     input ACT, OP, MOVI, REG_A, REG_B, IMM, MEM;  
+     input ACT, ALU_RDY, OP, MOVI, REG_A, REG_B, IMM, MEM;  
    endclocking: cover_cb;
 
-   // Control Modport
+   // DUT Modport
    modport aluin (input  ACT, 
                   output ALU_RDY,
                   input  OP,
@@ -57,7 +57,7 @@
      input EX_ALU, EX_ALU_VLD;   
    endclocking: cb;
 
-   // Control Modport
+   // DUT Modport
    modport aluout (output  EX_ALU,
                    output  EX_ALU_VLD
                   );

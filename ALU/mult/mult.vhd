@@ -26,7 +26,7 @@ entity MULT is
    (
       CLK         : in  std_logic;
       RST         : in  std_logic;
-      
+            
       -- ----------------- INPUT INTERFACE ----------------------------------
       INPUT_A     : in  std_logic_vector(DATA_WIDTH-1 downto 0); -- register A
       INPUT_B     : in  std_logic_vector(DATA_WIDTH-1 downto 0); -- register B 
@@ -134,9 +134,8 @@ begin
 -- shift left for operand B
    sig_shift_operand_B <= sig_reg_operand_B((DATA_WIDTH*2-2) downto 0) & '0';
    
--- adder
    sig_add_result <= sig_and_result + sig_reg_result;
-   
+      
 -- register for result
    reg3 : process (CLK)
    begin

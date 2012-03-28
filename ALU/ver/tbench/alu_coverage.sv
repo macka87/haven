@@ -197,8 +197,19 @@
  * This class measures coverage of commands.
  */    
  class ALUCoverage;
+   string inst;
+   
    CoverageIn    cmdListIn[$];   // Commands coverage list
    CoverageOut   cmdListOut[$];  // Commands coverage list
+  
+  /*! 
+    * Constructor
+    * 
+    * \param inst - coverage identification
+    */
+    function new (string inst);
+      this.inst       = inst;
+    endfunction
         
   /*
    * Add interfaces to coverage measurement.

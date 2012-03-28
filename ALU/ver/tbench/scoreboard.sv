@@ -16,13 +16,19 @@ typedef TransactionTable#(1) TransactionTableType;
  */
   
  class ScoreboardInputCbs #(pDataWidth = 8) extends InputCbs;
-
+   
    /*
     * Public Class Atributes
     */
     
+    //! Class Identifier
+    string inst;
+    
     //! Transaction Table
     TransactionTableType sc_table; 
+    
+    //! Count of added transactions
+    int transCount = 0;
 
    /*
     * Public Class Methods
@@ -33,7 +39,8 @@ typedef TransactionTable#(1) TransactionTableType;
     *      
     * \param sc_table - transaction tables
     */
-    function new (TransactionTableType sc_table);
+    function new (TransactionTableType sc_table, string inst);
+      this.inst     = inst;
       this.sc_table = sc_table;
     endfunction
     
@@ -63,6 +70,7 @@ typedef TransactionTable#(1) TransactionTableType;
       logic [pDataWidth*2-1:0] multResult;
       
       $cast(aluIn, transaction);
+      aluIn.display("SC: INPUT TRANSACTION");
       
       aluOut = new();
       
@@ -89,6 +97,9 @@ typedef TransactionTable#(1) TransactionTableType;
                      multResult = aluIn.operandA * operandB;
                      aluOut.alu_output = multResult[pDataWidth-1:0];
                      $cast(transaction, aluOut);
+                     transCount++; 
+                     $write("Tr. Num. %d\n",transCount);
+                     aluOut.display("SC: ADDED TRANSACTION");
                      sc_table.add(transaction);
                      aluOut = new();
                    end  
@@ -97,9 +108,15 @@ typedef TransactionTable#(1) TransactionTableType;
          // SHIFT LEFT
          4'b0100 : aluOut.alu_output = operandB<<1;
          // ROTATE RIGHT
-         4'b0101 : aluOut.alu_output = { >> 1 {operandB}};
+         4'b0101 : begin
+                     aluOut.alu_output = operandB>>1;
+                     aluOut.alu_output[pDataWidth-1] = operandB[0];
+                   end  
          // ROTATE LEFT
-         4'b0110 : aluOut.alu_output = { << 1 {operandB}};
+         4'b0110 : begin
+                     aluOut.alu_output = operandB<<1;
+                     aluOut.alu_output[0] = operandB[pDataWidth-1];
+                   end  
          // NOT
          4'b0111 : aluOut.alu_output = ~(operandB);
          // AND
@@ -115,13 +132,16 @@ typedef TransactionTable#(1) TransactionTableType;
          // XNOR
          4'b1101 : aluOut.alu_output = aluIn.operandA ~^ operandB;
          // INC
-         4'b1110 : aluOut.alu_output = operandB++;
+         4'b1110 : aluOut.alu_output = ++operandB;
          // DEC
-         4'b1111 : aluOut.alu_output = operandB--;
+         4'b1111 : aluOut.alu_output = --operandB;
        endcase
       
       $cast(transaction, aluOut);
-      sc_table.add(transaction);  
+      transCount++; 
+      $write("Tr. Num. %d\n",transCount);
+      aluOut.display("SC: ADDED TRANSACTION");
+      sc_table.add(transaction); 
     endtask : post_tr
  endclass : ScoreboardInputCbs
 
@@ -141,7 +161,7 @@ typedef TransactionTable#(1) TransactionTableType;
     * Public Class Atributes
     */
     
-    //! Scoreboard identification
+    //! Class identification
     string inst;
     //! Transaction Table
     TransactionTableType sc_table;
@@ -158,7 +178,8 @@ typedef TransactionTable#(1) TransactionTableType;
     * \param sc_table - transaction tables
     * \param inst - scoreboard identification     
     */
-    function new (TransactionTableType sc_table);
+    function new (TransactionTableType sc_table, string inst);
+      this.inst     = inst;
       this.sc_table = sc_table;
     endfunction
     
@@ -176,11 +197,11 @@ typedef TransactionTable#(1) TransactionTableType;
       bit status = 0;
       sc_table.remove(transaction, status);
       if (status==0)begin
-         $write("Unknown transaction (number %d) received from monitor: %d.\n",transCount, inst);
+         $write("Unknown transaction (number: %d) in monitor %d:\n", transCount, id);
          $timeformat(-9, 3, " ns", 8);
          $write("Time: %t\n", $time);
          transaction.display(); 
-         sc_table.display();
+         sc_table.display(1, this.inst);
          $stop;
        end; 
        transCount++; 
@@ -197,6 +218,12 @@ typedef TransactionTable#(1) TransactionTableType;
  * \param behav - TransactionTable behavior                
  */
   class ALUScoreboard #(pDataWidth = 8);
+   
+   /*
+    * Private Class Atributes
+    */
+    string inst;
+   
    /*
     * Public Class Atributes
     */
@@ -214,10 +241,11 @@ typedef TransactionTable#(1) TransactionTableType;
     * 
     * \param inst - scoreboard identification
     */
-    function new ();
-      this.scoreTable= new; 
-      this.inputCbs  = new(scoreTable);
-      this.outputCbs = new(scoreTable);
+    function new (string inst);
+      this.inst       = inst;
+      this.scoreTable = new; 
+      this.inputCbs   = new(scoreTable, inst);
+      this.outputCbs  = new(scoreTable, inst);
     endfunction
 
    /*!
@@ -227,7 +255,7 @@ typedef TransactionTable#(1) TransactionTableType;
     * 
     */
     task display();
-      scoreTable.display();  
+      scoreTable.display(0, this.inst);  
     endtask
  endclass : ALUScoreboard   
 

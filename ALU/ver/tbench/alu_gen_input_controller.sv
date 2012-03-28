@@ -132,9 +132,9 @@
       generator.setEnabled(transCount);
       
       // software framework
-      if (framework == 0) 
+      if (framework == 0)
         swAluDriver.sendTransactions(transCount);  
-              
+                    
       // hardware framework
       if (framework == 1) 
         hwAluSender.sendTransactions(transCount); 

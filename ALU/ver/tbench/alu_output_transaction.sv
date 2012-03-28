@@ -60,6 +60,8 @@ class ALUOutTransaction #(int pDataWidth = 8) extends Transaction;
       begin
         same = 0;
         $write(diff, "ALU_OUTPUT does not match!\n");
+        $write("EXPECTED TRANSACTION: %d\n", alu_output);
+        $write("\n");
       end
        
       compare = same;  
