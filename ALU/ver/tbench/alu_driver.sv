@@ -3,7 +3,7 @@
  * File Name:    Software Driver Class
  * Description:  Passes transactions on the input interfaces of DUT
  * Author:       Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         22.3.2012 
+ * Date:         29.3.2012 
  * ************************************************************************** */
 
 /*!
@@ -92,24 +92,29 @@
         
         $cast(transaction,to);
         
+        waitForAluRdy();
+        
+        //$write("enBtDelay: %d\n",transaction.enBtDelay);
+        //$write("btDelay: %d\n",transaction.btDelay);
+        
         // Set ACT signal and wait before sending next transaction
-        // $write("enBtDelay: %d\n",enBtDelay);
-        //$write("btDelay: %d\n",btDelay);
         if (!transaction.enBtDelay) aluIn.cb.ACT <= 1;
         else begin
+          aluIn.cb.ACT <= 0;
           repeat (transaction.btDelay) @(aluIn.cb);
           aluIn.cb.ACT <= 1;
         end
-      
-        waitForAluRdy();
+        
         sendData(transaction);
         
         foreach (cbs[i])               //! Call transaction postprocessing
           cbs[i].post_tr(to, id);
       
-        //transaction.display(inst);   //! Display transaction
+        transaction.display(inst);   //! Display transaction
         i++;
       end
+      
+      aluIn.cb.ACT <= 0;
     endtask : sendTransactions
     
    /*!
@@ -125,7 +130,7 @@
       aluIn.cb.IMM    <= tr.operandIMM;       
       aluIn.cb.MEM    <= tr.operandMEM;      
       @(aluIn.cb);
-      aluIn.cb.ACT    <= 0;
+      aluIn.cb.ACT    <= 1;
     endtask : sendData  
     
   /*!

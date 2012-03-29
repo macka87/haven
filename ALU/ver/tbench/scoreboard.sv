@@ -70,8 +70,7 @@ typedef TransactionTable#(1) TransactionTableType;
       logic [pDataWidth*2-1:0] multResult;
       
       $cast(aluIn, transaction);
-      aluIn.display("SC: INPUT TRANSACTION");
-      
+            
       aluOut = new();
       
       // selection of operand B
@@ -98,10 +97,10 @@ typedef TransactionTable#(1) TransactionTableType;
                      aluOut.alu_output = multResult[pDataWidth-1:0];
                      $cast(transaction, aluOut);
                      transCount++; 
-                     $write("Tr. Num. %d\n",transCount);
-                     aluOut.display("SC: ADDED TRANSACTION");
                      sc_table.add(transaction);
+                     // second part 
                      aluOut = new();
+                     aluOut.alu_output = multResult[pDataWidth*2-1:pDataWidth];
                    end  
          // SHIFT RIGHT
          4'b0011 : aluOut.alu_output = operandB>>1;
@@ -139,8 +138,6 @@ typedef TransactionTable#(1) TransactionTableType;
       
       $cast(transaction, aluOut);
       transCount++; 
-      $write("Tr. Num. %d\n",transCount);
-      aluOut.display("SC: ADDED TRANSACTION");
       sc_table.add(transaction); 
     endtask : post_tr
  endclass : ScoreboardInputCbs

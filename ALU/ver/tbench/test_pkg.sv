@@ -9,10 +9,10 @@
 package test_pkg;
    
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK  = 0;                         // 0 = software framework
-                                               // 1 = sw/hw framework     
+   int FRAMEWORK  = 0;                // 0 = software framework
+                                      // 1 = sw/hw framework     
    // DUT GENERICS
-   parameter DATA_WIDTH       = 8;             // data width
+   parameter DATA_WIDTH       = 8;    // data width
    
    // CLOCKS AND RESETS
    parameter CLK_PERIOD       = 10ns;
