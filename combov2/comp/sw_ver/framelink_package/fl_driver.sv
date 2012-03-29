@@ -23,7 +23,7 @@
     * Public Class Atributes
     */
     //! FrameLink interface
-    virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl;
+    virtual iFrameLinkRx #(pDataWidth,pDremWidth) fl;
     
    /*
     * Public Class Methods
@@ -39,7 +39,7 @@
     function new (string inst, 
                   byte id,
                   tTransMbx transMbx, 
-                  virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl
+                  virtual iFrameLinkRx #(pDataWidth,pDremWidth) fl
                   ); 
       super.new(inst, id, transMbx);
       this.fl = fl;  //! Store pointer interface 

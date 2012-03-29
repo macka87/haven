@@ -25,7 +25,7 @@
     bit     busy;             //! Responder is running
     mailbox #(logic) dstMbx;  //! Mailbox for generated values
        
-    virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) fl;
+    virtual iFrameLinkTx #(pDataWidth,pDremWidth) fl;
     
     LFSR_1 #(8) dstGenerator;
         
@@ -43,7 +43,7 @@
     */
     function new ( string inst,
                    byte id,
-                   virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) fl
+                   virtual iFrameLinkTx #(pDataWidth,pDremWidth) fl
                    );
       
       logic [7:0] seed;

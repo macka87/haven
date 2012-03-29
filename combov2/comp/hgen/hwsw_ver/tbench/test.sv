@@ -60,8 +60,9 @@ program TEST (
   
   //! Assertion Reporter
   FrameLinkAssertionReporter                             assertReporter;               
+  
   //! Signal Reporter
-  FrameLinkSignalReporter #(DATA_WIDTH)                  sigReporter;
+  //FrameLinkSignalReporter #(DATA_WIDTH)                  sigReporter;
   
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
@@ -129,7 +130,7 @@ program TEST (
      assertReporter = new("Assertion Reporter", 0, mbx[1], CLK_PERIOD, RESET_TIME);
 
      //! Create Signal Reporter
-     sigReporter = new("Signal Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
+     //sigReporter = new("Signal Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
 
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR, TX);   
@@ -159,7 +160,7 @@ program TEST (
       sorter.setEnabled();
       flOutCnt.setEnabled();
       assertReporter.setEnabled();
-      sigReporter.setEnabled();
+      //sigReporter.setEnabled();
     end  
   endtask : enableTestEnvironment
   
@@ -188,7 +189,7 @@ program TEST (
         TRANSACTION_COUT);
       $write("FlOutCnt busy: %d\n", flOutCnt.busy);
       $write("AssertReporter busy: %d\n", assertReporter.busy);
-      $write("SignalReporter busy: %d\n", sigReporter.busy);
+      //$write("SignalReporter busy: %d\n", sigReporter.busy);
       $write("--------------------------------------------------\n");*/
 
       if (busy) i = 0;
@@ -211,7 +212,7 @@ program TEST (
       flOutCnt.setDisabled();
       sorter.setDisabled();
       assertReporter.setDisabled();
-      sigReporter.setDisabled();
+      //sigReporter.setDisabled();
     end  
   endtask : disableTestEnvironment
 

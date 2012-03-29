@@ -25,9 +25,9 @@
     */
     string  inst;                            
     bit     enabled;                         
-    virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) rx;
-    virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) tx;
-    virtual iFrameLinkFifo.ctrl_tb #(pStatusWidth)   ctrl;
+    virtual iFrameLinkRx #(pDataWidth,pDremWidth) rx;
+    virtual iFrameLinkTx #(pDataWidth,pDremWidth) tx;
+    virtual iFrameLinkFifo #(pStatusWidth)        ctrl;
     
    /*
     * Public Class Methods
@@ -42,9 +42,9 @@
     * \param control  - control interface       
     */
     function new ( string inst,
-                   virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) rx,
-                   virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) tx,
-                   virtual iFrameLinkFifo.ctrl_tb #(pStatusWidth)   ctrl
+                   virtual iFrameLinkRx #(pDataWidth,pDremWidth) rx,
+                   virtual iFrameLinkTx #(pDataWidth,pDremWidth) tx,
+                   virtual iFrameLinkFifo #(pStatusWidth)        ctrl
                    );
       this.enabled     = 0;           // Monitor is disabled by default   
       this.rx          = rx;          // Store pointer RX interface 

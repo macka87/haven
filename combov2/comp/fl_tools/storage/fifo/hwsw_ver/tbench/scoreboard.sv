@@ -137,7 +137,7 @@ typedef TransactionTable#(1) TransactionTableType;
           $timeformat(-9, 3, " ns", 8);
           $write("Time: %t\n", $time);
           transaction.display(); 
-          sc_table.display("scoreboard");
+          sc_table.display(1, "FIFO Scoreboard");
           $fatal();
         end;
       end  
@@ -196,7 +196,7 @@ typedef TransactionTable#(1) TransactionTableType;
     */
     task display();
       if (FRAMEWORK == 0)
-        scoreTable.display();  
+        scoreTable.display(0, "FIFO Scoreboard");
       if (FRAMEWORK == 1)  
         c_displayTable(); 
     endtask

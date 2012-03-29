@@ -47,7 +47,7 @@
         for (int i=0; i<frameCount; i++) begin
           // receive data from mailbox
           busy = 0;
-          mbx.get(tr);
+          outputMbx.get(tr);
           busy = 1;
           
           $cast(ntr, tr);
