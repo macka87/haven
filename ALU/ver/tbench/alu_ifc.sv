@@ -9,15 +9,15 @@
 /*
  *  ALU Input Interface Declaration
  */ 
- interface iAluIn #(DATA_WIDTH=8) (input logic CLK, RESET);  
+ interface iAluIn #(int pDataWidth = 8) (input logic CLK, RESET);  
    logic       ACT                 ;   // Activity signal
    logic       ALU_RDY             ;   // ALU is ready to process instructions
    logic [3:0] OP                  ;   // ALU Operation
    logic [1:0] MOVI                ;   // Type of second operand
-   logic [DATA_WIDTH-1:0] REG_A    ;   // Operand in register A
-   logic [DATA_WIDTH-1:0] REG_B    ;   // Operand in register B
-   logic [DATA_WIDTH-1:0] IMM      ;   // Immediate operand
-   logic [DATA_WIDTH-1:0] MEM      ;   // Memory operand
+   logic [pDataWidth-1:0] REG_A    ;   // Operand in register A
+   logic [pDataWidth-1:0] REG_B    ;   // Operand in register B
+   logic [pDataWidth-1:0] IMM      ;   // Immediate operand
+   logic [pDataWidth-1:0] MEM      ;   // Memory operand
    
    // Clocking block  
    clocking cb @(posedge CLK);
@@ -48,8 +48,8 @@
  /*
  *  ALU Output Interface Declaration
  */ 
- interface iAluOut #(DATA_WIDTH=8) (input logic CLK, RESET);  
-   logic [DATA_WIDTH-1:0] EX_ALU   ;   // Result of ALU
+ interface iAluOut #(int pDataWidth = 8) (input logic CLK, RESET);  
+   logic [pDataWidth-1:0] EX_ALU   ;   // Result of ALU
    logic EX_ALU_VLD                ;   // Validity of ALU result
    
    // Clocking blocks  

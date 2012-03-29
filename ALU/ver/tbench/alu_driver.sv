@@ -110,7 +110,7 @@
         foreach (cbs[i])               //! Call transaction postprocessing
           cbs[i].post_tr(to, id);
       
-        transaction.display(inst);   //! Display transaction
+        //transaction.display(inst);   //! Display transaction
         i++;
       end
       

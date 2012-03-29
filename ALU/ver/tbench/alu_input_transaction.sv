@@ -27,10 +27,10 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
    constraint values_range
    {
      movi inside       {[0 : 2]};
-     operandA inside   {[0 : 5]};
-     operandB inside   {[0 : 5]};
-     operandIMM inside {[0 : 5]};
-     operandMEM inside {[0 : 5]};
+     //operandA inside   {[0 : 5]};
+     //operandB inside   {[0 : 5]};
+     //operandIMM inside {[0 : 5]};
+     //operandMEM inside {[0 : 5]};
    }
    
    //! --- RANDOMIZATION OF DELAY PARAMETERS ---
@@ -129,6 +129,11 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
       tr.operandMEM = operandMEM;
       tr.operation  = operation;
       tr.movi       = movi;
+      
+      tr.btDelayEn_wt  = btDelayEn_wt;
+      tr.btDelayDi_wt  = btDelayDi_wt;
+      tr.btDelayLow    = btDelayLow;
+      tr.btDelayHigh   = btDelayHigh;
       
       copy = tr;  
     endfunction: copy

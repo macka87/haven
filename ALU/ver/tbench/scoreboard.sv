@@ -70,6 +70,7 @@ typedef TransactionTable#(1) TransactionTableType;
       logic [pDataWidth*2-1:0] multResult;
       
       $cast(aluIn, transaction);
+      //aluIn.display("SC: INPUT TRANSACTION");
             
       aluOut = new();
       
@@ -95,7 +96,9 @@ typedef TransactionTable#(1) TransactionTableType;
          4'b0010 : begin
                      multResult = aluIn.operandA * operandB;
                      aluOut.alu_output = multResult[pDataWidth-1:0];
-                     $cast(transaction, aluOut);
+                     $cast(transaction, aluOut);    
+                     //$write("TRANS. NUMBER: %d\n", transCount);
+                     //aluOut.display("SC: ADDED TRANSACTION:");
                      transCount++; 
                      sc_table.add(transaction);
                      // second part 
@@ -137,6 +140,8 @@ typedef TransactionTable#(1) TransactionTableType;
        endcase
       
       $cast(transaction, aluOut);
+      //$write("TRANS. NUMBER: %d\n", transCount);
+      //aluOut.display("SC: ADDED TRANSACTION:");
       transCount++; 
       sc_table.add(transaction); 
     endtask : post_tr

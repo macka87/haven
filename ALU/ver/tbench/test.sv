@@ -15,8 +15,8 @@ import sv_basic_comp_pkg::*;
 program TEST (
   input  logic         CLK,
   output logic         RST,
-  iAluIn.aluin_tb      ALU_IN,
-  iAluOut.aluout_tb    ALU_OUT
+  iAluIn               ALU_IN,
+  iAluOut              ALU_OUT
   );
   
   /*
@@ -48,7 +48,7 @@ program TEST (
   ALUScoreboard #(DATA_WIDTH)                            scoreboard; 
   
   //! Coverage
-  ALUCoverage                                            aluCoverage;
+  ALUCoverage #(DATA_WIDTH)                              aluCoverage;
   
   /*
    *  Environment tasks 

@@ -25,10 +25,10 @@ package test_pkg;
    // DRIVER PARAMETERS 
    // Enable/Disable weights of "delay between transactions" 
    parameter byte DRIVER_BT_DELAY_EN_WT  = 1;       
-   parameter byte DRIVER_BT_DELAY_DI_WT  = 10;
+   parameter byte DRIVER_BT_DELAY_DI_WT  = 3;
    // Low/High limit of "delay between transactions" value
-   parameter byte DRIVER_BT_DELAY_LOW    = 1;
-   parameter byte DRIVER_BT_DELAY_HIGH   = 10;
+   parameter byte DRIVER_BT_DELAY_LOW    = 0;
+   parameter byte DRIVER_BT_DELAY_HIGH   = 3;
    
    // TEST PARAMETERS
    parameter TRANSACTION_COUT = 1000; // Count of transactions

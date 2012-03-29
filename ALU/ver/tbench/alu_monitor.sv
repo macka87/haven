@@ -19,7 +19,7 @@
     * Public Class Atributes
     */
     //! ALU interface
-    virtual iAluOut.aluout_tb aluOut;
+    virtual iAluOut #(pDataWidth) aluOut;
     
    /*
     * Public Class Methods
@@ -33,7 +33,7 @@
     */
     function new (string inst,
                   byte id,
-                  virtual iAluOut.aluout_tb aluOut
+                  virtual iAluOut #(pDataWidth) aluOut
                   );
                   
       super.new(inst, id);
@@ -60,7 +60,7 @@
           cbs[i].pre_tr(tr, id);       
 
         receiveTransaction(transaction); //! Receive Transaction
-        transaction.display(inst);
+        //transaction.display(inst);
         
         // Necessary for not calling callback after monitor disabling
         if (!enabled) break;

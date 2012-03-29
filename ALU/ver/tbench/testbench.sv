@@ -11,10 +11,10 @@ import test_pkg::*; // Test constants
 module testbench;
 
   // -- Testbench wires and interfaces ----------------------------------------
-  logic            CLK   = 0;
-  logic            RST;
-  iAluIn           ALU_IN  (CLK, RESET);
-  iAluOut          ALU_OUT (CLK, RESET);
+  logic                  CLK   = 0;
+  logic                  RST;
+  iAluIn  #(DATA_WIDTH)  ALU_IN  (CLK, RESET);
+  iAluOut #(DATA_WIDTH)  ALU_OUT (CLK, RESET);
       
   //-- Clock generation -------------------------------------------------------
   always #(CLK_PERIOD/2) CLK = ~CLK;

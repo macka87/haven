@@ -107,13 +107,13 @@ begin
            -- mult --
            when "0010"  => sig_mult_start <= '1';
            -- shift right --
-           when "0011"  => sig_alu_result <= '0' & sig_operand_B(7 downto 1);
+           when "0011"  => sig_alu_result <= '0' & sig_operand_B(DATA_WIDTH-1 downto 1);
            -- shift left --
-           when "0100"  => sig_alu_result <= sig_operand_B(6 downto 0) & '0';
+           when "0100"  => sig_alu_result <= sig_operand_B(DATA_WIDTH-2 downto 0) & '0';
            -- rotate right --
-           when "0101"  => sig_alu_result <= sig_operand_B(0) & sig_operand_B(7 downto 1);
+           when "0101"  => sig_alu_result <= sig_operand_B(0) & sig_operand_B(DATA_WIDTH-1 downto 1);
            -- rotate left --
-           when "0110"  => sig_alu_result <= sig_operand_B(6 downto 0) & sig_operand_B(7);
+           when "0110"  => sig_alu_result <= sig_operand_B(DATA_WIDTH-2 downto 0) & sig_operand_B(DATA_WIDTH-1);
            -- not --
            when "0111"  => sig_alu_result <=  not sig_operand_B;
            -- and --

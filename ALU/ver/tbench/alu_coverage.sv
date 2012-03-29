@@ -11,10 +11,10 @@
  * 
  * This class measures exercised combinations of interface signals.
  */ 
- class CoverageIn;
+ class CoverageIn #(int pDataWidth = 8);
   
    // Interface on which is coverage measured.
-   virtual iAluIn.cover_tb aluIn;
+   virtual iAluIn #(pDataWidth) aluIn;
    string  inst;
 
    // Enabling of data sampling.
@@ -59,7 +59,7 @@
   /*
    * Constructor.
    */
-   function new (virtual iAluIn.cover_tb aluIn,
+   function new (virtual iAluIn #(pDataWidth) aluIn,
                  string inst);
      this.aluIn = aluIn;         // Store interface
      CommandsCovergroup = new;   // Create covergroup
@@ -115,10 +115,10 @@
  * 
  * This class measures exercised combinations of interface signals.
  */ 
- class CoverageOut;
+ class CoverageOut #(int pDataWidth = 8);
   
    // Interface on which is coverage measured.
-   virtual iAluOut.aluout_tb aluOut;
+   virtual iAluOut #(pDataWidth) aluOut;
    string  inst;
 
    // Enabling of data sampling.
@@ -146,7 +146,7 @@
   /*
    * Constructor.
    */
-   function new (virtual iAluOut.aluout_tb aluOut,
+   function new (virtual iAluOut #(pDataWidth) aluOut,
                  string inst);
      this.aluOut = aluOut;       // Store interface
      CommandsCovergroup = new;   // Create covergroup
@@ -196,11 +196,11 @@
  * ALU Coverage
  * This class measures coverage of commands.
  */    
- class ALUCoverage;
+ class ALUCoverage #(int pDataWidth = 8);
    string inst;
    
-   CoverageIn    cmdListIn[$];   // Commands coverage list
-   CoverageOut   cmdListOut[$];  // Commands coverage list
+   CoverageIn  #(pDataWidth)  cmdListIn[$];   // Commands coverage list
+   CoverageOut #(pDataWidth)  cmdListOut[$];  // Commands coverage list
   
   /*! 
     * Constructor
@@ -216,22 +216,22 @@
    */
      
    // Add input interface of ALU to command coverage 
-   task addInALUInterface (virtual iAluIn.cover_tb aluIn,
+   task addInALUInterface (virtual iAluIn #(pDataWidth) aluIn,
                            string inst
                            );
      // Create commands coverage class
-     CoverageIn cmdCoverageIn = new(aluIn, inst);  
+     CoverageIn #(pDataWidth) cmdCoverageIn = new(aluIn, inst);  
        
      // Insert class into list
      cmdListIn.push_back(cmdCoverageIn);
    endtask : addInALUInterface
     
    // Add output interface of ALU to command coverage 
-   task addOutALUInterface (virtual iAluOut.aluout_tb aluOut,
+   task addOutALUInterface (virtual iAluOut #(pDataWidth) aluOut,
                            string inst
                            );
      // Create commands coverage class
-     CoverageOut cmdCoverageOut = new(aluOut, inst);  
+     CoverageOut #(pDataWidth) cmdCoverageOut = new(aluOut, inst);  
       
      // Insert class into list
      cmdListOut.push_back(cmdCoverageOut);
