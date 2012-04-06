@@ -1,0 +1,22 @@
+# netcope_adder_sig.fdo: FrameLink Adder of NetCOPE Header Signals File
+# Copyright (C) 2011
+# Author(s): Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+
+# Paths
+set ASYNC_UNIT_PATH           "/testbench/uut"
+set TB_BASE                   "/testbench"
+
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label reset $TB_BASE/reset
+add wave -noupdate -label base_clk $TB_BASE/wr_clk
+add wave -noupdate -label base_clk $TB_BASE/rd_clk
+
+blk_ASYNC_UNIT "$TB_BASE" "$ASYNC_UNIT_PATH"
+
+restart -f
+run 10 us

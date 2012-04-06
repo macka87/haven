@@ -1,0 +1,53 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2011 
+# Author: Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+
+source "$COMP_BASE/cdc_fifo/sim/signals.fdo"
+
+proc blk_ASYNC_UNIT { BASE } {
+   
+   add_wave "-noupdate -label WR_CLK" $BASE/WR_CLK
+   add_wave "-noupdate -label RD_CLK" $BASE/RD_CLK
+   add_wave "-noupdate -label RESET"  $BASE/RESET
+
+      add wave -divider "Input interface - DATA"
+   add_wave "-noupdate -label RX_DATA -hex" $BASE/RX_DATA
+   add_wave "-noupdate -label RX_REM  -hex" $BASE/RX_REM
+   add_wave "-noupdate -label RX_SOF_N"     $BASE/RX_SOF_N
+   add_wave "-noupdate -label RX_EOF_N"     $BASE/RX_EOF_N
+   add_wave "-noupdate -label RX_SOP_N"     $BASE/RX_SOP_N
+   add_wave "-noupdate -label RX_EOP_N"     $BASE/RX_EOP_N
+   add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
+   add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
+   
+      add wave -divider "Input interface - DELAY"
+   add_wave "-noupdate -label RX_DELAY -hex"  $BASE/RX_DELAY
+   add_wave "-noupdate -label RX_DELAY_WR_N"  $BASE/RX_DELAY_WR_N
+   add_wave "-noupdate -label RX_DELAY_RDY_N" $BASE/RX_DELAY_RDY_N  
+      
+      add wave -divider "Input interface - FINISH"
+   add_wave "-noupdate -label RX_FINISH -hex" $BASE/RX_FINISH 
+
+      add wave -divider "Output interface"
+   add_wave "-noupdate -hex -label TX_DATA" $BASE/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM " $BASE/TX_REM
+   add_wave "-noupdate -label TX_SOF_N    " $BASE/TX_SOF_N
+   add_wave "-noupdate -label TX_SOP_N    " $BASE/TX_SOP_N
+   add_wave "-noupdate -label TX_EOP_N    " $BASE/TX_EOP_N
+   add_wave "-noupdate -label TX_EOF_N    " $BASE/TX_EOF_N
+   add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+	 add_wave "-noupdate -label OUTPUT_RDY"   $BASE/OUTPUT_RDY
+}
+
+proc blk_ASYNC_UNIT_INTERNALS { BASE } {
+
+   add wave -divider ""
+   add wave -divider "DATA FIFO"
+   add wave -divider ""
+   blk_CDC_FIFO     $BASE/data_async_fifo
+   add wave -divider ""
+   add wave -divider "DELAY FIFO"
+   add wave -divider ""
+   blk_CDC_FIFO     $BASE/delay_async_fifo
+}

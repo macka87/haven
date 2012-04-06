@@ -1,0 +1,18 @@
+# netcope_adder.fdo: FrameLink Adder of NetCOPE Header Simulation File
+# Copyright (C) 2011
+# Author(s): Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+
+set FIRMWARE_BASE         "../../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set FL_DRIVER_CTRL_BASE   "$COMP_BASE/hw_ver/fl_hw_driver/fl_driver_ctrl"
+
+set SIG_FILE              "$FL_DRIVER_CTRL_BASE/sim/fl_driver_ctrl_sig.fdo"
+set TB_FILE               "$FL_DRIVER_CTRL_BASE/sim/fl_driver_ctrl_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "FL_DRIVER_CTRL" $FL_DRIVER_CTRL_BASE "FULL" ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE
