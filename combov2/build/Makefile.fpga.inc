@@ -40,18 +40,18 @@ TEST ?= test
 LN ?= ln
 TOUCH ?= touch
 
-EXEMPLARBIN ?= /usr/local/fpga/Exemplar/bin
-XILINXBIN ?= /usr/local/xilinx/bin/sol
-MODELTECHBIN ?= /usr/local/fpga/Modeltech/bin
-VERIFBIN ?= $(LIBEROUTER_PATH)/ver/scripts
+#EXEMPLARBIN ?= /usr/local/fpga/Exemplar/bin
+#XILINXBIN ?= /usr/local/xilinx/bin/sol
+#MODELTECHBIN ?= /usr/local/fpga/Modeltech/bin
+#VERIFBIN ?= $(LIBEROUTER_PATH)/ver/scripts
 
 # Liberouter CVS local root
-LIBEROUTER_PATH ?= $(BASE)/../..
+#LIBEROUTER_PATH ?= $(BASE)/../..
 
-FPGAPART ?= 2v3000
-FPGAPROCESS ?= 4
-FPGAPACKAGE ?= bf957
-FPGATECH ?= xcv2
+#FPGAPART ?= 2v3000
+#FPGAPROCESS ?= 4
+#FPGAPACKAGE ?= bf957
+#FPGATECH ?= xcv2
 FPGAUCF ?= $(BASE)/chips/fpga.ucf
 FULLUCF ?= $(SRC:.vhd=.gen.ucf)
 
@@ -79,27 +79,34 @@ SYNTHFILES ?= -vhdl_file="$(TOP) $(MOD)" $< $@
 
 PRE_XST_SYNTH?=sleep 0
 
-NGDBUILD ?= $(XILINXBIN)/ngdbuild
+#NGDBUILD ?= $(XILINXBIN)/ngdbuild
+NGDBUILD ?= ngdbuild
 NGDBUILDFLAGS ?=
 
 TOP_BASE ?= ..
 
-MAP ?= $(XILINXBIN)/map
+#MAP ?= $(XILINXBIN)/map
+MAP ?= map
 MAPFLAGS ?=
 
-PAR ?= $(XILINXBIN)/par
+#PAR ?= $(XILINXBIN)/par
+PAR ?= par
 PARFLAGS ?= -w -ol std
 
-BITGEN ?= $(XILINXBIN)/bitgen
+#BITGEN ?= $(XILINXBIN)/bitgen
+BITGEN ?= bitgen
 BITGENFLAGS ?= -w -g UnusedPin:PullNone -g DriveDone:Yes
 
-PROMGEN ?= $(XILINXBIN)/promgen
+#PROMGEN ?= $(XILINXBIN)/promgen
+PROMGEN ?= promgen
 PROMGENFLAGS ?= -w -u 0
 
-TRCE ?= $(XILINXBIN)/trce
+#TRCE ?= $(XILINXBIN)/trce
+TRCE ?= trce
 TRCEFLAGS ?= -v 3
 
-NETGEN ?= $(XILINXBIN)/netgen
+#NETGEN ?= $(XILINXBIN)/netgen
+NETGEN ?= netgen
 NETGENFLAGS ?= -ofmt vhdl -sim -w
 
 VLIB ?= $(MODELTECHBIN)/vlib
