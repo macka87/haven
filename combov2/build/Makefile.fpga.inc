@@ -327,22 +327,24 @@ simsynt: $(SRC:.vhd=.simsynt.vhd)
 	$(V2SMV) $(V2SMVFLAGS) $<
 
 clean_build:
-	-@$(RM) *.xdb *.sum *.log *.err *.edf $(FULLUCF) \
-	    *.ngo *.nav *.ngd *.bld *.lst \
-	    *.pcf *.map.ngm *.map.ncd *.map.mrp *.map.map \
-	    *.par.xpi *.par.pad *.par.ncd *.par.dly *.par.par \
-	    *.par_pad.csv *.par_pad.txt \
-	    *.drc *.bit *.bgn *.prm \
-	    *.wlf exemplar.his transcript \
-	    *.nlf *.ncf *.ngm \
-	    *.sim.sdf *.sim.vhd *.simsynt.vhd \
-	    *.mcs *.mcs.zip *.twr *.cfi \
-	    *.v *.smv \
-	    *.prj *.prd *.sdc \
-       *.par.unroutes *_usage.xml \
-       *.gen.ucf STD_OUTPUT \
-       *.ngc *.lso *.srp *.xcf XST.xst *.ngr *.ndf \
-       *.xrpt *.ise *.psr *.ptwx *summary.xml *.twx
+	-@$(RM) *.xdb *.sum *.log *.err *.edf $(FULLUCF)
+	-@$(RM) *.ngo *.nav *.ngd *.bld *.lst
+	-@$(RM) *.pcf *.map.ngm *.map.ncd *.map.mrp *.map.map
+	-@$(RM) *.par.xpi *.par.pad *.par.ncd *.par.dly *.par.par
+	-@$(RM) *.par_pad.csv *.par_pad.txt
+	-@$(RM) *.drc *.bit *.bgn *.prm
+	-@$(RM) *.wlf exemplar.his transcript
+	-@$(RM) *.nlf *.ncf *.ngm
+	-@$(RM) *.sim.sdf *.sim.vhd *.simsynt.vhd
+	-@$(RM) *.mcs *.mcs.zip *.twr *.cfi
+	-@$(RM) *.v *.smv
+	-@$(RM) *.xwbt
+	-@$(RM) *.prj
+	-@$(RM) *.prd *.sdc
+	-@$(RM) *.par.unroutes *_usage.xml
+	-@$(RM) *.gen.ucf STD_OUTPUT
+	-@$(RM) *.ngc *.lso *.srp *.xcf XST.xst *.ngr *.ndf
+	-@$(RM) *.xrpt *.ise *.psr *.ptwx *summary.xml *.twx
 	-@$(RM) -r $(LIB)
 	-@$(RM) -r *.prec
 	-@$(RM) -r *.synp
