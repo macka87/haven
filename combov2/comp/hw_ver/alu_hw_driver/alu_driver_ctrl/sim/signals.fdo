@@ -1,0 +1,62 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2011 
+# Author: Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+
+proc blk_FL_DRIVER_CTRL_IFC { BASE } {
+   
+   add_wave "-noupdate -label CLK"    $BASE/CLK
+   add_wave "-noupdate -label RESET"  $BASE/RESET
+
+      add wave -divider "Input interface - DATA"
+   add_wave "-noupdate -hex -label RX_DATA" $BASE/RX_DATA
+   add_wave "-noupdate -hex -label RX_REM " $BASE/RX_REM
+   add_wave "-noupdate -label RX_SOF_N    " $BASE/RX_SOF_N
+   add_wave "-noupdate -label RX_SOP_N    " $BASE/RX_SOP_N
+   add_wave "-noupdate -label RX_EOP_N    " $BASE/RX_EOP_N
+   add_wave "-noupdate -label RX_EOF_N    " $BASE/RX_EOF_N
+   add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
+   add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
+	 
+      add wave -divider "Output interface"      
+   add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+   add_wave "-noupdate -label TX_REM  -hex" $BASE/TX_REM
+   add_wave "-noupdate -label TX_SOF_N"     $BASE/TX_SOF_N
+   add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
+   add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
+   add_wave "-noupdate -label TX_EOP_N"     $BASE/TX_EOP_N
+   add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+   
+      add wave -divider "Output interface - DELAY"
+   add_wave "-noupdate -label TX_DELAY -hex"  $BASE/TX_DELAY
+   add_wave "-noupdate -label TX_DELAY_WR_N"  $BASE/TX_DELAY_WR_N
+   add_wave "-noupdate -label TX_DELAY_RDY_N" $BASE/TX_DELAY_RDY_N  
+      
+      add wave -divider "Output interface - FINISH"
+   add_wave "-noupdate -label TX_FINISH -hex" $BASE/TX_FINISH 
+}      
+
+proc blk_FL_DRIVER_CTRL_INTERNALS { BASE } {
+
+      add wave -divider "State signals"
+   add_wave "-noupdate -label state_reg"   $BASE/state_reg
+   add_wave "-noupdate -label is_header"   $BASE/is_header
+   add_wave "-noupdate -label is_data"     $BASE/is_data
+   add_wave "-noupdate -label is_delay"    $BASE/is_delay
+   add_wave "-noupdate -label is_delaying" $BASE/is_delaying
+   add_wave "-noupdate -label is_stop"     $BASE/is_stop
+   add_wave "-noupdate -label is_wait"     $BASE/is_wait
+   add_wave "-noupdate -label is_cntr"     $BASE/is_cntr
+
+      add wave -divider "Delay signals"
+   add_wave "-noupdate -label sig_set_delay_rdy_n"       $BASE/sig_set_delay_rdy_n
+   add_wave "-noupdate -label sig_incremented -hex"      $BASE/sig_incremented
+   add_wave "-noupdate -label sig_set_boundary -hex"     $BASE/sig_set_boundary
+   add_wave "-noupdate -label sig_set_delay_rdy_n_final" $BASE/sig_set_delay_rdy_n_final
+   add_wave "-noupdate -label sig_select -hex"           $BASE/sig_select
+   add_wave "-noupdate -label sig_output_reg -hex"       $BASE/sig_output_reg
+
+      add wave -divider "Misc signals"
+   add_wave "-noupdate -label data_ready"       $BASE/data_ready
+   add_wave "-noupdate -label sig_reg_last"     $BASE/sig_reg_last
+}

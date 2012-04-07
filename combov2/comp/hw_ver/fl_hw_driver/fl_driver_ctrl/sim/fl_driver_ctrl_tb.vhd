@@ -21,12 +21,11 @@ architecture behavioral of testbench is
 
    -- constants declarations
    ----------------------------------------------------------------------------
-   constant IN_DATA_WIDTH     : integer := 64;  
-   constant OUT_DATA_WIDTH    : integer := 71;
-   constant DELAY_WIDTH       : integer := 9;
+   constant DATA_WIDTH    : integer := 64;  
+   constant DELAY_WIDTH   : integer := 9;
 
-   constant clkper            : time := 10 ns; 
-   constant reset_time        : time := 100 ns;
+   constant clkper        : time := 10 ns; 
+   constant reset_time    : time := 100 ns;
 
    -- signals declarations
    ----------------------------------------------------------------------------
@@ -34,8 +33,8 @@ architecture behavioral of testbench is
    signal reset               : std_logic;
    
    -- UUT input signals
-   signal fl_driver_rx_data         : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-   signal fl_driver_rx_rem          : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+   signal fl_driver_rx_data         : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_driver_rx_rem          : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
    signal fl_driver_rx_sof_n        : std_logic;
    signal fl_driver_rx_sop_n        : std_logic;
    signal fl_driver_rx_eof_n        : std_logic;
@@ -44,7 +43,7 @@ architecture behavioral of testbench is
    signal fl_driver_rx_dst_rdy_n    : std_logic;
    
    -- UUT output signals
-   signal fl_driver_tx_data         : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+   signal fl_driver_tx_data         : std_logic_vector(DATA_WIDTH-1 downto 0);
    signal fl_driver_tx_src_rdy_n    : std_logic;
    signal fl_driver_tx_dst_rdy_n    : std_logic;
    
@@ -63,8 +62,7 @@ begin
    -- -------------------------------------------------------------------------
    uut: entity work.FL_DRIVER_CTRL
       generic map (
-         IN_DATA_WIDTH     => IN_DATA_WIDTH,
-         OUT_DATA_WIDTH    => OUT_DATA_WIDTH,
+         DATA_WIDTH        => DATA_WIDTH,
          DELAY_WIDTH       => DELAY_WIDTH
       )
       port map (

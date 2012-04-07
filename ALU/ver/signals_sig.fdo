@@ -1,0 +1,27 @@
+# ------------------------------------------------------------------------------
+# Project Name: ALU Functional Verification
+# File Name:    signals_sig.fdo    
+# Author:       Marcela Simkova <isimkova@fit.vutbr.cz>  
+# Date:         22.3.2012
+# ------------------------------------------------------------------------------
+
+# Global file with signals
+source "./signals.fdo"
+exec make
+view wave
+
+# Wave divider + "name of signals' group"
+add wave -divider "ALU"  
+
+# Set path to testbench instance of the DUT 
+set PATH "testbench/DUT_U/VHDL_DUT_U"
+
+# Set DUT interfaces 
+basic     BASIC    $PATH
+alu_in    ALU_IN   $PATH
+alu_out   ALU_OUT  $PATH
+
+view structure
+view signals
+restart -f
+run -all

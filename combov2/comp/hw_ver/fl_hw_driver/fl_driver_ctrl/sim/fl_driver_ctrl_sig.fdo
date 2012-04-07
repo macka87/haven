@@ -15,7 +15,7 @@ delete wave *
 add wave -noupdate -label reset $TB_BASE/reset
 add wave -noupdate -label base_clk $TB_BASE/clk
 
-blk_FL_DRIVER_CTRL "$FL_DRIVER_PATH"
+blk_FL_DRIVER_CTRL_IFC "$FL_DRIVER_PATH" "$TB_BASE"
 
 restart -f
 run 10 us

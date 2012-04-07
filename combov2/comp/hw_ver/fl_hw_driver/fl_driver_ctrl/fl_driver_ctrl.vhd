@@ -81,13 +81,7 @@ constant START_TYPE  :  std_logic_vector(7 downto 0) := X"01";
 constant WAIT_TYPE   :  std_logic_vector(7 downto 0) := X"02";
 constant STOP_TYPE   :  std_logic_vector(7 downto 0) := X"04";
 constant DELAY_TYPE  :  std_logic_vector(7 downto 0) := X"05";
-
-constant REM_INDEX  : integer := 4+log2(DATA_WIDTH/8);
-constant COMP_VALUE : std_logic_vector(31 downto 0) 
-                      := conv_std_logic_vector(255, 32);
-                      
-constant ZERO_VALUE : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0) 
-                      := (others => '0');       
+constant REM_INDEX   :  integer := 4+log2(DATA_WIDTH/8);
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -119,23 +113,19 @@ signal sig_out_eof_n       : std_logic;
 signal sig_out_eop_n       : std_logic; 
 
 -- wait processing 
-signal sig_difference      : std_logic_vector(31 downto 0);
-signal sig_mux_counter     : std_logic_vector(31 downto 0);
-signal sig_counter_reg     : std_logic_vector(31 downto 0);
 signal sig_counter_is_zero : std_logic; 
-signal sig_minimum         : std_logic_vector(31 downto 0);
-signal sig_minimum_final   : std_logic_vector(7 downto 0);
-signal sig_wait            : std_logic_vector(8 downto 0);
+signal sig_wait            : std_logic_vector(DELAY_WIDTH-1 downto 0);
+signal sig_wait_wr_n       : std_logic;
 
 -- delay processing
-signal sig_delay           : std_logic_vector(8 downto 0);
+signal sig_delay           : std_logic_vector(DELAY_WIDTH-1 downto 0);
 signal sig_delay_wr_n      : std_logic;
 signal sig_output_reg      : std_logic_vector(DATA_WIDTH-1 downto 0);
 signal sig_rem_reg         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
 signal sig_eof_reg         : std_logic;
 signal sig_incremented     : std_logic_vector(log2(DATA_WIDTH/8) downto 0);
 signal sig_select          : std_logic_vector(log2(DATA_WIDTH/8) downto 0);
-signal sig_mux_delay       : std_logic_vector(7 downto 0);
+signal sig_mux_delay       : std_logic_vector(DELAY_WIDTH-2 downto 0);
 signal sig_set_boundary    : std_logic_vector(log2(DATA_WIDTH/8) downto 0);
 signal sig_set_delay_rdy_n : std_logic;
 signal sig_set_delay_rdy_n_final : std_logic;
@@ -318,11 +308,9 @@ begin
       end if;
    end process;
    
-
    sig_trans_type <= RX_DATA(39 downto 32);
    sig_new_compl  <= RX_DATA(57); 
    sig_new_last   <= RX_DATA(56);
-
 
    -- ================= DATA PROCESSING =====================================
    sig_tx_data      <= RX_DATA;
@@ -363,62 +351,31 @@ begin
    RX_DST_RDY_N <= sig_rx_dst_rdy_n;
 
    -- ================= WAIT PROCESSING =====================================
-   mux2 : process (is_wait, sig_difference, RX_DATA)
-   begin
-      sig_mux_counter <= (others => '0');
+   
+   -- --------------- WAIT UNIT INSTANCE ------------------------------------
+   wait_unit_i : entity work.wait_unit
+   generic map(
+      DATA_WIDTH   => DATA_WIDTH,
+      DELAY_WIDTH  => DELAY_WIDTH
+   )
+   port map(
+      CLK            => CLK,
+      RESET          => RESET,
 
-      case is_wait is
-         when '0'    => sig_mux_counter <= sig_difference;
-         when '1'    => sig_mux_counter <= RX_DATA(31 downto 0);
-         when others => null;   
-      end case;   
-   end process;
-   
-   reg2 : process (CLK)
-   begin
-      if (rising_edge(CLK)) then
-         if (RESET = '1') then 
-            sig_counter_reg <= (others => '0');
-         elsif (((is_wait or is_cntr) and (not TX_DELAY_RDY_N)) = '1') then
-            sig_counter_reg <= sig_mux_counter;   
-         end if;   
-      end if;
-   end process;
-   
-   comparator1 : process (sig_mux_counter)
-   begin
-      if (sig_mux_counter = ZERO_VALUE) then sig_counter_is_zero <= '1';
-      else sig_counter_is_zero <= '0';
-      end if;
-   end process;
+      -- ----------------- INPUT INTERFACE ----------------------------------
+      -- input interface
+      DATA           => RX_DATA,
+      IS_WAIT        => is_wait,
+      IS_CNTR        => is_cntr,
+      CNTR_ZERO      => sig_counter_is_zero,
+            
+      -- ----------------- OUTPUT INTERFACE ---------------------------------      
+      -- output interface
+      WAIT_RDY_N     => TX_DELAY_RDY_N,
+      WAIT_VALUE     => sig_wait,
+      WAIT_WR_N      => sig_wait_wr_n
+   );
   
-   minimum_extractor : process (sig_counter_reg)
-   begin
-      if (sig_counter_reg > COMP_VALUE) then 
-        sig_minimum <= COMP_VALUE;
-      else   
-        sig_minimum <= sig_counter_reg;
-      end if;  
-   end process;
-   
-   sig_difference <= sig_counter_reg - sig_minimum;
-   sig_minimum_final <= sig_minimum(7 downto 0); 
-   sig_wait <= '1' & sig_minimum_final; 
-   
-   mux3 : process (is_delaying, is_cntr, sig_wait, sig_delay)
-   begin
-      TX_DELAY <= sig_wait;
-
-     if (is_cntr  = '1')       then TX_DELAY <= sig_wait;
-     elsif (is_delaying = '1') then TX_DELAY <= sig_delay;
-     end if;
-   end process;
-   
-   sig_delay_wr_n <= is_delaying nor is_cntr;
-   TX_DELAY_WR_N <= sig_delay_wr_n;
-   
-   data_ready <= RX_SRC_RDY_N nor sig_rx_dst_rdy_n;
-
    -- ================= DELAY PROCESSING ====================================
    reg3 : process (CLK)
    begin
@@ -490,6 +447,21 @@ begin
    end process;
    
    sig_set_delay_rdy_n_final <= (not sig_set_delay_rdy_n) and sig_eof_reg; 
+   
+   -- ================= WAIT OR DELAY OUTPUT ===============================
+   mux3 : process (is_delaying, is_cntr, sig_wait, sig_delay)
+   begin
+     TX_DELAY <= sig_wait;
+
+     if (is_cntr  = '1')       then TX_DELAY <= sig_wait;
+     elsif (is_delaying = '1') then TX_DELAY <= sig_delay;
+     end if;
+   end process;
+   
+   sig_delay_wr_n <= is_delaying nor is_cntr;
+   TX_DELAY_WR_N <= sig_delay_wr_n;
+   
+   data_ready <= RX_SRC_RDY_N nor sig_rx_dst_rdy_n;
    
    -- ================= STOP PROCESSING ====================================
    TX_FINISH <= is_stop;

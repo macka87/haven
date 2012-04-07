@@ -14,7 +14,7 @@
   /*
    * Interface on witch is covering measured.
    */    
-   virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl;
+   virtual iFrameLinkRx #(pDataWidth,pDremWidth) fl;
    string  instanceName;
 
    // Sampling is enabled
@@ -88,7 +88,7 @@
    /*!
     * Constructor - creates driver object 
     */
-    function new (virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl,
+    function new (virtual iFrameLinkRx #(pDataWidth,pDremWidth) fl,
                   string instanceName);
       this.fl = fl;                   // Store interface
       CommandsCovergroup = new;       // Create covergroup
@@ -148,7 +148,7 @@
   /*
    * Interface on witch is covering measured.
    */ 
-    virtual iFrameLinkTx.monitor #(pDataWidth,pDremWidth) fl;
+    virtual iFrameLinkTx #(pDataWidth,pDremWidth) fl;
     string  instanceName;
 
     // Sampling is enabled
@@ -222,7 +222,7 @@
    /*!
     * Constructor - creates driver object 
     */
-    function new (virtual iFrameLinkTx.monitor #(pDataWidth,pDremWidth) fl,
+    function new (virtual iFrameLinkTx #(pDataWidth,pDremWidth) fl,
                   string instanceName);
       this.fl = fl;                   // Store interface
       CommandsCovergroup = new;       // Create covergroup
@@ -287,7 +287,7 @@
    /*
     * Add interface Rx for command coverage
     */     
-    task addFrameLinkInterfaceRx (virtual iFrameLinkRx.tb #(pRXDataWidth,pRXDremWidth) port,
+    task addFrameLinkInterfaceRx (virtual iFrameLinkRx #(pRXDataWidth,pRXDremWidth) port,
                                   string name
                                   );
       // Create commands coverage class
@@ -299,7 +299,7 @@
    /*
     * Add interface Rx for command coverage
     */
-    task addFrameLinkInterfaceTx (virtual iFrameLinkTx.monitor #(pTXDataWidth, pTXDremWidth)port,
+    task addFrameLinkInterfaceTx (virtual iFrameLinkTx #(pTXDataWidth, pTXDremWidth)port,
                                   string name
                                   );
       // Create commands coverage class

@@ -21,7 +21,7 @@
     FrameLinkSender #(pDataWidth)              hwFlSender; 
     
     //! FrameLink interface
-    virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl;
+    virtual iFrameLinkRx #(pDataWidth,pDremWidth) fl;
     
    /*
     * Public Class Methods
@@ -40,7 +40,7 @@
                   byte btDelayLow, byte btDelayHigh,
                   byte itDelayEn_wt, byte itDelayDi_wt, 
                   byte itDelayLow, byte itDelayHigh,
-                  virtual iFrameLinkRx.tb #(pDataWidth,pDremWidth) fl
+                  virtual iFrameLinkRx #(pDataWidth,pDremWidth) fl
                  ); 
       
       super.new(inst, framework, inputMbx);

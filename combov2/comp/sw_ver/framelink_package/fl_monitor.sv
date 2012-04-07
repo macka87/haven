@@ -22,8 +22,8 @@
     * Public Class Atributes
     */
     //! FrameLink interface
-    virtual iFrameLinkTx.monitor #(pDataWidth, pDremWidth) fl;
-    virtual iFrameLinkTx.tb #(pDataWidth, pDremWidth) fl_resp;
+    virtual iFrameLinkTx #(pDataWidth, pDremWidth) fl;
+    virtual iFrameLinkTx #(pDataWidth, pDremWidth) fl_resp;
    
     //! FrameLink Simple Responder
     FrameLinkResponderSimple #(pDataWidth, pDremWidth) flResponder; 
@@ -40,8 +40,8 @@
     */
     function new (string inst,
                   byte id,
-                  virtual iFrameLinkTx.monitor #(pDataWidth,pDremWidth) fl,
-                  virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) fl_resp
+                  virtual iFrameLinkTx #(pDataWidth,pDremWidth) fl,
+                  virtual iFrameLinkTx #(pDataWidth,pDremWidth) fl_resp
                   );
                   
       super.new(inst, id);

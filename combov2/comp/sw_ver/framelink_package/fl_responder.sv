@@ -26,7 +26,7 @@
     mailbox #(logic [8:0]) btDelayMbx;  //! Mailbox for generated values
     mailbox #(logic [8:0]) itDelayMbx;  //! Mailbox for generated values
     
-    virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) fl;
+    virtual iFrameLinkTx #(pDataWidth,pDremWidth) fl;
     
     LFSR #(9) btDelayGenerator;  //! LFSR generator for bt delays 
     LFSR #(9) itDelayGenerator;  //! LFSR generator for it delays 
@@ -53,7 +53,7 @@
     */
     function new ( string inst,
                    byte id,
-                   virtual iFrameLinkTx.tb #(pDataWidth,pDremWidth) fl
+                   virtual iFrameLinkTx #(pDataWidth,pDremWidth) fl
                    );
       
       logic [8:0][8:0] btseed;
