@@ -1,4 +1,0 @@
-
-	Run make to build the core. Requires Xilinx ISE 11.2.
-	Core params synchronized with:
-	https://www.liberouter.org/trac/netcope/wiki/cv2_id
