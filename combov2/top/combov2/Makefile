@@ -178,11 +178,16 @@ ADDUCF = haven.ucf
 # NIC specific Makefile
 ##############################################################################
 
-.PHONY: all
+.PHONY: all cores
 
 # Main target
-all: modules
+all: cores modules
 	export XIL_MAP_ALWAYS_RETARGET_FDDR=1 && $(MAKE) mcs DISABLE_SYNTH=1 
+
+cores:
+	cd $(FIFO_PATH) && $(MAKE) -j
+	cd $(PCIE_CORE_PATH) && $(MAKE)
+
 
 # NetCOPE Makefile specification
 include $(NETCOPE)/Makefile.netcope.inc
