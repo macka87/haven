@@ -180,7 +180,7 @@ APP_MODULES += $(FL_TRANSFORMER_PATH)/$(FL_TRANSFORMER_128TO64) \
 APP_MAPFLAGS = -xe n -ol high -register_duplication on
 APP_PARFLAGS = -xe n -ol high
 
-ADDUCF = nic.ucf
+ADDUCF = haven.ucf
 
 ##############################################################################
 # NIC specific Makefile
