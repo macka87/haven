@@ -56,10 +56,10 @@ package combov2_user_const is
    constant ID_HW_MAJOR             : std_logic_vector( 15 downto 0):= X"0007";
    constant ID_HW_MINOR             : std_logic_vector( 15 downto 0):= X"0000";
    constant ID_PROJECT_TEXT         : std_logic_vector(255 downto 0):=
-      X"4E49435F4356325F313047320000000000000000000000000000000000000000"; 
-   --   N I C _ C V 2 _ 1 0 G 2
-   constant ID_TX_CHANNELS          : std_logic_vector(  7 downto 0):=   X"02";
-   constant ID_RX_CHANNELS          : std_logic_vector(  7 downto 0):=   X"02";
+      X"484156454E2C20286329204D61636B612026204F6e6472696B2C203230313100"; 
+   --   H A V E N ,   ( c )   M a c k a   &   O n d r i k ,   2 0 1 1
+   constant ID_TX_CHANNELS          : std_logic_vector(  7 downto 0):=   X"01";
+   constant ID_RX_CHANNELS          : std_logic_vector(  7 downto 0):=   X"01";
    -- -------------------------------------------------------------------------
 
    -- -------------------------------------------------------------------------
@@ -71,9 +71,9 @@ package combov2_user_const is
    -- -------------------------------------------------------------------------
    -- DMA Module setting
    -- straight zero copy DMA - Non-generic version
-   -- constant DMA_TYPE          : String := "SZE";
+    constant DMA_TYPE          : String := "SZE";
    -- straight zero copy DMA - Generic version
-   constant DMA_TYPE          : String := "GEN";
+   --constant DMA_TYPE          : String := "GEN";
    -- packet DMA through linux kernel stack
    -- constant DMA_TYPE          : String := "PAC";
 
