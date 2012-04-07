@@ -9,7 +9,7 @@ SZE2_LIB_PATH      = /usr/local/liberouter/lib
 
 CC=gcc
 LL=ld
-INCLUDE=/usr/local/fpga/modeltechdir/Modeltech66a/include
+INCLUDE=/opt/modelsim10.0c/modeltech/include
 LIBS=-lm -lsze2
 FLAGS=-c -fPIC
 DLL_FLAGS=-shared -Bsymbolic --allow-shlib-undefined
