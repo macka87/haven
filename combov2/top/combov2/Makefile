@@ -112,13 +112,19 @@ NETCOPE = $(FIRMWARE_BASE)/cards/combov2/netcope/eth-10G2
 
 USEGUIDE = 0
 
-#APPLICATION=RXTX_2
-APPLICATION=RXTX_2_GEN
+APPLICATION=RXTX_1
+#APPLICATION=RXTX_2_GEN
 #APPLICATION=RXTX_2_PAC
 
 # for sze left blank
 DMA_TYPE=
 # Synthetized modules names
+ifeq ($(APPLICATION),RXTX_1)
+   DMA_MOD_NAME=dma_mod_1x64b_rxtx
+endif
+ifeq ($(APPLICATION),RXTX_1_GEN)
+   DMA_MOD_NAME=dma_mod_1x64b_rxtx_gen
+endif
 ifeq ($(APPLICATION),RXTX_2)
    DMA_MOD_NAME=dma_mod_2x64b_rxtx
 endif
@@ -134,21 +140,11 @@ NETWORK_MOD_NAME=network_mod_10g2_64
 
 export APPLICATION $(APPLICATION)
 
+PCIE_CORE_BASE=$(FIRMWARE_BASE)/comp/external/ip_cores/pcie
+
 # PCIE Endpoint: card identification and endpoint version
-ifeq ($(FPGA_TYPE),xc5vlx110t)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-lx110t/v1.14.1
-endif
-ifeq ($(FPGA_TYPE),xc5vlx155t)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-lx155t/v1.14.1
-endif
-ifeq ($(FPGA_TYPE),xc5vlx110t-2)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-lx110t/v1.14.1_250
-endif
 ifeq ($(FPGA_TYPE),xc5vlx155t-2)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-lx155t/v1.14.1_250
-endif
-ifeq ($(FPGA_TYPE),xc5vfx100t)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-fx100t/v1.14.1_250
+   PCIE_CORE_PATH=$(PCIE_CORE_BASE)/combov2-lx155t/v1.14.1_250
 endif
 
 # Exporting for use in wrapper Modules.tcl 
