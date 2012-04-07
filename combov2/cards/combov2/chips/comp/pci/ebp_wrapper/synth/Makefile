@@ -35,12 +35,16 @@
 
 TRASH=xst XST.prj XST.srp XST.xcf XST.xst *.lso *.ngc *.prec *.edf *.ngr *.xrpt *.ise *_xdb *.prj *_xmsgs
 
-all : xst
+FIRMWARE_BASE="../../../../../../.."
 
+PCIE_CORE_PATH?=$(FIRMWARE_BASE)/comp/external/ip_cores/pcie/combov2-lx155t/v1.14.1_250
 MODULE=ebp_wrapper
 
+all : xst
+
+
 xst : XST.tcl $(MODULE).ngc
-PCIE_CORE_PATH?=/home/data/sklep/ipcores/pcie_ebp/nic-10G2/combov2-lx155t/v1.14.0_250
+
 $(MODULE).ngc:
 	export PCIE_CORE_PATH=$(PCIE_CORE_PATH) ; tclsh XST.tcl
 	rm -f -fr xst/
@@ -49,7 +53,7 @@ $(MODULE).ngc:
 	xst -ifn XST.xst
  
 precision : Precision.tcl $(MODULE).edf
-PCIE_CORE_PATH?=/home/data/sklep/ipcores/pcie_ebp/nic-10G2/combov2-lx155t/v1.14.0_250
+
 $(MODULE).edf:
 	export PCIE_CORE_PATH=$(PCIE_CORE_PATH) ; 
 	rm -rf *.prec
