@@ -8,7 +8,7 @@ COREGEN=coregen
 TARGET_NGCS=$(patsubst %.xco, %.ngc, $(wildcard */*.xco))
 TARGET_VHDS=$(patsubst %.xco, %.vhd, $(wildcard */*.xco))
 
-.PHONY: all
+.PHONY: all clean distclean
 
 all: $(TARGET_NGCS) $(TARGET_VHDS)
 
