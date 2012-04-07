@@ -269,13 +269,13 @@ begin
    -- ------------------------------------------------------------------------
    --                              DUT
    -- ------------------------------------------------------------------------
---   dut_i: entity work.fl_fifo
---   generic map(
---      DATA_WIDTH  => DUT_DATA_WIDTH,
---      USE_BRAMS   => false,
---      ITEMS       => 64,
---      PARTS       => 1
---   )
+   dut_i: entity work.fl_fifo
+   generic map(
+      DATA_WIDTH  => DUT_DATA_WIDTH,
+      USE_BRAMS   => false,
+      ITEMS       => 64,
+      PARTS       => 1
+   )
 --   dut_i: entity work.HGEN_VER_COVER
 --   generic map(
 --      DATA_WIDTH              => DUT_DATA_WIDTH
@@ -286,12 +286,11 @@ begin
 --      BRANCH_COUNT            => 8,
 --      USE_BRAMS_FOR_HGEN_FIFO => true
 --   )
-   dut_i: entity work.DOUBLE_MULTI_HGEN_VER_COVER
-   generic map(
-      DATA_WIDTH            => DUT_DATA_WIDTH,
-      FIRST_STAGE_BRANCHES  => 8,
-      SECOND_STAGE_BRANCHES => 8
-   )
+--   dut_i: entity work.DOUBLE_MULTI_HGEN_VER_COVER
+--   generic map(
+--      DATA_WIDTH    => DUT_DATA_WIDTH,
+--      BRANCH_COUNT  => 2
+--   )
 --   dut_i: entity work.ERRONEOUS_FL_FIFO
 --   generic map(
 --      DATA_WIDTH  => DUT_DATA_WIDTH,
