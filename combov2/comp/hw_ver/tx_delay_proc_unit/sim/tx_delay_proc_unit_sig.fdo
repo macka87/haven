@@ -3,16 +3,15 @@
 # Author(s): Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
 
 # Paths
-set ASYNC_UNIT_PATH           "/testbench/uut"
-set TB_BASE                   "/testbench"
+set TB_BASE  "/testbench/uut"
 
-source      "signals.fdo"
+source       "signals.fdo"
 
 exec make
 view wave
 delete wave *
 
-blk_ASYNC_UNIT "$ASYNC_UNIT_PATH" 
+blk_delay_unit "$TB_BASE" 
 
 restart -f
 run 10 us

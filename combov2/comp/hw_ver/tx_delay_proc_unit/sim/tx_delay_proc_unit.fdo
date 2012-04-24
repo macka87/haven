@@ -1,0 +1,17 @@
+# Copyright (C) 2012
+# Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
+
+set FIRMWARE_BASE         "../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set DELAY_PROC_BASE       "$COMP_BASE/hw_ver/tx_delay_proc_unit"
+
+set SIG_FILE              "$DELAY_PROC_BASE/sim/tx_delay_proc_unit_sig.fdo"
+set TB_FILE               "$DELAY_PROC_BASE/sim/tx_delay_proc_unit_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "DELAY_PROC" $DELAY_PROC_BASE "FULL" ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE

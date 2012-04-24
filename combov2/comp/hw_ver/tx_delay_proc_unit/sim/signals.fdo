@@ -1,0 +1,17 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+source "$COMP_BASE/cdc_fifo/sim/signals.fdo"
+
+proc blk_delay_unit { BASE } {
+   
+   add_wave "-noupdate -label CLK"    $BASE/CLK
+   add_wave "-noupdate -label RESET"  $BASE/RESET
+
+   add_wave "-noupdate -label DELAY_DATA -hex" $BASE/DELAY_DATA
+   add_wave "-noupdate -label DELAY_READ"      $BASE/DELAY_READ
+   add_wave "-noupdate -label DELAY_EMPTY"     $BASE/DELAY_EMPTY
+   add_wave "-noupdate -label DST_RDY"         $BASE/DST_RDY
+   add_wave "-noupdate -label SRC_RDY"         $BASE/SRC_RDY  
+}   

@@ -21,8 +21,7 @@ architecture behavioral of testbench is
 
    -- constants declarations
    ----------------------------------------------------------------------------
-   constant IN_DATA_WIDTH     : integer := 71;  
-   constant OUT_DATA_WIDTH    : integer := 64;
+   constant DATA_WIDTH        : integer := 64;
    constant DELAY_WIDTH       : integer := 9;
 
    constant wr_clkper         : time := 10 ns; 
@@ -36,7 +35,12 @@ architecture behavioral of testbench is
    signal reset               : std_logic;
    
    -- UUT input signals
-   signal fl_async_unit_rx_data         : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+   signal fl_async_unit_rx_data         : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_async_unit_rx_rem          : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_async_unit_rx_sof_n        : std_logic;
+   signal fl_async_unit_rx_sop_n        : std_logic;
+   signal fl_async_unit_rx_eof_n        : std_logic;
+   signal fl_async_unit_rx_eop_n        : std_logic;
    signal fl_async_unit_rx_src_rdy_n    : std_logic;
    signal fl_async_unit_rx_dst_rdy_n    : std_logic;
    
@@ -47,8 +51,8 @@ architecture behavioral of testbench is
    signal fl_async_unit_rx_finish       : std_logic;
 
    -- UUT output signals
-   signal fl_async_unit_tx_data         : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-   signal fl_async_unit_tx_rem          : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
+   signal fl_async_unit_tx_data         : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_async_unit_tx_rem          : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
    signal fl_async_unit_tx_sof_n        : std_logic;
    signal fl_async_unit_tx_sop_n        : std_logic;
    signal fl_async_unit_tx_eof_n        : std_logic;
@@ -57,6 +61,7 @@ architecture behavioral of testbench is
    signal fl_async_unit_tx_dst_rdy_n    : std_logic;
    
    signal fl_async_unit_tx_output_rdy   : std_logic;
+   signal rd_clk_en                     : std_logic;
 
 -- ----------------------------------------------------------------------------
 --                      Architecture body
@@ -67,8 +72,7 @@ begin
    -- -------------------------------------------------------------------------
    uut: entity work.TX_ASYNC_FL_UNIT
       generic map (
-         IN_DATA_WIDTH     => IN_DATA_WIDTH,
-         OUT_DATA_WIDTH    => OUT_DATA_WIDTH,
+         DATA_WIDTH        => DATA_WIDTH,
          DELAY_WIDTH       => DELAY_WIDTH
       )
       port map (
@@ -77,6 +81,11 @@ begin
          RESET             => RESET,
 
          RX_DATA           => fl_async_unit_rx_data,
+         RX_REM            => fl_async_unit_rx_rem,
+         RX_SOF_N          => fl_async_unit_rx_sof_n,
+         RX_SOP_N          => fl_async_unit_rx_sop_n,
+         RX_EOP_N          => fl_async_unit_rx_eop_n,
+         RX_EOF_N          => fl_async_unit_rx_eof_n,
          RX_SRC_RDY_N      => fl_async_unit_rx_src_rdy_n,
          RX_DST_RDY_N      => fl_async_unit_rx_dst_rdy_n,
          
@@ -111,7 +120,7 @@ begin
    
    rdclkgen: process
    begin
-      if (fl_async_unit_tx_output_rdy = '1') then      
+      if ((rd_clk_en = '1') or (reset = '1')) then      
         rd_clk <= '1';
       else
         rd_clk <= '0';
@@ -132,10 +141,30 @@ begin
    tb: process
 
    begin
-      wait for 30*wr_clkper;
+      rd_clk_en <= '0';
+   
+      fl_async_unit_rx_data <= X"0000000000000000";
+      fl_async_unit_rx_rem  <= "000";
+      fl_async_unit_rx_sof_n  <= '1';
+      fl_async_unit_rx_eof_n  <= '1';
+      fl_async_unit_rx_sop_n  <= '1';
+      fl_async_unit_rx_eop_n  <= '1';
+      fl_async_unit_rx_src_rdy_n <= '1';
+      fl_async_unit_rx_finish <= '0';
+      fl_async_unit_rx_delay <= "0" & X"00";
+      fl_async_unit_rx_delay_wr_n <= '1';
+      fl_async_unit_tx_dst_rdy_n <= '1';
+   
+      wait for reset_time; 
+      wait until (fl_async_unit_rx_dst_rdy_n = '0');
       wait until rising_edge(wr_clk);
       
-      fl_async_unit_rx_data <= X"1234567812345678" & "111" & '0' & '0' & '1' & '0';
+      fl_async_unit_rx_data <= X"1234567812345678"; --& "111" & '0' & '0' & '1' & '0';
+      fl_async_unit_rx_rem  <= "111";
+      fl_async_unit_rx_sof_n  <= '0';
+      fl_async_unit_rx_eof_n  <= '1';
+      fl_async_unit_rx_sop_n  <= '0';
+      fl_async_unit_rx_eop_n  <= '0';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= "0" & X"01";
@@ -144,7 +173,12 @@ begin
       
       wait until rising_edge(wr_clk);
        
-      fl_async_unit_rx_data <= X"8765432187654321" & "111" & '1' & '0' & '1' & '1';
+      fl_async_unit_rx_data <= X"8765432187654321"; --& "111" & '1' & '0' & '1' & '1';
+      fl_async_unit_rx_rem  <= "111";
+      fl_async_unit_rx_sof_n  <= '1';
+      fl_async_unit_rx_eof_n  <= '1';
+      fl_async_unit_rx_sop_n  <= '0';
+      fl_async_unit_rx_eop_n  <= '1';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= "0" & X"02";
@@ -152,8 +186,15 @@ begin
       fl_async_unit_tx_dst_rdy_n <= '0';
       
       wait until rising_edge(wr_clk);
-       
-      fl_async_unit_rx_data <= X"0000000000004321" & "011" & '0' & '1' & '0' & '1';
+
+      rd_clk_en <= '1';
+
+      fl_async_unit_rx_data <= X"0000000000004321"; --& "011" & '0' & '1' & '0' & '1';
+      fl_async_unit_rx_rem  <= "011";
+      fl_async_unit_rx_sof_n  <= '1';
+      fl_async_unit_rx_eof_n  <= '0';
+      fl_async_unit_rx_sop_n  <= '1';
+      fl_async_unit_rx_eop_n  <= '0';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= "0" & X"00";
@@ -169,7 +210,12 @@ begin
       
       wait until rising_edge(wr_clk);
        
-      fl_async_unit_rx_data <= X"1122334411223344" & "111" & '0' & '0' & '1' & '0';
+      fl_async_unit_rx_data <= X"1122334411223344"; --& "111" & '0' & '0' & '1' & '0';
+      fl_async_unit_rx_rem  <= "111";
+      fl_async_unit_rx_sof_n  <= '0';
+      fl_async_unit_rx_eof_n  <= '1';
+      fl_async_unit_rx_sop_n  <= '0';
+      fl_async_unit_rx_eop_n  <= '0';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= "0" & X"05";
@@ -178,7 +224,12 @@ begin
       
       wait until rising_edge(wr_clk);
        
-      fl_async_unit_rx_data <= X"4433221144332211" & "111" & '0' & '0' & '0' & '1';
+      fl_async_unit_rx_data <= X"4433221144332211"; --& "111" & '0' & '0' & '0' & '1';
+      fl_async_unit_rx_rem  <= "111";
+      fl_async_unit_rx_sof_n  <= '1';
+      fl_async_unit_rx_eof_n  <= '0';
+      fl_async_unit_rx_sop_n  <= '0';
+      fl_async_unit_rx_eop_n  <= '0';
       fl_async_unit_rx_src_rdy_n <= '0';
       fl_async_unit_rx_finish <= '0';
       fl_async_unit_rx_delay <= "0" & X"00";
@@ -186,9 +237,12 @@ begin
       fl_async_unit_tx_dst_rdy_n <= '0';
       
       wait until rising_edge(wr_clk);
-      fl_async_unit_rx_finish <= '1';
       fl_async_unit_rx_delay_wr_n <= '1';
       fl_async_unit_rx_src_rdy_n <= '1';
+
+      wait for 8*wr_clkper;
+      fl_async_unit_rx_finish <= '1';
+
       
       wait until rising_edge(rd_clk);
       wait until rising_edge(rd_clk);
@@ -204,6 +258,7 @@ begin
       wait until rising_edge(rd_clk);
       wait until rising_edge(rd_clk);
       fl_async_unit_tx_dst_rdy_n <= '0';
+      
       wait;
    end process;
 end architecture behavioral;

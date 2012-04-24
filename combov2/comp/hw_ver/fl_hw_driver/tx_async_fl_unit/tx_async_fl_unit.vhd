@@ -2,8 +2,8 @@
 -- Project Name: Hardware - Software Framework for Functional Verification
 -- File Name:    TX Asynchronous FrameLink Unit  
 -- Description: 
--- Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
--- Date:         15.4.2011 
+-- Author:       Marcela Simkova <isimkova@fit.vutbr.cz> 
+-- Date:         15.4.2011 (update 20.4.2012)
 -- --------------------------------------------------------------------------
 
 library ieee;
@@ -91,7 +91,6 @@ signal sig_data_fifo_write        : std_logic;
 signal sig_data_fifo_data_in      : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
 signal sig_data_fifo_data_out     : std_logic_vector(FIFO_DATA_WIDTH-1 downto 0);
 signal sig_data_fifo_read         : std_logic;
-signal sig_data_fifo_rdy          : std_logic;
 signal sig_data_fifo_almost_full  : std_logic;
 
 -- delay fifo signals
@@ -99,24 +98,12 @@ signal sig_delay_fifo_write       : std_logic;
 signal sig_delay_fifo_data        : std_logic_vector(DELAY_WIDTH-1 downto 0);
 signal sig_delay_fifo_read        : std_logic;
 signal sig_delay_fifo_empty       : std_logic;
-signal sig_delay_fifo_rdy         : std_logic;
 signal sig_delay_fifo_almost_full : std_logic;
 
-signal sig_delay_fifo_data_only : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_is_delay         : std_logic; 
-signal sig_reg_out_is_delay : std_logic; 
-signal sig_mux_is_delay     : std_logic; 
-signal sig_src_rdy          : std_logic; 
-signal sig_decremented      : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_delay            : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_take             : std_logic;
-signal sig_comp_output      : std_logic;
-signal sig_neg_comp_output  : std_logic;
-signal sig_reg_out          : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_taken            : std_logic;
-signal sig_reg_taken        : std_logic;
+signal sig_dst_rdy                : std_logic;
+signal sig_src_rdy                : std_logic;
+signal sig_output_rdy             : std_logic;
 
-signal sig_delay_fifo_is_zero : std_logic;
 
 -- ==========================================================================
 --                           ARCHITECTURE BODY
@@ -149,7 +136,7 @@ begin
       RD_DATA         => sig_data_fifo_data_out,
       RD_READ         => sig_data_fifo_read,
       RD_EMPTY        => open,
-      RD_ALMOST_EMPTY => sig_data_fifo_rdy
+      RD_ALMOST_EMPTY => open --sig_data_fifo_rdy
    );
    
    -- --------------- DELAY FIFO INSTANCE -----------------------------------
@@ -171,15 +158,15 @@ begin
       RD_DATA         => sig_delay_fifo_data,
       RD_READ         => sig_delay_fifo_read,
       RD_EMPTY        => sig_delay_fifo_empty,
-      RD_ALMOST_EMPTY => sig_delay_fifo_rdy
+      RD_ALMOST_EMPTY => open --sig_delay_fifo_rdy
    );
 
    -- ================= IMPLEMENTATION ======================================
    
-   -- data fifo input side
+   -- ----- data fifo input side -----
    sig_data_fifo_write  <= not RX_SRC_RDY_N;
    
-   -- data fifo output side
+   -- ----- data fifo output side -----
    TX_SOF_N <= sig_data_fifo_data_out(0);
    TX_EOF_N <= sig_data_fifo_data_out(1);
    TX_SOP_N <= sig_data_fifo_data_out(2);
@@ -187,109 +174,35 @@ begin
    TX_REM   <= sig_data_fifo_data_out(REM_INDEX-1 downto 4); 
    TX_DATA  <= sig_data_fifo_data_out(FIFO_DATA_WIDTH-1 downto REM_INDEX);
    
-   -- delay fifo input side
+   sig_data_fifo_read <= sig_dst_rdy and sig_src_rdy;
+   
+   -- ----- delay fifo input side -----
    sig_delay_fifo_write <= not RX_DELAY_WR_N;
    
-   -- delay fifo output side
-   sig_delay_fifo_data_only <= sig_delay_fifo_data(DELAY_WIDTH-2 downto 0);
-   sig_is_delay <= sig_delay_fifo_data(DELAY_WIDTH-1);
-   
-   -- register for identification if delay or wait transaction 
-   reg1 : process (RD_CLK, RESET)
-   begin
-      if (RESET = '1') then 
-        sig_reg_out_is_delay <= '0';
-      elsif (rising_edge(RD_CLK)) then
-         if (sig_take = '1') then
-            sig_reg_out_is_delay <= sig_is_delay;   
-         end if;   
-      end if;
-   end process;
-   
-   -- multiplexer
-   mux1 : process (sig_take, sig_is_delay, sig_reg_out_is_delay)
-   begin
-      sig_mux_is_delay <= '0';
+   -- -----delay fifo output side -----
+   -- --------------- TX DELAY PROC UNIT INSTANCE ---------------------------
+   delay_unit_i : entity work.tx_delay_proc_unit
+   generic map(
+      DELAY_WIDTH  => DELAY_WIDTH
+   )
+   port map(
+      CLK            => RD_CLK,
+      RESET          => RESET,
 
-      case sig_take is
-         when '0'    => sig_mux_is_delay <= sig_reg_out_is_delay;
-         when '1'    => sig_mux_is_delay <= sig_is_delay;
-         when others => null;   
-      end case;   
-   end process;
+      DELAY_DATA     => sig_delay_fifo_data,
+      DELAY_READ     => sig_delay_fifo_read,
+      DELAY_EMPTY    => sig_delay_fifo_empty,
+      DST_RDY        => sig_dst_rdy,
+      SRC_RDY        => sig_src_rdy
+   );
    
-   -- multiplexer
-   mux2 : process (sig_take, sig_delay_fifo_data_only, sig_decremented)
-   begin
-      sig_delay <= sig_decremented;
-
-      case sig_take is
-         when '0'    => sig_delay <= sig_decremented;
-         when '1'    => sig_delay <= sig_delay_fifo_data_only;
-         when others => null;   
-      end case;   
-   end process;
+   sig_dst_rdy  <= not TX_DST_RDY_N;
    
-   -- comparator
-   comp : process (sig_delay)
-   begin
-     if (sig_delay = "00000000") then sig_comp_output <= '1';
-     else sig_comp_output <= '0'; 
-     end if;
-   end process;
+   sig_output_rdy <= RX_FINISH or (sig_data_fifo_almost_full and 
+                                   sig_delay_fifo_almost_full);
+                                   
+   OUTPUT_RDY <= sig_output_rdy;
+   TX_SRC_RDY_N <= not sig_src_rdy;
    
-   sig_neg_comp_output <= not (sig_comp_output OR sig_delay_fifo_is_zero);
-   sig_taken <= sig_neg_comp_output nor TX_DST_RDY_N;
-      
-   -- register for decrement 
-   reg2 : process (RD_CLK, RESET)
-   begin
-      if (RESET = '1') then 
-         sig_reg_out <= (others => '0');
-      elsif (rising_edge(RD_CLK)) then
-         if (sig_neg_comp_output = '1') then
-            sig_reg_out <= sig_delay;   
-         end if;   
-      end if;
-   end process;
-   
-   sig_decremented <= sig_reg_out - 1;
-   
-   -- register for taken
-   reg3 : process (RD_CLK, RESET)
-   begin
-      if (RESET = '1') then 
-         sig_reg_taken <= '1';
-      elsif (rising_edge(RD_CLK)) then
-         if (sig_taken = '1') then
-            sig_reg_taken <= sig_taken;
-         elsif (sig_take = '1') then
-            sig_reg_taken <= '0';   
-         end if;   
-      end if;
-   end process;
-   
-   -- register for comparison of delay FIFO data
-   comp_delay_fifo_is_zero_p: process (sig_delay_fifo_data_only)
-   begin
-      sig_delay_fifo_is_zero <= '0';
-
-      if (sig_delay_fifo_data_only = 0) then
-         sig_delay_fifo_is_zero <= '1';
-      else
-         sig_delay_fifo_is_zero <= '0';
-      end if;
-   end process;
-
-
-   sig_take <= sig_reg_taken and (not sig_delay_fifo_empty); 
-   sig_src_rdy <= (sig_neg_comp_output or sig_mux_is_delay) or (sig_delay_fifo_empty and sig_reg_taken);
-   TX_SRC_RDY_N <= sig_src_rdy;
-   sig_data_fifo_read <= sig_src_rdy nor TX_DST_RDY_N; 
-   sig_delay_fifo_read <= sig_take;
-   
-   OUTPUT_RDY <= RX_FINISH or (sig_data_fifo_almost_full and 
-                               sig_delay_fifo_almost_full);    
---   OUTPUT_RDY <= RX_FINISH or ((not sig_data_fifo_rdy) and 
---                               (not sig_delay_fifo_rdy));    
+       
 end architecture;
