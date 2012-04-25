@@ -278,7 +278,7 @@ SIMT ?=
 %.par_guide.ncd: $(SRC:.vhd=.par.ncd)
 	@cp $< $@
 
-.PHONY:clean_mods $(NETCOPE)/Makefile.gen clean_makegen
+.PHONY: mcs modules clean_mods clean_makegen $(NETCOPE)/Makefile.gen
 
 mcs: $(MCS_DEPENDS)
 	@echo "$(SRC:.vhd=.mcs) has been successfully built"

@@ -47,7 +47,7 @@ use work.addr_space.all;
 
 architecture full of COMBOV2_CORE is
 
-component DMA_MOD_2x64b_RXTX is
+component DMA_MOD_1x64b_RXTX is
    port(
       -- ICS Clock (IB and LB)
       CLK            : in  std_logic;
@@ -71,15 +71,6 @@ component DMA_MOD_2x64b_RXTX is
       RX0_SRC_RDY_N  : in  std_logic;
       RX0_DST_RDY_N  : out std_logic;
 
-      RX1_DATA       : in  std_logic_vector(63 downto 0);
-      RX1_DREM       : in  std_logic_vector(2 downto 0);
-      RX1_SOF_N      : in  std_logic;
-      RX1_EOF_N      : in  std_logic;
-      RX1_SOP_N      : in  std_logic;
-      RX1_EOP_N      : in  std_logic;
-      RX1_SRC_RDY_N  : in  std_logic;
-      RX1_DST_RDY_N  : out std_logic;
-
       -- output interfaces
       TX0_DATA       : out std_logic_vector(63 downto 0);
       TX0_DREM       : out std_logic_vector(2 downto 0);
@@ -89,15 +80,6 @@ component DMA_MOD_2x64b_RXTX is
       TX0_EOP_N      : out std_logic;
       TX0_SRC_RDY_N  : out std_logic;
       TX0_DST_RDY_N  : in  std_logic;
-
-      TX1_DATA       : out std_logic_vector(63 downto 0);
-      TX1_DREM       : out std_logic_vector(2 downto 0);
-      TX1_SOF_N      : out std_logic;
-      TX1_EOF_N      : out std_logic;
-      TX1_SOP_N      : out std_logic;
-      TX1_EOP_N      : out std_logic;
-      TX1_SRC_RDY_N  : out std_logic;
-      TX1_DST_RDY_N  : in  std_logic;
 
       -- Internal Bus
       IB_DOWN_DATA      : in  std_logic_vector(63 downto 0);
@@ -123,7 +105,7 @@ component DMA_MOD_2x64b_RXTX is
    );
 end component;
 
-component DMA_MOD_2x64b_RXTX_GEN is
+component DMA_MOD_1x64b_RXTX_GEN is
    port(
       -- ICS Clock (IB and LB)
       CLK            : in  std_logic;
@@ -147,15 +129,6 @@ component DMA_MOD_2x64b_RXTX_GEN is
       RX0_SRC_RDY_N  : in  std_logic;
       RX0_DST_RDY_N  : out std_logic;
 
-      RX1_DATA       : in  std_logic_vector(63 downto 0);
-      RX1_DREM       : in  std_logic_vector(2 downto 0);
-      RX1_SOF_N      : in  std_logic;
-      RX1_EOF_N      : in  std_logic;
-      RX1_SOP_N      : in  std_logic;
-      RX1_EOP_N      : in  std_logic;
-      RX1_SRC_RDY_N  : in  std_logic;
-      RX1_DST_RDY_N  : out std_logic;
-
       -- output interfaces
       TX0_DATA       : out std_logic_vector(63 downto 0);
       TX0_DREM       : out std_logic_vector(2 downto 0);
@@ -165,15 +138,6 @@ component DMA_MOD_2x64b_RXTX_GEN is
       TX0_EOP_N      : out std_logic;
       TX0_SRC_RDY_N  : out std_logic;
       TX0_DST_RDY_N  : in  std_logic;
-
-      TX1_DATA       : out std_logic_vector(63 downto 0);
-      TX1_DREM       : out std_logic_vector(2 downto 0);
-      TX1_SOF_N      : out std_logic;
-      TX1_EOF_N      : out std_logic;
-      TX1_SOP_N      : out std_logic;
-      TX1_EOP_N      : out std_logic;
-      TX1_SRC_RDY_N  : out std_logic;
-      TX1_DST_RDY_N  : in  std_logic;
 
       -- Internal Bus
       IB_DOWN_DATA      : in  std_logic_vector(63 downto 0);
@@ -431,7 +395,7 @@ begin
    -- -------------------------------------------------------------------------
    -- DMA_TYPE set in $FW_BASE/pkg/combov2_user_const.vhd
    SZE_DMA_MOD_I: if (DMA_TYPE = "SZE") generate
-      DMA_MOD_I : DMA_MOD_2x64b_RXTX
+      DMA_MOD_I : DMA_MOD_1x64b_RXTX
       port map(
          -- Common interface
          CLK            => CLK_ICS,
@@ -453,15 +417,6 @@ begin
          RX0_DATA        => swbuf_rx.data,
          RX0_DREM        => swbuf_rx.drem,
 
-         RX1_SOF_N       => '0',
-         RX1_SOP_N       => '0',
-         RX1_EOP_N       => '0',
-         RX1_EOF_N       => '0',
-         RX1_SRC_RDY_N   => '1',
-         RX1_DST_RDY_N   => open,
-         RX1_DATA        => (others => '0'),
-         RX1_DREM        => (others => '0'),
-
          -- output interfaces
          TX0_SOF_N       => swbuf_tx.sof_n,
          TX0_SOP_N       => swbuf_tx.sop_n,
@@ -471,15 +426,6 @@ begin
          TX0_DST_RDY_N   => swbuf_tx.dst_rdy_n,
          TX0_DATA        => swbuf_tx.data,
          TX0_DREM        => swbuf_tx.drem,
-
-         TX1_SOF_N       => open,
-         TX1_SOP_N       => open,
-         TX1_EOP_N       => open,
-         TX1_EOF_N       => open,
-         TX1_SRC_RDY_N   => open,
-         TX1_DST_RDY_N   => '1',
-         TX1_DATA        => open,
-         TX1_DREM        => open,
 
          -- Internal Bus
          IB_DOWN_DATA      => IB_DOWN_DATA,
@@ -506,7 +452,7 @@ begin
    end generate;
    
    SZE_DMA_MOD_GEN_I: if (DMA_TYPE = "GEN") generate
-      DMA_MOD_I : DMA_MOD_2x64b_RXTX_GEN
+      DMA_MOD_I : DMA_MOD_1x64b_RXTX_GEN
       port map(
          -- Common interface
          CLK            => CLK_ICS,
@@ -528,15 +474,6 @@ begin
          RX0_DATA        => swbuf_rx.data,
          RX0_DREM        => swbuf_rx.drem,
 
-         RX1_SOF_N       => '0',
-         RX1_SOP_N       => '0',
-         RX1_EOP_N       => '0',
-         RX1_EOF_N       => '0',
-         RX1_SRC_RDY_N   => '1',
-         RX1_DST_RDY_N   => open,
-         RX1_DATA        => (others => '0'),
-         RX1_DREM        => (others => '0'),
-
          -- output interfaces
          TX0_SOF_N       => swbuf_tx.sof_n,
          TX0_SOP_N       => swbuf_tx.sop_n,
@@ -546,15 +483,6 @@ begin
          TX0_DST_RDY_N   => swbuf_tx.dst_rdy_n,
          TX0_DATA        => swbuf_tx.data,
          TX0_DREM        => swbuf_tx.drem,
-
-         TX1_SOF_N       => open,
-         TX1_SOP_N       => open,
-         TX1_EOP_N       => open,
-         TX1_EOF_N       => open,
-         TX1_SRC_RDY_N   => open,
-         TX1_DST_RDY_N   => '1',
-         TX1_DATA        => open,
-         TX1_DREM        => open,
 
          -- Internal Bus
          IB_DOWN_DATA      => IB_DOWN_DATA,

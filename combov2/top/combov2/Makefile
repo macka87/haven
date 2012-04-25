@@ -69,11 +69,6 @@ IB_ASYNC=ib_asfifo_64b.ngc
 TSU_ASYNC=tsu_async.ngc
 
 FIFO_PATH=$(FIRMWARE_BASE)/comp/cdc_fifo/xilinx_fifos
-FIFO_NGCS=$(FIFO_PATH)/asfifo_lut_1.ngc \
-          $(FIFO_PATH)/asfifo_lut_8.ngc \
-          $(FIFO_PATH)/asfifo_lut_9.ngc \
-          $(FIFO_PATH)/asfifo_lut_71.ngc \
-          $(FIFO_PATH)/asfifo_lut_136.ngc
 
 
 ##############################################################################
@@ -112,43 +107,35 @@ NETCOPE = $(FIRMWARE_BASE)/cards/combov2/netcope/eth-10G2
 
 USEGUIDE = 0
 
-#APPLICATION=RXTX_2
-APPLICATION=RXTX_2_GEN
+APPLICATION=RXTX_1
+#APPLICATION=RXTX_2_GEN
 #APPLICATION=RXTX_2_PAC
 
 # for sze left blank
 DMA_TYPE=
 # Synthetized modules names
+ifeq ($(APPLICATION),RXTX_1)
+   DMA_MOD_NAME=dma_mod_1x64b_rxtx
+endif
+ifeq ($(APPLICATION),RXTX_1_GEN)
+   DMA_MOD_NAME=dma_mod_1x64b_rxtx_gen
+endif
 ifeq ($(APPLICATION),RXTX_2)
    DMA_MOD_NAME=dma_mod_2x64b_rxtx
 endif
 ifeq ($(APPLICATION),RXTX_2_GEN)
    DMA_MOD_NAME=dma_mod_2x64b_rxtx_gen
 endif
-ifeq ($(APPLICATION),RXTX_2_PAC)
-   DMA_MOD_NAME=dma_mod_2x64b_rxtx_pac
-   DMA_TYPE="-pac"
-endif
 
 NETWORK_MOD_NAME=network_mod_10g2_64
 
 export APPLICATION $(APPLICATION)
 
+PCIE_CORE_BASE=$(FIRMWARE_BASE)/comp/external/ip_cores/pcie
+
 # PCIE Endpoint: card identification and endpoint version
-ifeq ($(FPGA_TYPE),xc5vlx110t)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-lx110t/v1.14.1
-endif
-ifeq ($(FPGA_TYPE),xc5vlx155t)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-lx155t/v1.14.1
-endif
-ifeq ($(FPGA_TYPE),xc5vlx110t-2)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-lx110t/v1.14.1_250
-endif
 ifeq ($(FPGA_TYPE),xc5vlx155t-2)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-lx155t/v1.14.1_250
-endif
-ifeq ($(FPGA_TYPE),xc5vfx100t)
-   PCIE_CORE_PATH=/home/data/sklep/ipcores/pcie_ebp/nic-10G2$(DMA_TYPE)/combov2-fx100t/v1.14.1_250
+   PCIE_CORE_PATH=$(abspath $(PCIE_CORE_BASE)/combov2-lx155t/v1.14.1_250)
 endif
 
 # Exporting for use in wrapper Modules.tcl 
@@ -162,8 +149,7 @@ APP_MCS_DEPENDS =
 APP_MODULES=$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ICON) \
 	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA72) \
 	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA73) \
-	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA144) \
-	$(FIFO_NGCS) \
+	$(CHIPSCOPE_PATH)/$(CHIPSCOPE_ILA144)
 
 
 ifeq ($(MODS),1)
@@ -180,19 +166,28 @@ APP_MODULES += $(FL_TRANSFORMER_PATH)/$(FL_TRANSFORMER_128TO64) \
 		$(FL_WATCH_PATH)/$(FL_WATCH_2_HDR) \
 
 
-# Application specific flags
-APP_MAPFLAGS = -xe n -ol high -register_duplication on
-APP_PARFLAGS = -xe n -ol high
 
-ADDUCF = nic.ucf
+# Application specific flags
+APP_NGDBUILDFLAGS = -sd $(FIFO_PATH)
+APP_MAPFLAGS      = -xe n -ol high -register_duplication on
+APP_PARFLAGS      = -xe n -ol high
+
+ADDUCF = haven.ucf
 
 ##############################################################################
 # NIC specific Makefile
 ##############################################################################
 
+.PHONY: all cores
+
 # Main target
-all: modules
+all: cores modules
 	export XIL_MAP_ALWAYS_RETARGET_FDDR=1 && $(MAKE) mcs DISABLE_SYNTH=1 
+
+cores:
+	cd $(FIFO_PATH) && $(MAKE) -j
+	cd $(PCIE_CORE_PATH) && $(MAKE)
+
 
 # NetCOPE Makefile specification
 include $(NETCOPE)/Makefile.netcope.inc

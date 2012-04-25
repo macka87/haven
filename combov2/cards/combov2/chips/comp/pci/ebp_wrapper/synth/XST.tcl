@@ -41,8 +41,8 @@ if { [info exist env(PCIE_CORE_PATH)] } {
    puts "Will use PCIE EP from $PCIE_CORE_PATH"
 } else  {
       puts "WARNING: No PCIE_CORE_PATH specified!"
-      puts "Setting default path for NIC10G2 (lx155t-2)"
-      set PCIE_CORE_PATH   "/home/data/sklep/ipcores/pcie_ebp/nic-10G2/combov2-lx155t/v1.13.0_250"
+      puts "Setting default path for HAVEN (lx155t-2)"
+      set PCIE_CORE_PATH   "$FIRMWARE_BASE/comp/external/ip_cores/pcie/combov2-lx155t/v1.14.0_250"
 }
 
 # synthesis variables

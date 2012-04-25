@@ -14,7 +14,8 @@ use work.math_pack.all;
 entity HGEN_VER_COVER is
    generic(
       -- the data width of the data input/output
-      DATA_WIDTH     : integer   := 128
+      DATA_WIDTH              : integer := 128;
+      USE_BRAMS_FOR_HGEN_FIFO : boolean := true
    );
    port(
       CLK            : in std_logic;
@@ -123,7 +124,9 @@ begin
       -- the data width of the data input/output
       DATA_WIDTH     => HGEN_DATA_WIDTH,
       -- defines UH size in bytes; min 16 - 128 bytes
-      UH_SIZE        => HGEN_UH_SIZE
+      UH_SIZE        => HGEN_UH_SIZE,
+      -- should BlockRAMs be used for FIFO?
+      USE_BRAMS_FOR_FIFO  => USE_BRAMS_FOR_HGEN_FIFO
    )
    port map(
       -- common signals

@@ -11,12 +11,11 @@ use work.math_pack.all;
 -- ------------------------------------------------------------------------
 --                        Entity declaration
 -- ------------------------------------------------------------------------
-entity MULTI_HGEN_VER_COVER is
+entity DOUBLE_MULTI_HGEN_VER_COVER is
    generic(
       -- the data width of the data input/output
-      DATA_WIDTH     : integer   := 128;
-      BRANCH_COUNT   : integer   := 8;
-      USE_BRAMS_FOR_HGEN_FIFO : boolean := true
+      DATA_WIDTH             : integer   := 128;
+      BRANCH_COUNT           : integer   := 8
    );
    port(
       CLK            : in std_logic;
@@ -45,12 +44,12 @@ entity MULTI_HGEN_VER_COVER is
 
 end entity;
 
-architecture arch of MULTI_HGEN_VER_COVER is
+architecture arch of DOUBLE_MULTI_HGEN_VER_COVER is
 
    constant INPUT_PARTS       : integer := 1;
    constant BRANCH_PARTS      : integer := 1;
    constant TICKET_WIDTH      : integer := 12; -- bits
-   constant TICKET_FIFO_ITEMS : integer := 16;
+   constant TICKET_FIFO_ITEMS : integer := 8;
 
    constant HGEN_DATA_WIDTH   : integer := 128;
 
@@ -107,6 +106,8 @@ architecture arch of MULTI_HGEN_VER_COVER is
 
 begin
 
+   -- Input interface
+
    -- input transformer
    input_trans_i: entity work.FL_TRANSFORMER
    generic map(
@@ -142,7 +143,6 @@ begin
       TX_SRC_RDY_N      => split_rx_src_rdy_n,
       TX_DST_RDY_N      => split_rx_dst_rdy_n
    );
-
    -- Ticket counter
    cnt_ticketp: process(CLK)
    begin
@@ -206,11 +206,12 @@ begin
 
 gen_hgen: for i in 0 to BRANCH_COUNT-1 generate 
       -- HGEN verification cover
-      hgen_ver_cover_i: entity work.HGEN_VER_COVER
+      hgen_ver_cover_i: entity work.MULTI_HGEN_VER_COVER
       generic map(
          -- the data width of the data input/output
          DATA_WIDTH     => HGEN_DATA_WIDTH,
-         USE_BRAMS_FOR_HGEN_FIFO => USE_BRAMS_FOR_HGEN_FIFO
+         USE_BRAMS_FOR_HGEN_FIFO => false,
+         BRANCH_COUNT   => 8
       )
       port map(
          -- common signals

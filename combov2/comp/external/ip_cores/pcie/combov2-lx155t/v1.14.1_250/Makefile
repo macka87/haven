@@ -1,5 +1,5 @@
-# Makefile: Makefile to compile PCIE endpoint block plus wrapper module
-# Copyright (C) 2010 CESNET
+# Makefile: Makefile to generate Xilinx PCI Express endpoint block plus core
+# Copyright (C) 2009 CESNET
 # Author: Pavol Korcek <korcek@liberouter.org>
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,37 +27,38 @@
 # otherwise) arising in any way out of the use of this software, even
 # if advised of the possibility of such damage.
 #
-# $Id: Makefile 14437 2010-07-16 16:01:13Z korcek $
+# $Id: Makefile 63 2009-09-08 07:38:56Z korcek $
 #
 
+PREFIX=endpoint_blk_plus_v1_14
 
-# makefile to synthesize component
+SOURCE_FILE=$(PREFIX).xco
+RESULT_FILE=$(PREFIX).ngc
 
-TRASH=xst XST.prj XST.srp XST.xcf XST.xst *.lso *.ngc *.prec *.edf *.ngr *.xrpt *.ise *_xdb *.prj *_xmsgs
+COREGEN=coregen
 
-FIRMWARE_BASE="../../../../../../.."
+all: $(RESULT_FILE)
 
-PCIE_CORE_PATH?=$(FIRMWARE_BASE)/comp/external/ip_cores/pcie/combov2-lx155t/v1.14.1_250
-MODULE=ebp_wrapper
+$(RESULT_FILE): $(SOURCE_FILE)
+	cp $(SOURCE_FILE) $(SOURCE_FILE).bak
+	$(COREGEN) -b $(SOURCE_FILE)
+	mv $(SOURCE_FILE).bak $(SOURCE_FILE)
 
-all : xst
+clean:
+	rm -rf home tmp $(PREFIX)_xdb _xmsgs $(PREFIX) xlnx_auto_0_xdb 
+	rm -f coregen.log xlnx_auto_0.ise
+	rm -f $(PREFIX).vhd $(PREFIX).vho $(PREFIX)_flist.txt 
+	rm -f $(PREFIX)_xmdf.tcl
+	rm -f $(PREFIX)_pcie_blk_plus_gen_1.lso $(PREFIX)_pcie_blk_plus_gen_1.ngc_xst.xrpt
+	rm -rf $(PREFIX).gise $(PREFIX).ise $(PREFIX).xise $(PREFIX)_xdb
 
 
-xst : XST.tcl $(MODULE).ngc
+clean_all:
+	rm -f $(RESULT_FILE)
+	rm -rf home tmp $(PREFIX)_xdb _xmsgs $(PREFIX) xlnx_auto_0_xdb 
+	rm -f coregen.log xlnx_auto_0.ise
+	rm -f $(PREFIX).vhd $(PREFIX).vho $(PREFIX)_flist.txt 
+	rm -f $(PREFIX)_xmdf.tcl
+	rm -f $(PREFIX)_pcie_blk_plus_gen_1.lso $(PREFIX)_pcie_blk_plus_gen_1.ngc_xst.xrpt
+	rm -f $(PREFIX).gise $(PREFIX).ise $(PREFIX).xise
 
-$(MODULE).ngc:
-	export PCIE_CORE_PATH=$(PCIE_CORE_PATH) ; tclsh XST.tcl
-	rm -f -fr xst/
-	mkdir xst
-	mkdir xst/projnav.tmp
-	xst -ifn XST.xst
- 
-precision : Precision.tcl $(MODULE).edf
-
-$(MODULE).edf:
-	export PCIE_CORE_PATH=$(PCIE_CORE_PATH) ; 
-	rm -rf *.prec
-	precision -shell -file Precision.tcl    
-
-clean :
-	rm -f -fr $(TRASH) 

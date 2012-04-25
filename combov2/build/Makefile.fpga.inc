@@ -40,18 +40,18 @@ TEST ?= test
 LN ?= ln
 TOUCH ?= touch
 
-EXEMPLARBIN ?= /usr/local/fpga/Exemplar/bin
-XILINXBIN ?= /usr/local/xilinx/bin/sol
-MODELTECHBIN ?= /usr/local/fpga/Modeltech/bin
-VERIFBIN ?= $(LIBEROUTER_PATH)/ver/scripts
+#EXEMPLARBIN ?= /usr/local/fpga/Exemplar/bin
+#XILINXBIN ?= /usr/local/xilinx/bin/sol
+#MODELTECHBIN ?= /usr/local/fpga/Modeltech/bin
+#VERIFBIN ?= $(LIBEROUTER_PATH)/ver/scripts
 
 # Liberouter CVS local root
-LIBEROUTER_PATH ?= $(BASE)/../..
+#LIBEROUTER_PATH ?= $(BASE)/../..
 
-FPGAPART ?= 2v3000
-FPGAPROCESS ?= 4
-FPGAPACKAGE ?= bf957
-FPGATECH ?= xcv2
+#FPGAPART ?= 2v3000
+#FPGAPROCESS ?= 4
+#FPGAPACKAGE ?= bf957
+#FPGATECH ?= xcv2
 FPGAUCF ?= $(BASE)/chips/fpga.ucf
 FULLUCF ?= $(SRC:.vhd=.gen.ucf)
 
@@ -79,27 +79,34 @@ SYNTHFILES ?= -vhdl_file="$(TOP) $(MOD)" $< $@
 
 PRE_XST_SYNTH?=sleep 0
 
-NGDBUILD ?= $(XILINXBIN)/ngdbuild
+#NGDBUILD ?= $(XILINXBIN)/ngdbuild
+NGDBUILD ?= ngdbuild
 NGDBUILDFLAGS ?=
 
 TOP_BASE ?= ..
 
-MAP ?= $(XILINXBIN)/map
+#MAP ?= $(XILINXBIN)/map
+MAP ?= map
 MAPFLAGS ?=
 
-PAR ?= $(XILINXBIN)/par
+#PAR ?= $(XILINXBIN)/par
+PAR ?= par
 PARFLAGS ?= -w -ol std
 
-BITGEN ?= $(XILINXBIN)/bitgen
+#BITGEN ?= $(XILINXBIN)/bitgen
+BITGEN ?= bitgen
 BITGENFLAGS ?= -w -g UnusedPin:PullNone -g DriveDone:Yes
 
-PROMGEN ?= $(XILINXBIN)/promgen
+#PROMGEN ?= $(XILINXBIN)/promgen
+PROMGEN ?= promgen
 PROMGENFLAGS ?= -w -u 0
 
-TRCE ?= $(XILINXBIN)/trce
+#TRCE ?= $(XILINXBIN)/trce
+TRCE ?= trce
 TRCEFLAGS ?= -v 3
 
-NETGEN ?= $(XILINXBIN)/netgen
+#NETGEN ?= $(XILINXBIN)/netgen
+NETGEN ?= netgen
 NETGENFLAGS ?= -ofmt vhdl -sim -w
 
 VLIB ?= $(MODELTECHBIN)/vlib
@@ -320,22 +327,24 @@ simsynt: $(SRC:.vhd=.simsynt.vhd)
 	$(V2SMV) $(V2SMVFLAGS) $<
 
 clean_build:
-	-@$(RM) *.xdb *.sum *.log *.err *.edf $(FULLUCF) \
-	    *.ngo *.nav *.ngd *.bld *.lst \
-	    *.pcf *.map.ngm *.map.ncd *.map.mrp *.map.map \
-	    *.par.xpi *.par.pad *.par.ncd *.par.dly *.par.par \
-	    *.par_pad.csv *.par_pad.txt \
-	    *.drc *.bit *.bgn *.prm \
-	    *.wlf exemplar.his transcript \
-	    *.nlf *.ncf *.ngm \
-	    *.sim.sdf *.sim.vhd *.simsynt.vhd \
-	    *.mcs *.mcs.zip *.twr *.cfi \
-	    *.v *.smv \
-	    *.prj *.prd *.sdc \
-       *.par.unroutes *_usage.xml \
-       *.gen.ucf STD_OUTPUT \
-       *.ngc *.lso *.srp *.xcf XST.xst *.ngr *.ndf \
-       *.xrpt *.ise *.psr *.ptwx *summary.xml *.twx
+	-@$(RM) *.xdb *.sum *.log *.err *.edf $(FULLUCF)
+	-@$(RM) *.ngo *.nav *.ngd *.bld *.lst
+	-@$(RM) *.pcf *.map.ngm *.map.ncd *.map.mrp *.map.map
+	-@$(RM) *.par.xpi *.par.pad *.par.ncd *.par.dly *.par.par
+	-@$(RM) *.par_pad.csv *.par_pad.txt
+	-@$(RM) *.drc *.bit *.bgn *.prm
+	-@$(RM) *.wlf exemplar.his transcript
+	-@$(RM) *.nlf *.ncf *.ngm
+	-@$(RM) *.sim.sdf *.sim.vhd *.simsynt.vhd
+	-@$(RM) *.mcs *.mcs.zip *.twr *.cfi
+	-@$(RM) *.v *.smv
+	-@$(RM) *.xwbt
+	-@$(RM) *.prj
+	-@$(RM) *.prd *.sdc
+	-@$(RM) *.par.unroutes *_usage.xml
+	-@$(RM) *.gen.ucf STD_OUTPUT
+	-@$(RM) *.ngc *.lso *.srp *.xcf XST.xst *.ngr *.ndf
+	-@$(RM) *.xrpt *.ise *.psr *.ptwx *summary.xml *.twx
 	-@$(RM) -r $(LIB)
 	-@$(RM) -r *.prec
 	-@$(RM) -r *.synp
