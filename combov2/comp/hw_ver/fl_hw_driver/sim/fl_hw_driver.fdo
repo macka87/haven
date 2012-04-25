@@ -1,0 +1,19 @@
+# Copyright (C) 2011
+# Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
+
+set FIRMWARE_BASE         "../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set DRIVER_BASE           "$COMP_BASE/hw_ver/fl_hw_driver"
+set FL_SIM_BASE           "$COMP_BASE/fl_tools/debug/sim"
+
+set SIG_FILE              "$DRIVER_BASE/sim/fl_hw_driver_sig.fdo"
+set TB_FILE               "$DRIVER_BASE/sim/fl_hw_driver_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "DRIVER_UNIT" $DRIVER_BASE "FULL" ] \
+                  [ list "FL_SIM"      $FL_SIM_BASE "FULL" ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE

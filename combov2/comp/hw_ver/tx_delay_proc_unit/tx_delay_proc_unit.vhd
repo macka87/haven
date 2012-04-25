@@ -75,7 +75,7 @@ signal sig_taken            : std_logic;
 -- ==========================================================================
 begin
 
-   sig_is_wait    <= DELAY_DATA(DELAY_WIDTH-1);           -- delay (0), wait (1)
+   sig_is_wait    <= DELAY_DATA(DELAY_WIDTH-1); -- delay (0), wait (1)
    sig_delay_data <= DELAY_DATA(DELAY_WIDTH-2 downto 0);
 
    -- multiplexer
@@ -95,7 +95,7 @@ begin
    begin
       if (rising_edge(CLK)) then
          if (sig_take = '1') then
-            sig_reg_is_wait <= sig_is_wait;   
+            sig_reg_is_wait <= sig_is_wait OR DELAY_EMPTY;   
          end if;   
       end if;
    end process;
@@ -176,7 +176,7 @@ begin
       end if;
    end process;
    
-   SRC_RDY <= ((not sig_mux_is_wait) and sig_comp_output) AND (NOT DELAY_EMPTY);
+   SRC_RDY <= ((not sig_mux_is_wait) and sig_comp_output) AND (NOT(DELAY_EMPTY and sig_take));
    DELAY_READ  <= sig_take and (not DELAY_EMPTY);
 
 end architecture;

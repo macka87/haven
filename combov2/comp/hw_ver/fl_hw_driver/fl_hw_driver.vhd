@@ -112,7 +112,7 @@ signal fifo_out_sof_n         : std_logic;
 signal fifo_out_eof_n         : std_logic;
 
 -- ---- delay fl_fifo ----------------------------------------------------
-signal delay_fifo_in_rem            : std_logic_vector(-1 downto 0);
+signal delay_fifo_in_rem      : std_logic_vector(-1 downto 0);
 
 -- ---- fl_driver_ctrl ----------------------------------------------------
 signal ctrl_rx_data          : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
@@ -289,10 +289,6 @@ begin
       TX_SRC_RDY_N    => tx_async_rx_src_rdy_n,
       TX_DST_RDY_N    => tx_async_rx_dst_rdy_n
    );
-
-   --tx_async_rx_delay        <= ctrl_tx_delay;
-   --tx_async_rx_delay_wr_n   <= ctrl_tx_delay_wr_n;
-   --ctrl_tx_delay_rdy_n      <= tx_async_rx_delay_rdy_n;
 
    tx_async_rx_finish <= ctrl_tx_finish;
 
