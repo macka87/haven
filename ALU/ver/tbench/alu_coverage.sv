@@ -3,8 +3,10 @@
  * File Name:    Coverage Class
  * Description:  Measures coverage information during verification.
  * Author:       Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         22.3.2012 
+ * Date:         3.5.2012 
  * ************************************************************************** */
+
+ import math_pkg::*;  
 
 /*!
  * Command Coverage for ALU Input Interface
@@ -19,43 +21,123 @@
 
    // Enabling of data sampling.
    bit enabled;
+   
+   // Enumeration for operation
+   enum logic [3:0] {ADD, SUB, MULT, SHIFT_RIGHT, SHIFT_LEFT, ROTATE_RIGHT, ROTATE_LEFT, NOT, AND, OR, XOR, NAND, NOR, XNOR, INC, DEC} operation;
 
    // Sampled values of interface signals
+   logic rst;
+   logic act;
    logic [1:0] movi;
-   logic [1:0] operation;
+   logic [3:0] operation_s;
    byte unsigned operandA;
    byte unsigned operandB;
    byte unsigned operandIMM;
    byte unsigned operandMEM;
-       
+   
+   // max value 
+   logic [pDataWidth-1:0] max_value = pow (2, pDataWidth) - 1; 
+         
   /*
    * Definition of covergroups
    */
    covergroup CommandsCovergroup;
-     coverpoint movi;
-     coverpoint operation;
+     resetB : coverpoint rst {
+       bins rst0 = {0};        
+       bins rst1 = {1};
+     }
      
-     operandA_00_FF: coverpoint operandA {
-       bins zeros = {0};
-       bins ones  = {8'hFF}; 
+     actH : coverpoint act {
+       bins act1          = {1};    
+       ignore_bins act_ig = {0};
      } 
      
-     operandB_00_FF: coverpoint operandB {
-       bins zeros = {0};
-       bins ones  = {8'hFF}; 
+     moviH : coverpoint movi {
+       bins movi_opB          = {0};        
+       bins movi_opMEM        = {1};
+       bins movi_opIMM        = {2};
+       ignore_bins movi_ig_op = {3};
+     } 
+     
+     operationH: coverpoint operation;
+     
+     // sequences of operations
+     op_after_op: coverpoint operation {
+       bins op_after_op[] = ([0:$] => [0:$]); 
      }
      
-     operandIMM_00_FF: coverpoint operandIMM {
-       bins zeros = {0};
-       bins ones  = {8'hFF}; 
+     opA: coverpoint operandA {
+       bins zeros        = {0};
+       bins ones         = {max_value};
+       bins small_values = {[1:15]};
+       bins big_values   = {[(max_value-15):(max_value-1)]};
+       bins other_values = default;
      }
      
-     operandMEM_00_FF: coverpoint operandMEM {
-       bins zeros = {0};
-       bins ones  = {8'hFF}; 
+     opB: coverpoint operandB {
+       bins zeros        = {0};
+       bins ones         = {max_value};
+       bins small_values = {[1:15]};
+       bins big_values   = {[(max_value-15):(max_value-1)]};
+       bins other_values = default;
      }
+     
+     opIMM: coverpoint operandIMM {
+       bins zeros        = {0};
+       bins ones         = {max_value};
+       bins small_values = {[1:15]};
+       bins big_values   = {[(max_value-15):(max_value-1)]};
+       bins other_values = default;
+     }
+     
+     opMEM: coverpoint operandMEM {
+       bins zeros        = {0};
+       bins ones         = {max_value};
+       bins small_values = {[1:15]};
+       bins big_values   = {[(max_value-15):(max_value-1)]};
+       bins other_values = default;
+     }
+     
+     // all operations with ACT
+     op_act_cross : cross operationH, actH;
+     
+     // all movi variations with ACT
+     movi_act_cross : cross moviH, actH;
+     
+     // all operations x movi x ACT
+     op_movi_act_cross : cross operationH, moviH, actH;
+     
+     // all operations x movi x act => operations x movi x act
+     trans_movi_act_cross : cross op_after_op, actH, moviH;
+     
+     // all corner values x movi x act
+     opA_movi_act_cross : cross opA, moviH, actH;
+     opB_movi_act_cross : cross opB, moviH, actH;
+     opIMM_movi_act_cross : cross opIMM, moviH, actH;
+     opMEM_movi_act_cross : cross opMEM, moviH, actH;
+     
+     // delayed act with operations
+     
+     // sequences of act
+     delayed_act: coverpoint act {
+       bins delayed1_act = (1 => 0 => 1);
+       bins delayed2_act = (1 => 0 [* 2] => 1);
+       bins delayed3_act = (1 => 0 [* 3] => 1);
+       bins delayed4_act = (1 => 0 [* 4] => 1);
+       bins delayed5_act = (1 => 0 [* 5] => 1);
+     }
+     
+     // operation x delayed_act
+     delayed_act_operation_cross : cross delayed_act, operationH;
+     
+     // reset at least two times
+     reset_after_reset: coverpoint rst {
+       bins reset_after_reset = (1 [-> 2]);
+     }
+     
+     option.per_instance=1;                   // Also per instance statistics
    endgroup
-
+   
   /*
    * Constructor.
    */
@@ -88,16 +170,28 @@
    * Run command coverage measures.  
    */ 
    task run();
-     while (enabled) begin  // repeat while enabled
-       @(aluIn.cover_cb);   // Wait for clock
+     while (enabled) begin   // repeat while enabled
+       
+       while (aluIn.cover_cb.RST) begin
+         rst = aluIn.cover_cb.RST;
+         @(aluIn.cover_cb);  // Wait for clock
+         CommandsCovergroup.sample();
+       end
+       
        // Sample signals values
-       movi       = aluIn.cover_cb.MOVI;
-       operation  = aluIn.cover_cb.OP;
-       operandA   = aluIn.cover_cb.REG_A;
-       operandB   = aluIn.cover_cb.REG_B;
-       operandIMM = aluIn.cover_cb.IMM;
-       operandMEM = aluIn.cover_cb.MEM;
+       rst         = aluIn.cover_cb.RST;
+       act         = aluIn.cover_cb.ACT;
+       movi        = aluIn.cover_cb.MOVI;
+       operation_s = aluIn.cover_cb.OP;
+       operandA    = aluIn.cover_cb.REG_A;
+       operandB    = aluIn.cover_cb.REG_B;
+       operandIMM  = aluIn.cover_cb.IMM;
+       operandMEM  = aluIn.cover_cb.MEM;
+       
+       $cast(operation, operation_s);
+       
        CommandsCovergroup.sample();
+       @(aluIn.cover_cb);   // Wait for clock
      end
    endtask : run
   
@@ -136,11 +230,6 @@
        bins zeros = {0};
        bins ones  = {8'hFF}; 
      } 
-     
-     port_output_00_FF: coverpoint port_output {
-       bins zeros = {0};
-       bins ones  = {8'hFF}; 
-     }
    endgroup
 
   /*

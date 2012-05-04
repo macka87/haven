@@ -9,7 +9,8 @@
 /*
  *  ALU Input Interface Declaration
  */ 
- interface iAluIn #(int pDataWidth = 8) (input logic CLK, RESET);  
+ interface iAluIn #(int pDataWidth = 8) (input logic CLK);  
+   logic       RST                 ;   // Reset signal
    logic       ACT                 ;   // Activity signal
    logic       ALU_RDY             ;   // ALU is ready to process instructions
    logic [3:0] OP                  ;   // ALU Operation
@@ -22,16 +23,17 @@
    // Clocking block  
    clocking cb @(posedge CLK);
      input ALU_RDY;
-     output ACT, OP, MOVI, REG_A, REG_B, IMM, MEM;  
+     output RST, ACT, OP, MOVI, REG_A, REG_B, IMM, MEM;  
    endclocking: cb;
    
    // Clocking block for coverage
    clocking cover_cb @(posedge CLK);
-     input ACT, ALU_RDY, OP, MOVI, REG_A, REG_B, IMM, MEM;  
+     input RST, ACT, ALU_RDY, OP, MOVI, REG_A, REG_B, IMM, MEM;  
    endclocking: cover_cb;
 
    // DUT Modport
-   modport aluin (input  ACT, 
+   modport aluin (input  RST,
+                  input  ACT, 
                   output ALU_RDY,
                   input  OP,
                   input  MOVI,
@@ -48,7 +50,7 @@
  /*
  *  ALU Output Interface Declaration
  */ 
- interface iAluOut #(int pDataWidth = 8) (input logic CLK, RESET);  
+ interface iAluOut #(int pDataWidth = 8) (input logic CLK);  
    logic [pDataWidth-1:0] EX_ALU   ;   // Result of ALU
    logic EX_ALU_VLD                ;   // Validity of ALU result
    

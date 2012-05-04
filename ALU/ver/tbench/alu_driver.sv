@@ -40,13 +40,13 @@
       super.new(inst, id, transMbx);
       this.aluIn = aluIn;  //! Store pointer interface 
  
-      this.aluIn.cb.ACT     <= 0;
-      this.aluIn.cb.OP      <= 0;
-      this.aluIn.cb.MOVI    <= 0;
-      this.aluIn.cb.REG_A   <= 0;
-      this.aluIn.cb.REG_B   <= 0;
-      this.aluIn.cb.IMM     <= 0;
-      this.aluIn.cb.MEM     <= 0;
+      this.aluIn.cb.ACT       <= 0;
+      this.aluIn.cb.OP        <= 0;
+      this.aluIn.cb.MOVI      <= 0;
+      this.aluIn.cb.REG_A     <= 0;
+      this.aluIn.cb.REG_B     <= 0;
+      this.aluIn.cb.IMM       <= 0;
+      this.aluIn.cb.MEM       <= 0;
     endfunction: new  
     
    /*! 

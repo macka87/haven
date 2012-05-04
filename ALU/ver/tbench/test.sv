@@ -14,7 +14,7 @@ import sv_basic_comp_pkg::*;
  */ 
 program TEST (
   input  logic         CLK,
-  output logic         RST,
+  //output logic         RST,
   iAluIn               ALU_IN,
   iAluOut              ALU_OUT
   );
@@ -73,7 +73,7 @@ program TEST (
                       ALU_IN
                       );
      aluGenInCnt.setCallbacks(scoreboard.inputCbs); 
-     aluCoverage.addInALUInterface(ALU_IN,"ALU Input Interface Coverage");
+     aluCoverage.addInALUInterface(ALU_IN, "ALU Input Interface Coverage");
      
      //! Create Input Wrapper
      inputWrapper = new("Input Wrapper", inputMbx); 
@@ -96,10 +96,11 @@ program TEST (
   
   // Resets design
   task resetDesign();
-    RST   = 1;                  // Init Reset variable
+    ALU_IN.cb.RST <= 1;                  // Init Reset variable
     ALU_IN.cb.ACT <= 0;         // No activity during reset
-    #RESET_TIME      RST = 0;   // Deactivate reset after reset_time
-  endtask : resetDesign
+    #RESET_TIME      
+    ALU_IN.cb.RST <= 0; 
+  endtask : resetDesign  
   
   // Enable test Environment
   task enableTestEnvironment();

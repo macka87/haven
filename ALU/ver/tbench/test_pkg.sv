@@ -31,7 +31,7 @@ package test_pkg;
    parameter byte DRIVER_BT_DELAY_HIGH   = 3;
    
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 1000; // Count of transactions
+   parameter TRANSACTION_COUT = 100; // Count of transactions
    parameter SEED1            = 1;    // Seed for PRNG
    parameter SEED2            = 2;    // Seed for PRNG
 endpackage

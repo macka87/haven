@@ -14,7 +14,7 @@ import test_pkg::*; // Test constants
  
  module DUT (
    input logic    CLK,
-   input logic    RST,
+  // input logic    RST,
    iAluIn.aluin   ALU_IN,
    iAluOut.aluout ALU_OUT
  );
@@ -28,7 +28,7 @@ import test_pkg::*; // Test constants
 
    VHDL_DUT_U (
      .CLK            (CLK),
-     .RST            (RST),
+     .RST            (ALU_IN.RST),
 	   .ACT            (ALU_IN.ACT),
      
      // Input interface

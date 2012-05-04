@@ -49,6 +49,7 @@
     * callback.
     */
     task run();
+     
       ALUOutTransaction #(pDataWidth) transaction; 
       Transaction tr;
 
