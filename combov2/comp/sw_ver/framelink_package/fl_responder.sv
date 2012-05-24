@@ -140,7 +140,7 @@
       
       do begin
         btDelayMbx.get(btDelayFull);
-        //$write("btDelayFull: %b\n", btDelayFull);
+        $write("btDelayFull: %b\n", btDelayFull);
         enBtDelay = btDelayFull[8];    // 9. bit is enable bit
         btDelay   = btDelayFull[7:0];  // 8. - 7. bits represent delay 
         if (enBtDelay == 0) break;

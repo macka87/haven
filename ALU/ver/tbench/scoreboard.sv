@@ -198,6 +198,7 @@ typedef TransactionTable#(1) TransactionTableType;
     virtual task post_tr(Transaction transaction, byte id);
       bit status = 0;
       sc_table.remove(transaction, status);
+      //transaction.display("SC: REMOVED TRANSACTION:");
       if (status==0)begin
          $write("Unknown transaction (number: %d) in monitor %d:\n", transCount, id);
          $timeformat(-9, 3, " ns", 8);

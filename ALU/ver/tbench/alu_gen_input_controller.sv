@@ -6,7 +6,7 @@
  * Date:         23.3.2012 
  * ************************************************************************** */
  
- class ALUGenInputController #(pDataWidth = 8) extends GenInputController;
+ class ALUGenInputController #(pDataWidth = 8, genTrans = 0) extends GenInputController;
    
    /*
     * Public Class Atributes
@@ -32,7 +32,7 @@
     function new (string inst, int framework, tTransMbx inputMbx,
                   byte btDelayEn_wt, byte btDelayDi_wt, 
                   byte btDelayLow, byte btDelayHigh,
-                  virtual iAluIn #(pDataWidth) aluIn  //!! bolo predtym iAluIn.tb
+                  virtual iAluIn #(pDataWidth) aluIn  
                  ); 
       
       super.new(inst, framework, inputMbx);
@@ -40,7 +40,7 @@
       this.aluIn    = aluIn;
       
       //! Create generator
-      generator     = new("ALU Generator", transMbx);
+      generator     = new("ALU Generator", genTrans, -1, transMbx);
       
       //! Create blueprint transaction
       aluBlueprint  = new();
@@ -131,13 +131,16 @@
       //! run generator
       generator.setEnabled(transCount);
       
-      // software framework
-      if (framework == 0)
-        swAluDriver.sendTransactions(transCount);  
+      if (genTrans != 1) begin
+      
+        // software framework
+        if (framework == 0)
+          swAluDriver.sendTransactions(transCount);  
                     
-      // hardware framework
-      if (framework == 1) 
-        hwAluSender.sendTransactions(transCount); 
+        // hardware framework
+        if (framework == 1) 
+          hwAluSender.sendTransactions(transCount); 
+      end    
     endtask : sendGenerated 
     
  endclass : ALUGenInputController

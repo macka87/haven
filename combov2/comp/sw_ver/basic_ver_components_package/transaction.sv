@@ -37,6 +37,18 @@
     endfunction : copy
 
    /*!
+    * Writes transactions to external file.
+    */
+    virtual function void fwrite (int fileDescr);
+    endfunction : fwrite  
+    
+   /*!
+    * Reads transactions from external file.
+    */
+    virtual function void fread (int fileDescr);
+    endfunction : fread  
+
+   /*!
     * Compares the current value of the object instance with the current value
     * of the specified object instance, according to the specified kind. 
     * Returns TRUE (i.e., non-zero) if the value is identical. If the value is

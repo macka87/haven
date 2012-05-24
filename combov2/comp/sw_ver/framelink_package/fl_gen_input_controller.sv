@@ -48,7 +48,7 @@
       this.fl       = fl;
       
       //! Create generator
-      generator     = new("FrameLink Generator", transMbx);
+      generator     = new("FrameLink Generator", 2, -1, transMbx);
       
       //! Create blueprint transaction
       flBlueprint   = new();

@@ -94,8 +94,8 @@
         
         waitForAluRdy();
         
-        $write("enBtDelay: %d\n",transaction.enBtDelay);
-        $write("btDelay: %d\n",transaction.btDelay);
+        //$write("enBtDelay: %d\n",transaction.enBtDelay);
+        //$write("btDelay: %d\n",transaction.btDelay);
         
         // Set ACT signal and wait before sending next transaction
         if (!transaction.enBtDelay) aluIn.cb.ACT <= 1;

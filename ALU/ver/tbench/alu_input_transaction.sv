@@ -137,5 +137,25 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
       
       copy = tr;  
     endfunction: copy
- 
- endclass: ALUInTransaction
+
+   /*!
+    * Function for writing transaction into an external file. 
+    */
+    function void fwrite(int fileDescr);
+      $fwrite(fileDescr, "%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+    endfunction : fwrite
+    
+   /*!
+    * Function for reading transaction from an external file. 
+    */
+    function void fread(int fileDescr);
+      int r;
+            
+      r = $fscanf(fileDescr,"%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+      
+      if (r==0) begin
+        $write("File corrupted!!!");
+        $stop;
+      end  
+    endfunction : fread
+  endclass: ALUInTransaction

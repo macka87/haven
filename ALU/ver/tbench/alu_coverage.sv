@@ -9,7 +9,7 @@
  import math_pkg::*;  
 
 /*!
- * Command Coverage for ALU Input Interface
+ * Functional Coverage for ALU Input Interface
  * 
  * This class measures exercised combinations of interface signals.
  */ 
@@ -41,7 +41,7 @@
   /*
    * Definition of covergroups
    */
-   covergroup CommandsCovergroup;
+   covergroup FunctionalCovergroup;
      resetB : coverpoint rst {
        bins rst0 = {0};        
        bins rst1 = {1};
@@ -131,9 +131,10 @@
      delayed_act_operation_cross : cross delayed_act, operationH;
      
      // reset at least two times
-     reset_after_reset: coverpoint rst {
-       bins reset_after_reset = (1 [-> 2]);
-     }
+    /* reset_after_reset: coverpoint rst {
+       bins reset_down = (1 => 0); 
+       bins reset_up   = (0 => 1);
+     } */
      
      option.per_instance=1;                   // Also per instance statistics
    endgroup
@@ -144,13 +145,13 @@
    function new (virtual iAluIn #(pDataWidth) aluIn,
                  string inst);
      this.aluIn = aluIn;         // Store interface
-     CommandsCovergroup = new;   // Create covergroup
+     FunctionalCovergroup = new; // Create covergroup
      enabled = 0;                // Disable interface sampling
      this.inst = inst;
    endfunction
 
   /*
-   * Enable command coverage measures.
+   * Enable functional coverage measures.
    */
    task setEnabled();
      enabled = 1;  // Coverage Enabling
@@ -160,14 +161,14 @@
    endtask : setEnabled
   
   /*
-   * Disable command coverage measures.
+   * Disable functional coverage measures.
    */        
    task setDisabled();
      enabled = 0;  // Disable measures
    endtask : setDisabled
   
   /*
-   * Run command coverage measures.  
+   * Run functional coverage measures.  
    */ 
    task run();
      while (enabled) begin   // repeat while enabled
@@ -175,7 +176,7 @@
        while (aluIn.cover_cb.RST) begin
          rst = aluIn.cover_cb.RST;
          @(aluIn.cover_cb);  // Wait for clock
-         CommandsCovergroup.sample();
+         FunctionalCovergroup.sample();
        end
        
        // Sample signals values
@@ -190,7 +191,7 @@
        
        $cast(operation, operation_s);
        
-       CommandsCovergroup.sample();
+       FunctionalCovergroup.sample();
        @(aluIn.cover_cb);   // Wait for clock
      end
    endtask : run
@@ -199,13 +200,13 @@
    * Display coverage statistics.  
    */
    task display();
-     $write("Commands coverage for %s: %d percent\n",
-             inst, CommandsCovergroup.get_inst_coverage());
+     $write("Functional coverage for %s: %d percent\n",
+             inst, FunctionalCovergroup.get_inst_coverage());
    endtask : display
  endclass: CoverageIn
 
 /*!
- * Command Coverage for Output ALU Interface
+ * Functional Coverage for Output ALU Interface
  * 
  * This class measures exercised combinations of interface signals.
  */ 
@@ -225,7 +226,7 @@
   /*
    * Definition of covergroups
    */
-   covergroup CommandsCovergroup;
+   covergroup FunctionalCovergroup;
      alu_output_00_FF: coverpoint alu_output {
        bins zeros = {0};
        bins ones  = {8'hFF}; 
@@ -238,13 +239,13 @@
    function new (virtual iAluOut #(pDataWidth) aluOut,
                  string inst);
      this.aluOut = aluOut;       // Store interface
-     CommandsCovergroup = new;   // Create covergroup
+     FunctionalCovergroup = new; // Create covergroup
      enabled = 0;                // Disable interface sampling
      this.inst = inst;
    endfunction
 
   /*
-   * Enable command coverage measures.
+   * Enable functional coverage measures.
    */
    task setEnabled();
      enabled = 1;  // Coverage Enabling
@@ -254,21 +255,21 @@
    endtask : setEnabled
   
   /*
-   * Disable command coverage measures.
+   * Disable functional coverage measures.
    */        
    task setDisabled();
      enabled = 0;  // Disable measures
    endtask : setDisabled
   
   /*
-   * Run command coverage measures.  
+   * Run functional coverage measures.  
    */ 
    task run();
      while (enabled) begin  // repeat while enabled
        @(aluOut.cb);        // Wait for clock
        // Sample signals values
        alu_output  = aluOut.cb.EX_ALU;
-       CommandsCovergroup.sample();
+       FunctionalCovergroup.sample();
      end
    endtask : run
   
@@ -276,20 +277,20 @@
    * Display coverage statistics.  
    */
    task display();
-     $write("Commands coverage for %s: %d percent\n",
-             inst, CommandsCovergroup.get_inst_coverage());
+     $write("Functional coverage for %s: %d percent\n",
+             inst, FunctionalCovergroup.get_inst_coverage());
    endtask : display
  endclass: CoverageOut
 
 /*! 
  * ALU Coverage
- * This class measures coverage of commands.
+ * This class measures functional coverage.
  */    
  class ALUCoverage #(int pDataWidth = 8);
    string inst;
    
-   CoverageIn  #(pDataWidth)  cmdListIn[$];   // Commands coverage list
-   CoverageOut #(pDataWidth)  cmdListOut[$];  // Commands coverage list
+   CoverageIn  #(pDataWidth)  cmdListIn[$];   // Functional coverage list
+   CoverageOut #(pDataWidth)  cmdListOut[$];  // Functional coverage list
   
   /*! 
     * Constructor
@@ -304,22 +305,22 @@
    * Add interfaces to coverage measurement.
    */
      
-   // Add input interface of ALU to command coverage 
+   // Add input interface of ALU to functional coverage 
    task addInALUInterface (virtual iAluIn #(pDataWidth) aluIn,
                            string inst
                            );
-     // Create commands coverage class
+     // Create functional coverage class
      CoverageIn #(pDataWidth) cmdCoverageIn = new(aluIn, inst);  
        
      // Insert class into list
      cmdListIn.push_back(cmdCoverageIn);
    endtask : addInALUInterface
     
-   // Add output interface of ALU to command coverage 
+   // Add output interface of ALU to functional coverage 
    task addOutALUInterface (virtual iAluOut #(pDataWidth) aluOut,
                            string inst
                            );
-     // Create commands coverage class
+     // Create functional coverage class
      CoverageOut #(pDataWidth) cmdCoverageOut = new(aluOut, inst);  
       
      // Insert class into list

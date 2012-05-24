@@ -30,7 +30,7 @@ program TEST (
   tTransMbx                                              outputMbx; 
   
   //! Input Controller of generated input  
-  ALUGenInputController #(DATA_WIDTH)                    aluGenInCnt; 
+  ALUGenInputController #(DATA_WIDTH, GEN_TRANS)         aluGenInCnt; 
   
   //! Input Wrapper
   InputWrapper                                           inputWrapper;  

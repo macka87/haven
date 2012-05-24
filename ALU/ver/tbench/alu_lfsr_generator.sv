@@ -1,59 +1,20 @@
 /* *****************************************************************************
  * Project Name: Software Framework for Functional Verification 
- * File Name:    Transaction Generator Class
+ * File Name:    Transaction LFSR Generator Class
  * Description: 
- * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
- * Date:         27.2.2011 
+ * Author:       Marcela Simkova <isimkova@fit.vutbr.cz> 
+ * Date:         24.5.2012 
  * ************************************************************************** */
 
- class Generator;
+ class AluLFSRGenerator #(pDataWidth = 8) extends Generator;
   
    /*
     * Public Class Atributes
     */
  
-   /*!
-    * Internal mailbox is used only when no mailbox is specified in the
-    * constructor.
-    */
-    tTransMbx transMbx;
-    int trans_file;
-    
-    /*
-     * It is possible to define the location where transactions are stored.
-     * 0 = mailbox
-     * 1 = storage to external file 
-     * 2 = reading from external file       
-     * 3 = mailbox and storage to external file      
-     */
-    int gen_output = 0;
-
-   /*!
-    * The generator will stop after the specified number of object
-    * instances has been generated and consumed by the output channel.
-    * The generator must be reset before it can be restarted. If the
-    * value of this property is 0, the generator will not stop on
-    * its own.
-    */
-    int unsigned stop_after_n_insts = 0;
-    
-   /*
-    * Transaction or data descriptor instance that is repeatedly
-    * randomized to create the random content of the output descriptor
-    * stream. The individual instances of the output stream are copied
-    * from this instance, after randomization, using the Transaction::copy()
-    * method. Data_id property of this instance is also set before each 
-    * randomization. It will be reset to 0 when the generator is reset and 
-    * after the specified maximum number of instances has been generated.
-    */
-    Transaction blueprint;
-    bit         enabled;    //! Generator is enabled
-    string      inst;       //! Generator identification 
-
-   /*
-    * Protected Class Atributes
-    */
-    protected int data_id;
+   LFSR #(4) opGen;               //! LFSR generator for operation
+   
+   mailbox #(logic [3:0]) opMbx;  //! Mailbox for generated values
     
    /*
     * Public Class Methods
@@ -69,16 +30,21 @@
     * \param inst - generator instance name
     * \param transMbx - transaction mailbox                
     */
-    function new(string inst, int gen_output = 0, int stream_id = -1, tTransMbx transMbx = null);      
-      if (transMbx == null) 
-        this.transMbx = new(1);
-      else 
-        this.transMbx = transMbx;
-
-      this.gen_output = gen_output;      // Location of transactions
-      enabled         = 0;               // Disable generator by default
-      blueprint       = null;            // Null the blueprint transaction
-      data_id         = 0;               // Set default data identifier
+    function new(string inst, 
+                 int gen_output = 0, 
+                 int stream_id = -1, 
+                 tTransMbx transMbx = null
+                 );      
+      
+      logic [3:0][3:0] opSeed;
+      
+      super.new(inst, gen_output, stream_id, transMbx);
+      
+      opMbx  = new(1);
+      opSeed = {4'1101, 4'1110, 4'1111, 4'0111};
+      
+      //! Create generators
+      opGen = new("OPERATION Generator", opMbx, opSeed, 4'0011);
     endfunction : new
     
    /*!
@@ -95,7 +61,10 @@
             $fwrite(trans_file, "%d\n", stop_after_n_insts);
           end  
           else if (gen_output == 2) 
-            trans_file = $fopen("trans_file.txt", "r");  
+            trans_file = $fopen("trans_file.txt", "r"); 
+          
+          opGen.setEnabled();   
+          
           run();
         join_none
       else
@@ -108,6 +77,7 @@
     task setDisabled();
       this.enabled = 0;
       if (gen_output == 1) $fclose(trans_file);
+      opGen.setDisabled();  
     endtask : setDisabled
     
    /*
@@ -115,6 +85,7 @@
     */    
     virtual task run();
       Transaction trans;
+      logic [3:0] op; 
       int counter = 0;
       
       //! Reading transactions from external file      
@@ -146,6 +117,12 @@
         while (enabled && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin          
           trans = blueprint.copy;      //! Copy from blueprint
           trans.data_id = data_id;     //! Set instance count
+          
+          // Set random values according to LFSR
+          opMbx.get(op);
+          $write("operation: %b\n", op);
+          trans.operation = op;
+          
           assert(trans.randomize);     //! Randomize transaction
           //trans.display(inst);       //! Display transaction
         
@@ -166,4 +143,5 @@
       
       enabled = 0;  
     endtask : run
-  endclass : Generator
+  endclass : AluLFSRGenerator
+
