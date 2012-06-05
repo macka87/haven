@@ -11,7 +11,7 @@ package test_pkg;
    import math_pkg::*;       
    
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK  = 0;                         // 0 = software framework
+   int FRAMEWORK  = 1;                         // 0 = software framework
                                                // 1 = sw/hw framework      
    // DUT GENERICS
    parameter DATA_WIDTH   = 64;                // FrameLink data width
@@ -25,6 +25,15 @@ package test_pkg;
    parameter CLK_PERIOD   = 10ns;
    parameter RESET_TIME   = 10*CLK_PERIOD;
    parameter SIM_DELAY    = 100;
+   
+   // GENERATOR PARAMETERS
+   parameter GEN_TRANS      = 0;   // 0 = simulation with generated transactions
+                                   // 1 = generation of transactions and their
+                                   //     storage to external file  
+                                   // 2 = reading transactions from external
+                                   //     file without generation
+                                   // 3 = simulation with generated transactions
+                                   //     and their storage to external file   
 
    // TRANSACTION FORMAT 
    int GENERATOR_FL_FRAME_COUNT     = 1;       // frame parts
@@ -54,7 +63,8 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 20000;  // Count of transactions
+
+   parameter TRANSACTION_COUT = 100000;  // Count of transactions
    parameter SEED1            = 1;  // Seed for PRNG
    parameter SEED2            = 2;  // Seed for PRNG
 endpackage

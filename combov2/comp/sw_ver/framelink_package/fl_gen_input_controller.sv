@@ -6,7 +6,7 @@
  * Date:         27.2.2011 
  * ************************************************************************** */
  
- class FrameLinkGenInputController #(int pDataWidth=32, int pDremWidth=2)
+ class FrameLinkGenInputController #(int pDataWidth=32, int pDremWidth=2, int genTrans = 0)
        extends GenInputController;
    
    /*
@@ -48,8 +48,8 @@
       this.fl       = fl;
       
       //! Create generator
-      generator     = new("FrameLink Generator", 2, -1, transMbx);
-      
+      generator     = new("FrameLink Generator", genTrans, -1, transMbx);
+          
       //! Create blueprint transaction
       flBlueprint   = new();
       

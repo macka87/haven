@@ -33,6 +33,15 @@ package test_pkg;
    parameter RESET_TIME = 10*CLK_PERIOD;
    parameter SIM_DELAY  = 100;
    
+   // GENERATOR PARAMETERS
+   parameter GEN_TRANS      = 0;   // 0 = simulation with generated transactions
+                                   // 1 = generation of transactions and their
+                                   //     storage to external file  
+                                   // 2 = reading transactions from external
+                                   //     file without generation
+                                   // 3 = simulation with generated transactions
+                                   //     and their storage to external file
+   
    // TRANSACTION FORMAT 
    parameter GENERATOR_FL_FRAME_COUNT       = 1;                // frame parts
    int       GENERATOR_FL_PART_SIZE_MAX[]   = '{UH_SIZE};       // maximal size of part

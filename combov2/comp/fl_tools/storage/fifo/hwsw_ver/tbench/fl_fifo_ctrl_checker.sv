@@ -93,13 +93,13 @@
     * Counts stored items and frames.        
     */
     task updateStatus(inout int items, frames);
-      if (!rx.cb.SRC_RDY_N && !rx.cb.DST_RDY_N) begin
+      if (!rx.cover_cb.SRC_RDY_N && !rx.cover_cb.DST_RDY_N) begin
         items++;
-        if (!rx.cb.EOF_N) frames++;
+        if (!rx.cover_cb.EOF_N) frames++;
       end
-      if (!tx.cb.SRC_RDY_N && !tx.cb.DST_RDY_N) begin
+      if (!tx.cover_cb.SRC_RDY_N && !tx.cover_cb.DST_RDY_N) begin
         items--;
-        if (!tx.cb.SOF_N) frames--;
+        if (!tx.cover_cb.SOF_N) frames--;
         end
     endtask : updateStatus
    

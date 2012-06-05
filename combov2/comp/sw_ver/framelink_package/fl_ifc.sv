@@ -19,10 +19,16 @@
      logic SRC_RDY_N            = 1;  // Source data ready active in low
      logic DST_RDY_N;                 // Destination data ready active in low
     
+     // Clocking block
      clocking cb @(posedge CLK);
        input  DST_RDY_N;
        output DATA, DREM, SOF_N, EOF_N, SOP_N, EOP_N, SRC_RDY_N;  
      endclocking: cb;
+     
+     // Clocking block for coverage
+     clocking cover_cb @(posedge CLK);
+       input DATA, DREM, SOF_N, EOF_N, SOP_N, EOP_N, SRC_RDY_N, DST_RDY_N;  
+     endclocking: cover_cb;
 
     /*
      * Receive Modport
@@ -40,6 +46,7 @@
      * Transitive Modport
      */
      modport tb (clocking cb);
+     modport cover_tb (clocking cover_cb);
 
     /*
      * Interface properties/assertions
@@ -173,6 +180,11 @@
      input DATA, DREM, SOF_N, EOF_N, SOP_N, EOP_N, SRC_RDY_N, DST_RDY_N;  
    endclocking: monitor_cb;
    
+   // Clocking block for coverage
+   clocking cover_cb @(posedge CLK);
+     input DATA, DREM, SOF_N, EOF_N, SOP_N, EOP_N, SRC_RDY_N, DST_RDY_N;  
+   endclocking: cover_cb;
+   
   /*
    * Receive Modport
    */
@@ -189,6 +201,7 @@
    * Transitive Modport
    */
    modport tb (clocking cb);
+   modport cover_tb (clocking cover_cb);
   
   /*
    * Monitor Modport

@@ -71,9 +71,11 @@
      cross sof, sop, eof, eop, src_rdy, dst_rdy {
        // Ilegal values
        illegal_bins ilegal_vals0 = binsof(sop.sop1) && binsof(sof.sof0) && 
-                                   binsof(src_rdy.src_rdy0);
+                                   binsof(src_rdy.src_rdy0) && 
+                                   binsof(dst_rdy.dst_rdy0);
        illegal_bins ilegal_vals1 = binsof(eop.eop1) && binsof(eof.eof0) && 
-                                   binsof(src_rdy.src_rdy0);
+                                   binsof(src_rdy.src_rdy0) &&
+                                   binsof(dst_rdy.dst_rdy0); 
        }   
           
        // Drem crospoint
@@ -118,15 +120,15 @@
     */     
     task run();
       while (enabled) begin   // Repeat while enabled
-        @(fl.cb);             // Wait for clock
+        @(fl.cover_cb);      // Wait for clock
         // Sample signals values
-        drem  = fl.cb.DREM;
-        sof_n = fl.cb.SOF_N;
-        eof_n = fl.cb.EOF_N;
-        sop_n = fl.cb.SOP_N;
-        eop_n = fl.cb.EOP_N;
-        src_rdy_n = fl.cb.SRC_RDY_N;
-        dst_rdy_n = fl.cb.DST_RDY_N;
+        drem  = fl.cover_cb.DREM;
+        sof_n = fl.cover_cb.SOF_N;
+        eof_n = fl.cover_cb.EOF_N;
+        sop_n = fl.cover_cb.SOP_N;
+        eop_n = fl.cover_cb.EOP_N;
+        src_rdy_n = fl.cover_cb.SRC_RDY_N;
+        dst_rdy_n = fl.cover_cb.DST_RDY_N;
         CommandsCovergroup.sample();
       end
     endtask : run
@@ -205,9 +207,11 @@
       cross sof, sop, eof, eop, src_rdy, dst_rdy {
         // Ilegal values
         illegal_bins ilegal_vals0 = binsof(sop.sop1) && binsof(sof.sof0) && 
-                                    binsof(src_rdy.src_rdy0);
+                                    binsof(src_rdy.src_rdy0) && 
+                                    binsof(dst_rdy.dst_rdy0);
         illegal_bins ilegal_vals1 = binsof(eop.eop1) && binsof(eof.eof0) && 
-                                    binsof(src_rdy.src_rdy0);
+                                    binsof(src_rdy.src_rdy0) &&
+                                    binsof(dst_rdy.dst_rdy0); 
         }   
           
       // Drem crospoint
@@ -252,15 +256,15 @@
     */
     task run();
        while (enabled) begin           // Repeat while enabled
-         @(fl.monitor_cb);             // Wait for clock
+         @(fl.cover_cb);              // Wait for clock
          // Sample signals values
-         drem  = fl.monitor_cb.DREM;
-         sof_n = fl.monitor_cb.SOF_N;
-         eof_n = fl.monitor_cb.EOF_N;
-         sop_n = fl.monitor_cb.SOP_N;
-         eop_n = fl.monitor_cb.EOP_N;
-         src_rdy_n = fl.monitor_cb.SRC_RDY_N;
-         dst_rdy_n = fl.monitor_cb.DST_RDY_N;
+         drem  = fl.cover_cb.DREM;
+         sof_n = fl.cover_cb.SOF_N;
+         eof_n = fl.cover_cb.EOF_N;
+         sop_n = fl.cover_cb.SOP_N;
+         eop_n = fl.cover_cb.EOP_N;
+         src_rdy_n = fl.cover_cb.SRC_RDY_N;
+         dst_rdy_n = fl.cover_cb.DST_RDY_N;
          CommandsCovergroup.sample();
       end
     endtask : run
