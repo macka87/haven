@@ -141,27 +141,6 @@ architecture arch of verification_core is
    signal fl_binder_out_src_rdy_n   : std_logic;
    signal fl_binder_out_dst_rdy_n   : std_logic;
 
-   -- FrameLink NetCOPE Adder component input
-   signal fl_netcope_adder_in_data      : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
-   signal fl_netcope_adder_in_rem       : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
-   signal fl_netcope_adder_in_sof_n     : std_logic;
-   signal fl_netcope_adder_in_sop_n     : std_logic;
-   signal fl_netcope_adder_in_eop_n     : std_logic;
-   signal fl_netcope_adder_in_eof_n     : std_logic;
-   signal fl_netcope_adder_in_src_rdy_n : std_logic;
-   signal fl_netcope_adder_in_dst_rdy_n : std_logic;
-
-   -- FrameLink NetCOPE Adder component output
-   signal fl_netcope_adder_out_data     : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
-   signal fl_netcope_adder_out_rem      : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
-   signal fl_netcope_adder_out_sof_n    : std_logic;
-   signal fl_netcope_adder_out_sop_n    : std_logic;
-   signal fl_netcope_adder_out_eop_n    : std_logic;
-   signal fl_netcope_adder_out_eof_n    : std_logic;
-   signal fl_netcope_adder_out_src_rdy_n: std_logic;
-   signal fl_netcope_adder_out_dst_rdy_n: std_logic;
-
-
    signal output_ready_all       : std_logic;
 
    -- clock gate signals
@@ -358,15 +337,6 @@ icon_i : icon3
       CLK => clk_dut,
       TRIG0 => ila1_trig0
    );
-
-   ila2_trig0(0)            <= fl_netcope_adder_out_src_rdy_n;
-   ila2_trig0(1)            <= fl_netcope_adder_out_dst_rdy_n;
-   ila2_trig0(2)            <= fl_netcope_adder_out_sof_n;
-   ila2_trig0(3)            <= fl_netcope_adder_out_sop_n;
-   ila2_trig0(4)            <= fl_netcope_adder_out_eof_n;
-   ila2_trig0(5)            <= fl_netcope_adder_out_eop_n;
-   ila2_trig0(8 downto 6)   <= fl_netcope_adder_out_rem;
-   ila2_trig0(72 downto 9)  <= fl_netcope_adder_out_data;
 
    ila2_i : ila73
    port map (
@@ -583,60 +553,17 @@ icon_i : icon3
    );
 
 
-   -- NetCOPE Adder input mapping
-   fl_netcope_adder_in_data       <= fl_binder_out_data;
-   fl_netcope_adder_in_rem        <= fl_binder_out_rem;
-   fl_netcope_adder_in_sof_n      <= fl_binder_out_sof_n;
-   fl_netcope_adder_in_sop_n      <= fl_binder_out_sop_n;
-   fl_netcope_adder_in_eop_n      <= fl_binder_out_eop_n;
-   fl_netcope_adder_in_eof_n      <= fl_binder_out_eof_n;
-   fl_netcope_adder_in_src_rdy_n  <= fl_binder_out_src_rdy_n;
-   fl_binder_out_dst_rdy_n        <= fl_netcope_adder_in_dst_rdy_n;
-
-   -- ------------------------------------------------------------------------
-   --                              NetCOPE Adder
-   -- ------------------------------------------------------------------------
-   netcope_adder_i: entity work.FL_NETCOPE_ADDER
-   generic map(
-      DATA_WIDTH => ENV_DATA_WIDTH
-   )
-   port map(
-      CLK           => CLK,
-      RESET         => RESET,
-
-      -- input interface
-      RX_DATA       => fl_netcope_adder_in_data,
-      RX_REM        => fl_netcope_adder_in_rem,
-      RX_SOF_N      => fl_netcope_adder_in_sof_n,
-      RX_SOP_N      => fl_netcope_adder_in_sop_n,
-      RX_EOP_N      => fl_netcope_adder_in_eop_n,
-      RX_EOF_N      => fl_netcope_adder_in_eof_n,
-      RX_SRC_RDY_N  => fl_netcope_adder_in_src_rdy_n,
-      RX_DST_RDY_N  => fl_netcope_adder_in_dst_rdy_n,
-
-      -- output interface
-      TX_DATA       => fl_netcope_adder_out_data,
-      TX_REM        => fl_netcope_adder_out_rem,
-      TX_SOF_N      => fl_netcope_adder_out_sof_n,
-      TX_SOP_N      => fl_netcope_adder_out_sop_n,
-      TX_EOP_N      => fl_netcope_adder_out_eop_n,
-      TX_EOF_N      => fl_netcope_adder_out_eof_n,
-      TX_SRC_RDY_N  => fl_netcope_adder_out_src_rdy_n,
-      TX_DST_RDY_N  => fl_netcope_adder_out_dst_rdy_n
-   );
-
-
    -- ------------------------------------------------------------------------
    --                          Mapping of outputs
    -- ------------------------------------------------------------------------
-   TX_DATA       <= fl_netcope_adder_out_data;
-   TX_REM        <= fl_netcope_adder_out_rem;
-   TX_SOF_N      <= fl_netcope_adder_out_sof_n;
-   TX_SOP_N      <= fl_netcope_adder_out_sop_n;
-   TX_EOP_N      <= fl_netcope_adder_out_eop_n;
-   TX_EOF_N      <= fl_netcope_adder_out_eof_n;
-   TX_SRC_RDY_N  <= fl_netcope_adder_out_src_rdy_n;
-   fl_netcope_adder_out_dst_rdy_n  <= TX_DST_RDY_N;
+   TX_DATA                  <= fl_binder_out_data;
+   TX_REM                   <= fl_binder_out_rem;
+   TX_SOF_N                 <= fl_binder_out_sof_n;
+   TX_SOP_N                 <= fl_binder_out_sop_n;
+   TX_EOP_N                 <= fl_binder_out_eop_n;
+   TX_EOF_N                 <= fl_binder_out_eof_n;
+   TX_SRC_RDY_N             <= fl_binder_out_src_rdy_n;
+   fl_binder_out_dst_rdy_n  <= TX_DST_RDY_N;
 
 
 --   TX_DATA       <= RX_DATA;
