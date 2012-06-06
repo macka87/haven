@@ -1,0 +1,17 @@
+# mt_gen_sig.fdo: Mersenne twister 
+# Copyright (C) 2011
+# Author(s): Marcela Simkova <xsimko03@stud.fit.vutbr.cz>
+
+# Paths
+set TB_BASE  "/testbench"
+
+source       "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+blk_mt "$TB_BASE" 
+
+restart -f
+run 10 us

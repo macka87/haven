@@ -1,0 +1,17 @@
+# Copyright (C) 2012
+# Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
+
+set FIRMWARE_BASE         "../../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set MT_BASE               "$COMP_BASE/hw_ver/random_generator/mersenne_twister_gen_n"
+
+set SIG_FILE              "$MT_BASE/sim/mt_gen_n_sig.fdo"
+set TB_FILE               "$MT_BASE/sim/mt_gen_n_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "MT" $MT_BASE "FULL" ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE
