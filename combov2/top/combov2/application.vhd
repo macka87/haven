@@ -164,9 +164,9 @@ begin
    fl_output_dst_rdy_n   <= TX_DST_RDY_N;
 
    -- -------------------------------------------------------------------------
-   -- Verification Core
+   -- Verification Engine
    -- -------------------------------------------------------------------------
-   ver_core_i: entity work.verification_core
+   ver_engine_i: entity work.verification_engine
    generic map(
       -- frame data width in bits
       DATA_WIDTH     => VER_CORE_DATA_WIDTH
