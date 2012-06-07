@@ -73,7 +73,7 @@ constant WORD_CNT_MAX_VALUE   : integer := MAX_FRAME_LENGTH/(DATA_WIDTH/8)-1;
 constant WORD_CNT_WIDTH         : integer := log2(WORD_CNT_MAX_VALUE);
 
 -- types of transactions
-constant OBSERVER_TRANS_TYPE :  std_logic_vector(7 downto 0) := X"0B";
+constant OBSERVER_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"8B";
 
 -- endpoint tag
 constant ENDPOINT_TAG : std_logic_vector(7 downto 0) :=
@@ -135,7 +135,7 @@ begin
 
    -- data in the header
    header_data(63 downto 16) <= (others => '0');
-   header_data(15 downto  8) <= OBSERVER_TRANS_TYPE;
+   header_data(15 downto  8) <= OBSERVER_PROTOCOL_ID;
    header_data(7  downto  0) <= ENDPOINT_TAG;
 
    -- ------------------- data multiplexer ----------------------
