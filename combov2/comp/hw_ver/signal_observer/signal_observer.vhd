@@ -211,8 +211,8 @@ begin
    rx_rearranger_valid     <= NOT (sig_data_fifo_rd_empty OR observer_stopped);
    sig_data_fifo_rd_read   <= rx_rearranger_read_next OR observer_stopped;
 
-   -- --------------- OBSERVER_REARRANGER instance ---------------------------
-   observer_rearranger_i : entity work.OBSERVER_REARRANGER
+   -- --------------- REARRANGER instance ---------------------------
+   rearranger_i : entity work.REARRANGER
    generic map(
       IN_DATA_WIDTH   => IN_DATA_WIDTH,
       OUT_DATA_WIDTH  => OUT_DATA_WIDTH
