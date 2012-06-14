@@ -11,9 +11,9 @@ set CDC_FIFO_BASE          "$COMP_BASE/cdc_fifo"
 set FL_BASE                "$COMP_BASE/fl_tools"
 set FL_FIFO_BASE           "$FL_BASE/storage/fifo"
 set REARRANGER_BASE        "$HW_VER_BASE/rearranger"
+set PACKETIZER_BASE        "$HW_VER_BASE/packetizer"
 
 # Source files
-set MOD "$MOD $ENTITY_BASE/observer_packetizer.vhd"
 set MOD "$MOD $ENTITY_BASE/frame_sender.vhd"
 
 set MOD "$MOD $ENTITY_BASE/signal_observer.vhd"
@@ -23,4 +23,5 @@ set COMPONENTS [list \
    [ list "CDC_FIFO"       $CDC_FIFO_BASE        "FULL"] \
    [ list "FL_FIFO"        $FL_FIFO_BASE         "FULL"] \
    [ list "REARRANGER"     $REARRANGER_BASE      "FULL"] \
+   [ list "PACKETIZER"     $PACKETIZER_BASE      "FULL"] \
 ]
