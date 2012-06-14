@@ -65,6 +65,7 @@ signal state_reg, state_next : state_type;
 -- ALU operation
 signal sig_operand_A       : std_logic_vector(DATA_WIDTH-1 downto 0);
 signal sig_operand_B       : std_logic_vector(DATA_WIDTH-1 downto 0);
+signal sig_mult_operation  : std_logic;
 signal sig_mult_start      : std_logic;
 signal sig_mult_result     : std_logic_vector(DATA_WIDTH*2-1 downto 0);
 signal sig_mult_result_red : std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -96,7 +97,7 @@ begin
    mux2 : process (OP, sig_alu_rdy, sig_operand_A, sig_operand_B)
    begin
       sig_alu_result <= (others => '0');
-      sig_mult_start <= '0';
+      sig_mult_operation <= '0';
       
       if (sig_alu_rdy = '1') then
         case OP is
@@ -105,7 +106,7 @@ begin
            -- minus --
            when "0001"  => sig_alu_result <= sig_operand_A - sig_operand_B;
            -- mult --
-           when "0010"  => sig_mult_start <= '1';
+           when "0010"  => sig_mult_operation <= '1';
            -- shift right --
            when "0011"  => sig_alu_result <= '0' & sig_operand_B(DATA_WIDTH-1 downto 1);
            -- shift left --
@@ -195,13 +196,13 @@ begin
    end process;
    
    -- next state logic
-   fsm_next_state_logic : process (state_reg, ACT, OP, sig_mult_vld)
+   fsm_next_state_logic : process (state_reg, ACT, sig_mult_vld, sig_mult_operation)
    begin
      state_next <= state_reg;  
      
      case state_reg is
         when init_state =>
-          if (OP = "0010" and ACT = '1') then 
+          if (sig_mult_operation = '1' and ACT = '1') then 
              state_next <= mult_first_state;
              sig_mult_start <= '1'; 
              sig_ex_alu_vld <= '0';

@@ -1,0 +1,16 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+proc blk_mt { BASE } {
+   
+   add_wave "-noupdate -label CLK"    $BASE/CLK
+   add_wave "-noupdate -label RESET"  $BASE/RST
+
+   add_wave "-noupdate -label INIT"              $BASE/INIT
+  # add_wave "-noupdate -label INIT_PARAM -hex"   $BASE/DELAY_READ
+   add_wave "-noupdate -label RND_RUN"           $BASE/RND_RUN
+   add_wave "-noupdate -label RND_VAL"           $BASE/RND_VAL
+   add_wave "-noupdate -label RND_NUM  -hex"     $BASE/RND_NUM  
+   
+}   
