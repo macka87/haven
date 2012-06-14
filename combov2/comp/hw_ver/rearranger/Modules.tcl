@@ -7,6 +7,7 @@
 # Set paths
 set COMP_BASE              "$ENTITY_BASE/../.."
 set MATH_PKG_BASE          "$COMP_BASE/base/pkg"
+set MUX_BASE               "$COMP_BASE/base/logic/mux"
 
 
 # Source files
@@ -17,4 +18,5 @@ set MOD "$MOD $ENTITY_BASE/rearranger.vhd"
 # Componentss
 set COMPONENTS [list \
    [list "PKG"   $MATH_PKG_BASE   "MATH"] \
+   [list "MUX"   $MUX_BASE        "FULL"] \
 ]
