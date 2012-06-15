@@ -1,0 +1,58 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+proc blk_REG_PROC_UNIT { BASE } {
+
+   add_wave "-noupdate -label CLK"    $BASE/CLK
+   add_wave "-noupdate -label RESET"  $BASE/RESET
+
+      add wave -divider "Interface MI32"
+   add_wave "-noupdate -hex -label MI_DWR"  $BASE/MI_DWR
+   add_wave "-noupdate -hex -label MI_ADDR" $BASE/MI_ADDR
+   add_wave "-noupdate -label MI_RD"        $BASE/MI_RD
+   add_wave "-noupdate -label MI_WR"        $BASE/MI_WR
+   add_wave "-noupdate -hex -label MI_BE"   $BASE/MI_BE
+   add_wave "-noupdate -hex -label MI_DRD"  $BASE/MI_DRD
+   add_wave "-noupdate -label MI_ARDY"      $BASE/MI_ARDY
+   add_wave "-noupdate -label MI_DRDY"      $BASE/MI_DRDY
+   
+      add wave -divider "Generator interface"
+   add_wave "-noupdate -label GEN_FLOW -hex"  $BASE/GEN_FLOW  
+      
+      add wave -divider "Output interface"
+   add_wave "-noupdate -hex -label PARTS_NUM" $BASE/PARTS_NUM
+   add_wave "-noupdate -label PARTS_NUM_VLD " $BASE/PARTS_NUM_VLD
+   add_wave "-noupdate -hex -label PART_SIZE" $BASE/PART_SIZE
+   add_wave "-noupdate -label PART_SIZE_VLD"  $BASE/PART_SIZE_VLD
+   
+   
+   add_wave "-noupdate -hex -label sig_dwr"   $BASE/sig_dwr
+   add_wave "-noupdate -hex -label sig_addr"  $BASE/sig_addr
+   add_wave "-noupdate -hex -label sig_mask"  $BASE/sig_mask
+   add_wave "-noupdate -hex -label sig_base"  $BASE/sig_base
+   add_wave "-noupdate -hex -label sig_max"   $BASE/sig_max
+   add_wave "-noupdate -hex -label sig_parts_number" $BASE/sig_parts_number
+   add_wave "-noupdate -label sig_parts_number_vld"  $BASE/sig_parts_number_vld
+   add_wave "-noupdate -hex -label sig_parts_reg_number"  $BASE/sig_parts_reg_number
+   add_wave "-noupdate -hex -label sig_counter_reg_out"   $BASE/sig_counter_reg_out
+   add_wave "-noupdate -hex -label sig_counter_value"     $BASE/sig_counter_value
+   add_wave "-noupdate -hex -label sig_part_mask"  $BASE/sig_part_mask
+   add_wave "-noupdate -hex -label sig_part_base"  $BASE/sig_part_base
+   add_wave "-noupdate -hex -label sig_part_max"   $BASE/sig_part_max
+   add_wave "-noupdate -hex -label sig_size"       $BASE/sig_size
+   add_wave "-noupdate -label sig_size_vld"        $BASE/sig_size_vld
+
+}
+
+proc blk_GEN_PROC_UNIT { BASE } {
+
+#   add wave -divider ""
+#   add wave -divider "DATA FIFO"
+#   add wave -divider ""
+#   blk_CDC_FIFO     $BASE/data_async_fifo
+#   add wave -divider ""
+#   add wave -divider "DELAY FIFO"
+#   add wave -divider ""
+#   blk_CDC_FIFO     $BASE/delay_async_fifo
+}
