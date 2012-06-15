@@ -16,7 +16,7 @@ use work.math_pack.all;
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
-entity FL_REG_PROC_UNIT is
+entity REG_PROC_UNIT is
 
    generic
    (
@@ -52,8 +52,11 @@ entity FL_REG_PROC_UNIT is
       
       PARTS_NUM     : out std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);   -- Number of FL parts
       PARTS_NUM_VLD : out std_logic;                      -- Parts num valid
+      PARTS_NUM_TAKE:  in std_logic;                      -- take signal for parts num
+
       PART_SIZE     : out std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0); -- Part size
-      PART_SIZE_VLD : out std_logic                      -- Part size valid
+      PART_SIZE_VLD : out std_logic;                     -- Part size valid
+      PART_SIZE_TAKE:  in std_logic                      -- take signal for part size
    );       
    
 end entity;
@@ -61,74 +64,152 @@ end entity;
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
-architecture arch of FL_REG_PROC_UNIT is
+architecture arch of REG_PROC_UNIT is
 
 -- ==========================================================================
 --                                    CONSTANTS
 -- ==========================================================================
 
--- TODO: infer this from PART_NUM_CNT_WIDTH?
-constant COUNT : integer := 7;
+-- the maximum number of parts in a frame
+constant MAX_PARTS            : integer := 8;
 
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
 
 -- interface signals 
-   signal sig_dwr                : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal sig_addr               : std_logic_vector(DATA_WIDTH-1 downto 0);
-   
--- register signals
-   signal sig_mask               : std_logic_vector(COUNT*PART_SIZE_CNT_WIDTH-1 downto 0);
-   signal sig_base               : std_logic_vector(COUNT*PART_SIZE_CNT_WIDTH-1 downto 0);
-   signal sig_max                : std_logic_vector(COUNT*PART_SIZE_CNT_WIDTH-1 downto 0);
-   
+signal sig_mi_dwr             : std_logic_vector(31 downto 0);
+signal sig_mi_addr            : std_logic_vector(31 downto 0);
+signal sig_mi_wr              : std_logic;
+signal sig_mi_rd              : std_logic;
+
+-- the RUN register
+signal reg_run                : std_logic;
+signal reg_run_sel            : std_logic;
+
+-- the register with the number of transactions
+signal reg_trans              : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
+signal reg_trans_sel          : std_logic;
+
+-- register for numbers of parts
+signal reg_num_mask           : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
+signal reg_num_base           : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
+signal reg_num_max            : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
+signal regs_num_sel           : std_logic;
+
+-- registers for sizes of parts
+signal reg_size_mask          : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1 downto 0);
+signal reg_size_base          : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1 downto 0);
+signal reg_size_max           : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1 downto 0);
+signal regs_size_sel          : std_logic;
+
 -- processing of part number signals        
-   signal sig_parts_number       : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal sig_parts_number_vld   : std_logic;
-   signal sig_parts_reg_number   : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
-   signal sig_counter_reg_out    : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
-   signal sig_counter_value      : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
-   
+signal sig_parts_number       : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
+signal sig_parts_number_vld   : std_logic;
+signal sig_parts_number_take  : std_logic;
+
+signal sig_parts_reg_number   : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
+signal sig_counter_reg_out    : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
+signal sig_counter_value      : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
+
 -- processing of size of parts signals  
-   signal sig_part_mask          : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal sig_part_base          : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal sig_part_max           : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal sig_size               : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal sig_size_vld           : std_logic;
+signal sig_part_mask          : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
+signal sig_part_base          : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
+signal sig_part_max           : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
+
+signal sig_size               : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
+signal sig_size_vld           : std_logic;
+signal sig_size_take          : std_logic;
 
 begin
 
-sig_dwr  <= MI_DWR;
-sig_addr <= MI_ADDR;
+   -- Assertions
+   assert (PART_NUM_CNT_WIDTH <= 3)
+      report "Unsupported value of PART_NUM_CNT_WIDTH (PART_NUM_CNT_WIDTH > 3)"
+      severity failure;
 
--- --------------- RECEIVING THE CONTENT OF REGISTERS FROM SOFTWARE -----
--- the register
-   output_reg_p: process (CLK, sig_addr)
+   -- Assertions
+   assert (PART_NUM_CNT_WIDTH <= PART_SIZE_CNT_WIDTH)
+      report "Unsupported value of PART_NUM_CNT_WIDTH (PART_NUM_CNT_WIDTH > PART_SIZE_CNT_WIDTH)"
+      severity failure;
+
+   -- Assertions
+   assert (log2(MAX_PARTS) <= PART_NUM_CNT_WIDTH)
+      report "Unsupported value of PART_NUM_CNT_WIDTH"
+      severity failure;
+
+   assert (PART_SIZE_CNT_WIDTH <= 32)
+      report "Unsupported value of PART_SIZE_CNT_WIDTH"
+      severity failure;
+
+   -- ---------- mapping of input signals -----------------------------------
+   sig_mi_dwr  <= MI_DWR;
+   sig_mi_addr <= MI_ADDR;
+   sig_mi_wr   <= MI_WR;
+   sig_mi_rd   <= MI_RD;
+
+   -- -------- registers for the ranges of numbers of parts -----------------
+   regs_num_p: process (CLK, sig_mi_addr, regs_num_sel)
    begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
-            for i in 0 to COUNT-1 loop
-               sig_mask(i*DATA_WIDTH+(DATA_WIDTH-1) downto i*DATA_WIDTH) 
-                  <= (others => '0');
-               sig_base(i*DATA_WIDTH+(DATA_WIDTH-1) downto i*DATA_WIDTH) 
-                  <= (others => '0');
-               sig_max(i*DATA_WIDTH+(DATA_WIDTH-1) downto i*DATA_WIDTH)  
-                  <= (others => '0');
-            end loop;
-         elsif (MI_WR = '1') then
-            for i in 0 to COUNT-1 loop
-              if (i = sig_addr(6 downto 4)) then 
-                 case (sig_addr(3 downto 2)) is
-                    when "00" 
-                    => sig_mask(i*DATA_WIDTH+(DATA_WIDTH-1) downto i*DATA_WIDTH)
-                          <= sig_dwr;
-                    when "01"
-                    => sig_base(i*DATA_WIDTH+(DATA_WIDTH-1) downto i*DATA_WIDTH)
-                          <= sig_dwr;
-                    when "10" 
-                    => sig_max(i*DATA_WIDTH+(DATA_WIDTH-1) downto i*DATA_WIDTH)
-                          <= sig_dwr;
+            reg_num_mask <= (others => '0');
+            reg_num_base <= (others => '0');
+            reg_num_max <= (others => '0');
+         elsif ((regs_num_sel = '1') AND (sig_mi_wr = '1')) then
+            case (sig_mi_addr(3 downto 2)) is
+               when "00" => reg_num_mask <= sig_mi_dwr(PART_NUM_CNT_WIDTH-1 downto 0);
+               when "01" => reg_num_base <= sig_mi_dwr(PART_NUM_CNT_WIDTH-1 downto 0);
+               when "10" => reg_num_max  <= sig_mi_dwr(PART_NUM_CNT_WIDTH-1 downto 0);
+               when others => null;
+            end case;
+         end if;
+      end if;
+   end process; 
+
+   -- ------- address decoder -----------------------------------------------
+   addr_dec_p: process(sig_mi_addr)
+   begin
+      reg_run_sel    <= '0';
+      reg_trans_sel  <= '0';
+      regs_num_sel   <= '0';
+      regs_size_sel <= '0';
+
+      case (sig_mi_addr(7)) is
+         when '0' =>
+            case (sig_mi_addr(4 downto 3)) is
+               when "00" => reg_run_sel   <= '1';   -- the run register
+               when "01" => reg_trans_sel <= '1';   -- count of transactions
+               when "10" => regs_num_sel  <= '1';   -- numbers of parts
+               when others => null;
+            end case;
+         when '1' => regs_size_sel <= '1';          -- sizes of parts
+         when others => null;
+      end case;
+   end process;
+
+   -- --------------- RECEIVING THE CONTENT OF REGISTERS FROM SOFTWARE -----
+   -- the register
+   regs_size_p: process (CLK, sig_mi_addr, regs_size_sel)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            reg_size_mask <= (others => '0');
+            reg_size_base <= (others => '0');
+            reg_size_max <= (others => '0');
+         elsif ((regs_size_sel = '1') AND (sig_mi_wr = '1')) then
+            for i in 0 to MAX_PARTS-1 loop
+              if (i = sig_mi_addr(6 downto 4)) then 
+                 case (sig_mi_addr(3 downto 2)) is
+                    when "00" =>
+                     reg_size_mask((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH)
+                          <= sig_mi_dwr(PART_SIZE_CNT_WIDTH-1 downto 0);
+                    when "01" =>
+                       reg_size_base((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH)
+                          <= sig_mi_dwr(PART_SIZE_CNT_WIDTH-1 downto 0);
+                    when "10" =>
+                       reg_size_max((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH)
+                          <= sig_mi_dwr(PART_SIZE_CNT_WIDTH-1 downto 0);
                     when others => null;
                  end case;
               end if;   
@@ -140,41 +221,39 @@ sig_addr <= MI_ADDR;
 -- MI32 connection
 
    -- The address ready signal
-   MI_ARDY <= MI_RD OR MI_WR;
+   MI_ARDY <= sig_mi_rd OR sig_mi_wr;
 
    -- The data ready signal
-   MI_DRDY <= MI_RD;
+   MI_DRDY <= sig_mi_rd;
 
    -- output MI32 data
    MI_DRD <= X"00011ACA";
    
 -- --------------- GENERATION OF PARTS' NUMBER --------------------------
 
--- sig_mask(7) = num_parts_range_mask
--- sig_base(7) = num_parts_base
--- sig_max(7)  = num_parts_max 
-
 -- gen_proc_unit instance --
-   gen_proc_unit_i : entity work.gen_proc_unit
+   gen_proc_unit_num_i : entity work.gen_proc_unit
    generic map(
-      DATA_WIDTH   => DATA_WIDTH
+      DATA_WIDTH   => PART_NUM_CNT_WIDTH
    )
    port map(
       CLK        => CLK,
       RESET      => RESET,
 
-      GEN_DATA   => GEN_FLOW,
-      MASK       => sig_mask(6*DATA_WIDTH+(DATA_WIDTH-1) downto 6*DATA_WIDTH),
-      BASE       => sig_base(6*DATA_WIDTH+(DATA_WIDTH-1) downto 6*DATA_WIDTH),
-      MAX        => sig_max(6*DATA_WIDTH+(DATA_WIDTH-1) downto 6*DATA_WIDTH),
+      GEN_DATA   => GEN_FLOW(PART_NUM_CNT_WIDTH-1 downto 0),
+      MASK       => reg_num_mask,
+      BASE       => reg_num_base,
+      MAX        => reg_num_max,
       
       -- output interface
       OUTPUT     => sig_parts_number,
-      OUTPUT_VLD => sig_parts_number_vld
+      OUTPUT_VLD => sig_parts_number_vld,
+      OUTPUT_TAKE=> sig_parts_number_take
    );
    
-   PARTS_NUM     <= sig_parts_number(2 downto 0); 
-   PARTS_NUM_VLD <= sig_parts_number_vld;  
+   PARTS_NUM             <= sig_parts_number; 
+   PARTS_NUM_VLD         <= sig_parts_number_vld;  
+   sig_parts_number_take <= PARTS_NUM_TAKE;
 
 -- register for parts number
    parts_num_reg_p: process (CLK)
@@ -212,96 +291,44 @@ sig_addr <= MI_ADDR;
 
 -- --------------- GENERATION OF PARTS' SIZES ---------------------------
 
--- sig_mask(0 - 6) = num_parts_range_mask
--- sig_base(0 - 6) = num_parts_base
--- sig_max(0 - 6)  = num_parts_max 
-
--- mask processing multiplexer
-   mask_mux : process (sig_counter_reg_out, sig_mask)
+-- mask/base/max processing multiplexer
+   mask_mux : process (sig_counter_reg_out, reg_size_mask, reg_size_base, reg_size_max)
    begin
       sig_part_mask <= (others => '0');
+      sig_part_base <= (others => '0');
+      sig_part_max  <= (others => '0');
 
-      for i in 0 to COUNT-1 loop
+      for i in 0 to MAX_PARTS-1 loop
          if (i = sig_counter_reg_out) then 
-            sig_part_mask <= sig_mask(i*32+31 downto i*32);
+            sig_part_mask <= reg_size_mask((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
+            sig_part_base <= reg_size_base((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
+            sig_part_max  <= reg_size_max ((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
          end if;
       end loop;
-
-      -- case sig_counter_reg_out is
-      --   when '000'    => sig_part_mask <= sig_mask(0);
-      --   when '001'    => sig_part_mask <= sig_mask(1);
-      --   when '010'    => sig_part_mask <= sig_mask(2);
-      --   when '011'    => sig_part_mask <= sig_mask(3);
-      --   when '100'    => sig_part_mask <= sig_mask(4);
-      --   when '101'    => sig_part_mask <= sig_mask(5);
-      --   when '110'    => sig_part_mask <= sig_mask(6);
-      -- end case;   
    end process;
    
--- base processing multiplexer
-   base_mux : process (sig_counter_reg_out, sig_base)
-   begin
-      sig_part_base <= (others => '0');
-
-      for i in 0 to COUNT-1 loop
-         if (i = sig_counter_reg_out) then 
-            sig_part_base <= sig_base(i*DATA_WIDTH+(DATA_WIDTH-1) downto i*DATA_WIDTH);
-         end if;
-      end loop;
-
-      -- case sig_counter_reg_out is
-      --   when '000'    => sig_part_base <= sig_base(0);
-      --   when '001'    => sig_part_base <= sig_base(1);
-      --   when '010'    => sig_part_base <= sig_base(2);
-      --   when '011'    => sig_part_base <= sig_base(3);
-      --   when '100'    => sig_part_base <= sig_base(4);
-      --   when '101'    => sig_part_base <= sig_base(5);
-      --   when '110'    => sig_part_base <= sig_base(6);
-      -- end case;   
-   end process;  
-   
--- maximum processing multiplexer
-   maximum_mux : process (sig_counter_reg_out, sig_max)
-   begin
-      sig_part_max <= (others => '0');
-
-      for i in 0 to COUNT-1 loop
-         if (i = sig_counter_reg_out) then 
-            sig_part_max <= sig_max(i*DATA_WIDTH+(DATA_WIDTH-1) downto i*DATA_WIDTH);
-         end if;
-      end loop;
-
-      -- case sig_counter_reg_out is
-      --   when '000'    => sig_part_max <= sig_max(0);
-      --   when '001'    => sig_part_max <= sig_max(1);
-      --   when '010'    => sig_part_max <= sig_max(2);
-      --   when '011'    => sig_part_max <= sig_max(3);
-      --   when '100'    => sig_part_max <= sig_max(4);
-      --   when '101'    => sig_part_max <= sig_max(5);
-      --   when '110'    => sig_part_max <= sig_max(6);
-      -- end case;   
-   end process;    
-   
 -- gen_proc_unit instance --
-   gen_proc_unit_ii : entity work.gen_proc_unit
+   gen_proc_unit_size_i : entity work.gen_proc_unit
    generic map(
-      DATA_WIDTH   => DATA_WIDTH
+      DATA_WIDTH   => PART_SIZE_CNT_WIDTH
    )
    port map(
       CLK        => CLK,
       RESET      => RESET,
 
-      GEN_DATA   => GEN_FLOW,
+      GEN_DATA   => GEN_FLOW(PART_SIZE_CNT_WIDTH-1 downto 0),
       MASK       => sig_part_mask,
       BASE       => sig_part_base,
       MAX        => sig_part_max,
       
       -- output interface
       OUTPUT     => sig_size,
-      OUTPUT_VLD => sig_size_vld
+      OUTPUT_VLD => sig_size_vld,
+      OUTPUT_TAKE=> sig_size_take
    );  
    
    PART_SIZE     <= sig_size; 
    PART_SIZE_VLD <= sig_size_vld;   
+   sig_size_take <= PART_SIZE_TAKE;
   
 end architecture;

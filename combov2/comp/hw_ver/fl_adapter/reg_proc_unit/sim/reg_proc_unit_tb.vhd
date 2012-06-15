@@ -44,17 +44,19 @@ architecture behavioral of testbench is
    
    signal reg_proc_unit_parts_num     : std_logic_vector(2 downto 0);
    signal reg_proc_unit_parts_num_vld : std_logic;
+   signal reg_proc_unit_parts_num_take: std_logic;
    signal reg_proc_unit_part_size     : std_logic_vector(DATA_WIDTH-1 downto 0);
    signal reg_proc_unit_part_size_vld : std_logic;
+   signal reg_proc_unit_part_size_take: std_logic;
    
 -- ----------------------------------------------------------------------------
 --                      Architecture body
 -- ----------------------------------------------------------------------------
 begin
    -- -------------------------------------------------------------------------
-   --                   FL_REG_PROC_UNIT
+   --                   REG_PROC_UNIT
    -- -------------------------------------------------------------------------
-   uut: entity work.FL_REG_PROC_UNIT
+   uut: entity work.REG_PROC_UNIT
       generic map (
          DATA_WIDTH        => DATA_WIDTH
       )
@@ -78,8 +80,10 @@ begin
          -- Output interface
          PARTS_NUM         => reg_proc_unit_parts_num,
          PARTS_NUM_VLD     => reg_proc_unit_parts_num_vld,
+         PARTS_NUM_TAKE    => reg_proc_unit_parts_num_take,
          PART_SIZE         => reg_proc_unit_part_size,
-         PART_SIZE_VLD     => reg_proc_unit_part_size_vld  
+         PART_SIZE_VLD     => reg_proc_unit_part_size_vld,
+         PART_SIZE_TAKE    => reg_proc_unit_part_size_take
       );
 
    -- ----------------------------------------------------
