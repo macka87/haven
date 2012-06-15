@@ -37,7 +37,8 @@ entity GEN_PROC_UNIT is
       
       -- output interface
       OUTPUT     : out std_logic_vector(DATA_WIDTH-1 downto 0);
-      OUTPUT_VLD : out std_logic
+      OUTPUT_VLD : out std_logic;
+      OUTPUT_TAKE: in  std_logic
    );
    
 end entity;
@@ -56,8 +57,11 @@ architecture arch of GEN_PROC_UNIT is
 -- ==========================================================================
 signal sig_mask           : std_logic_vector(DATA_WIDTH-1 downto 0);
 signal sig_add            : std_logic_vector(DATA_WIDTH-1 downto 0);
-signal sig_output_reg_we  : std_logic;
+
 signal sig_output_reg     : std_logic_vector(DATA_WIDTH-1 downto 0);
+signal sig_output_reg_we  : std_logic;
+signal sig_output_reg_clr : std_logic;
+
 signal sig_output_vld     : std_logic;
 
 begin
@@ -69,13 +73,15 @@ begin
    sig_add <= sig_mask + BASE; 
    
 -- camparison of generated value with maximum value
-   comparator_p: process (CLK)
+   comparator_p: process (sig_add, MAX)
    begin
      if (sig_add <= MAX) then sig_output_reg_we <= '1';
      else sig_output_reg_we <= '0';
      end if;
    end process;  
    
+   sig_output_reg_clr <= OUTPUT_TAKE;
+
 -- register for output values
    output_reg_p: process (CLK)
    begin
@@ -85,12 +91,14 @@ begin
             sig_output_vld <= '0';
          elsif (sig_output_reg_we = '1') then
             sig_output_reg <= sig_add; 
-            sig_output_vld <= sig_output_reg_we;
+            sig_output_vld <= '1';
+         elsif (sig_output_reg_clr = '1') then
+            sig_output_vld <= '0';
          end if;
       end if;
    end process;
    
 -- generated output
    OUTPUT     <= sig_output_reg;
-   OUTPUT_vld <= sig_output_vld; 
+   OUTPUT_VLD <= sig_output_vld; 
 end architecture;
