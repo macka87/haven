@@ -21,7 +21,13 @@ entity FL_REG_PROC_UNIT is
    generic
    (
       -- data width
-      DATA_WIDTH  : integer := 32
+      DATA_WIDTH  : integer := 64;
+      -- the width of the maximum number of parts counter (the maximum size is
+      -- 2^PART_NUM_CNT_WIDTH)
+      PART_NUM_CNT_WIDTH : integer := 3;
+      -- the width of the maximum size of a part counter (the maximum size is
+      -- 2^PART_SIZE)
+      PART_SIZE_CNT_WIDTH : integer := 32
    );
 
    port
@@ -30,12 +36,12 @@ entity FL_REG_PROC_UNIT is
       RESET : in std_logic;
 
       -- MI32 interface
-      MI_DWR    :  in std_logic_vector(DATA_WIDTH-1 downto 0);
-      MI_ADDR   :  in std_logic_vector(DATA_WIDTH-1 downto 0);
+      MI_DWR    :  in std_logic_vector(31 downto 0);
+      MI_ADDR   :  in std_logic_vector(31 downto 0);
       MI_RD     :  in std_logic;
       MI_WR     :  in std_logic;
-      MI_BE     :  in std_logic_vector(3 downto 0);
-      MI_DRD    : out std_logic_vector(DATA_WIDTH-1 downto 0);
+      MI_BE     :  in std_logic_vector( 3 downto 0);
+      MI_DRD    : out std_logic_vector(31 downto 0);
       MI_ARDY   : out std_logic;
       MI_DRDY   : out std_logic;
       
@@ -44,11 +50,10 @@ entity FL_REG_PROC_UNIT is
       
       -- Output interface
       
-      PARTS_NUM     : out std_logic_vector(2 downto 0);   -- Number of FL parts
+      PARTS_NUM     : out std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);   -- Number of FL parts
       PARTS_NUM_VLD : out std_logic;                      -- Parts num valid
-      PART_SIZE     : out std_logic_vector(DATA_WIDTH-1 downto 0); -- Part size
+      PART_SIZE     : out std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0); -- Part size
       PART_SIZE_VLD : out std_logic                      -- Part size valid
-      TRANS_COUNT   : out std_logic_vector(DATA_WIDTH-1 downto 0);
    );       
    
 end entity;
@@ -61,6 +66,8 @@ architecture arch of FL_REG_PROC_UNIT is
 -- ==========================================================================
 --                                    CONSTANTS
 -- ==========================================================================
+
+-- TODO: infer this from PART_NUM_CNT_WIDTH?
 constant COUNT : integer := 7;
 
 -- ==========================================================================
@@ -72,16 +79,16 @@ constant COUNT : integer := 7;
    signal sig_addr               : std_logic_vector(DATA_WIDTH-1 downto 0);
    
 -- register signals
-   signal sig_mask               : std_logic_vector(COUNT*32-1 downto 0);
-   signal sig_base               : std_logic_vector(COUNT*32-1 downto 0);
-   signal sig_max                : std_logic_vector(COUNT*32-1 downto 0);
+   signal sig_mask               : std_logic_vector(COUNT*PART_SIZE_CNT_WIDTH-1 downto 0);
+   signal sig_base               : std_logic_vector(COUNT*PART_SIZE_CNT_WIDTH-1 downto 0);
+   signal sig_max                : std_logic_vector(COUNT*PART_SIZE_CNT_WIDTH-1 downto 0);
    
 -- processing of part number signals        
    signal sig_parts_number       : std_logic_vector(DATA_WIDTH-1 downto 0);
    signal sig_parts_number_vld   : std_logic;
-   signal sig_parts_reg_number   : std_logic_vector(2 downto 0);
-   signal sig_counter_reg_out    : std_logic_vector(2 downto 0);
-   signal sig_counter_value      : std_logic_vector(2 downto 0);
+   signal sig_parts_reg_number   : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
+   signal sig_counter_reg_out    : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
+   signal sig_counter_value      : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
    
 -- processing of size of parts signals  
    signal sig_part_mask          : std_logic_vector(DATA_WIDTH-1 downto 0);
