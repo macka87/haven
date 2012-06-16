@@ -5,7 +5,9 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.std_logic_unsigned.all;
 use IEEE.std_logic_arith.all;
+use IEEE.numeric_std.all;
 use work.math_pack.all;
+use IEEE.math_real.all;
 
 -- ----------------------------------------------------------------------------
 --                        Entity declaration
@@ -35,6 +37,8 @@ architecture behavioral of testbench is
    constant PART_MASK_OFFSET  : integer := 0;
    constant PART_BASE_OFFSET  : integer := 4;
    constant PART_MAX_OFFSET   : integer := 8;
+
+   constant TRANSACTION_COUNT : integer := 16;
 
    -- signals declarations
    ----------------------------------------------------------------------------
@@ -113,19 +117,25 @@ begin
    end process;
 
    reg_proc_unit_gen_flow_p: process(clk)
+      variable seed1, seed2: positive;
+      variable rand: real;
+      variable int_rand: integer;
+      variable stim: std_logic_vector(15 downto 0);
    begin
       if (rising_edge(clk)) then
-         if (reset = '1') then
-            reg_proc_unit_gen_flow <= X"3A89DF04332C9AB1";
-         else
-            reg_proc_unit_gen_flow <=
-               (reg_proc_unit_gen_flow(DATA_WIDTH-2 downto 0) & NOT reg_proc_unit_gen_flow(DATA_WIDTH-1))
-               XOR reg_proc_unit_gen_flow;
-         end if;
+         for i in 0 to 3 loop
+            UNIFORM(seed1, seed2, rand);               -- generate random number
+            int_rand := INTEGER(TRUNC(rand*real(2**16)));  -- rescale 
+            stim := std_logic_vector(to_unsigned(int_rand, stim'LENGTH));  
+
+            reg_proc_unit_gen_flow((i+1)*16-1 downto i*16) <= stim;
+         end loop;
       end if;
    end process;
 
    tb: process
+      variable seed1, seed2: positive;     -- Seed values for random generator
+      variable rand: real;                 -- Random real-number value in range 0 to 1.0
    begin
 
       -- initialisation of signals
@@ -134,6 +144,8 @@ begin
       reg_proc_unit_mi_be    <= "1111";
       reg_proc_unit_mi_dwr   <= (others => '0');
       reg_proc_unit_mi_addr  <= X"DEADBEEF";
+
+      reg_proc_unit_part_size_take <= '0';
 
 
       wait for reset_time; 
@@ -287,6 +299,32 @@ begin
       reg_proc_unit_mi_dwr   <= X"A0000000";
       wait until rising_edge(clk);
 
+      -- ------- TRANSACTION COUNT -----------
+      reg_proc_unit_mi_addr  <= TRANS_REG_ADDR;
+      reg_proc_unit_mi_dwr   <= conv_std_logic_vector(TRANSACTION_COUNT, 32);
+      wait until rising_edge(clk);
+
+      -- -------------- RUN ------------------
+      reg_proc_unit_mi_addr  <= RUN_REG_ADDR;
+      reg_proc_unit_mi_dwr   <= X"00000001";
+      wait until rising_edge(clk);
+
+      reg_proc_unit_mi_wr    <= '0';
+
+      loop
+         if (reg_proc_unit_part_size_vld = '1') then
+            UNIFORM(seed1, seed2, rand);
+            if (rand > 0.5) then
+               reg_proc_unit_part_size_take <= '1';
+            end if;
+         end if;
+
+         wait until rising_edge(clk);
+         reg_proc_unit_part_size_take <= '0';
+      end loop;
+
+
+
       wait;
    end process;
-end architecture behavioral;
+end architecture;

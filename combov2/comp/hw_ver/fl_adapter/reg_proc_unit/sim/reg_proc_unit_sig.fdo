@@ -20,4 +20,4 @@ add wave -divider "*************"
 blk_REG_PROC_UNIT_REGS  "$REG_PROC_UNIT_PATH"
 
 restart -f
-run 10 us
+run 2 us

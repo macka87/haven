@@ -32,8 +32,16 @@ proc blk_REG_PROC_UNIT { BASE } {
    add_wave "-noupdate -hex -label sig_part_mask"  $BASE/sig_part_mask
    add_wave "-noupdate -hex -label sig_part_base"  $BASE/sig_part_base
    add_wave "-noupdate -hex -label sig_part_max"   $BASE/sig_part_max
-   add_wave "-noupdate -hex -label sig_size"       $BASE/sig_size
-   add_wave "-noupdate      -label sig_size_vld"        $BASE/sig_size_vld
+   add_wave "-noupdate      -label sig_should_run" $BASE/sig_should_run
+   add_wave "-noupdate      -label sig_next_frame" $BASE/sig_next_frame
+   add_wave "-noupdate      -label sig_cnt_inc"    $BASE/sig_cnt_inc
+   add_wave "-noupdate      -label sig_last_part"  $BASE/sig_last_part
+
+   add wave -divider "Parts counter"
+   add_wave "-noupdate      -label cnt_part"     $BASE/cnt_part
+   add_wave "-noupdate      -label cnt_part_en"  $BASE/cnt_part_en
+   add_wave "-noupdate      -label cnt_part_clr" $BASE/cnt_part_clr
+
 
 }
 
