@@ -89,7 +89,8 @@ begin
          if (RESET = '1') then
             sig_output_reg <= (others => '0');
             sig_output_vld <= '0';
-         elsif (sig_output_reg_we = '1') then
+         elsif ((sig_output_reg_we = '1') AND
+            ((sig_output_vld = '0')) OR (sig_output_reg_clr = '1')) then
             sig_output_reg <= sig_add; 
             sig_output_vld <= '1';
          elsif (sig_output_reg_clr = '1') then
