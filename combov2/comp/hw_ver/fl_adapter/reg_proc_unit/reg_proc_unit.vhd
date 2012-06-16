@@ -49,11 +49,6 @@ entity REG_PROC_UNIT is
       GEN_FLOW  :  in std_logic_vector(DATA_WIDTH-1 downto 0);
       
       -- Output interface
-      
-      PARTS_NUM     : out std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);   -- Number of FL parts
-      PARTS_NUM_VLD : out std_logic;                      -- Parts num valid
-      PARTS_NUM_TAKE:  in std_logic;                      -- take signal for parts num
-
       PART_SIZE     : out std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0); -- Part size
       PART_SIZE_VLD : out std_logic;                     -- Part size valid
       PART_SIZE_TAKE:  in std_logic                      -- take signal for part size
@@ -90,6 +85,10 @@ signal reg_run_sel            : std_logic;
 -- the register with the number of transactions
 signal reg_trans              : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
 signal reg_trans_sel          : std_logic;
+signal reg_trans_dec          : std_logic;
+
+-- the comparer of the number of transaction to be send yet
+signal sig_trans_more_than_zero:std_logic;
 
 -- register for numbers of parts
 signal reg_num_mask           : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
@@ -97,20 +96,20 @@ signal reg_num_base           : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
 signal reg_num_max            : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
 signal regs_num_sel           : std_logic;
 
+signal num_proc_en            : std_logic;
+
 -- registers for sizes of parts
 signal reg_size_mask          : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1 downto 0);
 signal reg_size_base          : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1 downto 0);
 signal reg_size_max           : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1 downto 0);
 signal regs_size_sel          : std_logic;
 
+signal size_proc_en           : std_logic;
+
 -- processing of part number signals        
 signal sig_parts_number       : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
 signal sig_parts_number_vld   : std_logic;
 signal sig_parts_number_take  : std_logic;
-
-signal sig_parts_reg_number   : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
-signal sig_counter_reg_out    : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
-signal sig_counter_value      : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
 
 -- processing of size of parts signals  
 signal sig_part_mask          : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
@@ -120,6 +119,27 @@ signal sig_part_max           : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0)
 signal sig_size               : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
 signal sig_size_vld           : std_logic;
 signal sig_size_take          : std_logic;
+
+-- should the component run?
+signal sig_should_run         : std_logic;
+
+-- the signal denoting a next frame to be loaded
+signal sig_next_frame         : std_logic;
+
+-- the counter of parts
+signal cnt_part               : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
+signal cnt_part_en            : std_logic;
+signal cnt_part_clr           : std_logic;
+
+-- the signal denoting that the part counter should be incremented
+signal sig_cnt_inc            : std_logic;
+
+-- the signal denoting that the last part of the frame is being processed
+signal sig_last_part          : std_logic;
+
+-- the register holding '1' if in the previous step, the part size generator was cleared
+signal reg_prev_step_clear    : std_logic;
+signal reg_prev_step_clear_in : std_logic;
 
 begin
 
@@ -184,6 +204,47 @@ begin
       end case;
    end process;
 
+   -- ------ the RUN register -----------------------------------------------
+   reg_run_p: process(CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            reg_run <= '0';
+         elsif ((reg_run_sel = '1') AND (sig_mi_wr = '1')) then
+            reg_run <= sig_mi_dwr(0);
+         end if;
+      end if;
+   end process;
+
+   --
+   reg_trans_dec <= sig_next_frame;
+
+   -- -------- the register with the count of transactions -----------------
+   reg_trans_p: process(CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            reg_trans <= (others => '0');
+         elsif ((reg_trans_sel = '1') AND (sig_mi_wr = '1')) then
+            reg_trans <= sig_mi_dwr(PART_SIZE_CNT_WIDTH-1 downto 0);
+         elsif (reg_trans_dec = '1') then
+            reg_trans <= reg_trans - 1;
+         end if;
+      end if;
+   end process;
+
+   -- -------- the comparer for the number of transactions to send ----------
+   cmp_more_than_zero_trans_p: process(reg_trans)
+   begin
+      sig_trans_more_than_zero <= '0';
+
+      if (reg_trans /= 0) then
+         sig_trans_more_than_zero <= '1';
+      end if;
+   end process;
+
+   sig_should_run <= reg_run AND sig_trans_more_than_zero;
+
    -- -------- registers for the ranges of numbers of parts -----------------
    regs_num_p: process (CLK, sig_mi_addr, regs_num_sel)
    begin
@@ -203,32 +264,7 @@ begin
       end if;
    end process; 
 
-   -- ------ the RUN register -----------------------------------------------
-   reg_run_p: process(CLK)
-   begin
-      if (rising_edge(CLK)) then
-         if (RESET = '1') then
-            reg_run <= '0';
-         elsif ((reg_run_sel = '1') AND (sig_mi_wr = '1')) then
-            reg_run <= sig_mi_dwr(0);
-         end if;
-      end if;
-   end process;
-
-   -- -------- the register with the count of transactions -----------------
-   reg_trans_p: process(CLK)
-   begin
-      if (rising_edge(CLK)) then
-         if (RESET = '1') then
-            reg_trans <= (others => '0');
-         elsif ((reg_trans_sel = '1') AND (sig_mi_wr = '1')) then
-            reg_trans <= sig_mi_dwr(PART_SIZE_CNT_WIDTH-1 downto 0);
-         end if;
-      end if;
-   end process;
-
-   -- --------------- RECEIVING THE CONTENT OF REGISTERS FROM SOFTWARE -----
-   -- the register
+   -- --------- registers for sizes of numbers of parts ---------------------
    regs_size_p: process (CLK, sig_mi_addr, regs_size_sel)
    begin
       if (rising_edge(CLK)) then
@@ -257,7 +293,7 @@ begin
       end if;
    end process; 
 
--- MI32 connection
+   -- --------- MI32 connection ---------------------------------------------
 
    -- The address ready signal
    MI_ARDY <= sig_mi_rd OR sig_mi_wr;
@@ -268,9 +304,12 @@ begin
    -- output MI32 data
    MI_DRD <= X"00011ACA";
    
--- --------------- GENERATION OF PARTS' NUMBER --------------------------
+   -- --------------- GENERATION OF PARTS' NUMBER --------------------------
 
--- gen_proc_unit instance --
+   --
+   num_proc_en  <= sig_should_run;
+
+   -- gen_proc_unit instance --
    gen_proc_unit_num_i : entity work.gen_proc_unit
    generic map(
       DATA_WIDTH   => PART_NUM_CNT_WIDTH
@@ -283,6 +322,7 @@ begin
       MASK       => reg_num_mask,
       BASE       => reg_num_base,
       MAX        => reg_num_max,
+      EN         => num_proc_en,
       
       -- output interface
       OUTPUT     => sig_parts_number,
@@ -290,55 +330,51 @@ begin
       OUTPUT_TAKE=> sig_parts_number_take
    );
    
-   PARTS_NUM             <= sig_parts_number; 
-   PARTS_NUM_VLD         <= sig_parts_number_vld;  
-   sig_parts_number_take <= PARTS_NUM_TAKE;
+   sig_parts_number_take <= sig_next_frame;
 
--- register for parts number
-   parts_num_reg_p: process (CLK)
-   begin
-      if (rising_edge(CLK)) then
-         if (RESET = '1') then
-            sig_parts_reg_number <= (others => '0');
-         elsif (sig_parts_number_vld = '1') then
-            sig_parts_reg_number <= sig_parts_number(2 downto 0); 
-         end if;
-      end if;
-   end process; 
+   --
+   cnt_part_en  <= sig_cnt_inc;
+   cnt_part_clr <= sig_last_part;
 
--- register for counter values
+   -- ------- the counter of parts ------------------------------------------
    counter_reg_p: process (CLK)
    begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
-            sig_counter_reg_out <= (others => '0');
-         elsif (sig_size_vld = '1') then
-            sig_counter_reg_out <= sig_counter_value; 
+            cnt_part <= (others => '0');
+         elsif (cnt_part_en = '1') then
+            if (cnt_part_clr = '1') then
+               cnt_part <= (others => '0');
+            else
+               cnt_part <= cnt_part + 1;
+            end if;
          end if;
-      end if;
-   end process;   
-   
--- comparator for counter value and parts number
-   part_num_comp : process (sig_counter_reg_out, sig_parts_reg_number)
-   begin
-      sig_counter_value <= (others => '0');
-
-      if (sig_counter_reg_out = sig_parts_reg_number) then sig_counter_value <= (others => '0');
-      else sig_counter_value <= sig_counter_reg_out + 1;
       end if;
    end process;
 
--- --------------- GENERATION OF PARTS' SIZES ---------------------------
+   sig_next_frame <= sig_last_part AND sig_cnt_inc;
+   
+   -- -------- comparator for counter value and parts number ----------------
+   part_num_comp : process (cnt_part, sig_parts_number)
+   begin
+      sig_last_part <= '0';
 
--- mask/base/max processing multiplexer
-   mask_mux : process (sig_counter_reg_out, reg_size_mask, reg_size_base, reg_size_max)
+      if (cnt_part = sig_parts_number) then
+         sig_last_part <= '1';
+      end if;
+   end process;
+
+   -- --------------- GENERATION OF PARTS' SIZES ---------------------------
+
+   -- mask/base/max processing multiplexer
+   mask_base_max_mux : process (cnt_part, reg_size_mask, reg_size_base, reg_size_max)
    begin
       sig_part_mask <= (others => '0');
       sig_part_base <= (others => '0');
       sig_part_max  <= (others => '0');
 
       for i in 0 to MAX_PARTS-1 loop
-         if (i = sig_counter_reg_out) then 
+         if (i = cnt_part) then 
             sig_part_mask <= reg_size_mask((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
             sig_part_base <= reg_size_base((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
             sig_part_max  <= reg_size_max ((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
@@ -346,7 +382,10 @@ begin
       end loop;
    end process;
    
--- gen_proc_unit instance --
+   --
+   size_proc_en  <= sig_parts_number_vld;
+
+   -- gen_proc_unit instance --
    gen_proc_unit_size_i : entity work.gen_proc_unit
    generic map(
       DATA_WIDTH   => PART_SIZE_CNT_WIDTH
@@ -359,6 +398,7 @@ begin
       MASK       => sig_part_mask,
       BASE       => sig_part_base,
       MAX        => sig_part_max,
+      EN         => size_proc_en,
       
       -- output interface
       OUTPUT     => sig_size,
@@ -370,4 +410,23 @@ begin
    PART_SIZE_VLD <= sig_size_vld;   
    sig_size_take <= PART_SIZE_TAKE;
   
+   -- -------  the register that holds '1' iff in the previous clock --------
+   --          cycle, the value of gen_proc_unit_size_i output was
+   --          cleared
+   reg_prev_step_clear_in <= (NOT sig_size_vld)
+                             OR (sig_size_vld AND sig_size_take);
+
+   reg_prev_step_clear_p: process(CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            reg_prev_step_clear <= '0';
+         else
+            reg_prev_step_clear <= reg_prev_step_clear_in;
+         end if;
+      end if;
+   end process;
+
+   sig_cnt_inc  <= reg_prev_step_clear AND sig_size_vld;
+
 end architecture;

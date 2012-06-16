@@ -21,27 +21,19 @@ proc blk_REG_PROC_UNIT { BASE } {
    add_wave "-noupdate -label GEN_FLOW -hex"  $BASE/GEN_FLOW  
       
       add wave -divider "Output interface"
-   add_wave "-noupdate -hex -label PARTS_NUM" $BASE/PARTS_NUM
-   add_wave "-noupdate -label PARTS_NUM_VLD " $BASE/PARTS_NUM_VLD
    add_wave "-noupdate -hex -label PART_SIZE" $BASE/PART_SIZE
    add_wave "-noupdate -label PART_SIZE_VLD"  $BASE/PART_SIZE_VLD
+   add_wave "-noupdate -label PART_SIZE_TAKE" $BASE/PART_SIZE_TAKE
    
+   add wave -divider "Internal signals"
    
-   add_wave "-noupdate -hex -label sig_dwr"   $BASE/sig_dwr
-   add_wave "-noupdate -hex -label sig_addr"  $BASE/sig_addr
-   add_wave "-noupdate -hex -label sig_mask"  $BASE/sig_mask
-   add_wave "-noupdate -hex -label sig_base"  $BASE/sig_base
-   add_wave "-noupdate -hex -label sig_max"   $BASE/sig_max
    add_wave "-noupdate -hex -label sig_parts_number" $BASE/sig_parts_number
-   add_wave "-noupdate -label sig_parts_number_vld"  $BASE/sig_parts_number_vld
-   add_wave "-noupdate -hex -label sig_parts_reg_number"  $BASE/sig_parts_reg_number
-   add_wave "-noupdate -hex -label sig_counter_reg_out"   $BASE/sig_counter_reg_out
-   add_wave "-noupdate -hex -label sig_counter_value"     $BASE/sig_counter_value
+   add_wave "-noupdate      -label sig_parts_number_vld"  $BASE/sig_parts_number_vld
    add_wave "-noupdate -hex -label sig_part_mask"  $BASE/sig_part_mask
    add_wave "-noupdate -hex -label sig_part_base"  $BASE/sig_part_base
    add_wave "-noupdate -hex -label sig_part_max"   $BASE/sig_part_max
    add_wave "-noupdate -hex -label sig_size"       $BASE/sig_size
-   add_wave "-noupdate -label sig_size_vld"        $BASE/sig_size_vld
+   add_wave "-noupdate      -label sig_size_vld"        $BASE/sig_size_vld
 
 }
 

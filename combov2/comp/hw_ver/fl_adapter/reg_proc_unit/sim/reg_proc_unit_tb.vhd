@@ -53,9 +53,6 @@ architecture behavioral of testbench is
    
    signal reg_proc_unit_gen_flow : std_logic_vector(DATA_WIDTH-1 downto 0);
    
-   signal reg_proc_unit_parts_num     : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
-   signal reg_proc_unit_parts_num_vld : std_logic;
-   signal reg_proc_unit_parts_num_take: std_logic;
    signal reg_proc_unit_part_size     : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
    signal reg_proc_unit_part_size_vld : std_logic;
    signal reg_proc_unit_part_size_take: std_logic;
@@ -91,9 +88,6 @@ begin
       GEN_FLOW          => reg_proc_unit_gen_flow,
    
       -- Output interface
-      PARTS_NUM         => reg_proc_unit_parts_num,
-      PARTS_NUM_VLD     => reg_proc_unit_parts_num_vld,
-      PARTS_NUM_TAKE    => reg_proc_unit_parts_num_take,
       PART_SIZE         => reg_proc_unit_part_size,
       PART_SIZE_VLD     => reg_proc_unit_part_size_vld,
       PART_SIZE_TAKE    => reg_proc_unit_part_size_take
