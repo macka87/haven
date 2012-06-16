@@ -148,6 +148,42 @@ begin
    sig_mi_wr   <= MI_WR;
    sig_mi_rd   <= MI_RD;
 
+   -- The address space (in binary):
+   -- 0000 0000 : the RUN register
+   -- 0000 0100 : the TRANSACTION_COUNT register
+   -- 0001 0000 : the registers for setting of numbers of parts
+   --             0000 : MASK
+   --             0100 : BASE
+   --             1000 : MAX
+   -- 1000 0000 : registers for setting of sizes of parts (alligned to 16 B)
+
+   -- ------- address decoder -----------------------------------------------
+   addr_dec_p: process(sig_mi_addr)
+   begin
+      reg_run_sel    <= '0';
+      reg_trans_sel  <= '0';
+      regs_num_sel   <= '0';
+      regs_size_sel  <= '0';
+
+      case (sig_mi_addr(7)) is
+         when '0' =>
+            case (sig_mi_addr(4)) is
+               when '0' =>
+                  case (sig_mi_addr(2)) is
+                     when '0'    => reg_run_sel   <= '1';   -- the run register
+                     when '1'    => reg_trans_sel <= '1';   -- count of transactions
+                     when others => null;
+                  end case;
+
+               when '1'    => regs_num_sel  <= '1';         -- numbers of parts
+               when others => null;
+            end case;
+
+         when '1'    => regs_size_sel <= '1';               -- sizes of parts
+         when others => null;
+      end case;
+   end process;
+
    -- -------- registers for the ranges of numbers of parts -----------------
    regs_num_p: process (CLK, sig_mi_addr, regs_num_sel)
    begin
@@ -167,25 +203,28 @@ begin
       end if;
    end process; 
 
-   -- ------- address decoder -----------------------------------------------
-   addr_dec_p: process(sig_mi_addr)
+   -- ------ the RUN register -----------------------------------------------
+   reg_run_p: process(CLK)
    begin
-      reg_run_sel    <= '0';
-      reg_trans_sel  <= '0';
-      regs_num_sel   <= '0';
-      regs_size_sel <= '0';
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            reg_run <= '0';
+         elsif ((reg_run_sel = '1') AND (sig_mi_wr = '1')) then
+            reg_run <= sig_mi_dwr(0);
+         end if;
+      end if;
+   end process;
 
-      case (sig_mi_addr(7)) is
-         when '0' =>
-            case (sig_mi_addr(4 downto 3)) is
-               when "00" => reg_run_sel   <= '1';   -- the run register
-               when "01" => reg_trans_sel <= '1';   -- count of transactions
-               when "10" => regs_num_sel  <= '1';   -- numbers of parts
-               when others => null;
-            end case;
-         when '1' => regs_size_sel <= '1';          -- sizes of parts
-         when others => null;
-      end case;
+   -- -------- the register with the count of transactions -----------------
+   reg_trans_p: process(CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            reg_trans <= (others => '0');
+         elsif ((reg_trans_sel = '1') AND (sig_mi_wr = '1')) then
+            reg_trans <= sig_mi_dwr(PART_SIZE_CNT_WIDTH-1 downto 0);
+         end if;
+      end if;
    end process;
 
    -- --------------- RECEIVING THE CONTENT OF REGISTERS FROM SOFTWARE -----
