@@ -11,7 +11,13 @@ exec make
 view wave
 delete wave *
 
-blk_REG_PROC_UNIT "$REG_PROC_UNIT_PATH" 
+blk_REG_PROC_UNIT       "$REG_PROC_UNIT_PATH"
+
+add wave -divider "*************"
+add wave -divider "* REGISTERS *"
+add wave -divider "*************"
+
+blk_REG_PROC_UNIT_REGS  "$REG_PROC_UNIT_PATH"
 
 restart -f
 run 10 us

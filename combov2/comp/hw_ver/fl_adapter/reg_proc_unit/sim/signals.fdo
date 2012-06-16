@@ -4,8 +4,8 @@
 
 proc blk_REG_PROC_UNIT { BASE } {
 
-   add_wave "-noupdate -label CLK"    $BASE/CLK
-   add_wave "-noupdate -label RESET"  $BASE/RESET
+   add_wave "-noupdate -label CLK -color yellow"    $BASE/CLK
+   add_wave "-noupdate -label RESET -color yellow"  $BASE/RESET
 
       add wave -divider "Interface MI32"
    add_wave "-noupdate -hex -label MI_DWR"  $BASE/MI_DWR
@@ -44,6 +44,64 @@ proc blk_REG_PROC_UNIT { BASE } {
    add_wave "-noupdate -label sig_size_vld"        $BASE/sig_size_vld
 
 }
+
+proc blk_REG_PROC_UNIT_REGS { BASE } {
+
+   add wave -divider "REG_RUN"
+   add_wave "-noupdate -hex -label reg_run"        $BASE/reg_run
+   add_wave "-noupdate      -label reg_run_sel"    $BASE/reg_run_sel
+
+   add wave -divider "REG_TRANS"
+   add_wave "-noupdate -hex -label reg_trans"      $BASE/reg_trans
+   add_wave "-noupdate      -label reg_trans_sel"  $BASE/reg_trans_sel
+
+   add wave -divider "REGS_NUM"
+   add_wave "-noupdate -hex -label reg_num_mask"   $BASE/reg_num_mask
+   add_wave "-noupdate -hex -label reg_num_base"   $BASE/reg_num_base
+   add_wave "-noupdate -hex -label reg_num_max"    $BASE/reg_num_max
+
+   add wave -divider "REGS_PART0"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(31:0)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(31:0)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(31:0)
+
+   add wave -divider "REGS_PART1"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(63:32)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(63:32)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(63:32)
+
+   add wave -divider "REGS_PART2"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(95:64)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(95:64)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(95:64)
+
+   add wave -divider "REGS_PART3"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(127:96)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(127:96)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(127:96)
+
+   add wave -divider "REGS_PART4"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(159:128)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(159:128)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(159:128)
+
+   add wave -divider "REGS_PART5"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(191:160)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(191:160)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(191:160)
+
+   add wave -divider "REGS_PART6"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(223:192)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(223:192)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(223:192)
+
+   add wave -divider "REGS_PART7"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(255:224)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(255:224)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(255:224)
+}
+
+
 
 proc blk_GEN_PROC_UNIT { BASE } {
 
