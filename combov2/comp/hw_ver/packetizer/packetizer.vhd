@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------
 -- Project Name: Hardware - Software Framework for Functional Verification
--- File Name:    Signal Observer's Packetizer
+-- File Name:    Packetizer
 -- Description: 
 -- Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
 -- Date:         15.4.2011 
@@ -16,16 +16,19 @@ use work.math_pack.all;
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
-entity OBSERVER_PACKETIZER is
+
+-- Packetizer is a component that given a raw data stream (supposedly somehow
+-- preformated) creates FrameLink packets encapsulating the data in the stream.
+entity PACKETIZER is
 
    generic
    (
       -- data width
       DATA_WIDTH       : integer := 64;
       -- maximum frame length in bytes
-      MAX_FRAME_LENGTH : integer := 4096;
+      FRAME_LENGTH     : integer := 4096;
       -- Endpoint ID for NetCOPE protocol
-      ENDPOINT_ID      : integer
+      ENDPOINT_ID      : integer := 64
    );
 
    port
@@ -57,7 +60,7 @@ end entity;
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
-architecture arch of OBSERVER_PACKETIZER is
+architecture arch of PACKETIZER is
 
 -- ==========================================================================
 --                                    CONSTANTS
@@ -67,13 +70,13 @@ architecture arch of OBSERVER_PACKETIZER is
 constant HEAD_WORD_LENGTH  : integer := 1;
 
 -- maximum value of the frame word counter
-constant WORD_CNT_MAX_VALUE   : integer := MAX_FRAME_LENGTH/(DATA_WIDTH/8)-1;
+constant WORD_CNT_MAX_VALUE   : integer := FRAME_LENGTH/(DATA_WIDTH/8)-1;
 
 -- width of the frame word counter
 constant WORD_CNT_WIDTH         : integer := log2(WORD_CNT_MAX_VALUE);
 
 -- types of transactions
-constant OBSERVER_TRANS_TYPE :  std_logic_vector(7 downto 0) := X"0B";
+constant OBSERVER_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"8B";
 
 -- endpoint tag
 constant ENDPOINT_TAG : std_logic_vector(7 downto 0) :=
@@ -135,7 +138,7 @@ begin
 
    -- data in the header
    header_data(63 downto 16) <= (others => '0');
-   header_data(15 downto  8) <= OBSERVER_TRANS_TYPE;
+   header_data(15 downto  8) <= OBSERVER_PROTOCOL_ID;
    header_data(7  downto  0) <= ENDPOINT_TAG;
 
    -- ------------------- data multiplexer ----------------------
@@ -176,31 +179,37 @@ begin
    word_cnt_en <= sig_rx_valid AND (NOT is_sending_header) AND (NOT
                   sig_tx_fl_dst_rdy_n);
 
-   -- word counter
-   word_cnt_p: process (CLK)
-   begin
-      if (rising_edge(CLK)) then
-         if (RESET = '1') then
-            word_cnt <= (others => '0');
-         elsif (word_cnt_clr = '1') then
-            word_cnt <= (others => '0');
-         elsif (word_cnt_en = '1') then
-            word_cnt <= word_cnt + 1;
+   gen_word_cnt: if (WORD_CNT_WIDTH >= 1) generate 
+      -- word counter
+      word_cnt_p: process (CLK)
+      begin
+         if (rising_edge(CLK)) then
+            if (RESET = '1') then
+               word_cnt <= (others => '0');
+            elsif (word_cnt_clr = '1') then
+               word_cnt <= (others => '0');
+            elsif (word_cnt_en = '1') then
+               word_cnt <= word_cnt + 1;
+            end if;
          end if;
-      end if;
-   end process;
+      end process;
 
-   -- word counter value comparer
-   word_cnt_zero_cmp_p: process (word_cnt)
-   begin
-      is_word_cnt_max <= '0';
-
-      if (word_cnt = WORD_CNT_MAX_VALUE) then
-         is_word_cnt_max <= '1';
-      else
+      -- word counter value comparer
+      word_cnt_zero_cmp_p: process (word_cnt)
+      begin
          is_word_cnt_max <= '0';
-      end if;
-   end process;
+
+         if (word_cnt = WORD_CNT_MAX_VALUE) then
+            is_word_cnt_max <= '1';
+         else
+            is_word_cnt_max <= '0';
+         end if;
+      end process;
+   end generate;
+
+   gen_no_word_cnt: if (WORD_CNT_WIDTH < 1) generate
+      is_word_cnt_max <= '1';
+   end generate;
 
 
    -- other output signals

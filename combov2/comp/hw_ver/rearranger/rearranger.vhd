@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------
 -- Project Name: Hardware - Software Framework for Functional Verification
--- File Name:    Signal Observer's Rearranger
+-- File Name:    Rearranger
 -- Description: 
 -- Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
 -- Date:         15.4.2011 
@@ -16,7 +16,13 @@ use work.math_pack.all;
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
-entity OBSERVER_REARRANGER is
+
+-- This unit serves as a rearranger of signals of different width. It either
+-- splits a single word from the input into multiple words at the output (in
+-- case the input width is bigger than the output width), or multiple words at
+-- the input into a single word at the output (in case the input width is
+-- smaller than the output width).
+entity REARRANGER is
 
    generic
    (
@@ -45,7 +51,7 @@ end entity;
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
-architecture arch of OBSERVER_REARRANGER is
+architecture arch of REARRANGER is
 
 begin
 
@@ -60,7 +66,7 @@ begin
    -- RX data width > TX data width
    GEN_ARCH_DOWN:
    if (IN_DATA_WIDTH > OUT_DATA_WIDTH) generate
-      observer_rearranger_down_i: entity work.OBSERVER_REARRANGER_DOWN
+      rearranger_down_i: entity work.REARRANGER_DOWN
          generic map(
             IN_DATA_WIDTH  => IN_DATA_WIDTH,
             OUT_DATA_WIDTH => OUT_DATA_WIDTH
@@ -82,7 +88,7 @@ begin
    -- RX data width < TX data width
    GEN_ARCH_UP:
    if (IN_DATA_WIDTH < OUT_DATA_WIDTH) generate
-      observer_rearranger_up_i: entity work.OBSERVER_REARRANGER_UP
+      rearranger_up_i: entity work.REARRANGER_UP
          generic map(
             IN_DATA_WIDTH  => IN_DATA_WIDTH,
             OUT_DATA_WIDTH => OUT_DATA_WIDTH

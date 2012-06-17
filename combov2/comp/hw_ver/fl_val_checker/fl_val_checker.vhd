@@ -86,7 +86,7 @@ architecture arch of FL_VAL_CHECKER is
       + FRAME_CNT_WIDTH;
 
    -- FrameLink protocol ID
-   constant FL_VAL_CHECKER_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"10";
+   constant FL_VAL_CHECKER_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"90";
 
    -- transaction type for invalid frame
    constant INVALID_TRANS_TYPE         :  std_logic_vector(7 downto 0) := X"EE";

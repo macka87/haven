@@ -51,7 +51,11 @@ entity REG_PROC_UNIT is
       -- Output interface
       PART_SIZE     : out std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0); -- Part size
       PART_SIZE_VLD : out std_logic;                     -- Part size valid
-      PART_SIZE_TAKE:  in std_logic                      -- take signal for part size
+      PART_SIZE_TAKE:  in std_logic;                     -- take signal for part size
+
+      -- additional signal denoting whether the part for which the size is
+      -- provided is the last part of the frame
+      IS_LAST_IN_FRAME : out std_logic
    );       
    
 end entity;
@@ -137,9 +141,12 @@ signal sig_cnt_inc            : std_logic;
 -- the signal denoting that the last part of the frame is being processed
 signal sig_last_part          : std_logic;
 
--- the register holding '1' if in the previous step, the part size generator was cleared
-signal reg_prev_step_clear    : std_logic;
-signal reg_prev_step_clear_in : std_logic;
+-- register holding '1' if the current part size is for the last part in the
+-- frame
+signal reg_is_last            : std_logic;
+
+-- is the size gen_proc_unit sampling?
+signal sig_size_sampling      : std_logic;
 
 begin
 
@@ -323,6 +330,7 @@ begin
       BASE       => reg_num_base,
       MAX        => reg_num_max,
       EN         => num_proc_en,
+      SAMPLING   => open,
       
       -- output interface
       OUTPUT     => sig_parts_number,
@@ -399,6 +407,7 @@ begin
       BASE       => sig_part_base,
       MAX        => sig_part_max,
       EN         => size_proc_en,
+      SAMPLING   => sig_size_sampling,
       
       -- output interface
       OUTPUT     => sig_size,
@@ -409,24 +418,20 @@ begin
    PART_SIZE     <= sig_size; 
    PART_SIZE_VLD <= sig_size_vld;   
    sig_size_take <= PART_SIZE_TAKE;
-  
-   -- -------  the register that holds '1' iff in the previous clock --------
-   --          cycle, the value of gen_proc_unit_size_i output was
-   --          cleared
-   reg_prev_step_clear_in <= (NOT sig_size_vld)
-                             OR (sig_size_vld AND sig_size_take);
 
-   reg_prev_step_clear_p: process(CLK)
+   sig_cnt_inc  <= sig_size_sampling;
+
+   -- the register holding '1' if the part size is for the part that is the
+   -- last in the frame
+   reg_is_last_p: process(CLK)
    begin
       if (rising_edge(CLK)) then
-         if (RESET = '1') then
-            reg_prev_step_clear <= '0';
-         else
-            reg_prev_step_clear <= reg_prev_step_clear_in;
+         if (sig_size_sampling = '1') then
+            reg_is_last <= sig_last_part;
          end if;
       end if;
    end process;
 
-   sig_cnt_inc  <= reg_prev_step_clear AND sig_size_vld;
+   IS_LAST_IN_FRAME <= reg_is_last;
 
 end architecture;

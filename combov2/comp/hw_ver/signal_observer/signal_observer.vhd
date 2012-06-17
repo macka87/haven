@@ -68,14 +68,14 @@ architecture arch of SIGNAL_OBSERVER is
 -- ==========================================================================
 
 -- maximum length of a FrameLink frame (depends on the size of DMA buffers)
-constant MAX_FRAME_LENGTH       : integer := 4000;
+constant FRAME_LENGTH           : integer := 4000;
 
 -- length of NetCOPE protocol header
 constant HEADER_LENGTH          : integer := 1;
 
 -- depth of the buffer FIFO
 constant BUFFER_FIFO_DEPTH      : integer :=
-   MAX_FRAME_LENGTH / (OUT_DATA_WIDTH/8) + HEADER_LENGTH;
+   FRAME_LENGTH / (OUT_DATA_WIDTH/8) + HEADER_LENGTH;
 
 -- the packet counter
 constant PACKET_CNT_WIDTH       : integer := max(log2(SEND_X_FRAMES-1)+1, 1);
@@ -106,12 +106,12 @@ signal tx_rearranger_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
 signal tx_rearranger_valid     : std_logic;
 signal tx_rearranger_read_next : std_logic;
 
--- OBSERVER_PACKETIZER input
+-- PACKETIZER input
 signal rx_packetizer_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
 signal rx_packetizer_valid     : std_logic;
 signal rx_packetizer_read_next : std_logic;
 
--- OBSERVER_PACKETIZER output
+-- PACKETIZER output
 signal tx_packetizer_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
 signal tx_packetizer_rem       : std_logic_vector(log2(OUT_DATA_WIDTH/8)-1 downto 0);
 signal tx_packetizer_sof_n     : std_logic;
@@ -211,8 +211,8 @@ begin
    rx_rearranger_valid     <= NOT (sig_data_fifo_rd_empty OR observer_stopped);
    sig_data_fifo_rd_read   <= rx_rearranger_read_next OR observer_stopped;
 
-   -- --------------- OBSERVER_REARRANGER instance ---------------------------
-   observer_rearranger_i : entity work.OBSERVER_REARRANGER
+   -- --------------- REARRANGER instance ---------------------------
+   rearranger_i : entity work.REARRANGER
    generic map(
       IN_DATA_WIDTH   => IN_DATA_WIDTH,
       OUT_DATA_WIDTH  => OUT_DATA_WIDTH
@@ -237,12 +237,12 @@ begin
    rx_packetizer_valid        <= tx_rearranger_valid;
    tx_rearranger_read_next    <= rx_packetizer_read_next;
 
-   -- --------------- OBSERVER_PACKETIZER instance -------------------------------
-   observer_packetizer_i : entity work.OBSERVER_PACKETIZER
+   -- --------------- PACKETIZER instance ----------------------------------
+   packetizer_i : entity work.PACKETIZER
    generic map(
       DATA_WIDTH      => OUT_DATA_WIDTH,
       ENDPOINT_ID     => ENDPOINT_ID,
-      MAX_FRAME_LENGTH=> MAX_FRAME_LENGTH
+      FRAME_LENGTH    => FRAME_LENGTH
    )
    port map(
       CLK             => TX_CLK,

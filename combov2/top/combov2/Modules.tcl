@@ -77,7 +77,7 @@ set SPLITTER      "FULL"
 set NETWORK_MOD   "10G2_64"
 set TS_ASYNC      "FULL"
 set STAT          "FULL"
-set VER_CORE      "FULL"
+set VER_ENGINE    "FULL"
 
 # Base directories
 set PACODAG_BASE        "$COMP_BASE/pacodag"
@@ -92,39 +92,39 @@ set NETWORK_MOD_BASE    "$NETCOPE_BASE/comp/network_mod"
 set DMA_MOD_BASE        "$COMP_BASE/proc/dma_mod/dma_mod_$DMA_MOD" 
 set TS_ASYNC_BASE       "$COMP_BASE/tsu/tsu_async"
 set STAT_BASE           "$COMP_BASE/fl_tools/debug/stat"
-set VER_CORE_BASE       "$COMP_BASE/verification_core"
+set VER_ENGINE_BASE     "$COMP_BASE/verification_engine"
 
 # List of instances
-set PACODAG_INST     [list [list "PACODAG_I"           "FULL"]]
-set WATCH_INST       [list [list "FL_WATCH*_I"         "FULL"]]
-set MI_SPLITTER_INST [list [list "MI_SPLITTER_I"       "FULL"]]
-set IB_INST          [list [list "IB*_I"               "FULL"]]
-set IB_ASYNC_INST    [list [list "IB_ASFIFO*"          "FULL"]]
-set MI_ASYNC_INST    [list [list "MI_ASYNC*"           "FULL"]] 
-set TRANSFORMER_INST [list [list "FL_TRANSFORMER_I"    "FULL"]]
-set SPLITTER_INST    [list [list "FL_SPLITTER_I"       "FULL"]]
-set NETWORK_MOD_INST [list [list "NETWORK_MOD*_I"      "FULL"]] 
-set DMA_MOD_INST     [list [list "DMA_MOD*_I"          "FULL"]] 
-set TS_ASYNC_INST    [list [list "TS_ASYNC_UNIT_I"     "FULL"]]
-set STAT_INST        [list [list "STAT_I"              "FULL"]]
-set VER_CORE_INST    [list [list "VERIFICATION_CORE_I" "FULL"]]
+set PACODAG_INST     [list [list "PACODAG_I"             "FULL"]]
+set WATCH_INST       [list [list "FL_WATCH*_I"           "FULL"]]
+set MI_SPLITTER_INST [list [list "MI_SPLITTER_I"         "FULL"]]
+set IB_INST          [list [list "IB*_I"                 "FULL"]]
+set IB_ASYNC_INST    [list [list "IB_ASFIFO*"            "FULL"]]
+set MI_ASYNC_INST    [list [list "MI_ASYNC*"             "FULL"]] 
+set TRANSFORMER_INST [list [list "FL_TRANSFORMER_I"      "FULL"]]
+set SPLITTER_INST    [list [list "FL_SPLITTER_I"         "FULL"]]
+set NETWORK_MOD_INST [list [list "NETWORK_MOD*_I"        "FULL"]] 
+set DMA_MOD_INST     [list [list "DMA_MOD*_I"            "FULL"]] 
+set TS_ASYNC_INST    [list [list "TS_ASYNC_UNIT_I"       "FULL"]]
+set STAT_INST        [list [list "STAT_I"                "FULL"]]
+set VER_ENGINE_INST  [list [list "VERIFICATION_ENGINE_I" "FULL"]]
 
 # List of components
 if { $ARCHGRP == "FULL" } {
    set COMPONENTS [concat $COMPONENTS [list \
-      [list "PACODAG"     $PACODAG_BASE     $PACODAG     $PACODAG_INST     ] \
-      [list "WATCH"       $WATCH_BASE       $WATCH       $WATCH_INST       ] \
-      [list "MI_SPLITTER" $MI_SPLITTER_BASE $MI_SPLITTER $MI_SPLITTER_INST ] \
-      [list "IB"          $IB_BASE          $IB          $IB_INST          ] \
-      [list "IB_ASYNC"    $IB_ASYNC_BASE    $IB_ASYNC    $IB_ASYNC_INST    ] \
-      [list "MI_ASYNC"    $MI_ASYNC_BASE    $MI_ASYNC    $MI_ASYNC_INST    ] \
-      [list "TS_ASYNC"    $TS_ASYNC_BASE    $TS_ASYNC    $TS_ASYNC_INST    ] \
-      [list "FL_TRANSFORMER" $TRANSFORMER_BASE $TRANSFORMER $TRANSFORMER_INST ] \
-      [list "FL_SPLITTER" $SPLITTER_BASE    $SPLITTER    $SPLITTER_INST    ] \
-      [list "NETWORK_MOD" $NETWORK_MOD_BASE $NETWORK_MOD $NETWORK_MOD_INST ] \
-      [list "DMA_MOD"     $DMA_MOD_BASE     $DMA_MOD     $DMA_MOD_INST     ] \
-      [list "STAT"        $STAT_BASE        $STAT        $STAT_INST        ] \
-      [list "VERIFICATION_CORE" $VER_CORE_BASE $VER_CORE $VER_CORE_INST    ] \
+      [list "PACODAG"             $PACODAG_BASE     $PACODAG     $PACODAG_INST     ] \
+      [list "WATCH"               $WATCH_BASE       $WATCH       $WATCH_INST       ] \
+      [list "MI_SPLITTER"         $MI_SPLITTER_BASE $MI_SPLITTER $MI_SPLITTER_INST ] \
+      [list "IB"                  $IB_BASE          $IB          $IB_INST          ] \
+      [list "IB_ASYNC"            $IB_ASYNC_BASE    $IB_ASYNC    $IB_ASYNC_INST    ] \
+      [list "MI_ASYNC"            $MI_ASYNC_BASE    $MI_ASYNC    $MI_ASYNC_INST    ] \
+      [list "TS_ASYNC"            $TS_ASYNC_BASE    $TS_ASYNC    $TS_ASYNC_INST    ] \
+      [list "FL_TRANSFORMER"      $TRANSFORMER_BASE $TRANSFORMER $TRANSFORMER_INST ] \
+      [list "FL_SPLITTER"         $SPLITTER_BASE    $SPLITTER    $SPLITTER_INST    ] \
+      [list "NETWORK_MOD"         $NETWORK_MOD_BASE $NETWORK_MOD $NETWORK_MOD_INST ] \
+      [list "DMA_MOD"             $DMA_MOD_BASE     $DMA_MOD     $DMA_MOD_INST     ] \
+      [list "STAT"                $STAT_BASE        $STAT        $STAT_INST        ] \
+      [list "VERIFICATION_ENGINE" $VER_ENGINE_BASE  $VER_ENGINE  $VER_ENGINE_INST    ] \
    ]]
 }
 
@@ -138,7 +138,7 @@ if { $ARCHGRP == "EDIF" } {
       [list "FL_TRANSFORMER" $TRANSFORMER_BASE $TRANSFORMER $TRANSFORMER_INST ] \
       [list "WATCH"       $WATCH_BASE       $WATCH       $WATCH_INST       ] \
       [list "STAT"        $STAT_BASE        $STAT        $STAT_INST        ] \
-      [list "VERIFICATION_CORE" $VER_CORE_BASE $VER_CORE $VER_CORE_INST    ] \
+      [list "VERIFICATION_ENGINE" $VER_ENGINE_BASE  $VER_ENGINE  $VER_ENGINE_INST    ] \
    ]]
 }
 

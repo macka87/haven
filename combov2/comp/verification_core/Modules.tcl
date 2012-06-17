@@ -31,7 +31,6 @@ set COMPONENTS [list \
    [ list "FL_FIFO"            $FL_FIFO_BASE             "FULL"] \
    [ list "FL_BINDER"          $FL_BINDER_BASE           "FULL"] \
    [ list "FL_ASFIFO"          $FL_ASFIFO_BASE           "FULL"] \
-   [ list "FL_ADDER"           $FL_ADDER_BASE            "FULL"] \
    [ list "CLOCK_GATE"         $CLOCK_GATE_BASE          "FULL"] \
    [ list "FL_HW_DRIVER"       $FL_HW_DRIVER_BASE        "FULL"] \
    [ list "FL_HW_MONITOR"      $FL_HW_MONITOR_BASE       "FULL"] \

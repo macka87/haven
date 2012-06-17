@@ -60,6 +60,9 @@ architecture behavioral of testbench is
    signal reg_proc_unit_part_size     : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
    signal reg_proc_unit_part_size_vld : std_logic;
    signal reg_proc_unit_part_size_take: std_logic;
+   signal reg_proc_unit_is_last_in_frame: std_logic;
+
+   signal reg_rand_bit                : std_logic;
    
 -- ----------------------------------------------------------------------------
 --                      Architecture body
@@ -94,7 +97,8 @@ begin
       -- Output interface
       PART_SIZE         => reg_proc_unit_part_size,
       PART_SIZE_VLD     => reg_proc_unit_part_size_vld,
-      PART_SIZE_TAKE    => reg_proc_unit_part_size_take
+      PART_SIZE_TAKE    => reg_proc_unit_part_size_take,
+      IS_LAST_IN_FRAME  => reg_proc_unit_is_last_in_frame
    );
 
    -- ----------------------------------------------------
@@ -108,6 +112,7 @@ begin
       wait for clkper/2;
    end process;
    
+   -- reset generator
    resetgen: process
    begin
       reset <= '1';
@@ -116,6 +121,7 @@ begin
       wait;
    end process;
 
+   -- random data generator
    reg_proc_unit_gen_flow_p: process(clk)
       variable seed1, seed2: positive;
       variable rand: real;
@@ -133,9 +139,25 @@ begin
       end if;
    end process;
 
-   tb: process
+   -- random bit register for the take signal
+   reg_rand_bit_p: process(clk)
       variable seed1, seed2: positive;     -- Seed values for random generator
       variable rand: real;                 -- Random real-number value in range 0 to 1.0
+   begin
+      if (rising_edge(clk)) then
+         UNIFORM(seed1, seed2, rand);
+         if (rand > 0.5) then
+            reg_rand_bit <= '0';
+         else
+            reg_rand_bit <= '1';
+         end if;
+      end if;
+   end process;
+
+   reg_proc_unit_part_size_take <= reg_rand_bit AND reg_proc_unit_part_size_vld;
+
+   -- the testbench process
+   tb: process
    begin
 
       -- initialisation of signals
@@ -144,9 +166,6 @@ begin
       reg_proc_unit_mi_be    <= "1111";
       reg_proc_unit_mi_dwr   <= (others => '0');
       reg_proc_unit_mi_addr  <= X"DEADBEEF";
-
-      reg_proc_unit_part_size_take <= '0';
-
 
       wait for reset_time; 
       wait until rising_edge(clk);
@@ -310,20 +329,6 @@ begin
       wait until rising_edge(clk);
 
       reg_proc_unit_mi_wr    <= '0';
-
-      loop
-         if (reg_proc_unit_part_size_vld = '1') then
-            UNIFORM(seed1, seed2, rand);
-            if (rand > 0.5) then
-               reg_proc_unit_part_size_take <= '1';
-            end if;
-         end if;
-
-         wait until rising_edge(clk);
-         reg_proc_unit_part_size_take <= '0';
-      end loop;
-
-
 
       wait;
    end process;

@@ -75,7 +75,7 @@ constant HEADER_WIDTH : integer := 8;
 constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
 
 -- FrameLink protocol ID
-constant FRAMELINK_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"00";
+constant FRAMELINK_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"80";
 
 -- endpoint tag
 constant ENDPOINT_TAG : std_logic_vector(7 downto 0) :=

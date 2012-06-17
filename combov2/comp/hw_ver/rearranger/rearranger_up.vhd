@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------
 -- Project Name: Hardware - Software Framework for Functional Verification
--- File Name:    Signal Observer's Rearranger (Upwards)
+-- File Name:    Rearranger (Upwards)
 -- Description: 
 -- Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
 -- Date:         15.4.2011 
@@ -16,7 +16,7 @@ use work.math_pack.all;
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
-entity OBSERVER_REARRANGER_UP is
+entity REARRANGER_UP is
 
    generic
    (
@@ -45,7 +45,7 @@ end entity;
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
-architecture arch of OBSERVER_REARRANGER_UP is
+architecture arch of REARRANGER_UP is
 
 -- ==========================================================================
 --                                     SIGNALS
