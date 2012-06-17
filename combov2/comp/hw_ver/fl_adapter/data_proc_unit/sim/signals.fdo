@@ -1,0 +1,19 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+proc blk_DATA_PROC_UNIT { BASE } {
+
+   add_wave "-noupdate -label CLK"    $BASE/CLK
+   add_wave "-noupdate -label RESET"  $BASE/RESET
+
+      add wave -divider "Input Interface"
+   add_wave "-noupdate -hex -label DATA_SIZE"    $BASE/DATA_SIZE
+   add_wave "-noupdate -label PART_SIZE_REQUEST" $BASE/PART_SIZE_REQUEST
+      
+      add wave -divider "Output interface"
+   add_wave "-noupdate -hex -label DATA_REM"  $BASE/DATA_REM
+   add_wave "-noupdate -label DATA_REQUEST "  $BASE/DATA_REQUEST
+   add_wave "-noupdate -label DATA_COMPLETE " $BASE/DATA_COMPLETE
+      
+}   
