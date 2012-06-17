@@ -1,0 +1,17 @@
+# Copyright (C) 2012
+# Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
+
+# Paths
+set PART_PROC_UNIT_PATH "/testbench/uut"
+set TB_BASE            "/testbench"
+
+source                 "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+blk_PART_PROC_UNIT "$PART_PROC_UNIT_PATH" 
+
+restart -f
+run 10 us
