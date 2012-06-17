@@ -67,7 +67,7 @@ proc CompileMod {MODULE} {
         regsub "/\[^/\]+\$" $FNAME "/" DIR
         vlog $VMAKE_OPT -cover sbce -sv -work $LIB $FNAME +incdir+$DIR $VLOG_SV_FLAGS
      } else {
-        vcom -93 -explicit -cover sbce -work $LIB $FNAME
+        vcom -93 -explicit -novopt -cover sbce -work $LIB $FNAME
      }
   }
 
@@ -79,7 +79,7 @@ proc CompileMod {MODULE} {
         regsub "/\[^/\]+\$" $FNAME "/" DIR
         vlog $VMAKE_OPT -sv -work $LIB $FNAME +incdir+$DIR $VLOG_SV_FLAGS
      } else {
-        vcom -93 -explicit -work $LIB $FNAME
+        vcom -93 -explicit -novopt -work $LIB $FNAME
      }
   }
 
@@ -202,7 +202,7 @@ PrintLabel "Testbench"
      } elseif { [regexp {^.*\.sv$} $TB_GENERATED] } {
         vlog -cover sbce -sv -work work $TB_GENERATED $VLOG_SV_FLAGS
      } else {
-        vcom -93 -explicit -cover sbce -work work $TB_GENERATED
+        vcom -93 -explicit -novopt -cover sbce -work work $TB_GENERATED
      }
   }
 
@@ -213,7 +213,7 @@ PrintLabel "Testbench"
      } elseif { [regexp {^.*\.sv$} $TB_GENERATED] } {
         vlog -sv -work work $TB_GENERATED $VLOG_SV_FLAGS
      } else {
-        vcom -93 -explicit -work work $TB_GENERATED
+        vcom -93 -explicit -novopt -work work $TB_GENERATED
      }
   }
 
@@ -221,7 +221,7 @@ PrintLabel "Testbench"
 if { [info exist CONFIG] } {
    puts "-------------------------------"
    puts $CONFIG
-   vcom -93 -explicit -work work $CONFIG
+   vcom -93 -explicit -novopt -work work $CONFIG
 }
 
 # Makefile creation
@@ -233,10 +233,10 @@ exec vmake > Makefile
 # Default vsim parameters setting
 if { ! [info exist VSIM_FLAGS] } {
    if { [info exist CODE_COVERAGE] } {
-     set VSIM_FLAGS "-coverage -t 1ps -L xilinxcorelib -lib work"
+     set VSIM_FLAGS "-novopt -coverage -t 1ps -L xilinxcorelib -lib work"
    }
    if { ![info exist CODE_COVERAGE] } {
-     set VSIM_FLAGS "-t 1ps -L xilinxcorelib -lib work"
+     set VSIM_FLAGS "-novopt -t 1ps -L xilinxcorelib -lib work"
    }
 }
 
