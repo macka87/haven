@@ -37,6 +37,9 @@ entity GEN_PROC_UNIT is
 
       -- the enable signal
       EN         : in  std_logic;
+
+      -- is the input being sampled?
+      SAMPLING   : out std_logic;
       
       -- output interface
       OUTPUT     : out std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -61,6 +64,8 @@ architecture arch of GEN_PROC_UNIT is
 signal sig_mask           : std_logic_vector(DATA_WIDTH-1 downto 0);
 signal sig_add            : std_logic_vector(DATA_WIDTH-1 downto 0);
 
+signal sig_sample         : std_logic;
+
 signal sig_output_reg     : std_logic_vector(DATA_WIDTH-1 downto 0);
 signal sig_output_reg_we  : std_logic;
 signal sig_output_reg_clr : std_logic;
@@ -83,6 +88,11 @@ begin
      end if;
    end process;  
    
+
+   sig_sample         <=     EN
+                         AND sig_output_reg_we
+                         AND ((NOT sig_output_vld) OR sig_output_reg_clr);
+
    sig_output_reg_clr <= OUTPUT_TAKE;
 
    -- register for output values
@@ -90,11 +100,8 @@ begin
    begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
-            sig_output_reg <= (others => '0');
             sig_output_vld <= '0';
-         elsif ((EN = '1')
-            AND (sig_output_reg_we = '1')
-            AND ((sig_output_vld = '0') OR (sig_output_reg_clr = '1'))) then
+         elsif (sig_sample = '1') then
             sig_output_reg <= sig_add; 
             sig_output_vld <= '1';
          elsif (sig_output_reg_clr = '1') then
@@ -103,7 +110,9 @@ begin
       end if;
    end process;
    
--- generated output
+   -- generated output
    OUTPUT     <= sig_output_reg;
    OUTPUT_VLD <= sig_output_vld; 
+
+   SAMPLING   <= sig_sample;
 end architecture;
