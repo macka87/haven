@@ -54,7 +54,7 @@ entity REG_PROC_UNIT is
       PART_SIZE_TAKE:  in std_logic;                     -- take signal for part size
 
       -- additional signal denoting whether the part for which the size is
-      -- provided is the last part of the frame
+      -- provided is the last part of the frame, valid if PART_SIZE_VLD = '1'
       IS_LAST_IN_FRAME : out std_logic
    );       
    
@@ -146,6 +146,7 @@ signal sig_last_part          : std_logic;
 signal reg_is_last            : std_logic;
 
 -- is the size gen_proc_unit sampling?
+signal sig_num_sampling      : std_logic;
 signal sig_size_sampling      : std_logic;
 
 begin
@@ -224,7 +225,7 @@ begin
    end process;
 
    --
-   reg_trans_dec <= sig_next_frame;
+   reg_trans_dec <= sig_num_sampling;
 
    -- -------- the register with the count of transactions -----------------
    reg_trans_p: process(CLK)
@@ -330,7 +331,7 @@ begin
       BASE       => reg_num_base,
       MAX        => reg_num_max,
       EN         => num_proc_en,
-      SAMPLING   => open,
+      SAMPLING   => sig_num_sampling,
       
       -- output interface
       OUTPUT     => sig_parts_number,
