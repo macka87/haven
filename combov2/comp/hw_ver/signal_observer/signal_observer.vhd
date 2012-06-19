@@ -242,7 +242,8 @@ begin
    generic map(
       DATA_WIDTH      => OUT_DATA_WIDTH,
       ENDPOINT_ID     => ENDPOINT_ID,
-      FRAME_LENGTH    => FRAME_LENGTH
+      FRAME_LENGTH    => FRAME_LENGTH,
+      PROTOCOL_ID     => 16#8B#
    )
    port map(
       CLK             => TX_CLK,
