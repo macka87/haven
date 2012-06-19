@@ -1,0 +1,29 @@
+# toggle_cov_unit_sig.fdo: Include file with signals
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+
+# Paths
+set TB_PATH                  "/testbench"
+set TOGGLE_COV_UNIT_PATH     "/testbench/uut"
+
+# include signals
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add_wave "-noupdate -label RESET -color yellow"  $TB_PATH/reset
+add_wave "-noupdate -label CLK   -color yellow"  $TB_PATH/clk
+
+add wave -divider "****************************"
+add wave -divider "INTERFACE" 
+add wave -divider "****************************"
+blk_TOGGLE_COV_UNIT              $TOGGLE_COV_UNIT_PATH
+
+add wave -divider "****************************"
+add wave -divider "INTERNALS" 
+add wave -divider "****************************"
+blk_TOGGLE_COV_UNIT_INTERNALS    $TOGGLE_COV_UNIT_PATH
+
+restart -f
+run 5 us
