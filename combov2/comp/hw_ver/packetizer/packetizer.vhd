@@ -25,10 +25,12 @@ entity PACKETIZER is
    (
       -- data width
       DATA_WIDTH       : integer := 64;
-      -- maximum frame length in bytes
+      -- maximum frame length in bytes (without the 1-word header)
       FRAME_LENGTH     : integer := 4096;
       -- Endpoint ID for NetCOPE protocol
-      ENDPOINT_ID      : integer := 64
+      ENDPOINT_ID      : integer := 64;
+      -- ID of the encapsulated protocol
+      PROTOCOL_ID      : integer := 16#8B#
    );
 
    port
@@ -70,13 +72,14 @@ architecture arch of PACKETIZER is
 constant HEAD_WORD_LENGTH  : integer := 1;
 
 -- maximum value of the frame word counter
-constant WORD_CNT_MAX_VALUE   : integer := FRAME_LENGTH/(DATA_WIDTH/8)-1;
+constant WORD_CNT_MAX_VALUE   : integer := (FRAME_LENGTH-1)/(DATA_WIDTH/8);
 
 -- width of the frame word counter
-constant WORD_CNT_WIDTH         : integer := log2(WORD_CNT_MAX_VALUE);
+constant WORD_CNT_WIDTH         : integer := log2(WORD_CNT_MAX_VALUE + 1);
 
 -- types of transactions
-constant OBSERVER_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"8B";
+constant CONV_PROTOCOL_ID :  std_logic_vector(7 downto 0) :=
+   conv_std_logic_vector(PROTOCOL_ID, 8);
 
 -- endpoint tag
 constant ENDPOINT_TAG : std_logic_vector(7 downto 0) :=
@@ -128,6 +131,10 @@ begin
       report "Unsupported DATA_WIDTH!"
       severity failure;
 
+   assert (FRAME_LENGTH > 0)
+      report "Only positive FRAME_LENGTH supported!"
+      severity failure;
+
    -- mapping of input signals
    sig_rx_data         <= RX_DATA;
    sig_rx_valid        <= RX_VALID;
@@ -138,7 +145,7 @@ begin
 
    -- data in the header
    header_data(63 downto 16) <= (others => '0');
-   header_data(15 downto  8) <= OBSERVER_PROTOCOL_ID;
+   header_data(15 downto  8) <= CONV_PROTOCOL_ID;
    header_data(7  downto  0) <= ENDPOINT_TAG;
 
    -- ------------------- data multiplexer ----------------------
@@ -200,15 +207,13 @@ begin
          is_word_cnt_max <= '0';
 
          if (word_cnt = WORD_CNT_MAX_VALUE) then
-            is_word_cnt_max <= '1';
-         else
-            is_word_cnt_max <= '0';
+            is_word_cnt_max <= NOT is_sending_header;
          end if;
       end process;
    end generate;
 
    gen_no_word_cnt: if (WORD_CNT_WIDTH < 1) generate
-      is_word_cnt_max <= '1';
+      is_word_cnt_max <= NOT is_sending_header;
    end generate;
 
 
