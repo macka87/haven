@@ -43,7 +43,7 @@ begin
    -- -------------------------------------------------------------------------
    --                   FL_REG_PROC_UNIT
    -- -------------------------------------------------------------------------
-   uut: entity work.DATA_PROC_UNIT
+   uut: entity work.DATA_SIZE_PROC_UNIT
       generic map (
          DATA_WIDTH        => DATA_WIDTH
       )

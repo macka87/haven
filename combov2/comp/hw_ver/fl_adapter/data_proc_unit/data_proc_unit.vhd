@@ -30,10 +30,12 @@ entity DATA_PROC_UNIT is
       RESET : in std_logic;
 
       -- Data Part processing interface
-      DATA_SIZE          :  in std_logic_vector(SIZE_WIDTH-1 downto 0);   
+      DATA_SIZE     :  in std_logic_vector(SIZE_WIDTH-1 downto 0);  
+      DATA_SIZE_VLD :  in std_logic; 
       
       -- Data processing interface
       DATA_REQUEST  :  in  std_logic; 
+      DATA_RDY      :  out std_logic;
       DATA_REM      :  out std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
       DATA_COMPLETE :  out std_logic
     );       
@@ -72,15 +74,19 @@ begin
    end process; 
    
 -- data size mux
-   data_size_mux : process (DATA_SIZE, sig_data_size_reg, sig_cmp_out)
+   data_size_mux : process (DATA_SIZE, DATA_SIZE_VLD, sig_data_size_reg, sig_cmp_out)
    begin
       sig_data_size <= (others => '0');
 
-      case sig_cmp_out is
-         when '0'    => sig_data_size <= sig_data_size_reg - BLOCK_SIZE;
-         when '1'    => sig_data_size <= DATA_SIZE;
-         when others => null;   
-      end case;
+      if (DATA_SIZE_VLD = '1') then
+        case sig_cmp_out is
+           when '0'    => sig_data_size <= sig_data_size_reg - BLOCK_SIZE;
+           when '1'    => sig_data_size <= DATA_SIZE;
+           when others => null;   
+        end case;
+      else 
+        sig_data_size <= sig_data_size_reg;
+      end if;  
    end process;   
    
 -- data size comparator
@@ -98,5 +104,17 @@ begin
    end process;  
    
    DATA_COMPLETE     <= sig_cmp_out;
+   
+-- register for ready signal
+   valid_reg_p: process (CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            DATA_RDY <= '0';
+         elsif (sig_cmp_out = '1') then
+            DATA_RDY <= DATA_SIZE_VLD; 
+         end if;
+      end if;
+   end process;    
         
 end architecture;

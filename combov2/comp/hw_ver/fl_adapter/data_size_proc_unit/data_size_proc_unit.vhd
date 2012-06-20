@@ -15,7 +15,7 @@ use work.math_pack.all;
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
-entity DATA_PROC_UNIT is
+entity DATA_SIZE_PROC_UNIT is
 
    generic
    (
@@ -30,11 +30,13 @@ entity DATA_PROC_UNIT is
 
       -- Input interface
       PART_SIZE     :  in std_logic_vector(DATA_WIDTH-1 downto 0);
-      PART_REQUEST  :  in std_logic; 
+      PART_SIZE_VLD :  in std_logic;
+      PART_COMPLETE :  out std_logic;
       
       -- Output interface
       DATA_SIZE     :  out std_logic_vector(DATA_WIDTH-1 downto 0);
-      PART_COMPLETE :  out std_logic
+      DATA_SIZE_VLD :  out std_logic;
+      DATA_REQUEST  :  in std_logic 
     );       
    
 end entity;
@@ -42,7 +44,7 @@ end entity;
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
-architecture arch of DATA_PROC_UNIT is
+architecture arch of DATA_SIZE_PROC_UNIT is
 
 -- ==========================================================================
 --                                    CONSTANTS
@@ -60,28 +62,33 @@ signal sig_output_data   : std_logic_vector(DATA_WIDTH-1 downto 0);
 
 begin
 
+   
 -- register for the data size of a part
    data_size_reg_p: process (CLK)
    begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
             sig_data_size_reg <= (others => '0');
-         elsif (PART_REQUEST = '1') then
+         elsif (DATA_REQUEST = '1') then
             sig_data_size_reg <= sig_data_size; 
          end if;
       end if;
    end process; 
    
 -- data size mux
-   data_size_mux : process (PART_SIZE, sig_data_size_reg, sig_cmp_out)
+   data_size_mux : process (PART_SIZE, PART_SIZE_VLD, sig_data_size_reg, sig_cmp_out)
    begin
       sig_data_size <= (others => '0');
 
-      case sig_cmp_out is
-         when '0'    => sig_data_size <= PART_SIZE;
-         when '1'    => sig_data_size <= sig_data_size_reg - BLOCK_SIZE;
-         when others => null;   
-      end case;
+      if (PART_SIZE_VLD = '1') then
+        case sig_cmp_out is
+           when '0'    => sig_data_size <= PART_SIZE;
+           when '1'    => sig_data_size <= sig_data_size_reg - BLOCK_SIZE;
+           when others => null;   
+        end case;
+      else 
+        sig_data_size <= sig_data_size_reg;
+      end if;  
    end process;   
    
 -- data size comparator
@@ -108,5 +115,17 @@ begin
    
    DATA_SIZE     <= sig_output_data;
    PART_COMPLETE <= not sig_cmp_out;
-     
+   
+-- register for validity signal
+   valid_reg_p: process (CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            DATA_SIZE_VLD <= '0';
+         elsif (sig_cmp_out = '1') then
+            DATA_SIZE_VLD <= PART_SIZE_VLD; 
+         end if;
+      end if;
+   end process; 
+   
 end architecture;
