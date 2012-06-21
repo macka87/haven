@@ -318,6 +318,8 @@ begin
    num_proc_en  <= sig_should_run;
 
    -- gen_proc_unit instance --
+   -- it generates the count of frames to be generated -1, i.e. the number of
+   -- the last frame to be generated
    gen_proc_unit_num_i : entity work.gen_proc_unit
    generic map(
       DATA_WIDTH   => PART_NUM_CNT_WIDTH
