@@ -21,14 +21,54 @@ proc blk_ADAPTER_UNIT { BASE } {
    add_wave "-noupdate -label GEN_FLOW -hex"  $BASE/GEN_FLOW  
       
       add wave -divider "Output interface"
-   add_wave "-noupdate -hex -label DATA" $BASE/DATA
-   add_wave "-noupdate -hex -label REM " $BASE/REM
-   add_wave "-noupdate -label SOF_N    " $BASE/SOF_N
-   add_wave "-noupdate -label SOP_N    " $BASE/SOP_N
-   add_wave "-noupdate -label EOP_N    " $BASE/EOP_N
-   add_wave "-noupdate -label EOF_N    " $BASE/EOF_N
-   add_wave "-noupdate -label SRC_RDY_N" $BASE/SRC_RDY_N
-   add_wave "-noupdate -label DST_RDY_N" $BASE/DST_RDY_N
+   add_wave "-noupdate -hex -label DATA"  $BASE/DATA
+   add_wave "-noupdate -hex -label D_REM" $BASE/D_REM
+   add_wave "-noupdate -label SOF_N    "  $BASE/SOF_N
+   add_wave "-noupdate -label SOP_N    "  $BASE/SOP_N
+   add_wave "-noupdate -label EOP_N    "  $BASE/EOP_N
+   add_wave "-noupdate -label EOF_N    "  $BASE/EOF_N
+   add_wave "-noupdate -label SRC_RDY_N"  $BASE/SRC_RDY_N
+   add_wave "-noupdate -label DST_RDY_N"  $BASE/DST_RDY_N
+}
+
+proc blk_REG_PROC_UNIT { BASE } {
+   add wave -divider "REG_PROC_UNIT interface"
+   add_wave "-noupdate -hex -label sig_parts_number"     $BASE/sig_parts_number
+   add_wave "-noupdate      -label sig_parts_number_vld" $BASE/sig_parts_number_vld
+   add_wave "-noupdate -hex -label PART_SIZE"            $BASE/PART_SIZE
+   add_wave "-noupdate      -label PART_SIZE_VLD"        $BASE/PART_SIZE_VLD
+   add_wave "-noupdate      -label PART_SIZE_TAKE"       $BASE/PART_SIZE_TAKE
+   add_wave "-noupdate      -label IS_LAST_IN_FRAME"     $BASE/IS_LAST_IN_FRAME
+}
+
+proc blk_FIFO { BASE } {
+   add wave -divider "FIFO interface"
+   add_wave "-noupdate -hex -label DI"    $BASE/DI
+   add_wave "-noupdate      -label WR"    $BASE/WR
+   add_wave "-noupdate      -label FULL"  $BASE/FULL
+   add_wave "-noupdate      -label EMPTY" $BASE/EMPTY
+   add_wave "-noupdate -hex -label DO"    $BASE/DO
+   add_wave "-noupdate      -label RD"    $BASE/RD
+}
+
+proc blk_DATA_SIZE_PROC_UNIT { BASE } {
+   add wave -divider "DATA_SIZE_PROC_UNIT interface"
+   add_wave "-noupdate -hex -label PART_SIZE"      $BASE/PART_SIZE
+   add_wave "-noupdate      -label PART_SIZE_VLD"  $BASE/PART_SIZE_VLD
+   add_wave "-noupdate      -label PART_COMPLETE"  $BASE/PART_COMPLETE
+   add_wave "-noupdate -hex -label DATA_SIZE"      $BASE/DATA_SIZE
+   add_wave "-noupdate      -label DATA_SIZE_VLD"  $BASE/DATA_SIZE_VLD
+   add_wave "-noupdate      -label DATA_REQUEST"   $BASE/DATA_REQUEST
+}
+
+proc blk_DATA_PROC_UNIT { BASE } {
+   add wave -divider "DATA_PROC_UNIT interface"
+   add_wave "-noupdate -hex -label DATA_SIZE"      $BASE/DATA_SIZE
+   add_wave "-noupdate      -label DATA_SIZE_VLD"  $BASE/DATA_SIZE_VLD
+   add_wave "-noupdate      -label DATA_REQUEST"   $BASE/DATA_REQUEST
+   add_wave "-noupdate      -label DATA_RDY"       $BASE/DATA_RDY
+   add_wave "-noupdate -hex -label DATA_REM"       $BASE/DATA_REM
+   add_wave "-noupdate      -label DATA_COMPLETE"  $BASE/DATA_COMPLETE
 }
 
 proc blk_REG_PROC_UNIT_REGS { BASE } {
@@ -87,4 +127,4 @@ proc blk_REG_PROC_UNIT_REGS { BASE } {
    add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(255:224)
 }
       
-}   
+  

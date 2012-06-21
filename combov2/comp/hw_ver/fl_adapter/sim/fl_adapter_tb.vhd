@@ -22,7 +22,7 @@ architecture behavioral of testbench is
 
    -- constants declarations
    ----------------------------------------------------------------------------
-   constant DATA_WIDTH          : integer := 32;
+   constant DATA_WIDTH          : integer := 64;
    constant PART_NUM_CNT_WIDTH  : integer := 3;
    constant PART_SIZE_CNT_WIDTH : integer := 32;
    constant ENDPOINT_ID         : integer := 0;

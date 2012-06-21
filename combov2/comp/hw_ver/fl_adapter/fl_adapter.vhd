@@ -110,15 +110,6 @@ type header_type is (SOME_PART_UNCOMPLETE, SOME_PART_COMPLETE,
 --                                     SIGNALS
 -- ==========================================================================
 -- register processing unit interface signals 
-signal sig_mi_dwr             : std_logic_vector(31 downto 0);
-signal sig_mi_addr            : std_logic_vector(31 downto 0);
-signal sig_mi_wr              : std_logic;
-signal sig_mi_rd              : std_logic;
-signal sig_mi_be              : std_logic_vector( 3 downto 0); 
-signal sig_mi_drd             : std_logic_vector(31 downto 0);
-signal sig_mi_ardy            : std_logic; 
-signal sig_mi_drdy            : std_logic; 
-signal sig_gen_flow           : std_logic_vector(DATA_WIDTH - 1 downto 0);
 signal sig_part_size_in       : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
 signal sig_size_vld           : std_logic;
 signal sig_size_take          : std_logic;
@@ -184,17 +175,17 @@ begin
       RESET    => RESET,
       
       -- MI32 interface
-      MI_DWR   => sig_mi_dwr,
-      MI_ADDR  => sig_mi_addr,
-      MI_RD    => sig_mi_rd,
-      MI_WR    => sig_mi_wr,
-      MI_BE    => sig_mi_be,
-      MI_DRD   => sig_mi_drd,
-      MI_ARDY  => sig_mi_ardy,
-      MI_DRDY  => sig_mi_drdy,
+      MI_DWR   => MI_DWR, 
+      MI_ADDR  => MI_ADDR, 
+      MI_RD    => MI_RD,
+      MI_WR    => MI_WR, 
+      MI_BE    => MI_BE, 
+      MI_DRD   => MI_DRD, 
+      MI_ARDY  => MI_ARDY, 
+      MI_DRDY  => MI_DRDY, 
       
       -- Generator interface
-      GEN_FLOW => sig_gen_flow,
+      GEN_FLOW => GEN_FLOW,
       
       -- Output interface
       PART_SIZE        => sig_part_size_in,
@@ -203,6 +194,10 @@ begin
 
       IS_LAST_IN_FRAME => sig_last
    );
+   
+   --MI_DRD  <= sig_mi_drd;
+   --MI_ARDY <= sig_mi_ardy;
+   --MI_DRDY <= sig_mi_ardy;
 
 -- -- ORD FIFO INSTANCE --
    fifo_sync_ord_i : entity work.fifo_sync_ord
@@ -230,7 +225,7 @@ begin
       STATUS   => open
    );
  
-   sig_size_take <= not sig_fifo_full;
+   sig_size_take <= not sig_fifo_full and sig_size_vld;
 
 -- -- DATA SIZE PROCESSING UNIT INSTANCE --
    data_size_proc_unit_i : entity work.data_size_proc_unit   

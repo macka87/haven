@@ -2,8 +2,12 @@
 # Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
 
 # Paths
-set ADPATER_UNIT_PATH  "/testbench/uut"
-set TB_BASE            "/testbench"
+set ADAPTER_UNIT_PATH   "/testbench/uut"
+set REG_PROC_UNIT_PATH  "/testbench/uut/reg_proc_unit_i/"
+set TB_BASE             "/testbench"
+set FIFO_PATH           "/testbench/uut/fifo_sync_ord_i/"
+set DATA_SIZE_PROC_UNIT_PATH  "/testbench/uut/data_size_proc_unit_i/"
+set DATA_PROC_UNIT_PATH "/testbench/uut/data_proc_unit_i/"
 
 source                 "signals.fdo"
 
@@ -11,7 +15,12 @@ exec make
 view wave
 delete wave *
 
-blk_ADAPTER_UNIT "$ADAPTER_UNIT_PATH" 
+blk_ADAPTER_UNIT        "$ADAPTER_UNIT_PATH" 
+blk_REG_PROC_UNIT_REGS  "$REG_PROC_UNIT_PATH" 
+blk_REG_PROC_UNIT       "$REG_PROC_UNIT_PATH"
+blk_FIFO                "$FIFO_PATH"
+blk_DATA_SIZE_PROC_UNIT "$DATA_SIZE_PROC_UNIT_PATH"
+blk_DATA_PROC_UNIT      "$DATA_PROC_UNIT_PATH"
 
 restart -f
 run 10 us
