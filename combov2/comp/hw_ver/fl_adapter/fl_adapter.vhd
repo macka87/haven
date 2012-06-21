@@ -117,6 +117,7 @@ signal sig_last               : std_logic;
 
 -- fifo interface signals 
 signal sig_part_size_out      : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
+signal sig_part_size_vld      : std_logic;
 signal sig_part_complete      : std_logic;
 signal sig_fifo_full          : std_logic;
 signal sig_fifo_empty         : std_logic;
@@ -206,7 +207,7 @@ begin
       LATENCY    => 1,
       ITEMS      => 16,
       ITEM_WIDTH => PART_SIZE_CNT_WIDTH, 
-      PREFETCH   => false
+      PREFETCH   => true
    )
    
    port map(
@@ -239,7 +240,7 @@ begin
 
       -- Input interface
       PART_SIZE      => sig_part_size_out,
-      PART_SIZE_VLD  => sig_fifo_empty,
+      PART_SIZE_VLD  => sig_part_size_vld,
       PART_COMPLETE  => sig_part_complete,
       
       -- Output interface
@@ -247,6 +248,8 @@ begin
       DATA_SIZE_VLD  => sig_data_size_vld,
       DATA_REQUEST   => sig_data_complete
    );
+   
+   sig_part_size_vld <= not sig_fifo_empty;
 
 -- -- DATA PROCESSING UNIT INSTANCE --
    data_proc_unit_i : entity work.data_proc_unit   
