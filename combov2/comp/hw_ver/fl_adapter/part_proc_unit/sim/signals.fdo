@@ -1,0 +1,13 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+proc blk_PART_PROC_UNIT { BASE } {
+
+   add_wave "-noupdate -label CLK"    $BASE/CLK
+   add_wave "-noupdate -label RESET"  $BASE/RESET
+   add_wave "-noupdate -hex -label PART_NUM"   $BASE/PART_NUM
+   add_wave "-noupdate -label PART_COMPLETE"   $BASE/PART_COMPLETE
+   add_wave "-noupdate -label LAST_PART "      $BASE/LAST_PART
+      
+}   

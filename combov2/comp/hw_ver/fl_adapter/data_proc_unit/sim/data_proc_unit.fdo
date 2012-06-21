@@ -1,0 +1,17 @@
+# Copyright (C) 2012
+# Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
+
+set FIRMWARE_BASE         "../../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set DATA_PROC_BASE        "$COMP_BASE/hw_ver/fl_adapter/data_proc_unit"
+
+set SIG_FILE              "$DATA_PROC_BASE/sim/data_proc_unit_sig.fdo"
+set TB_FILE               "$DATA_PROC_BASE/sim/data_proc_unit_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "DATA_PROC_UNIT" $DATA_PROC_BASE "FULL" ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE
