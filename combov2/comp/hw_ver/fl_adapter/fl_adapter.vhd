@@ -111,16 +111,15 @@ type header_type is (SOME_PART_UNCOMPLETE, SOME_PART_COMPLETE,
 -- ==========================================================================
 -- register processing unit interface signals 
 signal sig_part_size_in       : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
-signal sig_size_vld           : std_logic;
+signal sig_part_size_in_vld   : std_logic;
 signal sig_size_take          : std_logic;
 signal sig_last               : std_logic;
 
 -- fifo interface signals 
 signal sig_part_size_out      : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
-signal sig_part_size_vld      : std_logic;
+signal sig_part_size_out_vld  : std_logic;
 signal sig_part_complete      : std_logic;
 signal sig_fifo_full          : std_logic;
-signal sig_fifo_empty         : std_logic;
 
 -- data size processing unit interface signals
 signal sig_data_size          : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
@@ -142,6 +141,8 @@ signal sig_header             : std_logic_vector(DATA_WIDTH-1 downto 0);
 
 -- Data signals 
 signal sig_data_out           : std_logic_vector(DATA_WIDTH-1 downto 0); 
+signal sig_src_rdy_reg        : std_logic;
+signal sig_rem_reg            : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
 
 begin
 
@@ -190,7 +191,7 @@ begin
       
       -- Output interface
       PART_SIZE        => sig_part_size_in,
-      PART_SIZE_VLD    => sig_size_vld,
+      PART_SIZE_VLD    => sig_part_size_in_vld,
       PART_SIZE_TAKE   => sig_size_take,
 
       IS_LAST_IN_FRAME => sig_last
@@ -214,19 +215,19 @@ begin
       CLK      => CLK,
       RESET    => RESET,
       
-      WR       => sig_size_vld,
+      WR       => sig_part_size_in_vld,
       DI       => sig_part_size_in,
 
       RD       => sig_part_complete,
       DO       => sig_part_size_out,
-      DO_DV    => open,
+      DO_DV    => sig_part_size_out_vld,
 
       FULL     => sig_fifo_full,
-      EMPTY    => sig_fifo_empty,
+      EMPTY    => open,
       STATUS   => open
    );
  
-   sig_size_take <= not sig_fifo_full and sig_size_vld;
+   sig_size_take <= not sig_fifo_full and sig_part_size_in_vld;
 
 -- -- DATA SIZE PROCESSING UNIT INSTANCE --
    data_size_proc_unit_i : entity work.data_size_proc_unit   
@@ -240,7 +241,7 @@ begin
 
       -- Input interface
       PART_SIZE      => sig_part_size_out,
-      PART_SIZE_VLD  => sig_part_size_vld,
+      PART_SIZE_VLD  => sig_part_size_out_vld,
       PART_COMPLETE  => sig_part_complete,
       
       -- Output interface
@@ -249,8 +250,6 @@ begin
       DATA_REQUEST   => sig_data_complete
    );
    
-   sig_part_size_vld <= not sig_fifo_empty;
-
 -- -- DATA PROCESSING UNIT INSTANCE --
    data_proc_unit_i : entity work.data_proc_unit   
    generic map(
@@ -273,7 +272,7 @@ begin
       DATA_COMPLETE => sig_data_complete
    ); 
    
-   sig_data_request <= (not is_header) and DST_RDY_N; 
+   sig_data_request <= (not is_header) and (not DST_RDY_N); 
    
 -- -- CONTROL FINITE STATE MACHINE --  
   
@@ -378,43 +377,66 @@ begin
       end case;   
    end process;
    
--- data register
-   data_reg : process (CLK)
-   begin
-      if (rising_edge(CLK)) then
-         if (RESET = '1') then 
-            sig_data_out <= (others => '0');
-         elsif (sig_data_ready = '1') then
-            sig_data_out <= GEN_FLOW;  
-         end if;   
-      end if;
-   end process; 
-   
 -- data - header multiplexer
    data_header_mux : process (is_header, sig_data_out, sig_header)
    begin
       DATA <= (others => '0');
 
       case is_header is
-         when '0'    => DATA <= sig_data_out;
+         when '0'    => DATA <= GEN_FLOW;
          when '1'    => DATA <= sig_header;
          when others => null;   
       end case;   
-   end process;     
+   end process; 
    
+-- register for rem
+   rem_reg_p: process (CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            sig_rem_reg <= (others => '0');
+         elsif (is_header = '1') then
+            sig_rem_reg <= sig_rem; 
+         end if;
+      end if;
+   end process; 
+  
 -- rem multiplexer
-   rem_mux : process (is_header, sig_rem)
+   rem_mux : process (is_header, sig_rem_reg)
    begin
       D_REM <= (others => '0');
 
       case is_header is
-         when '0'    => D_REM <= sig_rem;
+         when '0'    => D_REM <= sig_rem_reg;
          when '1'    => D_REM <= (others => '1');
          when others => null;   
       end case;   
-   end process;     
+   end process; 
+   
+-- register for src_rdy
+   src_rdy_reg_p: process (CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            sig_src_rdy_reg <= '1';
+         elsif (is_header = '1') then
+            sig_src_rdy_reg <= sig_data_ready; 
+         end if;
+      end if;
+   end process; 
+  
+-- src_rdy multiplexer
+   src_rdy_mux : process (is_header, sig_src_rdy_reg)
+   begin
+      SRC_RDY_N <= '1';
 
-   SRC_RDY_N <= not sig_data_ready;
+      case is_header is
+         when '0'    => SRC_RDY_N <= not sig_src_rdy_reg;
+         when '1'    => SRC_RDY_N <= '0';
+         when others => null;   
+      end case;   
+   end process;     
+       
    SOF_N     <= not is_header;
    SOP_N     <= not is_header;
    EOF_N     <= not sig_data_complete; 

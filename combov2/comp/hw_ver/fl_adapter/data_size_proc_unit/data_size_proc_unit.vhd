@@ -50,7 +50,7 @@ architecture arch of DATA_SIZE_PROC_UNIT is
 --                                    CONSTANTS
 -- ==========================================================================
 -- 4KB
-constant BLOCK_SIZE : std_logic_vector(DATA_WIDTH-1 downto 0) := X"00010000"; 
+constant BLOCK_SIZE : std_logic_vector(DATA_WIDTH-1 downto 0) := X"00001000"; 
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -122,8 +122,10 @@ begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
             DATA_SIZE_VLD <= '0';
+         elsif (sig_cmp_out = '0') then
+            DATA_SIZE_VLD <= PART_SIZE_VLD and DATA_REQUEST; 
          elsif (sig_cmp_out = '1') then
-            DATA_SIZE_VLD <= PART_SIZE_VLD; 
+            DATA_SIZE_VLD <= '1' and DATA_REQUEST;    
          end if;
       end if;
    end process; 

@@ -175,7 +175,7 @@ begin
       adapter_mi_dwr   <= (others => '0');
       adapter_mi_addr  <= X"DEADBEEF";
       
-      adapter_fl_dst_rdy_n   <= '1';
+      adapter_fl_dst_rdy_n   <= '0';
 
       wait for reset_time; 
       wait until rising_edge(clk);

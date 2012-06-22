@@ -29,6 +29,14 @@ proc blk_ADAPTER_UNIT { BASE } {
    add_wave "-noupdate -label EOF_N    "  $BASE/EOF_N
    add_wave "-noupdate -label SRC_RDY_N"  $BASE/SRC_RDY_N
    add_wave "-noupdate -label DST_RDY_N"  $BASE/DST_RDY_N
+   
+      add wave -divider "Internal signals"
+   add_wave "-noupdate -label state_reg"  $BASE/state_reg  
+   add_wave "-noupdate -label state_next" $BASE/state_next 
+   add_wave "-noupdate -label is_header"  $BASE/is_header 
+   add_wave "-noupdate -label sig_header" $BASE/sig_header 
+   add_wave "-noupdate -label sig_src_rdy_reg" $BASE/sig_src_rdy_reg 
+   add_wave "-noupdate -hex -label sig_rem_reg" $BASE/sig_rem_reg 
 }
 
 proc blk_REG_PROC_UNIT { BASE } {
@@ -48,6 +56,7 @@ proc blk_FIFO { BASE } {
    add_wave "-noupdate      -label FULL"  $BASE/FULL
    add_wave "-noupdate      -label EMPTY" $BASE/EMPTY
    add_wave "-noupdate -hex -label DO"    $BASE/DO
+   add_wave "-noupdate      -label DO_DV" $BASE/DO_DV
    add_wave "-noupdate      -label RD"    $BASE/RD
 }
 
@@ -59,6 +68,10 @@ proc blk_DATA_SIZE_PROC_UNIT { BASE } {
    add_wave "-noupdate -hex -label DATA_SIZE"      $BASE/DATA_SIZE
    add_wave "-noupdate      -label DATA_SIZE_VLD"  $BASE/DATA_SIZE_VLD
    add_wave "-noupdate      -label DATA_REQUEST"   $BASE/DATA_REQUEST
+   add_wave "-noupdate -hex -label sig_data_size"     $BASE/sig_data_size
+   add_wave "-noupdate -hex -label sig_data_size_reg" $BASE/sig_data_size_reg
+   add_wave "-noupdate      -label sig_cmp_out"       $BASE/sig_cmp_out
+   add_wave "-noupdate -hex -label sig_output_data"   $BASE/sig_output_data
 }
 
 proc blk_DATA_PROC_UNIT { BASE } {
@@ -69,6 +82,13 @@ proc blk_DATA_PROC_UNIT { BASE } {
    add_wave "-noupdate      -label DATA_RDY"       $BASE/DATA_RDY
    add_wave "-noupdate -hex -label DATA_REM"       $BASE/DATA_REM
    add_wave "-noupdate      -label DATA_COMPLETE"  $BASE/DATA_COMPLETE
+   add_wave "-noupdate -hex -label sig_data_size"     $BASE/sig_data_size
+   add_wave "-noupdate      -label sig_data_size_vld" $BASE/sig_data_size_vld
+   add_wave "-noupdate -hex -label sig_data_size_reg" $BASE/sig_data_size_reg
+   add_wave "-noupdate      -label sig_cmp_out"       $BASE/sig_cmp_out
+   add_wave "-noupdate      -label sig_cmp_out_reg"   $BASE/sig_cmp_out_reg
+   add_wave "-noupdate      -label sig_data_rdy"      $BASE/sig_data_rdy
+   add_wave "-noupdate      -label sig_data_req_reg"  $BASE/sig_data_req_reg
 }
 
 proc blk_REG_PROC_UNIT_REGS { BASE } {
