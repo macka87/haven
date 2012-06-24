@@ -1,9 +1,9 @@
 # Copyright (C) 2012
 # Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
 
-set FIRMWARE_BASE         "../../../../.."
+set FIRMWARE_BASE         "../../../../../.."
 set COMP_BASE             "$FIRMWARE_BASE/comp"
-set DATA_SIZE_PROC_BASE   "$COMP_BASE/hw_ver/fl_adapter/data_size_proc_unit"
+set DATA_SIZE_PROC_BASE   "$COMP_BASE/hw_ver/fl_adapter/size_proc_cover/data_size_proc_unit"
 
 set SIG_FILE              "$DATA_SIZE_PROC_BASE/sim/data_size_proc_unit_sig.fdo"
 set TB_FILE               "$DATA_SIZE_PROC_BASE/sim/data_size_proc_unit_tb.vhd"

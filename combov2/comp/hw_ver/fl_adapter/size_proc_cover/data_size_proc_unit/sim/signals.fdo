@@ -13,9 +13,10 @@ proc blk_DATA_SIZE_PROC_UNIT { BASE } {
    add_wave "-noupdate      -label PART_COMPLETE"    $BASE/PART_COMPLETE
       
    add wave -divider "Output interface"
-   add_wave "-noupdate -hex -label DATA_SIZE"       $BASE/DATA_SIZE
-   add_wave "-noupdate      -label DATA_SIZE_VLD"   $BASE/DATA_SIZE_VLD
-   add_wave "-noupdate      -label DATA_REQUEST"    $BASE/DATA_REQUEST
+   add_wave "-noupdate -hex -label DATA_SIZE"         $BASE/DATA_SIZE
+   add_wave "-noupdate      -label DATA_SIZE_VLD"     $BASE/DATA_SIZE_VLD
+   add_wave "-noupdate      -label DATA_SIZE_IS_LAST" $BASE/DATA_SIZE_IS_LAST
+   add_wave "-noupdate      -label DATA_REQUEST"      $BASE/DATA_REQUEST
       
    add wave -divider "Internals"
    add_wave "-noupdate      -label sig_cmp_out"        $BASE/sig_cmp_out

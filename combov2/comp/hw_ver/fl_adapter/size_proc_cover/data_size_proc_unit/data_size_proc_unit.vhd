@@ -32,18 +32,19 @@ entity DATA_SIZE_PROC_UNIT is
 
    port
    (
-      CLK   : in std_logic;
-      RESET : in std_logic;
+      CLK               : in std_logic;
+      RESET             : in std_logic;
 
       -- Input interface
-      PART_SIZE     :  in std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-      PART_SIZE_VLD :  in std_logic;
-      PART_COMPLETE :  out std_logic;
+      PART_SIZE         :  in std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+      PART_SIZE_VLD     :  in std_logic;
+      PART_COMPLETE     :  out std_logic;
       
       -- Output interface
-      DATA_SIZE     :  out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-      DATA_SIZE_VLD :  out std_logic;
-      DATA_REQUEST  :  in std_logic 
+      DATA_SIZE         :  out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+      DATA_SIZE_VLD     :  out std_logic;
+      DATA_SIZE_IS_LAST :  out std_logic;
+      DATA_REQUEST      :  in std_logic 
     );       
    
 end entity;
@@ -75,9 +76,10 @@ signal sig_part_size_vld : std_logic;
 signal sig_part_complete : std_logic;
 
 -- outputs
-signal sig_data_size     : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-signal sig_data_size_vld : std_logic;
-signal sig_data_request  : std_logic;
+signal sig_data_size          : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal sig_data_size_vld      : std_logic;
+signal sig_data_size_is_last  : std_logic;
+signal sig_data_request       : std_logic;
 
 -- the register with the data size
 signal reg_data_size     : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
@@ -156,12 +158,12 @@ begin
    begin
       sig_cmp_out <= '0';
 
-      for i in SPLIT_POWER to IN_DATA_WIDTH-1 loop
-         if (reg_data_size(i) = '1') then
-            sig_cmp_out <= '1';
-         end if;
-      end loop;
-   end process;  
+      if (reg_data_size > SPLIT_SIZE_VECTOR) then
+         sig_cmp_out <= '1';
+      end if;
+   end process;
+
+   sig_data_size_is_last <= NOT sig_cmp_out;
 
    --
    mux_output_data_sel <= sig_cmp_out;
@@ -198,24 +200,12 @@ begin
       end if;
    end process; 
 
-   -- output comparer
-   cmp_out_zero_cmp : process (mux_output_data_out)
-   begin
-      cmp_out_zero <= '1';
-
-      -- generic NOR
-      for i in 0 to OUT_DATA_WIDTH-1 loop
-         if (mux_output_data_out(i) = '1') then
-            cmp_out_zero <= '0';
-         end if;
-      end loop;
-   end process;  
-
-   sig_data_size_vld <= reg_valid AND (NOT cmp_out_zero);
+   sig_data_size_vld <= reg_valid;
 
    -- mapping output signals
    DATA_SIZE         <= mux_output_data_out;
    DATA_SIZE_VLD     <= sig_data_size_vld;
+   DATA_SIZE_IS_LAST <= sig_data_size_is_last;
    sig_data_request  <= DATA_REQUEST;
    
 end architecture;
