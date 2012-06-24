@@ -105,10 +105,6 @@ signal sig_cmp_out       : std_logic;
 -- the ``block sent'' signal
 signal sig_part_sent     : std_logic;
 
--- zero comparator
-signal cmp_out_zero      : std_logic;
-
-
 begin
 
    -- assertions
@@ -179,7 +175,8 @@ begin
          mux_output_data_out <= SPLIT_SIZE_VECTOR;
       end if;
    end process; 
-   
+
+   sig_data_size <= mux_output_data_out;
    PART_COMPLETE <= sig_part_complete;
    
    --
@@ -203,7 +200,7 @@ begin
    sig_data_size_vld <= reg_valid;
 
    -- mapping output signals
-   DATA_SIZE         <= mux_output_data_out;
+   DATA_SIZE         <= sig_data_size;
    DATA_SIZE_VLD     <= sig_data_size_vld;
    DATA_SIZE_IS_LAST <= sig_data_size_is_last;
    sig_data_request  <= DATA_REQUEST;

@@ -148,6 +148,8 @@ begin
          end if;
       end if;
    end process; 
+
+   sig_data_rdy    <= reg_valid;
    
    -- data size comparator
    data_size_cmp : process (reg_data)
@@ -161,6 +163,8 @@ begin
       end if;
    end process;  
    
+   sig_data_complete <= sig_cmp_out;
+
    sig_part_taken    <= sig_cmp_out AND sig_data_take;
    sig_data_size_req <= sig_part_taken OR (NOT reg_valid);
 
@@ -168,9 +172,9 @@ begin
 
 
    -- mapping the output signals
-   DATA_COMPLETE <= sig_cmp_out;
+   DATA_COMPLETE <= sig_data_complete;
    DATA_REM      <= sig_data_rem;
-   DATA_RDY      <= reg_valid;
+   DATA_RDY      <= sig_data_rdy;
    sig_data_take <= DATA_TAKE;
 
 end architecture;
