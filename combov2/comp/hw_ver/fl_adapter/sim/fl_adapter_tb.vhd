@@ -79,8 +79,6 @@ begin
    uut: entity work.FL_ADAPTER_UNIT
    generic map (
       DATA_WIDTH           => DATA_WIDTH,
-      PART_NUM_CNT_WIDTH   => PART_NUM_CNT_WIDTH,
-      PART_SIZE_CNT_WIDTH  => PART_SIZE_CNT_WIDTH,
       ENDPOINT_ID          => ENDPOINT_ID
    )
    port map (

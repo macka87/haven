@@ -22,15 +22,6 @@ entity FL_ADAPTER_UNIT is
    (
       -- data width
       DATA_WIDTH  : integer := 64;
-      -- the width of the maximum number of parts counter (the maximum size is
-      -- 2^PART_NUM_CNT_WIDTH)
-      PART_NUM_CNT_WIDTH : integer := 3;
-      -- the width of the maximum size of a part counter (the maximum size is
-      -- 2^PART_SIZE_CNT_WIDTH)
-      PART_SIZE_CNT_WIDTH : integer := 32;
-      -- the width of the maximum size of a data frame (the maximum size is
-      -- 2^DATA_SIZE_CNT_WIDTH)
-      DATA_SIZE_CNT_WIDTH : integer := 12;
       -- endpoint id
       ENDPOINT_ID : integer := 0
    );
