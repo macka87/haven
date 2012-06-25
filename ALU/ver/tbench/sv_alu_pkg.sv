@@ -17,6 +17,7 @@ package sv_alu_pkg;
   import sv_basic_comp_pkg::*; // Import SV basic verification components 
    
   `include "alu_input_transaction.sv"
+  //`include "alu_lfsr_generator.sv"
   `include "alu_output_transaction.sv"
   `include "alu_sender.sv"
   `include "alu_driver.sv"

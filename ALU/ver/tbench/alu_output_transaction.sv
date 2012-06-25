@@ -52,10 +52,11 @@ class ALUOutTransaction #(int pDataWidth = 8) extends Transaction;
     */
     virtual function bit compare(input Transaction to, 
                                  output string diff, input int kind = -1);
+      
       bit same = 1; // Suppose that are same
       ALUOutTransaction #(pDataWidth) tr;
       $cast(tr, to);
-       
+      
       if (alu_output != tr.alu_output) 
       begin
         same = 0;
@@ -63,7 +64,8 @@ class ALUOutTransaction #(int pDataWidth = 8) extends Transaction;
         $write("EXPECTED TRANSACTION: %d\n", alu_output);
         $write("\n");
       end
-       
+      
       compare = same;  
     endfunction: compare 
+    
  endclass: ALUOutTransaction

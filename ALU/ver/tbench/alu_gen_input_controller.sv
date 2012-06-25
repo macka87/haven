@@ -6,12 +6,17 @@
  * Date:         23.3.2012 
  * ************************************************************************** */
  
- class ALUGenInputController #(pDataWidth = 8, genTrans = 0) extends GenInputController;
+ class ALUGenInputController #(int pDataWidth = 8, 
+                               int genInput = 0,
+                               int genOutput = 0
+                               ) extends GenInputController;
    
    /*
     * Public Class Atributes
     */ 
     
+    //! LFSR generator
+    //AluLFSRGenerator #(pDataWidth) lfsrGenerator;
     //! Transaction format
     ALUInTransaction #(pDataWidth) aluBlueprint; 
     //! Software driver   
@@ -40,7 +45,8 @@
       this.aluIn    = aluIn;
       
       //! Create generator
-      generator     = new("ALU Generator", genTrans, -1, transMbx);
+      generator     = new("ALU Generator", genInput, genOutput, -1, transMbx);
+      //lfsrGenerator  = new("LFSR Generator", genTrans, -1, transMbx);
       
       //! Create blueprint transaction
       aluBlueprint  = new();
@@ -49,7 +55,8 @@
       aluBlueprint.btDelayDi_wt  = btDelayDi_wt;
       aluBlueprint.btDelayLow    = btDelayLow;
       aluBlueprint.btDelayHigh   = btDelayHigh;
-            
+      
+      //lfsrGenerator.blueprint    = aluBlueprint;      
       generator.blueprint        = aluBlueprint;
       
       //! Create software driver
@@ -129,17 +136,17 @@
     */
     task sendGenerated(int unsigned transCount);
       //! run generator
+      //lfsrGenerator.setEnabled(transCount);
       generator.setEnabled(transCount);
       
-      if (genTrans != 1) begin
-      
+      if (genOutput != 1) begin 
         // software framework
         if (framework == 0)
           swAluDriver.sendTransactions(transCount);  
                     
         // hardware framework
         if (framework == 1) 
-          hwAluSender.sendTransactions(transCount); 
+          hwAluSender.sendTransactions(transCount);
       end    
     endtask : sendGenerated 
     

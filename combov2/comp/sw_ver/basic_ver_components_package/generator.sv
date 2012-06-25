@@ -3,7 +3,7 @@
  * File Name:    Transaction Generator Class
  * Description: 
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
- * Date:         27.2.2011 
+ * Date:         25.6.2012 
  * ************************************************************************** */
 
  class Generator;
@@ -17,14 +17,25 @@
     * constructor.
     */
     tTransMbx transMbx;
-    int trans_file;
+    int input_file;        // input file with transactions
+    int output_file;       // output file with transactions
     
     /*
+     * GENERATOR INPUT.
+     * It is possible to define the location where transactions are loaded.
+     * 0 = SV generator
+     * 1 = external file 
+     * 2 = other software generator      
+     * 3 = hardware generator      
+     */
+    int gen_input = 0;
+    
+    /*
+     * GENERATOR OUTPUT.
      * It is possible to define the location where transactions are stored.
-     * 0 = mailbox
-     * 1 = storage to external file 
-     * 2 = reading from external file       
-     * 3 = mailbox and storage to external file      
+     * 0 = SV mailbox
+     * 1 = external file 
+     * 2 = mailbox and external file            
      */
     int gen_output = 0;
 
@@ -69,13 +80,19 @@
     * \param inst - generator instance name
     * \param transMbx - transaction mailbox                
     */
-    function new(string inst, int gen_output = 0, int stream_id = -1, tTransMbx transMbx = null);      
+    function new(string inst, 
+                 int gen_input = 0,
+                 int gen_output = 0,
+                 int stream_id = -1,
+                 tTransMbx transMbx = null
+                 );      
       if (transMbx == null) 
         this.transMbx = new(1);
       else 
         this.transMbx = transMbx;
 
-      this.gen_output = gen_output;      // Location of transactions
+      this.gen_input  = gen_input;       // Source of transactions' flow
+      this.gen_output = gen_output;      // Destination of transactions' flow
       enabled         = 0;               // Disable generator by default
       blueprint       = null;            // Null the blueprint transaction
       data_id         = 0;               // Set default data identifier
@@ -90,12 +107,26 @@
       data_id = 0;
       if ( blueprint != null) 
         fork
-          if (gen_output == 1 || gen_output == 3) begin
-            trans_file = $fopen("trans_file.txt", "w");
-            $fwrite(trans_file, "%d\n", stop_after_n_insts);
+          //! open input file with transactions
+          if (gen_input == 1) begin
+            input_file = $fopen("trans_input.txt", "r");
+            if (input_file == 0) begin
+              $write("Input file corrupted!!!");
+              $stop;
+            end  
+          end
+          
+          //! open output file where transactions will be written
+          if (gen_output == 1 || gen_output == 2) begin
+            output_file = $fopen("trans_output.txt", "w");
+            if (output_file == 0) begin
+              $write("Output file corrupted!!!");
+              $stop;
+            end
+            $fwrite(output_file, "%d\n", stop_after_n_insts);
           end  
-          else if (gen_output == 2) 
-            trans_file = $fopen("trans_file.txt", "r");  
+          
+          //! run generator
           run();
         join_none
       else
@@ -107,7 +138,13 @@
     */
     task setDisabled();
       this.enabled = 0;
-      if (gen_output == 1) $fclose(trans_file);
+      //! close input file with transactions
+      if (gen_input == 1) 
+        $fclose(input_file);
+      
+      //! close output file where transactions were written
+      if (gen_output == 1 || gen_output == 2) 
+        $fclose(output_file);  
     endtask : setDisabled
     
    /*
@@ -115,13 +152,39 @@
     */    
     virtual task run();
       Transaction trans;
+      int trCount, r;
       int counter = 0;
       
-      //! Reading transactions from external file      
-      if (gen_output == 2) begin
-        int trCount, r;
-            
-        r = $fscanf(trans_file,"%d\n", trCount);
+      //! SystemVerilog Generator
+      if (gen_input == 0) begin
+        while (enabled && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin       
+          trans = blueprint.copy;      //! Copy from blueprint
+          trans.data_id = data_id;     //! Set instance count
+          assert(trans.randomize);     //! Randomize transaction
+          //trans.display(inst);       //! Display transaction
+      
+          //! Output flow of transactions 
+          priority case (gen_output)
+            //! SV mailbox 
+            0 : transMbx.put(trans);         //! Put transactions into SV mailbox 
+            //! External file 
+            1 : trans.fwrite(output_file);   //! Put transactions into external file
+            //! SV mailbox and external file
+            2 : begin
+                  transMbx.put(trans);       //! Put transactions into SV mailbox
+                  trans.fwrite(output_file); //! Put transactions into external file
+                end
+          endcase
+          
+          data_id = data_id+1;         //! Increment instance counter      
+        end
+      end          
+      
+      //! Reading of transactions from external file
+      if (gen_input == 1) begin
+        
+        //! Preprocessing of external file
+        r = $fscanf(input_file,"%d\n", trCount);
         if (r==0) begin
           $write("File corrupted!!!");
           $stop;
@@ -130,40 +193,43 @@
         if (trCount < stop_after_n_insts) begin
           $write("Not enough transactions in data file!!!");
           $stop;
-        end  
+        end 
         
-        while (enabled && !$feof(trans_file) && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin
+        while (enabled && !$feof(input_file) && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin
           trans = blueprint.copy;    //! Copy from blueprint
           trans.data_id = data_id;   //! Set instance count
-          trans.fread(trans_file);   //! Get transaction from external file
-          trans.display(inst);
-          transMbx.put(trans);  
+          trans.fread(input_file);   //! Get transaction from external file
+          //trans.display(inst);
+          
+          //! Output flow of transactions 
+          priority case (gen_output)
+            //! SV mailbox 
+            0 : transMbx.put(trans);         //! Put transactions into SV mailbox 
+            //! External file 
+            1 : trans.fwrite(output_file);   //! Put transactions into external file
+            //! SV mailbox and external file
+            2 : begin
+                  transMbx.put(trans);       //! Put transactions into SV mailbox
+                  trans.fwrite(output_file); //! Put transactions into external file
+                end
+          endcase
+          
           data_id = data_id+1; 
         end
       end  
         
-      else begin 
-        while (enabled && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin          
-          trans = blueprint.copy;      //! Copy from blueprint
-          trans.data_id = data_id;     //! Set instance count
-          assert(trans.randomize);     //! Randomize transaction
-          //trans.display(inst);       //! Display transaction
-        
-          if (gen_output == 0)
-            transMbx.put(trans);       //! Put transaction to mailbox
-        
-          else if (gen_output == 1) 
-            trans.fwrite(trans_file);  //! Put transaction to external file
-                  
-          else if (gen_output == 3) begin
-            transMbx.put(trans);
-            trans.fwrite(trans_file);  //! Put trans to mailbox and external file
-          end
-        
-          data_id = data_id+1;         //! Increment instance counter
-        end;
-      end
+      //! Other generator - not supported yet
+      if (gen_input == 2) begin  
+        $write("Other input generator than SystemVerilog not supported yet!!!");
+        $stop;
+      end 
       
+      //! Hadware generator 
+      if (gen_input == 3) begin  
+        $write("Hardware generator not supported yet!!!");
+        $stop;
+      end   
+          
       enabled = 0;  
     endtask : run
   endclass : Generator

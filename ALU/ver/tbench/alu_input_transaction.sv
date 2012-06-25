@@ -142,7 +142,8 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
     * Function for writing transaction into an external file. 
     */
     function void fwrite(int fileDescr);
-      $fwrite(fileDescr, "%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+      // $fwrite(fileDescr, "%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+      $fwrite(fileDescr, "%b %b %b %b %b %b\n", operation, movi, operandA, operandB, operandMEM, operandIMM);
     endfunction : fwrite
     
    /*!
@@ -151,7 +152,8 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
     function void fread(int fileDescr);
       int r;
             
-      r = $fscanf(fileDescr,"%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+      // r = $fscanf(fileDescr,"%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+       r = $fscanf(fileDescr, "%b %b %b %b %b %b\n", operation, movi, operandA, operandB, operandMEM, operandIMM);
       
       if (r==0) begin
         $write("File corrupted!!!");

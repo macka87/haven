@@ -12,9 +12,20 @@
     * Public Class Atributes
     */
  
-   LFSR #(4) opGen;               //! LFSR generator for operation
+   LFSRSimple #(4) opGen;        //! LFSR generator for operation
+   LFSRSimple #(8) opAGen;       //! LFSR generator for operandA
+   LFSRSimple #(8) opBGen;       //! LFSR generator for operandB
+   LFSRSimple #(8) opIMMGen;     //! LFSR generator for operandIMM
+   LFSRSimple #(8) opMEMGen;     //! LFSR generator for operandMEM
+   LFSRSimple #(2) moviGen;      //! LFSR generator for movi
    
-   mailbox #(logic [3:0]) opMbx;  //! Mailbox for generated values
+   //! Mailboxes for generated values
+   mailbox #(logic [3:0]) opMbx; 
+   mailbox #(logic [7:0]) opAMbx; 
+   mailbox #(logic [7:0]) opBMbx; 
+   mailbox #(logic [7:0]) opIMMMbx; 
+   mailbox #(logic [7:0]) opMEMMbx; 
+   mailbox #(logic [1:0]) moviMbx; 
     
    /*
     * Public Class Methods
@@ -31,20 +42,52 @@
     * \param transMbx - transaction mailbox                
     */
     function new(string inst, 
-                 int gen_output = 0, 
-                 int stream_id = -1, 
+                 int gen_input = 0,
+                 int gen_output = 0,
+                 int stream_id = -1,
                  tTransMbx transMbx = null
                  );      
       
-      logic [3:0][3:0] opSeed;
+      logic [3:0] opSeed;
+      logic [3:0] opPolynomial;
       
-      super.new(inst, gen_output, stream_id, transMbx);
+      logic [3:0] opASeed;
+      logic [3:0] opBSeed;
+      logic [3:0] opIMMSeed;
+      logic [3:0] opMEMSeed;
+      logic [3:0] operandsPolynomial;
       
-      opMbx  = new(1);
-      opSeed = {4'1101, 4'1110, 4'1111, 4'0111};
+      logic [3:0] moviSeed;
+      logic [3:0] moviPolynomial;
+      
+      super.new(inst, gen_input, gen_output, stream_id, transMbx);
+      
+      opMbx     = new(1);
+      opAMbx    = new(1);
+      opBMbx    = new(1);
+      opIMMMbx  = new(1);
+      opMEMMbx  = new(1);
+      moviMbx   = new(1);
+      
+      opSeed = 4'b1111;
+      opPolynomial = 4'b1100; // x^4 + x^3 + 1   [1100]1
+      
+      opASeed   = 8'b11110000;
+      opBSeed   = 8'b11111000;
+      opIMMSeed = 8'b01011111;
+      opMEMSeed = 8'b10101111;
+      operandsPolynomial = 8'b10111000; // x^8 + x^6 + x^5 + x^4 + 1   [10111000]1
+      
+      moviSeed = 2'b11;
+      moviPolynomial = 2'b11; // x^2 + x^1 + 1   [11]1
       
       //! Create generators
-      opGen = new("OPERATION Generator", opMbx, opSeed, 4'0011);
+      opGen    = new("OPERATION Generator", opMbx, opSeed, opPolynomial);
+      opAGen   = new("OPERAND A Generator", opAMbx, opASeed, operandsPolynomial);
+      opBGen   = new("OPERAND B Generator", opBMbx, opBSeed, operandsPolynomial);;       
+      opIMMGen = new("OPERAND IMM Generator", opIMMMbx, opIMMSeed, operandsPolynomial);;     
+      opMEMGen = new("OPERAND MEM Generator", opMEMMbx, opMEMSeed, operandsPolynomial);;     
+      moviGen  = new("MOVI Generator", moviMbx, moviSeed, moviPolynomial);;      
     endfunction : new
     
    /*!
@@ -63,7 +106,12 @@
           else if (gen_output == 2) 
             trans_file = $fopen("trans_file.txt", "r"); 
           
-          opGen.setEnabled();   
+          opGen.setEnabled();  
+          opAGen.setEnabled();  
+          opBGen.setEnabled();  
+          opIMMGen.setEnabled();  
+          opMEMGen.setEnabled();  
+          moviGen.setEnabled();   
           
           run();
         join_none
@@ -78,6 +126,11 @@
       this.enabled = 0;
       if (gen_output == 1) $fclose(trans_file);
       opGen.setDisabled();  
+      opAGen.setDisabled();  
+      opBGen.setDisabled();  
+      opIMMGen.setDisabled();  
+      opMEMGen.setDisabled();  
+      moviGen.setDisabled(); 
     endtask : setDisabled
     
    /*
@@ -85,7 +138,13 @@
     */    
     virtual task run();
       Transaction trans;
+      ALUInTransaction #(pDataWidth) tr;
       logic [3:0] op; 
+      logic [7:0] opA; 
+      logic [7:0] opB; 
+      logic [7:0] opIMM; 
+      logic [7:0] opMEM; 
+      logic [1:0] movi; 
       int counter = 0;
       
       //! Reading transactions from external file      
@@ -120,11 +179,26 @@
           
           // Set random values according to LFSR
           opMbx.get(op);
-          $write("operation: %b\n", op);
-          trans.operation = op;
+          opAMbx.get(opA);
+          opBMbx.get(opB);
+          opIMMMbx.get(opIMM);
+          opMEMMbx.get(opMEM);
           
-          assert(trans.randomize);     //! Randomize transaction
-          //trans.display(inst);       //! Display transaction
+          // MOVI constraint
+          do
+           moviMbx.get(movi);
+          while (movi == 2'b11);
+          
+          $cast(tr, trans);
+          
+          tr.operation  = op;
+          tr.operandA   = opA;
+          tr.operandB   = opB;
+          tr.operandIMM = opIMM;
+          tr.operandMEM = opMEM;
+          tr.movi       = movi;
+          
+          trans.display(inst);         //! Display transaction
         
           if (gen_output == 0)
             transMbx.put(trans);       //! Put transaction to mailbox
