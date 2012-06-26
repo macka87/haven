@@ -17,7 +17,7 @@
     rand byte unsigned operandB_ranges;        // num. of ranges for opB
     rand byte unsigned operandIMM_ranges;      // num. of ranges for opIMM
     rand byte unsigned operandMEM_ranges;      // num. of ranges for opMEM
-    rand byte unsigned delayranges;            // num. of ranges for delays
+    rand byte unsigned delay_ranges;           // num. of ranges for delays
     byte unsigned movi_values            = 3;  // num. of values for MOVI
     byte unsigned operation_values       = 16; // num. of values for OPERATION
     
@@ -47,26 +47,29 @@
                       };
     };  
     
-    //! Constraints for randomized values 
     constraint opB_c {
-      operandA_ranges inside {
+      operandB_ranges inside {
                       [operandB_rangesMin:operandB_rangesMax]
                       };
     };
     
-    //! Constraints for randomized values 
     constraint opIMM_c {
-      operandA_ranges inside {
+      operandIMM_ranges inside {
                       [operandIMM_rangesMin:operandIMM_rangesMax]
                       };
     };
     
-    //! Constraints for randomized values 
     constraint opMEM_c {
-      operandA_ranges inside {
-                      [operandIMM_rangesMin:operandIMM_rangesMax]
+      operandMEM_ranges inside {
+                      [operandMEM_rangesMin:operandMEM_rangesMax]
                       };
-    };               
+    }; 
+    
+    constraint delay_c {
+      delay_ranges inside {
+                      [delay_rangesMin:delay_rangesMax]
+                      };
+    };              
 
    /*
     * Public Class Methods
@@ -81,7 +84,7 @@
       // structure of chromozome
       this.length        = operandA_ranges + operandB_ranges + 
                            operandIMM_ranges + operandMEM_ranges +
-                           delayranges + movi_values + operation_values;
+                           delay_ranges + movi_values + operation_values;
       this.estimatedTime = estimatedTime;
     endfunction : new 
     
@@ -101,38 +104,38 @@
          $write("---------------------------------------------------------\n");
        end
        
-       $write("Structure of Chromosome:");
+       $write("Structure of Chromosome:\n");
        
-       $write("OperandA number of ranges: %b\n", operandA_ranges);
-       for (int i=0; i<operandA_ranges; i++) 
-         $write("operandA range %d: %b\n", i, chromosome[offset++]);
+       $write("OperandA number of ranges: %d\n", operandA_ranges);
+       //for (int i=0; i<operandA_ranges; i++) 
+       //  $write("operandA range %d: %b\n", i, chromosome[offset++]);
        
-       $write("OperandB number of ranges: %b\n", operandB_ranges);
-       for (int i=0; i<operandB_ranges; i++) 
-         $write("operandB range %d: %b\n", i, chromosome[offset++]);
+       $write("OperandB number of ranges: %d\n", operandB_ranges);
+       //for (int i=0; i<operandB_ranges; i++) 
+       //  $write("operandB range %d: %b\n", i, chromosome[offset++]);
        
-       $write("OperandIMM number of ranges: %b\n", operandIMM_ranges);
-       for (int i=0; i<operandIMM_ranges; i++) 
-         $write("operandIMM range %d: %b\n", i, chromosome[offset++]);
+       $write("OperandIMM number of ranges: %d\n", operandIMM_ranges);
+       //for (int i=0; i<operandIMM_ranges; i++) 
+       //  $write("operandIMM range %d: %b\n", i, chromosome[offset++]);
        
-       $write("OperandMEM number of ranges: %b\n", operandMEM_ranges);
-       for (int i=0; i<operandMEM_ranges; i++) 
-         $write("operandMEM range %d: %b\n", i, chromosome[offset++]);
+       $write("OperandMEM number of ranges: %d\n", operandMEM_ranges);
+       //for (int i=0; i<operandMEM_ranges; i++) 
+       //  $write("operandMEM range %d: %b\n", i, chromosome[offset++]);
        
-       $write("Number of delay ranges: %b\n", delayranges);
-       for (int i=0; i<delayranges; i++) 
-         $write("Delay %d: %b\n", i, chromosome[offset++]); 
+       $write("Number of delay ranges: %d\n", delay_ranges);
+       //for (int i=0; i<delay_ranges; i++) 
+       //  $write("Delay %d: %b\n", i, chromosome[offset++]); 
          
-       $write("Number of MOVI values: %b\n", movi_values);
-       for (int i=0; i<movi_values; i++) 
-         $write("Movi value %d: %b\n", i, chromosome[offset++]);
+       $write("Number of MOVI values: %d\n", movi_values);
+       //for (int i=0; i<movi_values; i++) 
+       //  $write("Movi value %d: %b\n", i, chromosome[offset++]);
          
-       $write("Number of operations: %b\n", operation_values);
-       for (int i=0; i<operation_values; i++) 
-         $write("Operation value %d: %b\n", i, chromosome[offset++]);    
+       $write("Number of operations: %d\n", operation_values);
+       //for (int i=0; i<operation_values; i++) 
+       //  $write("Operation value %d: %b\n", i, chromosome[offset++]);    
        
-       $write("Fitness: %0d\n", fitness);  
-       $write("Relative fitness: %0d\n", relativeFitness);  
+       //$write("Fitness: %0d\n", fitness);  
+       //$write("Relative fitness: %0d\n", relativeFitness);  
        $write("\n");  
     endfunction : display
  
@@ -160,7 +163,7 @@
       chrom.operandB_ranges = operandB_ranges;
       chrom.operandIMM_ranges = operandIMM_ranges;
       chrom.operandMEM_ranges = operandMEM_ranges;
-      chrom.delayranges = delayranges;
+      chrom.delay_ranges = delay_ranges;
       chrom.movi_values = movi_values;
       chrom.operation_values = operation_values;
       chrom.delay_rangesMin = delay_rangesMin;

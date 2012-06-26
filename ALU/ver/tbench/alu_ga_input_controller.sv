@@ -6,14 +6,17 @@
  * Date:         23.6.2012 
  * ************************************************************************** */
  
- class ALUGAInputController #(int pDataWidth = 8, int genTrans = 0) extends GenInputController;
+ class ALUGAInputController #(int pDataWidth = 8, 
+                              int genInput = 0,
+                              int genOutput = 0
+                              ) extends GenInputController;
        
    /*
     * Public Class Atributes
     */ 
     
     //! Chromosome format
-    ALUChromosome                  aluBlueprint; 
+    ALUChromosome                  aluChromosome;
     //! Population
     Population                     population;
     //! Software driver   
@@ -32,11 +35,16 @@
     * Constructor 
     */    
     function new (string inst, int framework, tTransMbx inputMbx,
-                  byte unsigned delay_rangesMin, byte unsigned delay_rangesMax, 
-                  byte unsigned operandA_rangesMin, byte unsigned operandA_rangesMax,
-                  byte unsigned operandB_rangesMin, byte unsigned operandB_rangesMax,
-                  byte unsigned operandIMM_rangesMin, byte unsigned operandIMM_rangesMax,
-                  byte unsigned operandMEM_rangesMin, byte unsigned operandMEM_rangesMax, 
+                  byte unsigned delay_rangesMin, 
+                  byte unsigned delay_rangesMax, 
+                  byte unsigned operandA_rangesMin, 
+                  byte unsigned operandA_rangesMax,
+                  byte unsigned operandB_rangesMin, 
+                  byte unsigned operandB_rangesMax,
+                  byte unsigned operandIMM_rangesMin, 
+                  byte unsigned operandIMM_rangesMax,
+                  byte unsigned operandMEM_rangesMin, 
+                  byte unsigned operandMEM_rangesMax, 
                   byte unsigned delayMin, byte unsigned delayMax,
                   virtual iAluIn #(pDataWidth) aluIn  
                  ); 
@@ -46,27 +54,25 @@
       this.aluIn    = aluIn;
       
       //! Create generator
-      generator     = new("ALU Generator", genTrans, -1, transMbx);
-      //lfsrGenerator  = new("LFSR Generator", genTrans, -1, transMbx);
-      
+      //generator     = new("ALU Generator", genInput, genOutput, -1, transMbx);
+            
       //! Create blueprint transaction
-      aluBlueprint  = new();
+      aluChromosome  = new();
       
-      aluBlueprint.delay_rangesMin       = delay_rangesMin;
-      aluBlueprint.delay_rangesMax       = delay_rangesMax;
-      aluBlueprint.operandA_rangesMin    = operandA_rangesMin;
-      aluBlueprint.operandA_rangesMax    = operandA_rangesMax;
-      aluBlueprint.operandB_rangesMin    = operandB_rangesMin;
-      aluBlueprint.operandB_rangesMax    = operandB_rangesMax;
-      aluBlueprint.operandIMM_rangesMin  = operandIMM_rangesMin;
-      aluBlueprint.operandIMM_rangesMax  = operandIMM_rangesMax;
-      aluBlueprint.operandMEM_rangesMin  = operandMEM_rangesMin;
-      aluBlueprint.operandMEM_rangesMax  = operandMEM_rangesMax;
-      aluBlueprint.delayMin              = delayMin;
-      aluBlueprint.delayMax              = delayMax;
+      aluChromosome.delay_rangesMin       = delay_rangesMin;
+      aluChromosome.delay_rangesMax       = delay_rangesMax;
+      aluChromosome.operandA_rangesMin    = operandA_rangesMin;
+      aluChromosome.operandA_rangesMax    = operandA_rangesMax;
+      aluChromosome.operandB_rangesMin    = operandB_rangesMin;
+      aluChromosome.operandB_rangesMax    = operandB_rangesMax;
+      aluChromosome.operandIMM_rangesMin  = operandIMM_rangesMin;
+      aluChromosome.operandIMM_rangesMax  = operandIMM_rangesMax;
+      aluChromosome.operandMEM_rangesMin  = operandMEM_rangesMin;
+      aluChromosome.operandMEM_rangesMax  = operandMEM_rangesMax;
+      aluChromosome.delayMin              = delayMin;
+      aluChromosome.delayMax              = delayMax;
       
-      //lfsrGenerator.blueprint    = aluBlueprint;      
-      //generator.blueprint        = aluBlueprint;
+      //generator.blueprint = aluChromosome;
       
       //! Create software driver
       swAluDriver   = new("Software ALU Driver", 0, transMbx, aluIn); 
@@ -100,15 +106,27 @@
    /*!
     * Create or load initial population.
     */
-    task createOrLoadInitialPopulation(string filename, bit load, int populationSize, int maxMutations);
+    task createOrLoadInitialPopulation(string filename, 
+                                       bit load, 
+                                       int populationSize,
+                                       int maxMutations
+                                       );
+    
+      //! ALU transaction format
+      //ALUInTransaction #(pDataWidth) aluBlueprint;
+    
+      //! Create blueprint transaction
+      //aluBlueprint  = new();
+    
+    
       // Create population
       population = new("Population", populationSize, maxMutations);
-      population.create(aluBlueprint);
+      population.create(aluChromosome);
     
       // Load population from file
       if (load) begin
         $write("Population loaded from file %s\n",filename);
-        population.load(filename,aluBlueprint);
+        population.load(filename,aluChromosome);
       end
     endtask : createOrLoadInitialPopulation
     

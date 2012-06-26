@@ -21,6 +21,8 @@ basic     BASIC    $PATH
 alu_in    ALU_IN   $PATH
 alu_out   ALU_OUT  $PATH
 
+#toggle add $PATH/EX_ALU
+
 view structure
 view signals
 restart -f

@@ -30,7 +30,7 @@ program TEST (
   tTransMbx                                              outputMbx; 
   
   //! Input Controller of generated input  
-  ALUGAInputController #(DATA_WIDTH, GEN_TRANS)          aluGAInCnt;
+  ALUGAInputController #(DATA_WIDTH, GEN_INPUT, GEN_OUTPUT) aluGAInCnt;
   
   //! Input Wrapper
   InputWrapper                                           inputWrapper;  

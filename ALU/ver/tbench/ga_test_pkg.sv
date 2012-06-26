@@ -11,7 +11,7 @@
    // Number of generations
    parameter GENERATIONS      = 1;
    // Size of population
-   parameter POPULATION_SIZE  = 5;
+   parameter POPULATION_SIZE  = 2;
    // Number of maximal mutations per individuum
    parameter MAX_MUTATIONS    = 5;
    // File for save/load population
