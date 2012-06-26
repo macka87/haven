@@ -84,10 +84,10 @@
       $write("VYTVARANIE POPULACIE:\n");
 
       // Randomize chromosome and insert it in population
-      foreach (population[i]) begin
+      foreach (population[i]) begin  
         assert(chromBlueprint.randomize);
-        chromBlueprint.display("CHROMOSOME");
         population[i] = chromBlueprint.copy();
+        population[i].display("CHROMOSOME");
       end
 
     endfunction : create

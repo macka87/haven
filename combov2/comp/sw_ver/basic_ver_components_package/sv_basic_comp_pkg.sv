@@ -26,4 +26,5 @@ package sv_basic_comp_pkg;
   `include "transaction_table.sv"
   `include "lfsr.sv"
   `include "lfsr_1.sv"
+  `include "lfsr_simple.sv"
 endpackage : sv_basic_comp_pkg

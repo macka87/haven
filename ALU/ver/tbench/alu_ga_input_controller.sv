@@ -15,17 +15,15 @@
     * Public Class Atributes
     */ 
     
-    //! Chromosome format
-    ALUChromosome                  aluChromosome;
-    //! Population
-    Population                     population;
+    //! Transaction format
+    ALUInGATransaction #(pDataWidth) aluBlueprint;
     //! Software driver   
-    ALUDriver #(pDataWidth)        swAluDriver;   
+    ALUDriver #(pDataWidth)          swAluDriver;   
     //! Hardware sender                        
-    ALUSender #(pDataWidth)        hwAluSender; 
+    ALUSender #(pDataWidth)          hwAluSender; 
     
     //! Input ALU interface
-    virtual iAluIn #(pDataWidth) aluIn;  
+    virtual iAluIn #(pDataWidth)     aluIn;  
     
    /*
     * Public Class Methods
@@ -35,17 +33,6 @@
     * Constructor 
     */    
     function new (string inst, int framework, tTransMbx inputMbx,
-                  byte unsigned delay_rangesMin, 
-                  byte unsigned delay_rangesMax, 
-                  byte unsigned operandA_rangesMin, 
-                  byte unsigned operandA_rangesMax,
-                  byte unsigned operandB_rangesMin, 
-                  byte unsigned operandB_rangesMax,
-                  byte unsigned operandIMM_rangesMin, 
-                  byte unsigned operandIMM_rangesMax,
-                  byte unsigned operandMEM_rangesMin, 
-                  byte unsigned operandMEM_rangesMax, 
-                  byte unsigned delayMin, byte unsigned delayMax,
                   virtual iAluIn #(pDataWidth) aluIn  
                  ); 
       
@@ -54,33 +41,63 @@
       this.aluIn    = aluIn;
       
       //! Create generator
-      //generator     = new("ALU Generator", genInput, genOutput, -1, transMbx);
+      generator     = new("ALU Generator", genInput, genOutput, -1, transMbx);
             
-      //! Create blueprint transaction
-      aluChromosome  = new();
-      
-      aluChromosome.delay_rangesMin       = delay_rangesMin;
-      aluChromosome.delay_rangesMax       = delay_rangesMax;
-      aluChromosome.operandA_rangesMin    = operandA_rangesMin;
-      aluChromosome.operandA_rangesMax    = operandA_rangesMax;
-      aluChromosome.operandB_rangesMin    = operandB_rangesMin;
-      aluChromosome.operandB_rangesMax    = operandB_rangesMax;
-      aluChromosome.operandIMM_rangesMin  = operandIMM_rangesMin;
-      aluChromosome.operandIMM_rangesMax  = operandIMM_rangesMax;
-      aluChromosome.operandMEM_rangesMin  = operandMEM_rangesMin;
-      aluChromosome.operandMEM_rangesMax  = operandMEM_rangesMax;
-      aluChromosome.delayMin              = delayMin;
-      aluChromosome.delayMax              = delayMax;
-      
-      //generator.blueprint = aluChromosome;
-      
       //! Create software driver
       swAluDriver   = new("Software ALU Driver", 0, transMbx, aluIn); 
            
       //! Create hardware sender
       hwAluSender   = new("Hardware ALU Sender", 0, transMbx, inputMbx); 
     endfunction: new  
+   
+   /*!
+    * Set ALU transaction parameters
+    */
+    task setParameters(ALUChromosome chr);
+      int offset = 0;
     
+      aluBlueprint  = new();
+        
+      // ALU Blueprint transaction parameters from chromosome
+      aluBlueprint.movi_values = 3;
+      aluBlueprint.movi_wt = new[3];
+      for (int j=0; j<3; j++) 
+        aluBlueprint.movi_wt[j] = chr.chromosome[offset++];
+          
+      aluBlueprint.operandA_ranges = chr.operandA_ranges;
+      aluBlueprint.opA_range_wt = new[aluBlueprint.operandA_ranges];
+      for (int j=0; j<aluBlueprint.operandA_ranges; j++) 
+        aluBlueprint.opA_range_wt[j] = chr.chromosome[offset++];  
+        
+      aluBlueprint.operandB_ranges = chr.operandB_ranges;
+      aluBlueprint.opB_range_wt = new[aluBlueprint.operandB_ranges];
+      for (int j=0; j<aluBlueprint.operandB_ranges; j++) 
+        aluBlueprint.opB_range_wt[j] = chr.chromosome[offset++];
+          
+      aluBlueprint.operandIMM_ranges = chr.operandIMM_ranges;
+      aluBlueprint.opIMM_range_wt = new[aluBlueprint.operandIMM_ranges];
+      for (int j=0; j<aluBlueprint.operandIMM_ranges; j++) 
+        aluBlueprint.opIMM_range_wt[j] = chr.chromosome[offset++];
+            
+      aluBlueprint.operandMEM_ranges = chr.operandMEM_ranges;
+      aluBlueprint.opMEM_range_wt = new[aluBlueprint.operandMEM_ranges];
+      for (int j=0; j<aluBlueprint.operandMEM_ranges; j++) 
+        aluBlueprint.opMEM_range_wt[j] = chr.chromosome[offset++];
+          
+      aluBlueprint.operation_values = 16;
+      aluBlueprint.op_range_wt = new[16];
+      for (int j=0; j<16; j++) 
+        aluBlueprint.op_range_wt[j] = chr.chromosome[offset++];  
+            
+      aluBlueprint.delay_ranges = chr.delay_ranges;
+      aluBlueprint.delay_range_wt = new[aluBlueprint.delay_ranges];
+      for (int j=0; j<aluBlueprint.delay_ranges; j++) 
+        aluBlueprint.delay_range_wt[j] = chr.chromosome[offset++];
+      
+      // blueprint transaction for generator
+      generator.blueprint = aluBlueprint;
+    endtask : setParameters
+   
    /*! 
     * Set Callback - callback object into List 
     */
@@ -103,33 +120,6 @@
         hwAluSender.sendStart();
     endtask : start
    
-   /*!
-    * Create or load initial population.
-    */
-    task createOrLoadInitialPopulation(string filename, 
-                                       bit load, 
-                                       int populationSize,
-                                       int maxMutations
-                                       );
-    
-      //! ALU transaction format
-      //ALUInTransaction #(pDataWidth) aluBlueprint;
-    
-      //! Create blueprint transaction
-      //aluBlueprint  = new();
-    
-    
-      // Create population
-      population = new("Population", populationSize, maxMutations);
-      population.create(aluChromosome);
-    
-      // Load population from file
-      if (load) begin
-        $write("Population loaded from file %s\n",filename);
-        population.load(filename,aluChromosome);
-      end
-    endtask : createOrLoadInitialPopulation
-    
    /*!
     * Stop controller's activity
     */     

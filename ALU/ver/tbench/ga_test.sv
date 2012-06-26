@@ -29,6 +29,12 @@ program TEST (
   //! Mailbox for Output controller's transactions
   tTransMbx                                              outputMbx; 
   
+  //! Chromosome format
+  ALUChromosome                                          aluChromosome;
+  
+  //! Population
+  Population                                             population;
+  
   //! Input Controller of generated input  
   ALUGAInputController #(DATA_WIDTH, GEN_INPUT, GEN_OUTPUT) aluGAInCnt;
   
@@ -67,15 +73,7 @@ program TEST (
      outputMbx  = new(1);
 
      //! Create Input Controller 
-     aluGAInCnt = new("ALU Input Controller", FRAMEWORK, inputMbx,
-                      DELAY_RANGES_MIN, DELAY_RANGES_MAX,
-                      OPERAND_A_RANGES_MIN, OPERAND_A_RANGES_MAX,
-                      OPERAND_B_RANGES_MIN, OPERAND_B_RANGES_MAX,
-                      OPERAND_IMM_RANGES_MIN, OPERAND_IMM_RANGES_MAX,
-                      OPERAND_MEM_RANGES_MIN, OPERAND_MEM_RANGES_MAX,
-                      DELAY_MIN, DELAY_MAX, 
-                      ALU_IN
-                      ); 
+     aluGAInCnt = new("ALU Input Controller", FRAMEWORK, inputMbx, ALU_IN); 
      aluGAInCnt.setCallbacks(scoreboard.inputCbs); 
      aluCoverage.addInALUInterface(ALU_IN, "ALU Input Interface Coverage");
      
@@ -154,33 +152,148 @@ program TEST (
   endtask : disableTestEnvironment
 
   /*
-   *  Test cases
+   *  TEST PART
    */
+  
+  /*
+   *  Create or load initial population.
+   */  
+   task createOrLoadInitialPopulation(string filename, 
+                                      bit load, 
+                                      int populationSize,
+                                      int maxMutations
+                                      );
+    
+     //! Create blueprint transaction
+     aluChromosome  = new();
+      
+     aluChromosome.delay_rangesMin       = DELAY_RANGES_MIN;
+     aluChromosome.delay_rangesMax       = DELAY_RANGES_MAX;
+     aluChromosome.operandA_rangesMin    = OPERAND_A_RANGES_MIN;
+     aluChromosome.operandA_rangesMax    = OPERAND_A_RANGES_MAX;
+     aluChromosome.operandB_rangesMin    = OPERAND_B_RANGES_MIN;
+     aluChromosome.operandB_rangesMax    = OPERAND_B_RANGES_MAX;
+     aluChromosome.operandIMM_rangesMin  = OPERAND_IMM_RANGES_MIN;
+     aluChromosome.operandIMM_rangesMax  = OPERAND_IMM_RANGES_MAX;
+     aluChromosome.operandMEM_rangesMin  = OPERAND_MEM_RANGES_MIN;
+     aluChromosome.operandMEM_rangesMax  = OPERAND_MEM_RANGES_MAX;
+      
+     // Create population
+     population = new("Population", populationSize, maxMutations);
+     population.create(aluChromosome);
+    
+     // Load population from file
+     if (load) begin
+       $write("Population loaded from file %s\n",filename);
+       population.load(filename,aluChromosome);
+     end
+   endtask : createOrLoadInitialPopulation
+    
+  /*
+   *  Evaluate initial population
+   */   
+   task evaluateInitialPopulation();
+    foreach (population.population[i])
+      simulateChromosome(population.population[i], i);
 
-  // Test Case 1
-  task test1();
-     process proc;
-     int counter     = 0; // time counter
-     int activeEvent = 0; // time period for activation of ACT signal, now set 
-                          // to 0 for activation in the first clock cycle
-     proc = process::self();
+    //population.evaluate();
+   endtask : evaluateInitialPopulation
+   
+  /*
+   *  Simulate chromosome
+   */ 
+   task simulateChromosome(Chromosome chromosome, int no); 
+     resetDesign();       // Reset design
+     createEnvironment(); // Create Test Enviroment
      
-     $write("\n\n############ TEST CASE 1 ############\n\n");
+     // Set ALU transaction parameters according to chromosome
+     aluGAInCnt.setParameters(chromosome);
      
-     // time measuring
-     $write("START TIME: ");
-     $system("date");
-     
-     // Enable Test environment
      enableTestEnvironment();
      
+     //aluGAInCnt.start(); 
+     
+     disableTestEnvironment();
+   endtask : simulateChromosome
+
+  /*
+   *  Main test part
+   */
+  initial begin
+    process proc;
+    int counter     = 0; // time counter
+    int activeEvent = 0; // time period for activation of ACT signal, now set 
+                          // to 0 for activation in the first clock cycle
+    proc = process::self(); 
+    
+    $write("\n\n########## GENETIC ALGORITHM ##########\n\n");
+    
+    //! Create initial population
+    createOrLoadInitialPopulation(POPULATION_FILENAME, LOAD_POPULATION, POPULATION_SIZE, MAX_MUTATIONS);
+    
+    //! Evaluate initial population
+    evaluateInitialPopulation();
+
+    //! Run evolution
+    //for (int generation = 1; generation <= GENERATIONS; generation++) begin
+    //  $write("## Generation: %0d ##\n",generation);
+      //! Create next generation
+    //  population.selectAndReplace();
+      //! Evaluate population
+    //  evaluatePopulation();
+    //end
+        
+    //! Save population
+    //population.save(POPULATION_FILENAME);
+    
+    //! Display best individuum
+    //population.getBestChromosomes(1, bestChrom);
+    //bestChrom[0].display("Best chromosome");
+    
+    //! Stop testing
+    $stop();       // Stop testing      
+  end
+  
+  
+  
+   
+  
+  
+  
+  // Test Case 1
+  //task test1();
+   //  process proc;
+   //  int counter     = 0; // time counter
+    // int activeEvent = 0; // time period for activation of ACT signal, now set 
+                          // to 0 for activation in the first clock cycle
+     //proc = process::self();
+     
+     //$write("\n\n############ TEST CASE 1 ############\n\n");
+     
+     // time measuring
+    // $write("START TIME: ");
+    // $system("date");
+     
+     // Enable Test environment
+     //enableTestEnvironment();
+     
      // Sending of transactions
-     aluGAInCnt.start(); 
-     proc.srandom(SEED1);     
+    // aluGAInCnt.start(); 
+    //proc.srandom(SEED1);     
+     
      // Create initial population
-     aluGAInCnt.createOrLoadInitialPopulation(POPULATION_FILENAME, LOAD_POPULATION, POPULATION_SIZE, MAX_MUTATIONS);
+     //aluGAInCnt.createOrLoadInitialPopulation(POPULATION_FILENAME, LOAD_POPULATION, POPULATION_SIZE, MAX_MUTATIONS);
+    
+     // Simulate each chromosome of population from simulation time 0 and //receive coverage statistics
+    // foreach (aluGAInCnt.population.population[i])
+    //   resetDesign(); // Reset design
+    //   createEnvironment(); // Create Test Enviroment
+    //   enableTestEnvironment();
+    //   aluGAInCnt.simulateChromosome(aluGAInCnt.population.population[i], i);
+    // aluGAInCnt.
+     
      // Evaluate initial population
-     //aluGAInCnt.evaluatePopulation();
+     //aluGAInCnt.evaluateInitialPopulation();
      
      // Run evolution
      //for (int generation = 1; generation <= GENERATIONS; generation++) begin
@@ -197,33 +310,20 @@ program TEST (
      //aluGAInCnt.displayBestChromosomes;
 
      // Stop genetic algorithm
-     aluGAInCnt.stop();
+    // aluGAInCnt.stop();
      
      // Disable Test Enviroment
-     disableTestEnvironment();
+    // disableTestEnvironment();
      
      // time measuring
-     $write("END TIME: ");
-     $system("date");
+    // $write("END TIME: ");
+     //$system("date");
      
      // Display Scoreboard and Coverage
-     scoreboard.display();
-     if (FRAMEWORK == 0) aluCoverage.display();
-  endtask: test1
+    // scoreboard.display();
+    // if (FRAMEWORK == 0) aluCoverage.display();
+  //endtask: test1
 
-  /*
-   *  Main test part
-   */
-  initial begin
-    // Design Environment
-    resetDesign(); 
-    createEnvironment();                
-    
-    // Testing
-    test1();      
-        
-    // Stop testing
-    $stop();       
-  end
+  
 endprogram
 

@@ -11,7 +11,8 @@
    /*
     * Public Class Atributes
     */
-    int          length;
+    int          est_length;                 // Estimated length
+    int          real_length;                // Real length
     rand byte unsigned chromosome[];
     int unsigned fitness         = 0;
     real         relativeFitness = 0;
