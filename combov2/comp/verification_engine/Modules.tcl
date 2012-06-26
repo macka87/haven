@@ -13,10 +13,24 @@ set VER_CORE_BASE          "$COMP_BASE/verification_core"
 
 # Source files
 set MOD "$MOD $ENTITY_BASE/verification_engine_ent.vhd"
-set MOD "$MOD $ENTITY_BASE/verification_engine.vhd"
 
-# Componentss
+# Components
 set COMPONENTS [list \
    [ list "FL_ADDER"           $FL_ADDER_BASE         "FULL"] \
-   [ list "VER_CORE"           $VER_CORE_BASE         "FULL"] \
 ]
+
+# the CORE architecture contains:
+#
+#   * driver
+#   * verification core
+#   * monitor
+#   * assertion checker at the output interface
+#   * signal observer
+#
+if { $ARCHGRP == "CORE" } {
+  set MOD "$MOD $ENTITY_BASE/verification_engine_core.vhd"
+
+   set COMPONENTS [concat $COMPONENTS [list \
+     [ list "VER_CORE"           $VER_CORE_BASE         "FULL"] \
+   ]]
+}
