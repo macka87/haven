@@ -21,7 +21,7 @@
    parameter SIM_DELAY      = 100;
   
    // GENERATOR PARAMETERS
-   parameter GEN_INPUT      = 1;  // 0 = SV generator of transactions
+   parameter GEN_INPUT      = 0;  // 0 = SV generator of transactions
                                   // 1 = reading transactions from external file  
                                   // 2 = other generator
                                   // 3 = hardware generator  
@@ -41,7 +41,7 @@
    parameter byte DRIVER_BT_DELAY_HIGH   = 5;
    
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 5;   // Count of transactions
+   parameter TRANSACTION_COUT = 100;   // Count of transactions
    parameter SEED1            = 0;    // Seed for PRNG
    parameter SEED2            = 2;    // Seed for PRNG
  endpackage
