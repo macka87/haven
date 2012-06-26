@@ -227,6 +227,7 @@
       //! Hadware generator 
       if (gen_input == 3) begin  
         $write("Hardware generator not supported yet!!!");
+        //trans.sendinittohw - lebo v tomto subore su aj hodnoty ktore budeme posielat do hw
         $stop;
       end   
           
