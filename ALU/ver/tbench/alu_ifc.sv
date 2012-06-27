@@ -17,18 +17,18 @@
    logic [1:0] MOVI                ;   // Type of second operand
    logic [pDataWidth-1:0] REG_A    ;   // Operand in register A
    logic [pDataWidth-1:0] REG_B    ;   // Operand in register B
-   logic [pDataWidth-1:0] IMM      ;   // Immediate operand
    logic [pDataWidth-1:0] MEM      ;   // Memory operand
+   logic [pDataWidth-1:0] IMM      ;   // Immediate operand
    
    // Clocking block  
    clocking cb @(posedge CLK);
      input ALU_RDY;
-     output RST, ACT, OP, MOVI, REG_A, REG_B, IMM, MEM;  
+     output RST, ACT, OP, MOVI, REG_A, REG_B, MEM, IMM;  
    endclocking: cb;
    
    // Clocking block for coverage
    clocking cover_cb @(posedge CLK);
-     input RST, ACT, ALU_RDY, OP, MOVI, REG_A, REG_B, IMM, MEM;  
+     input RST, ACT, ALU_RDY, OP, MOVI, REG_A, REG_B, MEM, IMM;  
    endclocking: cover_cb;
 
    // DUT Modport
@@ -39,8 +39,8 @@
                   input  MOVI,
                   input  REG_A,
                   input  REG_B,
-                  input  IMM,
-                  input  MEM
+                  input  MEM,
+                  input  IMM
                  );
   
    modport aluin_tb (clocking cb);

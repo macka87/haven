@@ -157,8 +157,10 @@
       controlTrans.data[7] = 0;   // ifcInfo
       
       // data
-      if (tr.enBtDelay) controlTrans.data[8] = tr.btDelay;
-      else controlTrans.data[8] = 0;
+      //if (tr.enBtDelay) controlTrans.data[8] = tr.btDelay;
+      //else controlTrans.data[8] = 0;     
+      
+      controlTrans.data[8] = tr.btDelay;
       
       controlTrans.display("CONTROL");
       inputMbx.put(controlTrans);   // put transaction to mailbox

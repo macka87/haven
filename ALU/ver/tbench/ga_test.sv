@@ -5,7 +5,8 @@
  * Date:         23.6.2012 
  * ************************************************************************** */
  
-import test_pkg::*; 
+import test_pkg::*;
+import ga_pkg::*; 
 import ga_test_pkg::*;
 import sv_basic_comp_pkg::*;
 import sv_alu_pkg::*;
@@ -173,11 +174,11 @@ program TEST (
      aluChromosome.operandA_rangesMax    = OPERAND_A_RANGES_MAX;
      aluChromosome.operandB_rangesMin    = OPERAND_B_RANGES_MIN;
      aluChromosome.operandB_rangesMax    = OPERAND_B_RANGES_MAX;
-     aluChromosome.operandIMM_rangesMin  = OPERAND_IMM_RANGES_MIN;
-     aluChromosome.operandIMM_rangesMax  = OPERAND_IMM_RANGES_MAX;
      aluChromosome.operandMEM_rangesMin  = OPERAND_MEM_RANGES_MIN;
      aluChromosome.operandMEM_rangesMax  = OPERAND_MEM_RANGES_MAX;
-      
+     aluChromosome.operandIMM_rangesMin  = OPERAND_IMM_RANGES_MIN;
+     aluChromosome.operandIMM_rangesMax  = OPERAND_IMM_RANGES_MAX;
+     
      // Create population
      population = new("Population", populationSize, maxMutations);
      population.create(aluChromosome);
@@ -203,28 +204,51 @@ program TEST (
    *  Simulate chromosome
    */ 
    task simulateChromosome(Chromosome chromosome, int no); 
+     process proc;
+     proc = process::self(); 
+     
      resetDesign();       // Reset design
      createEnvironment(); // Create Test Enviroment
      
      // Set ALU transaction parameters according to chromosome
      aluGAInCnt.setParameters(chromosome);
      
+     // time measuring
+     $write("START TIME: ");
+     $system("date");
+     
+     // enable test environment
      enableTestEnvironment();
      
-     //aluGAInCnt.start(); 
+     // start input controller
+     aluGAInCnt.start(); 
+     proc.srandom(SEED1); 
+     
+     // generate random vectors for initial population
+     aluGAInCnt.sendGenerated(TRANS_COUNT_PER_CHROM);
+     
+     aluGAInCnt.stop();
      
      disableTestEnvironment();
+     
+     // time measuring
+     $write("END TIME: ");
+     $system("date");
+     
+     // Display Scoreboard and Coverage
+     scoreboard.display();
+     if (FRAMEWORK == 0) aluCoverage.display();
    endtask : simulateChromosome
 
   /*
    *  Main test part
    */
   initial begin
-    process proc;
-    int counter     = 0; // time counter
-    int activeEvent = 0; // time period for activation of ACT signal, now set 
+    
+    //int counter     = 0; // time counter
+    //int activeEvent = 0; // time period for activation of ACT signal, now set 
                           // to 0 for activation in the first clock cycle
-    proc = process::self(); 
+    
     
     $write("\n\n########## GENETIC ALGORITHM ##########\n\n");
     

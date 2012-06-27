@@ -82,7 +82,7 @@
        bins other_values = default;
      }
      
-     opIMM: coverpoint operandIMM {
+     opMEM: coverpoint operandMEM {
        bins zeros        = {0};
        bins ones         = {max_value};
        bins small_values = {[1:15]};
@@ -90,7 +90,7 @@
        bins other_values = default;
      }
      
-     opMEM: coverpoint operandMEM {
+     opIMM: coverpoint operandIMM {
        bins zeros        = {0};
        bins ones         = {max_value};
        bins small_values = {[1:15]};
@@ -113,8 +113,8 @@
      // all corner values x movi x act
      opA_movi_act_cross : cross opA, moviH, actH;
      opB_movi_act_cross : cross opB, moviH, actH;
-     opIMM_movi_act_cross : cross opIMM, moviH, actH;
      opMEM_movi_act_cross : cross opMEM, moviH, actH;
+     opIMM_movi_act_cross : cross opIMM, moviH, actH;
      
      // delayed act with operations
      
@@ -186,8 +186,8 @@
        operation_s = aluIn.cover_cb.OP;
        operandA    = aluIn.cover_cb.REG_A;
        operandB    = aluIn.cover_cb.REG_B;
-       operandIMM  = aluIn.cover_cb.IMM;
        operandMEM  = aluIn.cover_cb.MEM;
+       operandIMM  = aluIn.cover_cb.IMM;
        
        $cast(operation, operation_s);
        

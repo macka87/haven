@@ -63,7 +63,7 @@
       aluBlueprint.movi_wt = new[3];
       for (int j=0; j<3; j++) 
         aluBlueprint.movi_wt[j] = chr.chromosome[offset++];
-          
+         
       aluBlueprint.operandA_ranges = chr.operandA_ranges;
       aluBlueprint.opA_range_wt = new[aluBlueprint.operandA_ranges];
       for (int j=0; j<aluBlueprint.operandA_ranges; j++) 
@@ -73,17 +73,17 @@
       aluBlueprint.opB_range_wt = new[aluBlueprint.operandB_ranges];
       for (int j=0; j<aluBlueprint.operandB_ranges; j++) 
         aluBlueprint.opB_range_wt[j] = chr.chromosome[offset++];
+      
+      aluBlueprint.operandMEM_ranges = chr.operandMEM_ranges;
+      aluBlueprint.opMEM_range_wt = new[aluBlueprint.operandMEM_ranges];
+      for (int j=0; j<aluBlueprint.operandMEM_ranges; j++) 
+        aluBlueprint.opMEM_range_wt[j] = chr.chromosome[offset++];
           
       aluBlueprint.operandIMM_ranges = chr.operandIMM_ranges;
       aluBlueprint.opIMM_range_wt = new[aluBlueprint.operandIMM_ranges];
       for (int j=0; j<aluBlueprint.operandIMM_ranges; j++) 
         aluBlueprint.opIMM_range_wt[j] = chr.chromosome[offset++];
             
-      aluBlueprint.operandMEM_ranges = chr.operandMEM_ranges;
-      aluBlueprint.opMEM_range_wt = new[aluBlueprint.operandMEM_ranges];
-      for (int j=0; j<aluBlueprint.operandMEM_ranges; j++) 
-        aluBlueprint.opMEM_range_wt[j] = chr.chromosome[offset++];
-          
       aluBlueprint.operation_values = 16;
       aluBlueprint.op_range_wt = new[16];
       for (int j=0; j<16; j++) 
@@ -134,7 +134,25 @@
       // hardware framework
       else if (framework == 1) 
         hwAluSender.sendStop();
-    endtask : stop   
+    endtask : stop 
+    
+   /*!
+    * Send generated transaction 
+    */
+    task sendGenerated(int unsigned transCount);
+      //! run generator
+      generator.setEnabled(transCount);
+      
+      if (genOutput != 1) begin 
+        // software framework
+        if (framework == 0)
+          swAluDriver.sendTransactions(transCount);  
+                    
+        // hardware framework
+        if (framework == 1) 
+          hwAluSender.sendTransactions(transCount);
+      end    
+    endtask : sendGenerated     
    
  endclass : ALUGAInputController
   

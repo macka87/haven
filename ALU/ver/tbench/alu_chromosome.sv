@@ -15,8 +15,8 @@
     //! Interface signals weights (every range or signal value has a weight)
     rand byte unsigned operandA_ranges;        // num. of ranges for opA
     rand byte unsigned operandB_ranges;        // num. of ranges for opB
-    rand byte unsigned operandIMM_ranges;      // num. of ranges for opIMM
     rand byte unsigned operandMEM_ranges;      // num. of ranges for opMEM
+    rand byte unsigned operandIMM_ranges;      // num. of ranges for opIMM
     rand byte unsigned delay_ranges;           // num. of ranges for delays
     byte unsigned movi_values            = 3;  // num. of values for MOVI
     byte unsigned operation_values       = 16; // num. of values for OPERATION
@@ -29,10 +29,10 @@
     byte unsigned operandA_rangesMax     = 8;
     byte unsigned operandB_rangesMin     = 1;
     byte unsigned operandB_rangesMax     = 8;
-    byte unsigned operandIMM_rangesMin   = 1;
-    byte unsigned operandIMM_rangesMax   = 8;
     byte unsigned operandMEM_rangesMin   = 1;
     byte unsigned operandMEM_rangesMax   = 8;
+    byte unsigned operandIMM_rangesMin   = 1;
+    byte unsigned operandIMM_rangesMax   = 8;
     
     //! Estimated time of genetic algorithm    
     longint unsigned estimatedTime;
@@ -54,17 +54,17 @@
                       };
     };
     
+    constraint opMEM_c {
+      operandMEM_ranges inside {
+                      [operandMEM_rangesMin:operandMEM_rangesMax]
+                      };
+    };
+    
     constraint opIMM_c {
       operandIMM_ranges inside {
                       [operandIMM_rangesMin:operandIMM_rangesMax]
                       };
     };
-    
-    constraint opMEM_c {
-      operandMEM_ranges inside {
-                      [operandMEM_rangesMin:operandMEM_rangesMax]
-                      };
-    }; 
     
     constraint delay_c {
       delay_ranges inside {
@@ -84,7 +84,7 @@
     function new(int estimatedTime = 0);
       // structure of chromozome
       this.est_length    = operandA_rangesMax + operandB_rangesMax + 
-                           operandIMM_rangesMax + operandMEM_rangesMax +
+                           operandMEM_rangesMax + operandIMM_rangesMax + 
                            delay_rangesMax + movi_values + operation_values;
       this.estimatedTime = estimatedTime;
     endfunction : new 
@@ -120,14 +120,14 @@
        $write("OperandB number of ranges: %d\n", operandB_ranges);
        for (int i=0; i<operandB_ranges; i++) 
          $write("operandB range %d weight: %d\n", i, chromosome[offset++]);
+         
+       $write("OperandMEM number of ranges: %d\n", operandMEM_ranges);
+       for (int i=0; i<operandMEM_ranges; i++) 
+         $write("operandMEM range %d weight: %d\n", i, chromosome[offset++]);  
        
        $write("OperandIMM number of ranges: %d\n", operandIMM_ranges);
        for (int i=0; i<operandIMM_ranges; i++) 
          $write("operandIMM range %d weight: %d\n", i, chromosome[offset++]);
-       
-       $write("OperandMEM number of ranges: %d\n", operandMEM_ranges);
-       for (int i=0; i<operandMEM_ranges; i++) 
-         $write("operandMEM range %d weight: %d\n", i, chromosome[offset++]);
        
        $write("Number of operations: %d\n", operation_values);
        for (int i=0; i<operation_values; i++) 
@@ -170,24 +170,11 @@
       
       chrom.operandA_ranges = operandA_ranges;
       chrom.operandB_ranges = operandB_ranges;
-      chrom.operandIMM_ranges = operandIMM_ranges;
       chrom.operandMEM_ranges = operandMEM_ranges;
+      chrom.operandIMM_ranges = operandIMM_ranges;
       chrom.delay_ranges = delay_ranges;
       chrom.movi_values = movi_values;
       chrom.operation_values = operation_values;
-      
-      //chrom.delay_rangesMin = delay_rangesMin;
-      //chrom.delay_rangesMax = delay_rangesMax;
-      //chrom.operandA_rangesMin = operandA_rangesMin;
-      //chrom.operandA_rangesMax = operandA_rangesMax;
-      //chrom.operandB_rangesMin = operandB_rangesMin;
-      //chrom.operandB_rangesMax = operandB_rangesMax;
-      //chrom.operandIMM_rangesMin = operandIMM_rangesMin;
-      //chrom.operandIMM_rangesMax = operandIMM_rangesMax;
-      //chrom.operandMEM_rangesMin = operandMEM_rangesMin;
-      //chrom.operandMEM_rangesMax = operandIMM_rangesMax;
-      //chrom.delayMin = delayMin;
-      //chrom.delayMax = delayMax;
       
       return chrom;  
     endfunction: copy

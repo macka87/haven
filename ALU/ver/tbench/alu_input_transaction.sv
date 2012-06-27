@@ -18,45 +18,45 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
    rand logic [1:0]            movi;           // type of B operand
    rand logic [pDataWidth-1:0] operandA;       // register operand A
    rand logic [pDataWidth-1:0] operandB;       // register operand B
-   rand logic [pDataWidth-1:0] operandIMM;     // immediate operand B
    rand logic [pDataWidth-1:0] operandMEM;     // memory operand B
+   rand logic [pDataWidth-1:0] operandIMM;     // immediate operand B
    
    // operation
    rand logic [3:0] operation;                 // type of operation
    
-   constraint values_range
-   {
-     movi inside       {[0 : 2]};
+   //constraint values_range
+   //{
+   //  movi inside       {[0 : 2]};
      //operandA inside   {[0 : 5]};
      //operandB inside   {[0 : 5]};
-     //operandIMM inside {[0 : 5]};
      //operandMEM inside {[0 : 5]};
-   }
+     //operandIMM inside {[0 : 5]};
+  // }
    
    //! --- RANDOMIZATION OF DELAY PARAMETERS ---
    
    //! Enable/Disable delays "between transactions" according to weights
-    rand bit enBtDelay;   
-         byte btDelayEn_wt  = 1; 
-         byte btDelayDi_wt  = 3;
+   // rand bit enBtDelay;   
+   //      byte btDelayEn_wt  = 1; 
+   //      byte btDelayDi_wt  = 3;
 
     //! Value of delay "between transactions" randomized inside boundaries
-    rand byte btDelay; 
-         byte btDelayLow    = 0;
-         byte btDelayHigh   = 3;
-    
+   rand byte btDelay; 
+   //      byte btDelayLow    = 0;
+   //      byte btDelayHigh   = 3;
+   
     //! Constraints for randomized values 
-    constraint cDelay1 {
-      enBtDelay dist { 1'b1 := btDelayEn_wt,
-                       1'b0 := btDelayDi_wt
-                     };
-    };                 
+   // constraint cDelay1 {
+   //   enBtDelay dist { 1'b1 := btDelayEn_wt,
+   //                    1'b0 := btDelayDi_wt
+   //                  };
+   // };                 
 
-    constraint cDelay2 {
-      btDelay inside {
-                      [btDelayLow:btDelayHigh]
-                     };
-    };                 
+   // constraint cDelay2 {
+   //   btDelay inside {
+   //                   [btDelayLow:btDelayHigh]
+   //                  };
+   // };                 
 
    /*
     * Public Class Methods
@@ -78,8 +78,8 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
        
        $write("operandA: %d\n", operandA);  
        $write("operandB: %d\n", operandB); 
-       $write("operandIMM: %d\n", operandIMM); 
        $write("operandMEM: %d\n", operandMEM); 
+       $write("operandIMM: %d\n", operandIMM); 
        
        priority case (movi) 
          2'b00 : $write("MOVI: REGISTER B\n");
@@ -125,15 +125,15 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
 
       tr.operandA   = operandA;
       tr.operandB   = operandB;
-      tr.operandIMM = operandIMM;
       tr.operandMEM = operandMEM;
+      tr.operandIMM = operandIMM;
       tr.operation  = operation;
       tr.movi       = movi;
       
-      tr.btDelayEn_wt  = btDelayEn_wt;
-      tr.btDelayDi_wt  = btDelayDi_wt;
-      tr.btDelayLow    = btDelayLow;
-      tr.btDelayHigh   = btDelayHigh;
+      //tr.btDelayEn_wt  = btDelayEn_wt;
+      //tr.btDelayDi_wt  = btDelayDi_wt;
+      //tr.btDelayLow    = btDelayLow;
+      //tr.btDelayHigh   = btDelayHigh;
       
       copy = tr;  
     endfunction: copy
@@ -142,7 +142,7 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
     * Function for writing transaction into an external file. 
     */
     function void fwrite(int fileDescr);
-      $fwrite(fileDescr, "%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+      $fwrite(fileDescr, "%b %b %b %b %b %b\n", operandA, operandB, operandMEM, operandIMM, operation, movi);
     endfunction : fwrite
     
    /*!
@@ -151,7 +151,7 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
     function void fread(int fileDescr);
       int r;
             
-      r = $fscanf(fileDescr,"%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+      r = $fscanf(fileDescr,"%b %b %b %b %b %b\n", operandA, operandB, operandMEM, operandIMM, operation, movi);
       
       if (r==0) begin
         $write("File corrupted!!!");

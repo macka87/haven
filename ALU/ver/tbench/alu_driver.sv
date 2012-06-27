@@ -45,8 +45,9 @@
       this.aluIn.cb.MOVI      <= 0;
       this.aluIn.cb.REG_A     <= 0;
       this.aluIn.cb.REG_B     <= 0;
-      this.aluIn.cb.IMM       <= 0;
       this.aluIn.cb.MEM       <= 0;
+      this.aluIn.cb.IMM       <= 0;
+      
     endfunction: new  
     
    /*! 
@@ -95,22 +96,23 @@
         waitForAluRdy();
         
         //$write("enBtDelay: %d\n",transaction.enBtDelay);
-        //$write("btDelay: %d\n",transaction.btDelay);
+        $write("btDelay: %d\n",transaction.btDelay);
         
         // Set ACT signal and wait before sending next transaction
-        if (!transaction.enBtDelay) aluIn.cb.ACT <= 1;
-        else begin
+        //if (!transaction.enBtDelay) aluIn.cb.ACT <= 1;
+        
+        //else begin
           aluIn.cb.ACT <= 0;
           repeat (transaction.btDelay) @(aluIn.cb);
           aluIn.cb.ACT <= 1;
-        end
+        //end
         
         sendData(transaction);
         
         foreach (cbs[i])               //! Call transaction postprocessing
           cbs[i].post_tr(to, id);
       
-        //transaction.display(inst);   //! Display transaction
+        transaction.display(inst);   //! Display transaction
         i++;
       end
       waitForAluRdy();
@@ -127,8 +129,8 @@
       aluIn.cb.MOVI   <= tr.movi;    
       aluIn.cb.REG_A  <= tr.operandA;      
       aluIn.cb.REG_B  <= tr.operandB; 
+      aluIn.cb.MEM    <= tr.operandMEM;  
       aluIn.cb.IMM    <= tr.operandIMM;       
-      aluIn.cb.MEM    <= tr.operandMEM;      
       @(aluIn.cb);
       aluIn.cb.ACT    <= 1;
     endtask : sendData  
