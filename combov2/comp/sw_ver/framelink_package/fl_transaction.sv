@@ -6,6 +6,8 @@
  * Date:         27.2.2011 
  * ************************************************************************** */
 
+ import mi32_wrapper_pkg::*; 
+
  class FrameLinkTransaction extends Transaction;
       
    /*
@@ -178,7 +180,7 @@
       copy = tr;
     endfunction: copy
        
- 	  /*!
+ 	 /*!
     * Compares the current value of the object instance with the current value
     * of the specified object instance, according to the specified kind. Returns
     * TRUE (i.e., non-zero) if the value is identical. If the value is 
@@ -219,4 +221,65 @@
            
       compare = same;
     endfunction: compare 
+    
+   /*!
+    * Configuration of hardware registers according to constraints in FrameLink
+    * transaction. They are applied in hardware generator in hardware version
+    * of verification environment.        
+    */   
+    function configureRegisters(int transCount);
+      input logic [31:0] hw_addr;
+      input logic [31:0] run_reg_addr       = 32'h00000000;
+      input logic [31:0] trans_reg_addr     = 32'h00000004;
+      input logic [31:0] part_num_reg_addr  = 32'h00000010;
+      input logic [31:0] part_size_reg_addr = 32'h00000080;
+      input logic [31:0] part_mask_offset   = 32'h00000000;
+      input logic [31:0] part_base_offset   = 32'h00000004;
+      input logic [31:0] part_max_offset    = 32'h00000008;
+      input logic [31:0] part_reg_offset    = 32'h00000010;
+      
+      input logic [31:0] frame_parts        = frameParts;
+      input logic [31:0] part_size_min      = '{0,0,0,0,0,0,0,0};
+      input logic [31:0] part_size_max      = '{0,0,0,0,0,0,0,0};
+      
+      for (int i=0; i<frameParts; i++) begin
+        part_size_min[i] = partSizeMin[i];
+        part_size_max[i] = partSizeMax[i];
+      end  
+    
+      // initiates MI32 transfer
+      if (c_start_mi32_transfer(hw_addr)) begin
+        $write("It is not possible to configure hardware registers with MI32!!!");
+        $stop;
+      end 
+      
+      // part num
+      c_writeToRegister(part_num_reg_addr + part_mask_offset, 32'h00000007);
+      c_writeToRegister(part_num_reg_addr + part_base_offset, frame_parts);
+      c_writeToRegister(part_num_reg_addr + part_max_offset, 32'h00000000);
+      
+      // max number of parts is 8
+      for (int i=0; i<8; i++) begin
+        // part i
+        c_writeToRegister(
+          part_size_reg_addr + i*part_reg_offset + part_mask_offset, 
+          32'h0000001F
+        );
+        c_writeToRegister(
+          part_size_reg_addr + i*part_reg_offset + part_base_offset, 
+          part_size_min[i]
+        );
+        c_writeToRegister(
+          part_size_reg_addr + i*part_reg_offset + part_max_offset,
+          part_size_max[i] - part_size_min[i]
+        ); 
+      end 
+      
+      // transaction count
+      c_writeToRegister(trans_reg_addr, transCount);
+      
+      // run
+      c_writeToRegister(run_reg_addr, 32'h00000001);
+    endfunction : configureRegisters
  endclass: FrameLinkTransaction
+                                                                                   
