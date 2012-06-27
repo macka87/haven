@@ -21,7 +21,7 @@ package test_pkg;
    parameter SIM_DELAY      = 100;
    
    // GENERATOR PARAMETERS
-   parameter GEN_TRANS      = 2;   // 0 = simulation with generated transactions
+   parameter GEN_TRANS      = 3;   // 0 = simulation with generated transactions
                                    // 1 = generation of transactions and their
                                    //     storage to external file  
                                    // 2 = reading transactions from external
@@ -32,14 +32,14 @@ package test_pkg;
    
    // DRIVER PARAMETERS 
    // Enable/Disable weights of "delay between transactions" 
-   parameter byte DRIVER_BT_DELAY_EN_WT  = 0;       
+   parameter byte DRIVER_BT_DELAY_EN_WT  = 1;       
    parameter byte DRIVER_BT_DELAY_DI_WT  = 3;
    // Low/High limit of "delay between transactions" value
    parameter byte DRIVER_BT_DELAY_LOW    = 0;
    parameter byte DRIVER_BT_DELAY_HIGH   = 5;
    
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 123;   // Count of transactions
+   parameter TRANSACTION_COUT = 4000;   // Count of transactions
    parameter SEED1            = 0;    // Seed for PRNG
    parameter SEED2            = 2;    // Seed for PRNG
 endpackage

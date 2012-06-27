@@ -142,7 +142,7 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
     * Function for writing transaction into an external file. 
     */
     function void fwrite(int fileDescr);
-      $fwrite(fileDescr, "%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+      $fwrite(fileDescr, "%b %b %b %b %b %b\n", operation, movi, operandA, operandB, operandIMM, operandMEM);
     endfunction : fwrite
     
    /*!

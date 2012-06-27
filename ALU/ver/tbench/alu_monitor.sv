@@ -20,6 +20,8 @@
     */
     //! ALU interface
     virtual iAluOut #(pDataWidth) aluOut;
+    //! Output transaction file
+    int trans_file;
     
    /*
     * Public Class Methods
@@ -39,6 +41,25 @@
       super.new(inst, id);
       this.aluOut = aluOut;  //! Store pointer interface 
     endfunction
+    
+   /*! 
+    * Enable Monitor - enable monitor and runs monitor process
+    */    
+    virtual task setEnabled();
+      enabled = 1;  //! Monitor Enabling
+      fork       
+         trans_file = $fopen("transout_file_.txt", "w");  
+         run();     //! Creating monitor subprocess
+      join_none;    //! Don't wait for ending
+    endtask : setEnabled
+        
+   /*! 
+    * Disable Monitor
+    */
+    virtual task setDisabled();
+      enabled = 0;  //! Disable monitor, after receiving last transaction
+      $fclose(trans_file); 
+    endtask : setDisabled 
 
    /*
     * Private Class Methods
@@ -84,6 +105,7 @@
       waitForExAluVLD();
       busy = 1;
       tr.alu_output  = aluOut.cb.EX_ALU;
+      $fwrite(trans_file, "%b\n", tr.alu_output);
       @(aluOut.cb);
     endtask : receiveTransaction
     

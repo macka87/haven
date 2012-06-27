@@ -175,6 +175,8 @@ begin
 -- multiplexer for final result
    mux4 : process (sig_output_sel, sig_alu_result, sig_mult_result_red)
    begin
+      EX_ALU <= (others => '0');
+   
       case sig_output_sel is
          when '0'   => EX_ALU <= sig_alu_result;
          when '1'   => EX_ALU <= sig_mult_result_red;
