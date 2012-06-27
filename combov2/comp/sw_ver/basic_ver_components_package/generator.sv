@@ -91,11 +91,11 @@
       if ( blueprint != null) 
         fork
           if (gen_output == 1 || gen_output == 3) begin
-            trans_file = $fopen("trans_file.txt", "w");
+            trans_file = $fopen("../atpg/inputs_atpg", "w");
             $fwrite(trans_file, "%d\n", stop_after_n_insts);
           end  
           else if (gen_output == 2) 
-            trans_file = $fopen("trans_file.txt", "r");  
+            trans_file = $fopen("../atpg/inputs_atpg", "r");  
           run();
         join_none
       else

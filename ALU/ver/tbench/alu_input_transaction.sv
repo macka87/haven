@@ -37,7 +37,7 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
    
    //! Enable/Disable delays "between transactions" according to weights
     rand bit enBtDelay;   
-         byte btDelayEn_wt  = 1; 
+         byte btDelayEn_wt  = 0; 
          byte btDelayDi_wt  = 3;
 
     //! Value of delay "between transactions" randomized inside boundaries
@@ -151,7 +151,7 @@ class ALUInTransaction #(pDataWidth = 8) extends Transaction;
     function void fread(int fileDescr);
       int r;
             
-      r = $fscanf(fileDescr,"%b %b %b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi, enBtDelay, btDelay);
+      r = $fscanf(fileDescr,"%b %b %b %b %b %b\n", operandA, operandB, operandIMM, operandMEM, operation, movi);
       
       if (r==0) begin
         $write("File corrupted!!!");
