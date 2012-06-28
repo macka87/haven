@@ -11,7 +11,7 @@
    // Number of generations
    parameter GENERATIONS      = 1;
    // Size of population
-   parameter POPULATION_SIZE  = 2;
+   parameter POPULATION_SIZE  = 5;
    // Number of maximal mutations per individuum
    parameter MAX_MUTATIONS    = 5;
    // File for save/load population
@@ -35,6 +35,6 @@
    parameter OPERAND_IMM_RANGES_MAX = 8;
    
    // TRANSACTION COUNT PER EACH CHROMOSOME
-   parameter TRANS_COUNT_PER_CHROM  = 10;
+   parameter TRANS_COUNT_PER_CHROM  = 100;
 
  endpackage

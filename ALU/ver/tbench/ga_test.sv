@@ -194,10 +194,10 @@ program TEST (
    *  Evaluate initial population
    */   
    task evaluateInitialPopulation();
-    foreach (population.population[i])
-      simulateChromosome(population.population[i], i);
+     foreach (population.population[i])
+       simulateChromosome(population.population[i], i);
 
-    //population.evaluate();
+     population.evaluate();
    endtask : evaluateInitialPopulation
    
   /*
@@ -205,6 +205,10 @@ program TEST (
    */ 
    task simulateChromosome(Chromosome chromosome, int no); 
      process proc;
+     int coveredBins;
+     int allBins;
+     ALUChromosome aluChromosome;     
+     
      proc = process::self(); 
      
      resetDesign();       // Reset design
@@ -237,7 +241,19 @@ program TEST (
      
      // Display Scoreboard and Coverage
      scoreboard.display();
-     if (FRAMEWORK == 0) aluCoverage.display();
+     
+     coveredBins = 0;
+     allBins     = 0;
+     
+     // Get Coverage
+     aluCoverage.getCoverage(coveredBins, allBins);
+     //$write("coveredBins: %d\n", coveredBins);
+     //$write("allBins: %d\n", allBins);
+     aluCoverage.display();
+     
+     // Evaluate chromosome 
+     $cast(aluChromosome, chromosome); 
+     aluChromosome.evaluate(coveredBins);
    endtask : simulateChromosome
 
   /*
@@ -259,13 +275,13 @@ program TEST (
     evaluateInitialPopulation();
 
     //! Run evolution
-    //for (int generation = 1; generation <= GENERATIONS; generation++) begin
-    //  $write("## Generation: %0d ##\n",generation);
+    for (int generation = 1; generation <= GENERATIONS; generation++) begin
+      $write("## Generation: %0d ##\n",generation);
       //! Create next generation
-    //  population.selectAndReplace();
+      population.selectAndReplace();
       //! Evaluate population
     //  evaluatePopulation();
-    //end
+    end
         
     //! Save population
     //population.save(POPULATION_FILENAME);

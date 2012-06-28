@@ -22,7 +22,6 @@
     byte unsigned operation_values       = 16; // num. of values for OPERATION
     
     //! Constants for generation (number of ranges for some interface signals)
-    //!! Only power of 2 values and 1 are supported !!
     byte unsigned delay_rangesMin        = 1;         
     byte unsigned delay_rangesMax        = 4;    
     byte unsigned operandA_rangesMin     = 1;
@@ -34,12 +33,9 @@
     byte unsigned operandIMM_rangesMin   = 1;
     byte unsigned operandIMM_rangesMax   = 8;
     
-    //! Estimated time of genetic algorithm    
-    longint unsigned estimatedTime;
-       
     //! Constraints for randomized values 
     constraint chromosomeConst {
-      chromosome.size == est_length;
+      chromosome.size == length;
     }  
     
     constraint opA_c {
@@ -83,10 +79,9 @@
     */
     function new(int estimatedTime = 0);
       // structure of chromozome
-      this.est_length    = operandA_rangesMax + operandB_rangesMax + 
-                           operandMEM_rangesMax + operandIMM_rangesMax + 
-                           delay_rangesMax + movi_values + operation_values;
-      this.estimatedTime = estimatedTime;
+      this.length = operandA_rangesMax + operandB_rangesMax + 
+                    operandMEM_rangesMax + operandIMM_rangesMax + 
+                    delay_rangesMax + movi_values + operation_values;
     endfunction : new 
     
    /*!
@@ -106,39 +101,56 @@
        end
        
        $write("Structure of Chromosome:\n");
-       $write("Chromosome estimated length: %d\n", this.est_length);
-       $write("Chromosome real length: %d\n", this.real_length);
+              
+       $write("| MOVI w. | OP_A w. | OP_B w. | OP_MEM w. | OP_IMM w. | OP w. | DELAY w. |\n");
+       
+       $write("Chromosome real length: %d\n", this.length);
        
        $write("Number of MOVI values: %d\n", movi_values);
        for (int i=0; i<movi_values; i++) 
          $write("Movi value %d weight: %d\n", i, chromosome[offset++]);
          
        $write("OperandA number of ranges: %d\n", operandA_ranges);
-       for (int i=0; i<operandA_ranges; i++) 
-         $write("operandA range %d weight: %d\n", i, chromosome[offset++]);
-       
+       for (int i=0; i<8; i++) begin
+         if (i < operandA_ranges) 
+           $write("operandA range %d weight: %d\n", i, chromosome[offset++]);
+         else offset++;
+       end  
+         
        $write("OperandB number of ranges: %d\n", operandB_ranges);
-       for (int i=0; i<operandB_ranges; i++) 
-         $write("operandB range %d weight: %d\n", i, chromosome[offset++]);
+       for (int i=0; i<8; i++) begin
+         if (i < operandB_ranges) 
+           $write("operandB range %d weight: %d\n", i, chromosome[offset++]);
+         else offset++;
+       end 
          
        $write("OperandMEM number of ranges: %d\n", operandMEM_ranges);
-       for (int i=0; i<operandMEM_ranges; i++) 
-         $write("operandMEM range %d weight: %d\n", i, chromosome[offset++]);  
+       for (int i=0; i<8; i++) begin
+         if (i < operandMEM_ranges)
+           $write("operandMEM range %d weight: %d\n", i, chromosome[offset++]);  
+         else offset++;
+       end 
        
        $write("OperandIMM number of ranges: %d\n", operandIMM_ranges);
-       for (int i=0; i<operandIMM_ranges; i++) 
-         $write("operandIMM range %d weight: %d\n", i, chromosome[offset++]);
+       for (int i=0; i<8; i++) begin
+         if (i < operandIMM_ranges)
+           $write("operandIMM range %d weight: %d\n", i, chromosome[offset++]);
+         else offset++;
+       end     
        
        $write("Number of operations: %d\n", operation_values);
        for (int i=0; i<operation_values; i++) 
          $write("Operation value %d weight: %d\n", i, chromosome[offset++]);   
          
        $write("Number of delay ranges: %d\n", delay_ranges);
-       for (int i=0; i<delay_ranges; i++) 
-         $write("Delay %d weight: %d\n", i, chromosome[offset++]);    
+       for (int i=0; i<8; i++) begin
+         if(i<delay_ranges) 
+           $write("Delay %d weight: %d\n", i, chromosome[offset++]);    
+         else offset++;
+       end 
        
-       //$write("Fitness: %0d\n", fitness);  
-       //$write("Relative fitness: %0d\n", relativeFitness);  
+       $write("Fitness: %0d\n", fitness);  
+       $write("Relative fitness: %0d\n", relativeFitness);  
        $write("\n");  
     endfunction : display
  
@@ -155,26 +167,26 @@
       else 
         $cast(chrom, to);
       
-      chrom.real_length     = operandA_ranges + operandB_ranges + 
-                              operandIMM_ranges + operandMEM_ranges +
-                              delay_ranges + movi_values + operation_values; 
+      chrom.length           = length; 
                                                      
-      chrom.est_length      = est_length;
-      chrom.fitness         = fitness;
-      chrom.estimatedTime   = estimatedTime;
-      chrom.relativeFitness = relativeFitness;
-      chrom.chromosome      = new[chrom.real_length];
+      chrom.chromosome_parts = 7;
       
-      for (int i=0; i<chrom.real_length; i++) 
+      chrom.fitness         = fitness;
+      chrom.relativeFitness = relativeFitness;
+      chrom.chromosome      = new[length];
+      
+      for (int i=0; i<chrom.length; i++) 
         chrom.chromosome[i] = chromosome[i];
       
-      chrom.operandA_ranges = operandA_ranges;
-      chrom.operandB_ranges = operandB_ranges;
+      chrom.operandA_ranges   = operandA_ranges;
+      chrom.operandB_ranges   = operandB_ranges;
       chrom.operandMEM_ranges = operandMEM_ranges;
       chrom.operandIMM_ranges = operandIMM_ranges;
-      chrom.delay_ranges = delay_ranges;
-      chrom.movi_values = movi_values;
-      chrom.operation_values = operation_values;
+      chrom.delay_ranges      = delay_ranges;
+      chrom.movi_values       = movi_values;
+      chrom.operation_values  = operation_values;
+      
+      chrom.fitness           = fitness;
       
       return chrom;  
     endfunction: copy
@@ -207,15 +219,31 @@
     * Evaluates the current value of the object instance according to the specific 
     * fitness function.
     */
-    function void evaluate();
-      
+    function void evaluate(int coveredBins);
+      fitness = coveredBins;
+      $write("fitness: %d\n", fitness);
     endfunction : evaluate
     
    /*
     * Mutates the current value of the object instance.
     */
     virtual function Chromosome mutate(int unsigned maxMutations);  
-    
+      // Number of mutations
+      int mutationCount = $urandom_range(maxMutations,1);
+      // Positon of mutation
+      int byte_pos;
+      int bit_pos;
+      bit old_value;
+      
+      for (int i=0; i < mutationCount; i++) begin
+        byte_pos = $urandom_range(length - 1);
+        bit_pos  = $urandom_range(7);
+        
+        old_value = chromosome[byte_pos][bit_pos];
+        chromosome[byte_pos][bit_pos] = !old_value; // bit conversion
+      end
+      
+      return this;
     endfunction : mutate
     
    /*
@@ -223,7 +251,94 @@
     * object instance.
     */
     virtual function Chromosome crossover(Chromosome chrom = null); 
-    
+      ALUChromosome aluChr;
+      
+      // temporary chromosome
+      byte unsigned tmpRange;
+      byte unsigned tmpChrom[] = new[chrom.length];
+      
+      // Position of crossover
+      int pos = $urandom_range(chromosome_parts-1);
+      
+      // | MOVI w. | OP_A w. | OP_B w. | OP_MEM w. | OP_IMM w. | OP w. | DELAY w. |
+      $cast(aluChr, chrom);
+      tmpChrom = aluChr.chromosome;
+            
+      // compare the sizes of exchanging parts
+      priority case(pos)
+        // movi part = 3
+        0 :  begin
+               for (int i=0; i<3; i++) begin
+                 aluChr.chromosome[i] = this.chromosome[i];
+                 this.chromosome[i]  = tmpChrom[i];
+               end  
+             end  
+        // reg A part = max 8 
+        1 :  begin
+               tmpRange = aluChr.operandA_ranges;
+               aluChr.operandA_ranges = this.operandA_ranges;
+               this.operandA_ranges  = tmpRange;
+               
+               for (int i=3; i<11; i++) begin
+                 aluChr.chromosome[i] = this.chromosome[i];
+                 this.chromosome[i]  = tmpChrom[i];
+               end  
+             end
+        // reg B part 
+        2 :  begin
+               tmpRange = aluChr.operandB_ranges;
+               aluChr.operandB_ranges   = this.operandB_ranges;
+               this.operandB_ranges    = tmpRange;
+               
+               for (int i=11; i<19; i++) begin
+                 aluChr.chromosome[i] = this.chromosome[i];
+                 this.chromosome[i]  = tmpChrom[i];
+               end  
+             end
+        // MEM part 
+        3 :  begin
+               tmpRange = aluChr.operandMEM_ranges;
+               aluChr.operandMEM_ranges = this.operandMEM_ranges;
+               this.operandMEM_ranges  = tmpRange;
+               
+               for (int i=19; i<27; i++) begin
+                 aluChr.chromosome[i] = this.chromosome[i];
+                 this.chromosome[i]  = tmpChrom[i];
+               end
+             end
+        // IMM part 
+        4 :  begin
+               tmpRange = aluChr.operandIMM_ranges;
+               aluChr.operandIMM_ranges = this.operandIMM_ranges;
+               this.operandIMM_ranges  = tmpRange;
+               
+               for (int i=27; i<35; i++) begin
+                 aluChr.chromosome[i] = this.chromosome[i];
+                 this.chromosome[i]  = tmpChrom[i];
+               end
+             end
+        // OP part 
+        5 :  begin
+               for (int i=35; i<51; i++) begin
+                 aluChr.chromosome[i] = this.chromosome[i];
+                 this.chromosome[i]  = tmpChrom[i];
+               end  
+             end
+        // DELAY part 
+        6 :  begin
+               tmpRange = aluChr.delay_ranges;
+               aluChr.delay_ranges      = this.delay_ranges;
+               this.delay_ranges       = tmpRange;
+               
+               for (int i=51; i<55; i++) begin
+                 aluChr.chromosome[i] = this.chromosome[i];
+                 this.chromosome[i]  = tmpChrom[i];
+               end
+             end
+      endcase  
+      
+      $cast(chrom, aluChr);   
+      return chrom;
     endfunction : crossover;
     
   endclass : ALUChromosome

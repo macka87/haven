@@ -136,7 +136,7 @@
        bins reset_up   = (0 => 1);
      } */
      
-     option.per_instance=1;                   // Also per instance statistics
+     option.per_instance=1;  // Also per instance statistics
    endgroup
    
   /*
@@ -200,9 +200,23 @@
    * Display coverage statistics.  
    */
    task display();
-     $write("Functional coverage for %s: %d percent\n",
-             inst, FunctionalCovergroup.get_inst_coverage());
+     int coveredBins;
+     int allBins;
+     real coverage;
+   
+     coverage = getCoverage(coveredBins, allBins);
+   
+     $write("Functional coverage for %s: %d percent (%0d/%0d)\n",
+               inst, coverage, coveredBins, allBins);
    endtask : display
+  
+  /*
+   * Get coverage metrics.  
+   */ 
+   function real getCoverage(ref int coveredBins, ref int allBins);
+     return FunctionalCovergroup.get_inst_coverage(coveredBins, allBins);
+   endfunction : getCoverage
+   
  endclass: CoverageIn
 
 /*!
@@ -277,9 +291,22 @@
    * Display coverage statistics.  
    */
    task display();
-     $write("Functional coverage for %s: %d percent\n",
-             inst, FunctionalCovergroup.get_inst_coverage());
+     int coveredBins;
+     int allBins;
+     real coverage;
+    
+     coverage = getCoverage(coveredBins, allBins);
+    
+     $write("Functional coverage for %s: %d percent (%0d/%0d)\n",
+               inst, coverage, coveredBins, allBins);
    endtask : display
+   
+  /*
+   * Get coverage metrics.  
+   */ 
+   function real getCoverage(ref int coveredBins, ref int allBins);
+     return FunctionalCovergroup.get_inst_coverage(coveredBins, allBins);
+   endfunction : getCoverage 
  endclass: CoverageOut
 
 /*! 
@@ -354,6 +381,35 @@
      foreach (cmdListOut[i]) cmdListOut[i].display();
      $write("------------------------------------------------------------\n");
    endtask
+   
+  /*
+   * Get coverage measures
+   */
+   function void getCoverage(ref int coveredBins, ref int allBins);    
+      int coveredBinsIn;
+      int coveredBinsOut;
+      int allBinsIn;
+      int allBinsOut; 
+      real coverage = 0;
+      
+      foreach (cmdListIn[i]) begin 
+        coverage += cmdListIn[i].getCoverage(coveredBinsIn, allBinsIn);
+        //$write("coveredBinsIn: %d\n", coveredBinsIn);
+        //$write("allBinsIn: %d\n", allBinsIn);
+        coveredBins += coveredBinsIn;
+        allBins += allBinsIn; 
+      end  
+        
+      foreach (cmdListOut[i]) begin 
+        coverage += cmdListOut[i].getCoverage(coveredBinsOut, allBinsOut); 
+        //$write("coveredBinsOut: %d\n", coveredBinsOut);
+        //$write("allBinsOut: %d\n", allBinsOut); 
+        coveredBins += coveredBinsOut;
+        allBins += allBinsOut;
+      end
+      
+      //$write("COVERAGE: %f\n", coverage);
+   endfunction : getCoverage 
  endclass : ALUCoverage
 
 

@@ -63,26 +63,39 @@
       aluBlueprint.movi_wt = new[3];
       for (int j=0; j<3; j++) 
         aluBlueprint.movi_wt[j] = chr.chromosome[offset++];
-         
+        
+        
       aluBlueprint.operandA_ranges = chr.operandA_ranges;
       aluBlueprint.opA_range_wt = new[aluBlueprint.operandA_ranges];
-      for (int j=0; j<aluBlueprint.operandA_ranges; j++) 
-        aluBlueprint.opA_range_wt[j] = chr.chromosome[offset++];  
+      for (int j=0; j<8; j++) begin
+        if (j < aluBlueprint.operandA_ranges) 
+          aluBlueprint.opA_range_wt[j] = chr.chromosome[offset++]; 
+        else offset++;
+      end    
         
       aluBlueprint.operandB_ranges = chr.operandB_ranges;
       aluBlueprint.opB_range_wt = new[aluBlueprint.operandB_ranges];
-      for (int j=0; j<aluBlueprint.operandB_ranges; j++) 
-        aluBlueprint.opB_range_wt[j] = chr.chromosome[offset++];
+      for (int j=0; j<8; j++) begin
+        if (j < aluBlueprint.operandB_ranges) 
+          aluBlueprint.opB_range_wt[j] = chr.chromosome[offset++];
+        else offset++;
+      end 
       
       aluBlueprint.operandMEM_ranges = chr.operandMEM_ranges;
       aluBlueprint.opMEM_range_wt = new[aluBlueprint.operandMEM_ranges];
-      for (int j=0; j<aluBlueprint.operandMEM_ranges; j++) 
-        aluBlueprint.opMEM_range_wt[j] = chr.chromosome[offset++];
+      for (int j=0; j<8; j++) begin
+        if (j < aluBlueprint.operandMEM_ranges) 
+          aluBlueprint.opMEM_range_wt[j] = chr.chromosome[offset++];
+        else offset++;
+      end   
           
       aluBlueprint.operandIMM_ranges = chr.operandIMM_ranges;
       aluBlueprint.opIMM_range_wt = new[aluBlueprint.operandIMM_ranges];
-      for (int j=0; j<aluBlueprint.operandIMM_ranges; j++) 
-        aluBlueprint.opIMM_range_wt[j] = chr.chromosome[offset++];
+      for (int j=0; j<8; j++) begin
+        if (j < aluBlueprint.operandIMM_ranges) 
+          aluBlueprint.opIMM_range_wt[j] = chr.chromosome[offset++];
+        else offset++;
+      end
             
       aluBlueprint.operation_values = 16;
       aluBlueprint.op_range_wt = new[16];
@@ -91,8 +104,11 @@
             
       aluBlueprint.delay_ranges = chr.delay_ranges;
       aluBlueprint.delay_range_wt = new[aluBlueprint.delay_ranges];
-      for (int j=0; j<aluBlueprint.delay_ranges; j++) 
-        aluBlueprint.delay_range_wt[j] = chr.chromosome[offset++];
+      for (int j=0; j<8; j++) begin
+        if (j < aluBlueprint.delay_ranges) 
+          aluBlueprint.delay_range_wt[j] = chr.chromosome[offset++];
+        else offset++;
+      end  
       
       // blueprint transaction for generator
       generator.blueprint = aluBlueprint;

@@ -81,13 +81,13 @@
     * chromosome blueprint parameter.
     */
     virtual function void create(Chromosome chromBlueprint);
-      $write("VYTVARANIE POPULACIE:\n");
+      $write("population: VYTVARANIE POPULACIE:\n");
 
       // Randomize chromosome and insert it in population
       foreach (population[i]) begin  
         assert(chromBlueprint.randomize);
         population[i] = chromBlueprint.copy();
-        population[i].display("CHROMOSOME");
+        //population[i].display("CHROMOSOME");
       end
 
     endfunction : create
@@ -137,8 +137,9 @@
       foreach (population[i])
         population[i].setRelativeFitness(fitness);
 
-//      foreach (population[i])
-//        $write("RF: %0f\n",population[i].getRelativeFitness());
+      foreach (population[i])
+        $write("Relative Fitness: %0f\n",population[i].getRelativeFitness());  
+        
       return fitness;
     endfunction : evaluate
 
@@ -171,11 +172,11 @@
     * replaced with these offsprings.
     */
     virtual function void selectAndReplace();
-      Chromosome nextPopulation[] = new[populationSize];
+      Chromosome nextPopulation[] = new[populationSize];  // new population
       int index[$];
       real tmp;
-      int numOfParents;
-      Chromosome bestParentsQue[];
+      int numOfParents;                                   // number of parents
+      Chromosome bestParentsQue[];                        // parents
       real sum = 0; 
 
       // Preserve 25% of origin population for next generation
