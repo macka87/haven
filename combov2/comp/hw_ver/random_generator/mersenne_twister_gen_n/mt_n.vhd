@@ -12,8 +12,7 @@ use work.TINYMT32.all;
 -- ==========================================================================
 entity MT_N is
   generic(
-     -- number of generated words (1 word = 32 bit)
-     OUTPUT_WIDTH   : integer
+     OUTPUT_WIDTH   : integer := 64
   );
   
   port
