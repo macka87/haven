@@ -1,0 +1,25 @@
+# verification_core.fdo: Verification core functional simulation file
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id: frame_meter.fdo 1333 2008-02-14 22:20:10Z korcek $
+
+set FIRMWARE_BASE    "../../.."
+set COMP_BASE        "$FIRMWARE_BASE/comp"
+set FL_SIM_BASE      "$COMP_BASE/fl_tools/debug/sim"
+
+set SIG_FILE         "verification_engine_sig.fdo"
+set TB_FILE          "verification_engine_tb.vhd"
+
+#set VER_ENGINE_ARCH  "CORE"
+set VER_ENGINE_ARCH  "HW_GEN"
+
+set COMPONENTS [list \
+                  [ list "VERIFICATION_ENGINE"  ".."           $VER_ENGINE_ARCH  ] \
+                  [ list "FL_SIM"               $FL_SIM_BASE   "FULL"            ] \
+               ]
+
+set PACKAGES "$FL_SIM_BASE/fl_sim_oper.vhd"
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE
