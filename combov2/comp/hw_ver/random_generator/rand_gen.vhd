@@ -92,6 +92,9 @@ signal mt_rnd_run       : std_logic;
 signal mt_rnd_val       : std_logic;
 signal mt_rnd_num       : std_logic_vector(OUTPUT_WIDTH-1 downto 0);
 
+-- MI32 output multiplexer
+signal mux_mi_out       : std_logic_vector(31 downto 0);
+
 
 -- ==========================================================================
 --                           ARCHITECTURE BODY
@@ -111,7 +114,7 @@ begin
    -- mapping MI32 signals
    sig_mi_ardy   <= sig_mi_rd OR sig_mi_wr;
    sig_mi_drdy   <= sig_mi_rd;
-   sig_mi_drd    <= X"00011ACA";
+   sig_mi_drd    <= mux_mi_out;
 
    -- -----------------------------------------------------------------------
    --                      The Address Space (in binary)
@@ -132,6 +135,18 @@ begin
          when '1'    => sig_sel_seed <= '1';
          when others => null;
       end case;
+   end process;
+
+   -- the MI output multiplexer
+   mux_mi_out_p: process(sig_sel_run, sig_sel_seed, reg_run, reg_seed)
+   begin
+      mux_mi_out <= reg_seed;
+
+      if (sig_sel_run = '1') then
+         mux_mi_out <= X"9A4D6E4" & "000" & reg_run;
+      elsif (sig_sel_seed = '1') then
+         mux_mi_out <= reg_seed;
+      end if;
    end process;
 
    --
