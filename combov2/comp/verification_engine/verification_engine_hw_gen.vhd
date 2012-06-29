@@ -39,25 +39,15 @@ architecture arch of verification_engine is
    signal fl_output_src_rdy_n  : std_logic;
    signal fl_output_dst_rdy_n  : std_logic;
 
-   -- random number generator
-   signal rand_gen_init        : std_logic;
-   signal rand_gen_seed        : std_logic_vector(31 downto 0);
-   signal rand_gen_rnd_run     : std_logic;
-   signal rand_gen_rnd_val     : std_logic;
-   signal rand_gen_rnd_num     : std_logic_vector(DATA_WIDTH-1 downto 0);
-
-   -- FrameLink Adapter input
-   signal sig_gen_flow         : std_logic_vector(DATA_WIDTH-1 downto 0);
-
-   -- FrameLink Adapter output
-   signal fl_adapter_tx_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
-   signal fl_adapter_tx_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-   signal fl_adapter_tx_sof_n     : std_logic;
-   signal fl_adapter_tx_sop_n     : std_logic;
-   signal fl_adapter_tx_eop_n     : std_logic;
-   signal fl_adapter_tx_eof_n     : std_logic;
-   signal fl_adapter_tx_src_rdy_n : std_logic;
-   signal fl_adapter_tx_dst_rdy_n : std_logic;
+   -- FrameLink Generator output
+   signal fl_gen_tx_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_gen_tx_rem       : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal fl_gen_tx_sof_n     : std_logic;
+   signal fl_gen_tx_sop_n     : std_logic;
+   signal fl_gen_tx_eop_n     : std_logic;
+   signal fl_gen_tx_eof_n     : std_logic;
+   signal fl_gen_tx_src_rdy_n : std_logic;
+   signal fl_gen_tx_dst_rdy_n : std_logic;
 
    -- FrameLink NetCOPE Adder component input
    signal fl_netcope_adder_in_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -104,44 +94,15 @@ begin
    -- ------------------------------------------------------------------------
    fl_input_dst_rdy_n        <= '0';
 
-   --
-   rand_gen_init    <= '0';
-   rand_gen_seed    <= X"DEADBEEF";
-   rand_gen_rnd_run <= '1';
-
    -- ------------------------------------------------------------------------
-   --                         Random Number Generator
+   --                         FrameLink Random Generator
    -- ------------------------------------------------------------------------
-   rand_gen_i: entity work.MT_N
+   fl_rand_gen_i: entity work.fl_rand_gen
    generic map(
-      -- the raw output width
-      OUTPUT_WIDTH   => DATA_WIDTH
-   )
-   port map(
-      -- input clock domain
-      CLK        => CLK,
-      RST        => RESET,
-
-      -- control interface
-      INIT       => rand_gen_init,
-      SEED       => rand_gen_seed,
-      RND_RUN    => rand_gen_rnd_run,
-
-      -- output interface
-      RND_VAL    => rand_gen_rnd_val,
-      RND_NUM    => rand_gen_rnd_num
-   );
-
-   --
-   sig_gen_flow  <= rand_gen_rnd_num;
-
-   -- ------------------------------------------------------------------------
-   --                        FrameLink Adapter
-   -- ------------------------------------------------------------------------
-   adapter_i: entity work.FL_ADAPTER_UNIT
-   generic map(
-      -- FrameLink data width
-      DATA_WIDTH   => DATA_WIDTH
+      -- the output FrameLink width
+      DATA_WIDTH     => DATA_WIDTH,
+      -- ID of the destination endpoint
+      ENDPOINT_ID    => 16#EA#
    )
    port map(
       -- input clock domain
@@ -158,32 +119,29 @@ begin
       MI_ARDY     => MI32_ARDY,
       MI_DRDY     => MI32_DRDY,
 
-      -- Generator Interface
-      GEN_FLOW      => sig_gen_flow,
-
-      -- output interface
-      TX_DATA       => fl_adapter_tx_data,
-      TX_REM        => fl_adapter_tx_rem,
-      TX_SOF_N      => fl_adapter_tx_sof_n,
-      TX_SOP_N      => fl_adapter_tx_sop_n,
-      TX_EOP_N      => fl_adapter_tx_eop_n,
-      TX_EOF_N      => fl_adapter_tx_eof_n,
-      TX_SRC_RDY_N  => fl_adapter_tx_src_rdy_n,
-      TX_DST_RDY_N  => fl_adapter_tx_dst_rdy_n
+      -- output FrameLink
+      TX_DATA       => fl_gen_tx_data,
+      TX_REM        => fl_gen_tx_rem,
+      TX_SOF_N      => fl_gen_tx_sof_n,
+      TX_SOP_N      => fl_gen_tx_sop_n,
+      TX_EOP_N      => fl_gen_tx_eop_n,
+      TX_EOF_N      => fl_gen_tx_eof_n,
+      TX_SRC_RDY_N  => fl_gen_tx_src_rdy_n,
+      TX_DST_RDY_N  => fl_gen_tx_dst_rdy_n
    );
 
    -- ------------------------------------------------------------------------
    --                              NetCOPE Adder
    -- ------------------------------------------------------------------------
 
-   fl_netcope_adder_in_data       <= fl_adapter_tx_data;
-   fl_netcope_adder_in_rem        <= fl_adapter_tx_rem;
-   fl_netcope_adder_in_sof_n      <= fl_adapter_tx_sof_n;
-   fl_netcope_adder_in_sop_n      <= fl_adapter_tx_sop_n;
-   fl_netcope_adder_in_eop_n      <= fl_adapter_tx_eop_n;
-   fl_netcope_adder_in_eof_n      <= fl_adapter_tx_eof_n;
-   fl_netcope_adder_in_src_rdy_n  <= fl_adapter_tx_src_rdy_n;
-   fl_adapter_tx_dst_rdy_n        <= fl_netcope_adder_in_dst_rdy_n;
+   fl_netcope_adder_in_data       <= fl_gen_tx_data;
+   fl_netcope_adder_in_rem        <= fl_gen_tx_rem;
+   fl_netcope_adder_in_sof_n      <= fl_gen_tx_sof_n;
+   fl_netcope_adder_in_sop_n      <= fl_gen_tx_sop_n;
+   fl_netcope_adder_in_eop_n      <= fl_gen_tx_eop_n;
+   fl_netcope_adder_in_eof_n      <= fl_gen_tx_eof_n;
+   fl_netcope_adder_in_src_rdy_n  <= fl_gen_tx_src_rdy_n;
+   fl_gen_tx_dst_rdy_n            <= fl_netcope_adder_in_dst_rdy_n;
 
    netcope_adder_i: entity work.FL_NETCOPE_ADDER
    generic map(

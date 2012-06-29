@@ -10,8 +10,7 @@ set FL_BASE                "$COMP_BASE/fl_tools"
 
 set FL_ADDER_BASE          "$FL_BASE/edit/netcope_adder"
 set VER_CORE_BASE          "$COMP_BASE/verification_core"
-set FL_ADAPTER_BASE        "$COMP_BASE/hw_ver/fl_adapter"
-set MT_BASE                "$COMP_BASE/hw_ver/random_generator/mersenne_twister_gen_n"
+set FL_RAND_GEN_BASE       "$COMP_BASE/hw_ver/fl_rand_gen"
 
 # Source files
 set MOD "$MOD $ENTITY_BASE/verification_engine_ent.vhd"
@@ -49,7 +48,6 @@ if { $ARCHGRP == "HW_GEN" } {
   set MOD "$MOD $ENTITY_BASE/verification_engine_hw_gen.vhd"
 
    set COMPONENTS [concat $COMPONENTS [list \
-     [ list "FL_ADAPTER"           $FL_ADAPTER_BASE         "FULL"] \
-     [ list "MT"                   $MT_BASE                 "FULL"] \
+     [ list "FL_RAND_GEN"      $FL_RAND_GEN_BASE    "FULL"] \
    ]]
 }
