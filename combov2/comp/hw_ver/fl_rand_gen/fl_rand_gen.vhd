@@ -156,14 +156,14 @@ begin
    MI_DRDY       <= sig_mi_drdy;
 
    --
-   rand_gen_mi_dwr              <= mi_spl_out_dwr(63 downto 32);
-   rand_gen_mi_addr             <= mi_spl_out_addr(63 downto 32);
-   rand_gen_mi_be               <= mi_spl_out_be(7 downto 4);
-   rand_gen_mi_rd               <= mi_spl_out_rd(1);
-   rand_gen_mi_wr               <= mi_spl_out_wr(1);
-   mi_spl_out_ardy(1)           <= rand_gen_mi_ardy;
-   mi_spl_out_drd(63 downto 32) <= rand_gen_mi_drd;
-   mi_spl_out_drdy(1)           <= rand_gen_mi_drdy;
+   rand_gen_mi_dwr              <= mi_spl_out_dwr(31 downto 0);
+   rand_gen_mi_addr             <= mi_spl_out_addr(31 downto 0);
+   rand_gen_mi_be               <= mi_spl_out_be(3 downto 0);
+   rand_gen_mi_rd               <= mi_spl_out_rd(0);
+   rand_gen_mi_wr               <= mi_spl_out_wr(0);
+   mi_spl_out_ardy(0)           <= rand_gen_mi_ardy;
+   mi_spl_out_drd(31 downto 0)  <= rand_gen_mi_drd;
+   mi_spl_out_drdy(0)           <= rand_gen_mi_drdy;
 
    -- the random number generator -------------------------------------------
    rand_gen_i: entity work.rand_gen
@@ -196,14 +196,14 @@ begin
    --
    fl_adapter_gen_flow <= rand_gen_rnd_num;
 
-   fl_adapter_mi_dwr              <= mi_spl_out_dwr(31 downto 0);
-   fl_adapter_mi_addr             <= mi_spl_out_addr(31 downto 0);
-   fl_adapter_mi_be               <= mi_spl_out_be(3 downto 0);
-   fl_adapter_mi_rd               <= mi_spl_out_rd(0);
-   fl_adapter_mi_wr               <= mi_spl_out_wr(0);
-   mi_spl_out_ardy(0)             <= fl_adapter_mi_ardy;
-   mi_spl_out_drd(31 downto 0)    <= fl_adapter_mi_drd;
-   mi_spl_out_drdy(0)             <= fl_adapter_mi_drdy;
+   fl_adapter_mi_dwr              <= mi_spl_out_dwr(63 downto 32);
+   fl_adapter_mi_addr             <= mi_spl_out_addr(63 downto 32);
+   fl_adapter_mi_be               <= mi_spl_out_be(7 downto 4);
+   fl_adapter_mi_rd               <= mi_spl_out_rd(1);
+   fl_adapter_mi_wr               <= mi_spl_out_wr(1);
+   mi_spl_out_ardy(1)             <= fl_adapter_mi_ardy;
+   mi_spl_out_drd(63 downto 32)   <= fl_adapter_mi_drd;
+   mi_spl_out_drdy(1)             <= fl_adapter_mi_drdy;
 
    -- the FrameLink adapter -------------------------------------------------
    fl_adapter_i: entity work.fl_adapter_unit
