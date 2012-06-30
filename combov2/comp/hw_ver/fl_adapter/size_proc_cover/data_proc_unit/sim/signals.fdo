@@ -27,7 +27,7 @@ proc blk_DATA_PROC_UNIT { BASE } {
    add_wave "-noupdate      -label reg_data_en"    $BASE/reg_data_en
 
    add wave -divider "reg_valid"
-   add_wave "-noupdate      -label reg_data"       $BASE/reg_valid
-   add_wave "-noupdate      -label reg_data_set"   $BASE/reg_valid_set
-   add_wave "-noupdate      -label reg_data_clr"   $BASE/reg_valid_clr
+   add_wave "-noupdate      -label reg_valid"      $BASE/reg_valid
+   add_wave "-noupdate      -label reg_valid_set"  $BASE/reg_valid_set
+   add_wave "-noupdate      -label reg_valid_clr"  $BASE/reg_valid_clr
 }   
