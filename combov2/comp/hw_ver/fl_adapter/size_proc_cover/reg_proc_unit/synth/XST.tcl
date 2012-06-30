@@ -34,8 +34,8 @@
 set TOP_LEVEL_ENT "REG_PROC_UNIT"
 
 # specify vhdl_design directory
-set FIRMWARE_BASE  "../../../../.."
-set BASE           "../../../../.."
+set FIRMWARE_BASE  "../../../../../.."
+set BASE           "../../../../../.."
 
 set MY_COMP_BASE       ".."
 

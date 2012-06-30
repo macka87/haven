@@ -252,8 +252,8 @@ begin
    -- -----------------------------------------------------------------------
    --                      The Address Space:
    --
-   -- 0x0000 - 0x1FFF : The random number generator
-   -- 0x1000 - 0x1FFF : The FrameLink adapter
+   -- 0x00100000 - 0x00101FFF : The random number generator
+   -- 0x00101000 - 0x00101FFF : The FrameLink adapter
    -- -----------------------------------------------------------------------
 
    --
@@ -276,11 +276,11 @@ begin
 
       -- ADDRESS SPACE
 
-      -- PORT0: 0x00000000 -- 0x00000FFF
-      PORT0_BASE    => X"00000000",
+      -- PORT0: 0x00100000 -- 0x00100FFF
+      PORT0_BASE    => X"00100000",
       PORT0_LIMIT   => X"00001000",
-      -- PORT1: 0x00001000 -- 0x00001FFF
-      PORT1_BASE    => X"00001000",
+      -- PORT1: 0x00101000 -- 0x00101FFF
+      PORT1_BASE    => X"00101000",
       PORT1_LIMIT   => X"00001000",
 
       -- Input pipeline

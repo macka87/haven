@@ -74,6 +74,7 @@ signal sig_sel_seed     : std_logic;
 signal reg_run          : std_logic;
 signal reg_run_in       : std_logic;
 signal reg_run_en       : std_logic;
+signal reg_run_out      : std_logic_vector(31 downto 0);
 
 -- the Seed register
 signal reg_seed         : std_logic_vector(31 downto 0);
@@ -125,28 +126,20 @@ begin
    -- -----------------------------------------------------------------------
 
    -- the address decoder
-   addr_dec_p: process(sig_mi_addr)
+   addr_dec_p: process(sig_mi_addr, reg_run_out, reg_seed)
    begin
       sig_sel_run  <= '0';
       sig_sel_seed <= '0';
 
+      mux_mi_out   <= reg_run_out;
+
       case (sig_mi_addr(2)) is
          when '0'    => sig_sel_run  <= '1';
+                        mux_mi_out   <= reg_run_out;
          when '1'    => sig_sel_seed <= '1';
+                        mux_mi_out   <= reg_seed;
          when others => null;
       end case;
-   end process;
-
-   -- the MI output multiplexer
-   mux_mi_out_p: process(sig_sel_run, sig_sel_seed, reg_run, reg_seed)
-   begin
-      mux_mi_out <= reg_seed;
-
-      if (sig_sel_run = '1') then
-         mux_mi_out <= X"9A4D6E4" & "000" & reg_run;
-      elsif (sig_sel_seed = '1') then
-         mux_mi_out <= reg_seed;
-      end if;
    end process;
 
    --
@@ -165,6 +158,7 @@ begin
       end if;
    end process;
 
+   reg_run_out <= X"2A1D6E1" & "000" & reg_run;
 
    --
    reg_seed_en <= sig_sel_seed AND sig_mi_wr;

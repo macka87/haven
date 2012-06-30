@@ -85,11 +85,15 @@ signal sig_mi_rd              : std_logic;
 -- the RUN register
 signal reg_run                : std_logic;
 signal reg_run_sel            : std_logic;
+signal reg_run_out            : std_logic_vector(31 downto 0);
 
 -- the register with the number of transactions
 signal reg_trans              : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
 signal reg_trans_sel          : std_logic;
 signal reg_trans_dec          : std_logic;
+
+-- the MI32 data output multiplexer
+signal mux_mi_out             : std_logic_vector(31 downto 0);
 
 -- the comparer of the number of transaction to be send yet
 signal sig_trans_more_than_zero:std_logic;
@@ -100,6 +104,8 @@ signal reg_num_base           : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
 signal reg_num_max            : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
 signal regs_num_sel           : std_logic;
 
+signal mux_regs_num_out       : std_logic_vector(31 downto 0);
+
 signal num_proc_en            : std_logic;
 
 -- registers for sizes of parts
@@ -107,6 +113,8 @@ signal reg_size_mask          : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1
 signal reg_size_base          : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1 downto 0);
 signal reg_size_max           : std_logic_vector(MAX_PARTS*PART_SIZE_CNT_WIDTH-1 downto 0);
 signal regs_size_sel          : std_logic;
+
+signal mux_regs_size_out      : std_logic_vector(31 downto 0);
 
 signal size_proc_en           : std_logic;
 
@@ -185,12 +193,15 @@ begin
    -- 1000 0000 : registers for setting of sizes of parts (alligned to 16 B)
 
    -- ------- address decoder -----------------------------------------------
-   addr_dec_p: process(sig_mi_addr)
+   addr_dec_p: process(sig_mi_addr, reg_run_out, reg_trans, mux_regs_num_out,
+      mux_regs_size_out)
    begin
       reg_run_sel    <= '0';
       reg_trans_sel  <= '0';
       regs_num_sel   <= '0';
       regs_size_sel  <= '0';
+
+      mux_mi_out     <= reg_run_out;
 
       case (sig_mi_addr(7)) is
          when '0' =>
@@ -198,15 +209,19 @@ begin
                when '0' =>
                   case (sig_mi_addr(2)) is
                      when '0'    => reg_run_sel   <= '1';   -- the run register
+                                    mux_mi_out    <= reg_run_out;
                      when '1'    => reg_trans_sel <= '1';   -- count of transactions
+                                    mux_mi_out    <= reg_trans;
                      when others => null;
                   end case;
 
                when '1'    => regs_num_sel  <= '1';         -- numbers of parts
+                              mux_mi_out    <= mux_regs_num_out;
                when others => null;
             end case;
 
          when '1'    => regs_size_sel <= '1';               -- sizes of parts
+                        mux_mi_out    <= mux_regs_size_out;
          when others => null;
       end case;
    end process;
@@ -223,8 +238,10 @@ begin
       end if;
    end process;
 
+   reg_run_out <= X"ADA97E8" & "000" & reg_run;
+
    --
-   reg_trans_dec <= sig_next_frame;
+   reg_trans_dec <= sig_next_frame AND sig_trans_more_than_zero;
 
    -- -------- the register with the count of transactions -----------------
    reg_trans_p: process(CLK)
@@ -271,6 +288,21 @@ begin
       end if;
    end process; 
 
+   -- the MI32 output data multiplexer of the registers of numbers of parts
+   mux_regs_num_p: process(sig_mi_addr, reg_num_mask, reg_num_base, reg_num_max)
+   begin
+      mux_regs_num_out(PART_NUM_CNT_WIDTH-1 downto 0) <= reg_num_mask;
+
+      case (sig_mi_addr(3 downto 2)) is
+         when "00" => mux_regs_num_out(PART_NUM_CNT_WIDTH-1 downto 0) <= reg_num_mask;
+         when "01" => mux_regs_num_out(PART_NUM_CNT_WIDTH-1 downto 0) <= reg_num_base;
+         when "10" => mux_regs_num_out(PART_NUM_CNT_WIDTH-1 downto 0) <= reg_num_max;
+         when others => null;
+      end case;
+   end process;
+
+   mux_regs_num_out(31 downto PART_NUM_CNT_WIDTH) <= (others => '0');
+
    -- --------- registers for sizes of numbers of parts ---------------------
    regs_size_p: process (CLK, sig_mi_addr, regs_size_sel)
    begin
@@ -300,6 +332,29 @@ begin
       end if;
    end process; 
 
+   -- the MI32 output data multiplexer of the registers of sizes of parts
+   mux_regs_size_p: process(sig_mi_addr, reg_size_mask, reg_size_base, reg_size_max)
+   begin
+      mux_regs_size_out <= reg_size_mask(PART_SIZE_CNT_WIDTH-1 downto 0);
+
+      for i in 0 to MAX_PARTS-1 loop
+        if (i = sig_mi_addr(6 downto 4)) then
+           case (sig_mi_addr(3 downto 2)) is
+              when "00" => mux_regs_size_out(PART_SIZE_CNT_WIDTH-1 downto 0)
+                 <= reg_size_mask((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
+              when "01" => mux_regs_size_out(PART_SIZE_CNT_WIDTH-1 downto 0)
+                 <= reg_size_base((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
+              when "10" => mux_regs_size_out(PART_SIZE_CNT_WIDTH-1 downto 0)
+                 <= reg_size_max ((i+1)*PART_SIZE_CNT_WIDTH-1 downto i*PART_SIZE_CNT_WIDTH);
+              when others => null;
+           end case;
+        end if;
+      end loop;
+   end process;
+
+   mux_regs_size_out(31 downto PART_SIZE_CNT_WIDTH) <= (others => '0');
+
+
    -- --------- MI32 connection ---------------------------------------------
 
    -- The address ready signal
@@ -309,7 +364,7 @@ begin
    MI_DRDY <= sig_mi_rd;
 
    -- output MI32 data
-   MI_DRD <= X"00011ACA";
+   MI_DRD <= mux_mi_out;
    
    -- --------------- GENERATION OF PARTS' NUMBER --------------------------
 
