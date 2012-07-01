@@ -9,11 +9,11 @@
  
    // GENETIC ALGORITHM PARAMETERS
    // Number of generations
-   parameter GENERATIONS      = 1;
+   parameter GENERATIONS      = 20;
    // Size of population
-   parameter POPULATION_SIZE  = 5;
+   parameter POPULATION_SIZE  = 20;
    // Number of maximal mutations per individuum
-   parameter MAX_MUTATIONS    = 5;
+   parameter MAX_MUTATIONS    = 20;
    // File for save/load population
    parameter string POPULATION_FILENAME = "pop";
    // Load or create new population on evolution start

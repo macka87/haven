@@ -149,7 +149,7 @@
          else offset++;
        end 
        
-       $write("Fitness: %0d\n", fitness);  
+       $write("FITNESS: %0d\n", fitness);  
        $write("Relative fitness: %0d\n", relativeFitness);  
        $write("\n");  
     endfunction : display
@@ -221,7 +221,7 @@
     */
     function void evaluate(int coveredBins);
       fitness = coveredBins;
-      $write("fitness: %d\n", fitness);
+      $write("FITNESS: %d\n", fitness);
     endfunction : evaluate
     
    /*

@@ -33,6 +33,9 @@ program TEST (
   //! Chromosome format
   ALUChromosome                                          aluChromosome;
   
+  //! Array of best chromosomes from every population
+  Chromosome                                             best_chromosome[];
+  
   //! Population
   Population                                             population;
   
@@ -194,16 +197,27 @@ program TEST (
    *  Evaluate initial population
    */   
    task evaluateInitialPopulation();
-     foreach (population.population[i])
-       simulateChromosome(population.population[i], i);
-
+     $write("\n\n");
+     $write("-------------------------------------------------------------------- \n");
+     $write("-------------------------------------------------------------------- \n");
+     $write("------------------     INITIAL GENERATION      --------------------- \n");
+     $write("-------------------------------------------------------------------- \n");
+     $write("-------------------------------------------------------------------- \n");
+   
+     foreach (population.population[i]) begin
+       $write("\n\n");
+       $write("--------------------------------------------------- \n");
+       $write("--- INITIAL POPULATION : CHROMOSOME %d --- \n",i);
+       $write("--------------------------------------------------- \n\n\n");
+       simulateInitialChromosome(population.population[i]);
+     end
      population.evaluate();
    endtask : evaluateInitialPopulation
    
   /*
-   *  Simulate chromosome
+   *  Simulate chromosome from initial population
    */ 
-   task simulateChromosome(Chromosome chromosome, int no); 
+   task simulateInitialChromosome(Chromosome chromosome); 
      process proc;
      int coveredBins;
      int allBins;
@@ -254,7 +268,90 @@ program TEST (
      // Evaluate chromosome 
      $cast(aluChromosome, chromosome); 
      aluChromosome.evaluate(coveredBins);
-   endtask : simulateChromosome
+   endtask : simulateInitialChromosome 
+   
+  /*
+   *  Evaluate population
+   */   
+   task evaluatePopulation(int generation);
+     foreach (population.population[i]) begin
+       $write("\n\n");
+       $write("------------------------------ \n");
+       $write("--- CHROMOSOME %d --- \n",i);
+       $write("------------------------------ \n\n\n");
+     
+       simulateChromosome(generation, population.population[i]);
+     end
+     population.evaluate();
+   endtask : evaluatePopulation 
+   
+  /*
+   *  Simulate chromosome from new population
+   */   
+   task simulateChromosome(int generation, Chromosome new_chromosome);
+     int coveredBins;
+     int allBins;
+     process proc;
+     
+     proc = process::self(); 
+     
+     resetDesign();       // Reset design
+     createEnvironment(); // Create Test Enviroment
+     
+     // time measuring
+     $write("START TIME: ");
+     $system("date");
+     
+     // enable test environment
+     enableTestEnvironment();
+     
+     coveredBins = 0;
+     allBins     = 0;
+     
+     // start input controller
+     aluGAInCnt.start(); 
+     proc.srandom(SEED1); 
+     
+     // evaluate best chromosomes from old populations
+     for (int i=0; i<generation; i++) begin
+        // Set ALU transaction parameters according to chromosome
+        aluGAInCnt.setParameters(best_chromosome[i]);  
+        
+        // generate random vectors for initial population
+        aluGAInCnt.sendGenerated(TRANS_COUNT_PER_CHROM);
+     end
+     
+     // evaluate chromosome from new population
+     // set ALU transaction parameters according to chromosome
+     aluGAInCnt.setParameters(new_chromosome);  
+        
+     // generate random vectors for initial population
+     aluGAInCnt.sendGenerated(TRANS_COUNT_PER_CHROM);
+    
+     aluGAInCnt.stop();
+     
+     disableTestEnvironment();
+     
+     // time measuring
+     $write("END TIME: ");
+     $system("date");
+     
+     // Display Scoreboard and Coverage
+     scoreboard.display();
+     
+     //coveredBins = 0;
+     // allBins     = 0;
+     
+     // Get Coverage
+     aluCoverage.getCoverage(coveredBins, allBins);
+     //$write("coveredBins: %d\n", coveredBins);
+     //$write("allBins: %d\n", allBins);
+     aluCoverage.display();
+     
+     // Evaluate chromosome 
+     $cast(aluChromosome, new_chromosome); 
+     aluChromosome.evaluate(coveredBins);
+   endtask : simulateChromosome    
 
   /*
    *  Main test part
@@ -268,6 +365,9 @@ program TEST (
     
     $write("\n\n########## GENETIC ALGORITHM ##########\n\n");
     
+    //! Create array of best chromosomes
+    best_chromosome = new[GENERATIONS];
+    
     //! Create initial population
     createOrLoadInitialPopulation(POPULATION_FILENAME, LOAD_POPULATION, POPULATION_SIZE, MAX_MUTATIONS);
     
@@ -276,11 +376,19 @@ program TEST (
 
     //! Run evolution
     for (int generation = 1; generation <= GENERATIONS; generation++) begin
-      $write("## Generation: %0d ##\n",generation);
-      //! Create next generation
-      population.selectAndReplace();
+      
+      $write("\n\n");
+      $write("-------------------------------------------------------------------- \n");
+      $write("-------------------------------------------------------------------- \n");
+      $write("------------------     GENERATION %d     ------------------ \n",generation);
+      $write("-------------------------------------------------------------------- \n");
+      $write("-------------------------------------------------------------------- \n");
+      
+      //! Create next generation and select best chromosome from initial pop.
+      population.selectAndReplace(best_chromosome[generation-1]);
+      //best_chromosome[generation-1].display("BEST CHROMOSOME");
       //! Evaluate population
-    //  evaluatePopulation();
+      evaluatePopulation(generation);
     end
         
     //! Save population

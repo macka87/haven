@@ -206,8 +206,10 @@
    
      coverage = getCoverage(coveredBins, allBins);
    
-     $write("Functional coverage for %s: %d percent (%0d/%0d)\n",
-               inst, coverage, coveredBins, allBins);
+     //$write("Functional coverage for %s: %d percent (%0d/%0d)\n",
+     //          inst, coverage, coveredBins, allBins);
+     $write("Functional coverage for %s: %d percent\n",
+               inst, coverage);          
    endtask : display
   
   /*
@@ -297,8 +299,10 @@
     
      coverage = getCoverage(coveredBins, allBins);
     
-     $write("Functional coverage for %s: %d percent (%0d/%0d)\n",
-               inst, coverage, coveredBins, allBins);
+     //$write("Functional coverage for %s: %d percent (%0d/%0d)\n",
+     //          inst, coverage, coveredBins, allBins);
+     $write("Functional coverage for %s: %d percent\n",
+               inst, coverage);          
    endtask : display
    
   /*

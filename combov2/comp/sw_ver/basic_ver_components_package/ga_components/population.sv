@@ -81,8 +81,6 @@
     * chromosome blueprint parameter.
     */
     virtual function void create(Chromosome chromBlueprint);
-      $write("population: VYTVARANIE POPULACIE:\n");
-
       // Randomize chromosome and insert it in population
       foreach (population[i]) begin  
         assert(chromBlueprint.randomize);
@@ -131,14 +129,16 @@
         sum += population[i].getFitness();
 
       fitness = sum;
-      $write("Population fitness: %0d\n",fitness);
+      
+      $write("\n");
+      $write("POPULATION FITNESS: %0d\n\n",fitness);
 
       // Set relative fitness of each chromosome
       foreach (population[i])
         population[i].setRelativeFitness(fitness);
 
-      foreach (population[i])
-        $write("Relative Fitness: %0f\n",population[i].getRelativeFitness());  
+      //foreach (population[i])
+        //$write("Relative Fitness: %0f\n",population[i].getRelativeFitness());  
         
       return fitness;
     endfunction : evaluate
@@ -171,7 +171,7 @@
     * creates offsprings using crossover and mutation. Old population is
     * replaced with these offsprings.
     */
-    virtual function void selectAndReplace();
+    virtual function void selectAndReplace(ref Chromosome best_chrom);
       Chromosome nextPopulation[] = new[populationSize];  // new population
       int index[$];
       real tmp;
@@ -186,6 +186,10 @@
 
       bestParentsQue = new[numOfParents];
       getBestChromosomes(numOfParents, bestParentsQue);
+      
+      // select best chromosome
+      best_chrom = bestParentsQue[0];
+      
       for (int i=0; i < numOfParents; i++)
         nextPopulation[i] = bestParentsQue[i].copy();
 
