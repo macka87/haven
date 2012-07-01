@@ -1,4 +1,4 @@
--- verification_engine.vhd: Architecture of verification engine
+-- verification_engine_core.vhd: CORE architecture of verification engine
 -- Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
 --
 -- $Id$
