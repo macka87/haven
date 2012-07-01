@@ -19,6 +19,11 @@ proc blk_SIZE_PROC_COVER { BASE } {
    
    add wave -divider "Generator interface"
    add_wave "-noupdate -label GEN_FLOW -hex"  $BASE/GEN_FLOW  
+
+   add wave -divider "Data size interface"
+   add_wave "-noupdate -hex -label DATA_SIZE"           $BASE/DATA_SIZE
+   add_wave "-noupdate      -label DATA_SIZE_VLD"       $BASE/DATA_SIZE_VLD
+   add_wave "-noupdate      -label DATA_SIZE_TAKE"      $BASE/DATA_SIZE_TAKE
       
    add wave -divider "Output interface"
    add_wave "-noupdate      -label FRAME_RDY"           $BASE/FRAME_RDY

@@ -5,10 +5,13 @@
 set TB_BASE               "/testbench"
 set ADAPTER_UNIT_PATH     "$TB_BASE/uut"
 set SIZE_PROC_COVER_BASE  "$ADAPTER_UNIT_PATH/size_proc_cover_i"
+set DELAY_PROC_UNIT_BASE  "$ADAPTER_UNIT_PATH/delay_proc_unit_i"
+set REG_PROC_UNIT_BASE    "$SIZE_PROC_COVER_BASE/reg_proc_unit_i"
 
 source                    "signals.fdo"
 source                    "../size_proc_cover/sim/signals.fdo"
 source                    "../size_proc_cover/reg_proc_unit/sim/signals.fdo"
+source                    "../delay_proc_unit/sim/signals.fdo"
 
 exec make
 view wave
@@ -23,5 +26,17 @@ add wave -divider "*****************"
 blk_SIZE_PROC_COVER             $SIZE_PROC_COVER_BASE
 blk_SIZE_PROC_COVER_INTERNALS   $SIZE_PROC_COVER_BASE
 
+add wave -divider "*****************"
+add wave -divider " REG_PROC_UNIT   "
+add wave -divider "*****************"
+blk_REG_PROC_UNIT               $REG_PROC_UNIT_BASE
+blk_REG_PROC_UNIT_INTERNALS     $REG_PROC_UNIT_BASE
+blk_REG_PROC_UNIT_REGS          $REG_PROC_UNIT_BASE
+
+add wave -divider "*****************"
+add wave -divider " DELAY_PROC_UNIT "
+add wave -divider "*****************"
+blk_DELAY_PROC_UNIT             $DELAY_PROC_UNIT_BASE
+
 restart -f
-run 10 us
+run 100 us

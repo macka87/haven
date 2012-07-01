@@ -34,13 +34,22 @@ proc blk_ADAPTER_UNIT { BASE } {
 proc blk_ADAPTER_UNIT_INTERNALS { BASE } {
    
    add wave -divider "Internals"
-   add_wave "-noupdate      -label state_reg"  $BASE/state_reg
-   add_wave "-noupdate      -label state_next" $BASE/state_next
-   add_wave "-noupdate      -label is_header"  $BASE/is_header
-   add_wave "-noupdate -hex -label sig_header" $BASE/sig_header
-   add_wave "-noupdate      -label sig_sent"   $BASE/sig_sent
-   add_wave "-noupdate      -label sig_start"  $BASE/sig_start
-   add_wave "-noupdate      -label sig_end"    $BASE/sig_end
+   add wave -divider "FSM"
+   add_wave "-noupdate      -label state_reg"         $BASE/state_reg
+   add_wave "-noupdate      -label state_next"        $BASE/state_next
+   add_wave "-noupdate      -label is_data_header"    $BASE/is_data_header
+   add_wave "-noupdate      -label is_data_content"   $BASE/is_data_content
+   add_wave "-noupdate      -label is_delay_header"   $BASE/is_delay_header
+   add_wave "-noupdate      -label is_delay_content"  $BASE/is_delay_content
+   add_wave "-noupdate      -label is_header"         $BASE/is_header
+   add_wave "-noupdate      -label is_data"           $BASE/is_data
+   add_wave -divider "Misc signals"
+   add_wave "-noupdate -hex -label sig_header"        $BASE/sig_header
+   add_wave "-noupdate -hex -label sig_data_header"   $BASE/sig_data_header
+   add_wave "-noupdate -hex -label sig_delay_header"  $BASE/sig_delay_header
+   add_wave "-noupdate      -label sig_sent"          $BASE/sig_sent
+   add_wave "-noupdate      -label sig_start"         $BASE/sig_start
+   add_wave "-noupdate      -label sig_end"           $BASE/sig_end
 
    add_wave "-noupdate      -label sig_frame_rdy"            $BASE/sig_frame_rdy
    add_wave "-noupdate      -label sig_frame_last_word"      $BASE/sig_frame_last_word

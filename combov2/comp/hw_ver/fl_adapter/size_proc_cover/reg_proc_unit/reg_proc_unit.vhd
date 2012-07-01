@@ -122,6 +122,7 @@ signal size_proc_en           : std_logic;
 signal sig_parts_number       : std_logic_vector(PART_NUM_CNT_WIDTH-1 downto 0);
 signal sig_parts_number_vld   : std_logic;
 signal sig_parts_number_take  : std_logic;
+signal sig_parts_sampling     : std_logic;
 
 -- processing of size of parts signals  
 signal sig_part_mask          : std_logic_vector(PART_SIZE_CNT_WIDTH-1 downto 0);
@@ -241,7 +242,7 @@ begin
    reg_run_out <= X"ADA97E8" & "000" & reg_run;
 
    --
-   reg_trans_dec <= sig_next_frame AND sig_trans_more_than_zero;
+   reg_trans_dec <= sig_parts_sampling;
 
    -- -------- the register with the count of transactions -----------------
    reg_trans_p: process(CLK)
@@ -385,7 +386,7 @@ begin
       BASE       => reg_num_base,
       MAX        => reg_num_max,
       EN         => num_proc_en,
-      SAMPLING   => open,
+      SAMPLING   => sig_parts_sampling,
       
       -- output interface
       OUTPUT     => sig_parts_number,

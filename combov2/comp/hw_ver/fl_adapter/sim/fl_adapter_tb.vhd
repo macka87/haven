@@ -39,7 +39,7 @@ architecture behavioral of testbench is
    constant PART_BASE_OFFSET  : integer := 4;
    constant PART_MAX_OFFSET   : integer := 8;
 
-   constant TRANSACTION_COUNT : integer := 16;
+   constant TRANSACTION_COUNT : integer := 1;
 
    -- signals declarations
    ----------------------------------------------------------------------------
@@ -338,6 +338,10 @@ begin
 
       adapter_mi_wr    <= '0';
 
+      -- ------- read TRANSACTION COUNT -----------
+      adapter_mi_addr  <= TRANS_REG_ADDR;
+      adapter_mi_rd    <= '1';
+      wait until rising_edge(clk);
       wait;
    end process;
 end architecture behavioral;

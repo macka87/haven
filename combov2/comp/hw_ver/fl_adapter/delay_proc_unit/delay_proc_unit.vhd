@@ -33,7 +33,7 @@ entity DELAY_PROC_UNIT is
       -- Data Size Part processing interface
       DATA_SIZE     :  in std_logic_vector(SIZE_WIDTH-1 downto 0);  
       DATA_SIZE_VLD :  in std_logic; 
-      DATA_SIZE_REQ : out std_logic; 
+      DATA_SIZE_TAKE: out std_logic; 
       
       -- Delay interface
       DELAY_RDY     : out std_logic;
@@ -69,7 +69,7 @@ constant TRIMMED_SIZE_WIDTH : integer := SIZE_WIDTH - log2(BLOCK_SIZE);
 -- inputs
 signal sig_data_size        : std_logic_vector(SIZE_WIDTH-1 downto 0);
 signal sig_data_size_vld    : std_logic;
-signal sig_data_size_req    : std_logic;
+signal sig_data_size_take   : std_logic;
 
 -- outputs
 signal sig_delay_rem         : std_logic_vector(DREM_WIDTH-1 downto 0);
@@ -106,7 +106,7 @@ begin
    -- mapping the input signals
    sig_data_size     <= DATA_SIZE;
    sig_data_size_vld <= DATA_SIZE_VLD;
-   DATA_SIZE_REQ     <= sig_data_size_req;
+   DATA_SIZE_TAKE    <= sig_data_size_take;
 
    --
    dec_data_size         <= sig_data_size + (BLOCK_SIZE-1);
@@ -176,7 +176,7 @@ begin
    sig_delay_last    <= sig_cmp_out;
 
    sig_part_taken    <= sig_cmp_out AND sig_delay_take;
-   sig_data_size_req <= sig_part_taken OR (NOT reg_valid);
+   sig_data_size_take<= sig_part_taken OR (NOT reg_valid);
 
    sig_delay_rem     <= reg_delay(DREM_WIDTH-1 downto 0) - 1;
 

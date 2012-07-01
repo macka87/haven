@@ -39,6 +39,9 @@ proc blk_REG_PROC_UNIT_INTERNALS { BASE } {
    add_wave "-noupdate      -label sig_next_frame" $BASE/sig_next_frame
    add_wave "-noupdate      -label sig_cnt_inc"    $BASE/sig_cnt_inc
    add_wave "-noupdate      -label sig_last_part"  $BASE/sig_last_part
+   add_wave "-noupdate      -label sig_trans_more_than_zero"  $BASE/sig_trans_more_than_zero
+   add_wave "-noupdate      -label sig_parts_sampling" $BASE/sig_parts_sampling
+   add_wave "-noupdate      -label sig_size_sampling"  $BASE/sig_size_sampling
 
    add wave -divider "Parts counter"
    add_wave "-noupdate      -label cnt_part"     $BASE/cnt_part

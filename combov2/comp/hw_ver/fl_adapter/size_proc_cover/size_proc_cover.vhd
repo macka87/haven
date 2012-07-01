@@ -51,6 +51,11 @@ entity SIZE_PROC_COVER is
       -- Generator Interface
       GEN_FLOW  :  in std_logic_vector(DATA_WIDTH-1 downto 0);
       
+      -- Data size interface (to connect delay_proc_unit)
+      DATA_SIZE       : out std_logic_vector(DATA_SIZE_CNT_WIDTH-1 downto 0);
+      DATA_SIZE_VLD   : out std_logic;
+      DATA_SIZE_TAKE  :  in std_logic;
+
       -- Output interface
       -- A data word can be sent
       FRAME_RDY            : out std_logic;
@@ -89,6 +94,11 @@ constant FIFO_WIDTH       : integer := PART_SIZE_CNT_WIDTH + 1;
 
 -- input signals
 signal sig_gen_flow             : std_logic_vector(DATA_WIDTH-1 downto 0);
+
+-- the data size interface
+signal sig_out_data_size        : std_logic_vector(DATA_SIZE_CNT_WIDTH-1 downto 0);
+signal sig_out_data_size_vld    : std_logic;
+signal sig_out_data_size_take   : std_logic;
 
 -- output signals
 signal sig_frame_rdy            : std_logic;
@@ -149,6 +159,15 @@ begin
 
    -- mapping input signals
    sig_gen_flow      <= GEN_FLOW;
+
+   -- the data size interface
+   DATA_SIZE              <= sig_out_data_size;
+   DATA_SIZE_VLD          <= sig_out_data_size_vld;
+   sig_out_data_size_take <= DATA_SIZE_TAKE;
+
+   sig_out_data_size_vld  <=     data_size_proc_data_size_vld
+                             AND data_proc_data_size_req;
+
 
    -- -- REGISTERS PROCESSING UNIT INSTANCE --
    reg_proc_unit_i : entity work.reg_proc_unit
@@ -241,7 +260,10 @@ begin
       DATA_REQUEST      => data_size_proc_data_size_request
    );
 
-   data_size_proc_data_size_request  <= data_proc_data_size_req;
+   data_size_proc_data_size_request  <=     data_proc_data_size_req
+                                        AND sig_out_data_size_take;
+
+   sig_out_data_size                 <= data_size_proc_data_size;
 
    --
    reg_is_last_part_for_data_size_in <= fifo_do(PART_SIZE_CNT_WIDTH);
@@ -260,7 +282,8 @@ begin
 
    --
    data_proc_data_size     <= data_size_proc_data_size;
-   data_proc_data_size_vld <= data_size_proc_data_size_vld;
+   data_proc_data_size_vld <=     data_size_proc_data_size_vld
+                              AND sig_out_data_size_take;
 
    -- -- DATA PROCESSING UNIT INSTANCE --
    data_proc_unit_i : entity work.data_proc_unit
@@ -291,7 +314,7 @@ begin
 
    --
    reg_is_last_part_for_data_in <= reg_is_last_part_for_data_size;
-   reg_is_last_part_for_data_en <=     data_size_proc_data_size_vld
+   reg_is_last_part_for_data_en <=     data_proc_data_size_vld
                                    AND data_proc_data_size_req;
 
    -- register holding the value whether the current part size is for the last
