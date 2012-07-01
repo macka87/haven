@@ -43,7 +43,7 @@ proc blk_ADAPTER_UNIT_INTERNALS { BASE } {
    add_wave "-noupdate      -label is_delay_content"  $BASE/is_delay_content
    add_wave "-noupdate      -label is_header"         $BASE/is_header
    add_wave "-noupdate      -label is_data"           $BASE/is_data
-   add_wave -divider "Misc signals"
+   add wave -divider "Misc signals"
    add_wave "-noupdate -hex -label sig_header"        $BASE/sig_header
    add_wave "-noupdate -hex -label sig_data_header"   $BASE/sig_data_header
    add_wave "-noupdate -hex -label sig_delay_header"  $BASE/sig_delay_header
