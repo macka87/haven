@@ -11,14 +11,13 @@
    // Number of generations
    parameter GENERATIONS      = 20;
    // Size of population
-   parameter POPULATION_SIZE  = 20;
+   parameter POPULATION_SIZE  = 10;
    // Number of maximal mutations per individuum
    parameter MAX_MUTATIONS    = 20;
    // File for save/load population
    parameter string POPULATION_FILENAME = "pop";
    // Load or create new population on evolution start
    parameter LOAD_POPULATION  = 0; 
-   // Estimated duration fifo to get full (us)
    parameter ESTIMATED_TIME   = 800;
 
    // CHROMOSOME PARAMETERS
@@ -35,6 +34,6 @@
    parameter OPERAND_IMM_RANGES_MAX = 8;
    
    // TRANSACTION COUNT PER EACH CHROMOSOME
-   parameter TRANS_COUNT_PER_CHROM  = 100;
+   parameter TRANS_COUNT_PER_CHROM  = 200;
 
  endpackage

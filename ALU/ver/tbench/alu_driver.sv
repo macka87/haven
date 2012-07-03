@@ -85,6 +85,20 @@
       Transaction to;
       int i=0;
       
+      /*int cnt_movi0 = 0;
+      int cnt_movi1 = 0;
+      int cnt_movi2 = 0;
+      int cnt_opa0 = 0;
+      int cnt_opa1 = 0;
+      int cnt_opa2 = 0;
+      int cnt_opb0 = 0;
+      int cnt_opb1 = 0;
+      int cnt_opb2 = 0;
+      int cnt_opb3 = 0;
+      int cnt_opb4 = 0;
+      int cnt_opb5 = 0;
+      int cnt_mem = 0;  */
+      
       while (enabled && (i < transCount)) begin 
         transMbx.get(to);              //! Get transaction from mailbox 
         
@@ -93,6 +107,40 @@
         
         $cast(transaction,to);
         
+        /* if (transaction.movi == 0) cnt_movi0++;
+        else if (transaction.movi == 1) cnt_movi1++;
+        else if (transaction.movi == 2) cnt_movi2++;
+      
+        if (transaction.operandA <= 255 && transaction.operandA >= 170) cnt_opa0++;
+        else if (transaction.operandA <= 169 && transaction.operandA >= 85) cnt_opa1++;
+        else if (transaction.operandA <= 84 && transaction.operandA >= 0) cnt_opa2++;
+      
+        if (transaction.operandB <= 255 && transaction.operandB >= 215) cnt_opb0++;
+        else if (transaction.operandB <= 214 && transaction.operandB >= 172) cnt_opb1++;
+        else if (transaction.operandB <= 171 && transaction.operandB >= 129) cnt_opb2++;
+        else if (transaction.operandB <= 128 && transaction.operandB >= 86) cnt_opb3++;
+        else if (transaction.operandB <= 85 && transaction.operandB >= 43) cnt_opb4++;
+        else if (transaction.operandB <= 42 && transaction.operandB >= 0) cnt_opb5++;
+     
+        if (transaction.operandMEM <= 255 && transaction.operandMEM >= 0) cnt_mem++;
+      
+        $write("cnt_movi0: %d\n", cnt_movi0);    
+        $write("cnt_movi1: %d\n", cnt_movi1);
+        $write("cnt_movi2: %d\n", cnt_movi2);
+      
+        $write("cnt_opa0: %d\n", cnt_opa0);    
+        $write("cnt_opa1: %d\n", cnt_opa1);
+        $write("cnt_opa2: %d\n", cnt_opa2);
+      
+        $write("cnt_opb0: %d\n", cnt_opb0);    
+        $write("cnt_opb1: %d\n", cnt_opb1);
+        $write("cnt_opb2: %d\n", cnt_opb2);
+        $write("cnt_opb3: %d\n", cnt_opb3);    
+        $write("cnt_opb4: %d\n", cnt_opb4);
+        $write("cnt_opb5: %d\n", cnt_opb5);
+   
+        $write("cnt_mem: %d\n", cnt_mem);   */
+
         waitForAluRdy();
         
         //$write("enBtDelay: %d\n",transaction.enBtDelay);
