@@ -17,27 +17,35 @@
     * constructor.
     */
     tTransMbx transMbx;
+    
+   /*!
+    * Mailbox for transactions generated in harwdare.
+    */ 
+    tTransMbx hwTransMbx;
+    
     int input_file;        // input file with transactions
     int output_file;       // output file with transactions
     
-    /*
-     * GENERATOR INPUT.
-     * It is possible to define the location where transactions are loaded.
-     * 0 = SV generator
-     * 1 = external file 
-     * 2 = other software generator      
-     * 3 = hardware generator      
-     */
-    int gen_input = 0;
+   /*
+    * GENERATOR INPUT.
+    *
+    * Enumeration type for inputs of Generator:
+    * SV_GEN      = SystemVerilog generator of transactions
+    * EXT_FILE_IN = reading transactions from external file  
+    * OTHER_GEN   = other generator of transactions
+    * HW_GEN      = hardware generator of transactions 
+    */
+    tGenInput gen_input = SV_GEN;
     
-    /*
-     * GENERATOR OUTPUT.
-     * It is possible to define the location where transactions are stored.
-     * 0 = SV mailbox
-     * 1 = external file 
-     * 2 = mailbox and external file            
-     */
-    int gen_output = 0;
+   /*
+    * GENERATOR OUTPUT.
+    *
+    * Enumeration type for storage outputs of Generator
+    * SV_SIM          = SystemVerilog simulation
+    * EXT_FILE_OUT    = storing transactions into external file
+    * SV_SIM_EXT_FILE = SystemVerilog simulation and storing to ext. file
+    */
+    tGenOutput gen_output = SV_SIM;
 
    /*!
     * The generator will stop after the specified number of object
@@ -78,19 +86,23 @@
     * internally in the out_chan property.
     * 
     * \param inst - generator instance name
-    * \param transMbx - transaction mailbox                
+    * \param transMbx - mailbox for generated transactions
+    * \param hwTransMbx - mailbox for transactions from hardware generator                   
     */
     function new(string inst, 
-                 int gen_input = 0,
-                 int gen_output = 0,
+                 tGenInput gen_input = SV_GEN,
+                 tGenOutput gen_output = SV_SIM,
                  int stream_id = -1,
-                 tTransMbx transMbx = null
+                 tTransMbx transMbx = null,
+                 tTransMbx hwTransMbx = null
                  );      
       if (transMbx == null) 
         this.transMbx = new(1);
       else 
         this.transMbx = transMbx;
 
+
+      this.hwTransMbx = hwTransMbx;
       this.gen_input  = gen_input;       // Source of transactions' flow
       this.gen_output = gen_output;      // Destination of transactions' flow
       enabled         = 0;               // Disable generator by default
@@ -108,7 +120,7 @@
       if ( blueprint != null) 
         fork
           //! open input file with transactions
-          if (gen_input == 1) begin
+          if (gen_input == EXT_FILE_IN) begin
             input_file = $fopen("trans_input.txt", "r");
             if (input_file == 0) begin
               $write("Input file corrupted!!!");
@@ -116,8 +128,12 @@
             end  
           end
           
+          //! run configuration for hw generator
+          if (gen_input == HW_GEN) 
+            blueprint.configureRegisters(stop_after_n_insts);
+                    
           //! open output file where transactions will be written
-          if (gen_output == 1 || gen_output == 2) begin
+          if (gen_output == EXT_FILE_OUT || gen_output == SV_SIM_EXT_FILE) begin
             output_file = $fopen("trans_output.txt", "w");
             if (output_file == 0) begin
               $write("Output file corrupted!!!");
@@ -139,11 +155,11 @@
     task setDisabled();
       this.enabled = 0;
       //! close input file with transactions
-      if (gen_input == 1) 
+      if (gen_input == EXT_FILE_IN) 
         $fclose(input_file);
       
       //! close output file where transactions were written
-      if (gen_output == 1 || gen_output == 2) 
+      if (gen_output == EXT_FILE_OUT || gen_output == SV_SIM_EXT_FILE) 
         $fclose(output_file);  
     endtask : setDisabled
     
@@ -155,8 +171,8 @@
       int trCount, r;
       int counter = 0;
       
-      //! SystemVerilog Generator
-      if (gen_input == 0) begin
+      //! ---------------------- SystemVerilog Generator -----------------------
+      if (gen_input == SV_GEN) begin
         while (enabled && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin       
           trans = blueprint.copy;      //! Copy from blueprint
           trans.data_id = data_id;     //! Set instance count
@@ -166,11 +182,11 @@
           //! Output flow of transactions 
           priority case (gen_output)
             //! SV mailbox 
-            0 : transMbx.put(trans);         //! Put transactions into SV mailbox 
+            SV_GEN : transMbx.put(trans);         //! Put transactions into SV mailbox 
             //! External file 
-            1 : trans.fwrite(output_file);   //! Put transactions into external file
+            EXT_FILE_OUT : trans.fwrite(output_file); //! Put transactions into external file
             //! SV mailbox and external file
-            2 : begin
+            SV_SIM_EXT_FILE : begin
                   transMbx.put(trans);       //! Put transactions into SV mailbox
                   trans.fwrite(output_file); //! Put transactions into external file
                 end
@@ -180,8 +196,8 @@
         end
       end          
       
-      //! Reading of transactions from external file
-      if (gen_input == 1) begin
+      //! ------------ Reading of transactions from external file --------------
+      if (gen_input == EXT_FILE_IN) begin
         
         //! Preprocessing of external file
         r = $fscanf(input_file,"%d\n", trCount);
@@ -204,11 +220,11 @@
           //! Output flow of transactions 
           priority case (gen_output)
             //! SV mailbox 
-            0 : transMbx.put(trans);         //! Put transactions into SV mailbox 
+            SV_SIM : transMbx.put(trans);    //! Put transactions into SV mailbox 
             //! External file 
-            1 : trans.fwrite(output_file);   //! Put transactions into external file
+            EXT_FILE_OUT : trans.fwrite(output_file); //! Put transactions into external file
             //! SV mailbox and external file
-            2 : begin
+            SV_SIM_EXT_FILE : begin
                   transMbx.put(trans);       //! Put transactions into SV mailbox
                   trans.fwrite(output_file); //! Put transactions into external file
                 end
@@ -218,17 +234,34 @@
         end
       end  
         
-      //! Other generator - not supported yet
-      if (gen_input == 2) begin  
+      //! ------------ Other generator - not supported yet ---------------------
+      if (gen_input == OTHER_GEN) begin  
         $write("Other input generator than SystemVerilog not supported yet!!!");
         $stop;
       end 
       
-      //! Hadware generator 
-      if (gen_input == 3) begin  
-        $write("Hardware generator not supported yet!!!");
-        //trans.sendinittohw - lebo v tomto subore su aj hodnoty ktore budeme posielat do hw
-        $stop;
+      //! -------------------- Hadware generator -------------------------------
+      if (gen_input == HW_GEN) begin  
+        while (enabled && (data_id < stop_after_n_insts || stop_after_n_insts == 0)) begin       
+          hwTransMbx.get(trans);       //! Get transaction from mailbox
+          trans.data_id = data_id;     //! Set instance count
+          //trans.display("GENERATOR (from HW)");         //! Display transaction
+      
+          //! Output flow of transactions 
+          priority case (gen_output)
+            //! SV mailbox 
+            SV_SIM : transMbx.put(trans); //! Put transactions into SV mailbox 
+            //! External file 
+            EXT_FILE_OUT : trans.fwrite(output_file); //! Put transactions into external file
+            //! SV mailbox and external file
+            SV_SIM_EXT_FILE : begin
+                  transMbx.put(trans);       //! Put transactions into SV mailbox
+                  trans.fwrite(output_file); //! Put transactions into external file
+                end
+          endcase
+          
+          data_id = data_id+1;         //! Increment instance counter      
+        end
       end   
           
       enabled = 0;  

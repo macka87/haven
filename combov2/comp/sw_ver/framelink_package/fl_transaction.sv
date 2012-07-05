@@ -6,7 +6,7 @@
  * Date:         27.2.2011 
  * ************************************************************************** */
 
- import mi32_wrapper_pkg::*; 
+ import dpi_mi32_wrapper_pkg::*; 
 
  class FrameLinkTransaction extends Transaction;
       
@@ -106,6 +106,7 @@
       end
       
       $write("datawidth in bytes : %d\n",dataWidth);
+      $write("frameParts : %d\n",frameParts);
        
       $write("TRANSACTION PARAMETERS: \n");
       for (integer i=0; i < frameParts; i++) begin
@@ -127,7 +128,7 @@
       
       for (int i=0; i < frameParts; i++) begin
         $write("itDelay part: %d\n",i);
-        for (int j=0; j < itDelay[i].size; j++)
+        for (int j=0; j < itDelay[i].size; j++)                                            
           $write("%x ",itDelay[i][j]);
         $write("\n");
       end
@@ -227,59 +228,77 @@
     * transaction. They are applied in hardware generator in hardware version
     * of verification environment.        
     */   
-    function configureRegisters(int transCount);
-      input logic [31:0] hw_addr;
-      input logic [31:0] run_reg_addr       = 32'h00000000;
-      input logic [31:0] trans_reg_addr     = 32'h00000004;
-      input logic [31:0] part_num_reg_addr  = 32'h00000010;
-      input logic [31:0] part_size_reg_addr = 32'h00000080;
-      input logic [31:0] part_mask_offset   = 32'h00000000;
-      input logic [31:0] part_base_offset   = 32'h00000004;
-      input logic [31:0] part_max_offset    = 32'h00000008;
-      input logic [31:0] part_reg_offset    = 32'h00000010;
+    function void configureRegisters(int transCount);
+      logic [31:0] hw_addr_gen        = 32'h01100000;   // hw addr for generator
+      logic [31:0] hw_addr_adapt      = 32'h01101000;   // hw addr for adapter
+      logic [31:0] gen_seed           = 32'h00000004;
+      logic [31:0] run_reg_addr       = 32'h00000000;
+      logic [31:0] trans_reg_addr     = 32'h00000004;
+      logic [31:0] part_num_reg_addr  = 32'h00000010;
+      logic [31:0] part_size_reg_addr = 32'h00000080;
+      logic [31:0] part_mask_offset   = 32'h00000000;
+      logic [31:0] part_base_offset   = 32'h00000004;
+      logic [31:0] part_max_offset    = 32'h00000008;
+      logic [31:0] part_reg_offset    = 32'h00000010;
       
-      input logic [31:0] frame_parts        = frameParts;
-      input logic [31:0] part_size_min      = '{0,0,0,0,0,0,0,0};
-      input logic [31:0] part_size_max      = '{0,0,0,0,0,0,0,0};
+      logic [31:0] frame_parts        = frameParts;
+      logic [31:0] data;
+      
+      logic [31:0] part_size_min[]      = new[frameParts];
+      logic [31:0] part_size_max[]      = new[frameParts];
       
       for (int i=0; i<frameParts; i++) begin
         part_size_min[i] = partSizeMin[i];
         part_size_max[i] = partSizeMax[i];
       end  
     
-      // initiates MI32 transfer
-      if (c_start_mi32_transfer(hw_addr)) begin
-        $write("It is not possible to configure hardware registers with MI32!!!");
-        $stop;
-      end 
-      
       // part num
-      c_writeToRegister(part_num_reg_addr + part_mask_offset, 32'h00000007);
-      c_writeToRegister(part_num_reg_addr + part_base_offset, frame_parts);
-      c_writeToRegister(part_num_reg_addr + part_max_offset, 32'h00000000);
+      c_writeToRegister(hw_addr_adapt + part_num_reg_addr + part_mask_offset, 32'h00000007);
+      c_writeToRegister(hw_addr_adapt + part_num_reg_addr + part_base_offset, frame_parts);
+      c_writeToRegister(hw_addr_adapt + part_num_reg_addr + part_max_offset, 32'h00000000);
       
       // max number of parts is 8
       for (int i=0; i<8; i++) begin
         // part i
         c_writeToRegister(
-          part_size_reg_addr + i*part_reg_offset + part_mask_offset, 
+          hw_addr_adapt + part_size_reg_addr + i*part_reg_offset + part_mask_offset, 
           32'h0000001F
         );
         c_writeToRegister(
-          part_size_reg_addr + i*part_reg_offset + part_base_offset, 
+          hw_addr_adapt + part_size_reg_addr + i*part_reg_offset + part_base_offset, 
           part_size_min[i]
         );
         c_writeToRegister(
-          part_size_reg_addr + i*part_reg_offset + part_max_offset,
+          hw_addr_adapt + part_size_reg_addr + i*part_reg_offset + part_max_offset,
           part_size_max[i] - part_size_min[i]
         ); 
       end 
       
       // transaction count
-      c_writeToRegister(trans_reg_addr, transCount);
+      c_writeToRegister(hw_addr_adapt + trans_reg_addr, transCount);
       
-      // run
-      c_writeToRegister(run_reg_addr, 32'h00000001);
+      // set seed of the generator
+      c_writeToRegister(hw_addr_gen + gen_seed, 32'h00011ACA);
+      
+      // run generator
+      c_writeToRegister(hw_addr_gen, 32'h00000001);
+      
+      // run adapter
+      c_writeToRegister(hw_addr_adapt + run_reg_addr, 32'h00000001);
     endfunction : configureRegisters
+    
+   /*!
+    * Function for writing transaction into an external file. 
+    */
+    function void fwrite(int fileDescr);
+      
+    endfunction : fwrite
+    
+   /*!
+    * Function for reading transaction from an external file. 
+    */
+    function void fread(int fileDescr);
+      
+    endfunction : fread 
  endclass: FrameLinkTransaction
                                                                                    

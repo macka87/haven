@@ -10,14 +10,16 @@
 `include "fl_ifc.sv"
 
 package sv_fl_pkg; 
-  import sv_basic_comp_pkg::*;        // Import SV basic classes
-  
+  import sv_basic_comp_pkg::*;   // Import SV basic classes
+  import sv_types_pkg::*;        // Import package of user defined types 
+
   //`include "fl_assertion_checker.sv"
   `include "fl_transaction.sv"
   `include "fl_driver.sv"
   `include "fl_sender.sv"
   `include "fl_gen_input_controller.sv"
   `include "fl_output_controller.sv"
+  `include "fl_gen_output_controller.sv"
   `include "fl_assertion_reporter.sv"
   `include "fl_signal_reporter.sv"
   `include "fl_responder.sv"

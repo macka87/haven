@@ -6,7 +6,10 @@
  * Date:         27.2.2011 
  * ************************************************************************** */
  
- class FrameLinkGenInputController #(int pDataWidth=32, int pDremWidth=2, int genTrans = 0)
+ class FrameLinkGenInputController #(int pDataWidth=32, int pDremWidth=2, 
+                                     tGenInput gen_input, 
+                                     tGenOutput gen_output
+                                     )
        extends GenInputController;
    
    /*
@@ -34,7 +37,8 @@
     * \param partSizeMax - maximal size of FrameLink frame part        
     * \param partSizeMin - minimal size of FrameLink frame part    
     */    
-    function new (string inst, int framework, tTransMbx inputMbx,
+    function new (string inst, tFramework framework, tTransMbx inputMbx,
+                  tTransMbx genMbx,
                   int frameParts, int partSizeMax[], int partSizeMin[],
                   byte btDelayEn_wt, byte btDelayDi_wt, 
                   byte btDelayLow, byte btDelayHigh,
@@ -43,12 +47,12 @@
                   virtual iFrameLinkRx #(pDataWidth,pDremWidth) fl
                  ); 
       
-      super.new(inst, framework, inputMbx);
+      super.new(inst, framework, inputMbx, genMbx);
       
       this.fl       = fl;
       
       //! Create generator
-      generator     = new("FrameLink Generator", genTrans, -1, transMbx);
+      generator     = new("FrameLink Generator", gen_input, gen_output, -1, transMbx, genMbx);
           
       //! Create blueprint transaction
       flBlueprint   = new();
@@ -82,65 +86,55 @@
     * Set Callback - callback object into List 
     */
     virtual function void setCallbacks(InputCbs cbs);
-      if (framework == 0)      swFlDriver.setCallbacks(cbs); 
-      else if (framework == 1) hwFlSender.setCallbacks(cbs); 
+      priority case (framework)
+        SW_FULL     : swFlDriver.setCallbacks(cbs); 
+        SW_DES_HW_G : swFlDriver.setCallbacks(cbs); 
+        SW_GES_HW_D : hwFlSender.setCallbacks(cbs); 
+      endcase
     endfunction : setCallbacks 
     
    /*!
     * Start controller's activity
     */
     task start();
-      // software framework
-      if (framework == 0) begin 
-        swFlDriver.setEnabled();
-      end  
-      
-      // hardware framework
-      else if (framework == 1) 
-        hwFlSender.sendStart();
+      priority case (framework)
+        SW_FULL     : swFlDriver.setEnabled();
+        SW_DES_HW_G : swFlDriver.setEnabled();
+        SW_GES_HW_D : hwFlSender.sendStart();
+      endcase  
     endtask : start
     
    /*!
     * Stop controller's activity
     */     
     task stop();
-      int i=0; 
-     
-      // software framework
-      if (framework == 0) begin
-        swFlDriver.setDisabled();
-      end
-    
-      // hardware framework
-      else if (framework == 1) 
-        hwFlSender.sendStop();
+      priority case (framework)
+        SW_FULL     : swFlDriver.setDisabled();
+        SW_DES_HW_G : swFlDriver.setDisabled();
+        SW_GES_HW_D : hwFlSender.sendStop();
+      endcase 
     endtask : stop   
    
    /*!
     * Wait for written number of clocks 
     */     
     task waitFor(input int clocks);
-      // software framework  
-      if (framework == 0) begin  
-        swFlDriver.sendWait(clocks);
-      end   
-      
-      // hardware framework
-      else if (framework == 1) 
-        hwFlSender.sendWait(clocks);
+      priority case (framework)
+        SW_FULL     : swFlDriver.sendWait(clocks);
+        SW_DES_HW_G : swFlDriver.sendWait(clocks);
+        SW_GES_HW_D : hwFlSender.sendWait(clocks);
+      endcase 
     endtask : waitFor
     
    /*! 
     * Wait forever
     */     
     task waitForever();
-      // software framework
-      if (framework == 0) 
-        swFlDriver.setDisabled();     
-      
-      // hardware framework
-      else if (framework == 1) 
-        hwFlSender.sendWaitForever();
+      priority case (framework)
+        SW_FULL     : swFlDriver.setDisabled(); 
+        SW_DES_HW_G : swFlDriver.setDisabled(); 
+        SW_GES_HW_D : hwFlSender.sendWaitForever();
+      endcase 
     endtask : waitForever    
    
    /*!
@@ -150,13 +144,13 @@
       //! run generator
       generator.setEnabled(transCount);
       
-      // software framework
-      if (framework == 0) 
-        swFlDriver.sendTransactions(transCount);  
-              
-      // hardware framework
-      if (framework == 1) 
-        hwFlSender.sendTransactions(transCount); 
+      if (gen_output != EXT_FILE_OUT) begin
+        priority case (framework)
+          SW_FULL     : swFlDriver.sendTransactions(transCount); 
+          SW_DES_HW_G : swFlDriver.sendTransactions(transCount); 
+          SW_GES_HW_D : hwFlSender.sendTransactions(transCount); 
+        endcase 
+      end    
     endtask : sendGenerated 
     
  endclass : FrameLinkGenInputController

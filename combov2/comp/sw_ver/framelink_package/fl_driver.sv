@@ -58,7 +58,7 @@
     */
     task setEnabled();
       enabled = 1;  //! Driver Enabling
-      @(fl.cb);  
+//      @(fl.cb);  
     endtask : setEnabled
         
    /*! 
@@ -87,6 +87,7 @@
       FrameLinkTransaction transaction;
       Transaction to;
       int i=0;
+      @(fl.cb);                    //! send data
       
       while (enabled && (i < transCount)) begin 
         transMbx.get(to);              //! Get transaction from mailbox 
@@ -95,11 +96,13 @@
           cbs[i].pre_tr(to, id);
       
         $cast(transaction,to); 
+        
+        //transaction.display("SW DRIVER");
           
         if (transaction.enBtDelay)     //! Delay between transactions
           repeat (transaction.btDelay) 
             @(fl.cb);
-
+            
         sendData(transaction);         //! Send transaction
         
         foreach (cbs[i])               //! Call transaction postprocessing
@@ -133,9 +136,9 @@
           end
 
           //! set one data byte
-          for (int k=0; k < 8; k++) 
+          for (int k=0; k < 8; k++)  
             dataToSend[m++] = tr.data[i][j][k];
-                  
+          
           //! last byte in frame part
           if (j==tr.data[i].size-1) begin  //! last byte of frame part
             fl.cb.EOP_N<=0;                //! set End Of Part
@@ -165,7 +168,7 @@
             firstWord = 0;
 
             @(fl.cb);                    //! send data
-            waitForAccept();             //! wait until oposite side set ready
+            waitForAccept();             //! wait until opposite side set ready
 
             //! init for sending next data word
             fl.cb.SOF_N<=1;       

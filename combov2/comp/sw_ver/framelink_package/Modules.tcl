@@ -6,10 +6,10 @@
 # ------------------------------------------------------------------------------
 
 if { $ARCHGRP == "FULL" } {
-  set SV_BASIC_BASE    "$ENTITY_BASE/../basic_ver_components_package"
-  
+  set SV_BASIC_BASE     "$ENTITY_BASE/../basic_ver_components_package"
+   
   set COMPONENTS [list \
-      [ list "SV_BASIC_BASE"   $SV_BASIC_BASE    "FULL"] \
+      [ list "SV_BASIC_BASE"       $SV_BASIC_BASE        "FULL"] \
    ]
   
   set MOD "$MOD $ENTITY_BASE/sv_fl_pkg.sv"

@@ -7,6 +7,8 @@
  * ************************************************************************** */
 
 package sv_basic_comp_pkg; 
+   import sv_types_pkg::*; // Import package of user defined types 
+
   `include "transaction.sv"
   `include "netcope_transaction.sv"
   `include "generator.sv"

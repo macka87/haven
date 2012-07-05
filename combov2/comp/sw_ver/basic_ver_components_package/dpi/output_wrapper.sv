@@ -89,7 +89,8 @@
           if (size > 0) begin
             // store the right size of data
 						ntr.size = size;
-						
+						//$write("received size: %d\n", size);
+            //ntr.display("OUTPUT NETCOPE TRANSACTION");
             // put received data to output mailbox
             outputMbx.put(ntr);  
             counter++;

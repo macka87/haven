@@ -18,6 +18,7 @@ set SIG_FILE              "./signals_sig.fdo"
 
 set SV_LIBS               [list "$FIRMWARE_BASE/comp/sw_ver/basic_ver_components_package/dpi/dpi_wrapper_pkg"]          
 set SV_LIBS               "$SV_LIBS $FIRMWARE_BASE/comp/sw_ver/basic_ver_components_package/dpi_scoreboard/dpi_tr_table_pkg"
+set SV_LIBS               "$SV_LIBS $FIRMWARE_BASE/comp/sw_ver/basic_ver_components_package/dpi_mi32_interface/dpi_mi32_wrapper_pkg"
 
 set COMPONENTS [list [list "DUT"      $DUT_BASE       "FULL"]\
                      [list "DUT_VER"  $DUT_VER_BASE   "FULL"]\

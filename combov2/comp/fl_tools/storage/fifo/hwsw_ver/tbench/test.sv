@@ -7,6 +7,7 @@
  
 import test_pkg::*;
 import sv_basic_comp_pkg::*;
+import sv_types_pkg::*;      
 import sv_fl_pkg::*;
 import sv_fl_fifo_pkg::*;
 import dpi_wrapper_pkg::*; 
@@ -32,11 +33,15 @@ program TEST (
   //! Mailbox for Output controller's transactions
   tTransMbx                                              outputMbx; 
   
+  //! Mailbox for transactions generated in HW
+  tTransMbx                                              genMbx; 
+  
   //! Sorter's mailboxes
   tTransMbx                                              mbx[];  
   
   //! Input Controller of generated input  
-  FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH)  flGenInCnt; 
+  FrameLinkGenInputController #(DATA_WIDTH, DREM_WIDTH, 
+                                GEN_INPUT, GEN_OUTPUT)   flGenInCnt; 
   
   //! Input Wrapper
   InputWrapper                                           inputWrapper;  
@@ -53,8 +58,12 @@ program TEST (
   //! Output Controller 
   FrameLinkOutputController                              flOutCnt;
   
+  //! Generator Output Controller
+  FrameLinkGenOutputController #(DATA_WIDTH)             flGenOutCnt;
+  
   //! Assertion Reporter
   FrameLinkAssertionReporter                             assertReporter;               
+  
   //! Signal Reporter
   FrameLinkSignalReporter #(DATA_WIDTH)                  sigReporter;
   
@@ -80,12 +89,13 @@ program TEST (
      //! Create coverage
      flCoverage = new();
 
-     //! Create Input and Output Mailbox
+     //! Create Input, Output Mailbox and Mailbox for HW transactions
      inputMbx   = new(1);
      outputMbx  = new(1);
+     genMbx     = new(1);
      
      //! Create Input Controller 
-     flGenInCnt = new("Input Controller", FRAMEWORK, inputMbx,
+     flGenInCnt = new("Input Controller", FRAMEWORK, inputMbx, genMbx,
                       GENERATOR_FL_FRAME_COUNT, GENERATOR_FL_PART_SIZE_MAX,
                       GENERATOR_FL_PART_SIZE_MIN,
                       DRIVER_BT_DELAY_EN_WT, DRIVER_BT_DELAY_DI_WT,
@@ -104,14 +114,16 @@ program TEST (
      outputWrapper = new("Output Wrapper", outputMbx); 
      
      //! Create Sorter and Output Controllers' mailboxes
-     mbx = new[3];
+     mbx = new[4];
        // FL Output Controller mailbox
        mbx[0] = new(1); 
        // Assertion Reporter mailbox
        mbx[1] = new(1);
        // Signal Reporter
        mbx[2] = new(1);
-     sorter = new(outputMbx, mbx, 3);
+       // FL Generator Output Controller mailbox
+       mbx[3] = new(1);
+     sorter = new(outputMbx, mbx, 4);
      
      //! Create FrameLink Output Controller
      flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
@@ -123,6 +135,9 @@ program TEST (
      //! Create Signal Reporter
      sigReporter = new("Signal Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
 
+     //! Create FrameLink Generator Output Controller
+     flGenOutCnt = new("Generator Output Controller", 0, mbx[3], genMbx, GENERATOR_FL_FRAME_COUNT);
+    
      //! Create checker
      flChecker = new("Checker", RX, TX, CTRL);
      
@@ -144,24 +159,39 @@ program TEST (
   
   // Enable test Environment
   task enableTestEnvironment();
-    if (FRAMEWORK == 0) begin
-      flChecker.setEnabled();
-      flMonitor.setEnabled();
-      flCoverage.setEnabled();
-    end
-    if (FRAMEWORK == 1) begin
-      inputWrapper.setEnabled();
-      outputWrapper.setEnabled();
-      sorter.setEnabled();
-      flOutCnt.setEnabled();
-      assertReporter.setEnabled();
-      sigReporter.setEnabled();
-    end  
+    int res;
+  
+    priority case (FRAMEWORK)
+      SW_FULL     : begin
+                      flChecker.setEnabled();
+                      flMonitor.setEnabled();
+                      flCoverage.setEnabled();
+                    end
+      SW_DES_HW_G : begin
+                      // Open channel for data generated in HW
+                      res = c_openDMAChannel();  
+                      $write("OPENING DMA CHANNEL (expected 0): %d\n",res); 
+                      outputWrapper.setEnabled();
+                      sorter.setEnabled();
+                      flGenOutCnt.setEnabled();
+                      flChecker.setEnabled();
+                      flMonitor.setEnabled();
+                      flCoverage.setEnabled();
+                    end  
+      SW_GES_HW_D : begin
+                      inputWrapper.setEnabled();
+                      outputWrapper.setEnabled();
+                      sorter.setEnabled();
+                      flOutCnt.setEnabled();
+                      assertReporter.setEnabled();
+                      sigReporter.setEnabled();
+                    end
+    endcase 
   endtask : enableTestEnvironment
   
   // Disable test Environment
   task disableTestEnvironment();
-    int i;
+    int i, res;
     bit busy;
 
     // Check if monitors are not receiving transaction
@@ -169,14 +199,12 @@ program TEST (
     while (i<SIM_DELAY) begin
       busy = 0;
       
-      if (FRAMEWORK == 0) begin
-        if (flMonitor.busy) busy = 1; //  || flResponder.busy) busy = 1;
-      end
+      priority case (FRAMEWORK)
+        SW_FULL     : if (flMonitor.busy) busy = 1; 
+        SW_DES_HW_G : if (flMonitor.busy) busy = 1; 
+        SW_GES_HW_D : if (inputWrapper.busy || (outputWrapper.counter<TRANSACTION_COUT) || flOutCnt.busy || assertReporter.busy) busy = 1; 
+      endcase 
       
-      if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || (outputWrapper.counter<TRANSACTION_COUT) || flOutCnt.busy || assertReporter.busy) busy = 1; 
-      end
-        
      /* $write("Looping at time %t ps\n", $time);
       $write("InputWrapper busy: %d\n", inputWrapper.busy);
       $write("OutputWrapper counter: %d/%d\n", outputWrapper.counter,
@@ -188,35 +216,47 @@ program TEST (
 
       if (busy) i = 0;
       else i++;
-      if (FRAMEWORK == 0) begin
-        #(CLK_PERIOD);
-      end
-      if (FRAMEWORK == 1) begin
-        #1ps;
-      end
+      
+      priority case (FRAMEWORK)
+        SW_FULL     : #(CLK_PERIOD);
+        SW_DES_HW_G : #(CLK_PERIOD);
+        SW_GES_HW_D : #1ps; 
+      endcase 
     end
     
-    if (FRAMEWORK == 0) begin
-      flChecker.setDisabled();
-      flMonitor.setDisabled();
-      flCoverage.setDisabled();
-    end
-    if (FRAMEWORK == 1) begin
-      inputWrapper.setDisabled();
-      outputWrapper.setDisabled();
-      sorter.setDisabled();
-      flOutCnt.setDisabled();
-      assertReporter.setDisabled();
-      sigReporter.setDisabled();
-    end  
+    priority case (FRAMEWORK)
+      SW_FULL     : begin
+                      flChecker.setDisabled();
+                      flMonitor.setDisabled();
+                      flCoverage.setDisabled();
+                    end
+      SW_DES_HW_G : begin
+                      outputWrapper.setDisabled();
+                      sorter.setDisabled();
+                      flGenOutCnt.setDisabled();
+                      flChecker.setEnabled();
+                      flMonitor.setEnabled();
+                      flCoverage.setEnabled();
+                      res = c_closeDMAChannel();  
+                      $write("CLOSING CHANNEL (expected 0): %d\n",res);
+                    end  
+      SW_GES_HW_D : begin
+                      inputWrapper.setDisabled();
+                      outputWrapper.setDisabled();
+                      sorter.setDisabled();
+                      flOutCnt.setDisabled();
+                      assertReporter.setDisabled();
+                      sigReporter.setDisabled();
+                    end
+    endcase 
   endtask : disableTestEnvironment
 
   /*
    *  Test cases
    */
 
-  // Test Case 1
-  task test1();
+   // Test Case 1
+   task test1();
      process proc;
      proc = process::self();
      
@@ -247,35 +287,40 @@ program TEST (
      
      // Display Scoreboard and Coverage
      scoreboard.display();
-     if (FRAMEWORK == 0) flCoverage.display();
-  endtask: test1
+     
+     priority case (FRAMEWORK)
+       SW_FULL     : flCoverage.display();
+       SW_DES_HW_G : flCoverage.display();
+     endcase 
+   endtask: test1
 
   /*
    *  Main test part
    */
-  initial begin
-    // Design Environment
-    resetDesign();                      
-    createEnvironment();                
+   initial begin
+     // Design Environment
+     resetDesign();                      
+     createEnvironment();                
     
-    // Testing
-    test1();      
+     // Testing
+     test1();      
         
-    // Stop testing
-    $stop();       
-  end
+     // Stop testing
+     $stop();       
+   end
   
-  // final section for assertion reports
-  final begin
-	  int res;
-    if (FRAMEWORK == 0) begin
-      scoreboard.displayTrans();
-    end
-		
-		if (FRAMEWORK == 1) begin 
-		  res = c_closeDMAChannel();  
-      $write("CLOSING CHANNEL (musi byt 0): %d\n",res); 
-    end    
-  end
+   // final section for assertion reports
+   final begin
+	   int res;
+    
+     priority case (FRAMEWORK)
+       SW_FULL     : scoreboard.displayTrans();
+       SW_DES_HW_G : scoreboard.displayTrans();
+       SW_GES_HW_D : begin
+                       res = c_closeDMAChannel();  
+                       $write("CLOSING CHANNEL (musi byt 0): %d\n",res);
+                     end 
+     endcase 
+   end
 endprogram
 

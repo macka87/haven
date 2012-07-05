@@ -47,6 +47,13 @@
     */
     virtual function void fread (int fileDescr);
     endfunction : fread  
+    
+   /*!
+    * Configure HW registers according to constraints in SW in order to generate
+    * transactions drectly in HW.    
+    */
+    virtual function void configureRegisters(int transCount);
+    endfunction : configureRegisters  
 
    /*!
     * Compares the current value of the object instance with the current value
@@ -65,7 +72,7 @@
     virtual function bit compare(input Transaction to, 
                                  output string diff, input int kind = -1);
       return 1'b0;
-    endfunction : compare
+    endfunction : compare   
  endclass : Transaction  
  
    /*

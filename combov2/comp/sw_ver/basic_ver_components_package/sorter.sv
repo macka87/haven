@@ -74,9 +74,10 @@
         monitorID =  ntr.data[0];
 
         priority case (monitorID)
-          8'h88 : mbx[0].put(tr);
-          8'hAA : mbx[1].put(tr);
-          8'hBB : mbx[2].put(tr);
+          8'h88 : mbx[0].put(tr); // FL Output Controller mailbox 
+          8'hAA : mbx[1].put(tr); // Assertion Reporter mailbox
+          8'hBB : mbx[2].put(tr); // Signal Reporter mailbox 
+          8'hEA : mbx[3].put(tr); // FL Generator Controller mailbox 
           default : begin
                       $error("!!!SORTER: Unknown Output Controller Identifier!!!\n");
                       $finish();

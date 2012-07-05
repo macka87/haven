@@ -71,9 +71,9 @@ typedef TransactionTable#(1) TransactionTableType;
       
       $cast(tr, transaction);
       
-      if (FRAMEWORK == 0)
+      if (FRAMEWORK == SW_FULL)
         sc_table.add(tr);
-      if (FRAMEWORK == 1) 
+      else 
         c_addToTable(tr.data[0]);
     endtask : post_tr
  endclass : ScoreboardInputCbs
@@ -128,7 +128,7 @@ typedef TransactionTable#(1) TransactionTableType;
       bit status=0;
       int res;
       
-      if (FRAMEWORK == 0)begin
+      if (FRAMEWORK == SW_FULL)begin
         sc_table.remove(transaction, status);
        
         if (status==0)begin
@@ -142,7 +142,7 @@ typedef TransactionTable#(1) TransactionTableType;
         end;
       end  
 
-      if (FRAMEWORK == 1) begin 
+      else begin
         $cast(tr, transaction);
         res = c_removeFromTable(tr.data[0]);
         if (res==1)begin 
@@ -195,9 +195,9 @@ typedef TransactionTable#(1) TransactionTableType;
     * 
     */
     task display();
-      if (FRAMEWORK == 0)
+      if (FRAMEWORK == SW_FULL)
         scoreTable.display(0, "FIFO Scoreboard");
-      if (FRAMEWORK == 1)  
+     else
         c_displayTable(); 
     endtask
 
