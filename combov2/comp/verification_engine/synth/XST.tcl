@@ -35,7 +35,8 @@ set TOP_LEVEL_ENT "VERIFICATION_ENGINE"
 
 # the architecture of the verification engine
 #set VER_ENG_ARCH  "CORE"
-set VER_ENG_ARCH  "HW_GEN"
+#set VER_ENG_ARCH  "HW_GEN"
+set VER_ENG_ARCH  "HW_GEN_CORE"
 
 # specify vhdl_design directory
 set FIRMWARE_BASE  "../../.."

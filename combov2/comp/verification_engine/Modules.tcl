@@ -51,3 +51,23 @@ if { $ARCHGRP == "HW_GEN" } {
      [ list "FL_RAND_GEN"      $FL_RAND_GEN_BASE    "FULL"] \
    ]]
 }
+
+##############################################################################
+# The HW_GEN_CORE architecture contains CORE and HW_GEN, namely:
+#
+#   * random number generator
+#   * FrameLink adapter
+#   * driver
+#   * verification core
+#   * monitor
+#   * assertion checker at the output interface
+#   * signal observer
+##############################################################################
+if { $ARCHGRP == "HW_GEN_CORE" } {
+  set MOD "$MOD $ENTITY_BASE/verification_engine_hw_gen_core.vhd"
+
+   set COMPONENTS [concat $COMPONENTS [list \
+     [ list "VER_CORE"           $VER_CORE_BASE         "FULL"] \
+     [ list "FL_RAND_GEN"        $FL_RAND_GEN_BASE      "FULL"] \
+   ]]
+}

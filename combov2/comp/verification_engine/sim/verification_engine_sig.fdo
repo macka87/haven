@@ -5,11 +5,20 @@
 #
 
 # Paths
-set TB_PATH                  "/testbench"
-set VERIFICATION_ENGINE_PATH   "/testbench/uut"
+set TB_PATH                    "/testbench"
+set VERIFICATION_ENGINE_PATH   "$TB_PATH/uut"
+set FL_RAND_GEN_PATH           "$VERIFICATION_ENGINE_PATH/fl_rand_gen_i"
+set FL_ADAPTER_PATH            "$FL_RAND_GEN_PATH/fl_adapter_i"
+set VER_CORE_PATH              "$VERIFICATION_ENGINE_PATH/ver_core_i"
+set FL_DRIVER_PATH             "$VER_CORE_PATH/fl_hw_driver_i"
+set FL_DRIVER_CTRL_PATH        "$FL_DRIVER_PATH/fl_driver_ctrl_i"
+set TX_ASYNC_FL_UNIT_PATH      "$FL_DRIVER_PATH/tx_async_fl_unit_i"
 
 # include signals
 source      "signals.fdo"
+source      "../../verification_core/sim/signals.fdo"
+source      "../../hw_ver/fl_adapter/sim/signals.fdo"
+source      "../../hw_ver/fl_hw_driver/sim/signals.fdo"
 source      "../../hw_ver/fl_hw_driver/fl_driver_ctrl/sim/signals.fdo"
 source      "../../hw_ver/fl_hw_driver/tx_async_fl_unit/sim/signals.fdo"
 
@@ -25,6 +34,35 @@ add wave -divider "INTERFACE"
 add wave -divider "****************************"
 blk_VER_ENGINE              $VERIFICATION_ENGINE_PATH
 
+add wave -divider "****************************"
+add wave -divider "FL Adapter"
+add wave -divider "****************************"
+blk_ADAPTER_UNIT            $FL_ADAPTER_PATH
+
+add wave -divider "****************************"
+add wave -divider "Verification Core" 
+add wave -divider "****************************"
+blk_VER_CORE                $VER_CORE_PATH
+
+add wave -divider "****************************"
+add wave -divider "DUT INTERFACE" 
+add wave -divider "****************************"
+blk_VER_CORE_DUT_IFC        $VER_CORE_PATH
+
+add wave -divider "****************************"
+add wave -divider "FL DRIVER" 
+add wave -divider "****************************"
+blk_DRIVER_UNIT             $FL_DRIVER_PATH
+
+add wave -divider "****************************"
+add wave -divider "FL DRIVER CTRL" 
+add wave -divider "****************************"
+blk_FL_DRIVER_CTRL_IFC      $FL_DRIVER_CTRL_PATH
+
+add wave -divider "****************************"
+add wave -divider "FL ASYNC TX UNIT" 
+add wave -divider "****************************"
+blk_ASYNC_UNIT              $TX_ASYNC_FL_UNIT_PATH
 
 restart -f
 run 5 us

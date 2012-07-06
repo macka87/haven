@@ -32,10 +32,14 @@ architecture test of testbench is
    -- clock period
    constant CLK_PERIOD  : time := 10 ns;
 
-   constant RUN_REG_ADDR      : std_logic_vector(31 downto 0) := X"00000000";
-   constant TRANS_REG_ADDR    : std_logic_vector(31 downto 0) := X"00000004";
-   constant PART_NUM_REG_ADDR : std_logic_vector(31 downto 0) := X"00000010";
-   constant PART_SIZE_REG_ADDR: std_logic_vector(31 downto 0) := X"00000080";
+   constant VER_CORE_ADDR     : std_logic_vector(31 downto 0) := X"00000000";
+
+   constant GEN_RUN_ADDR      : std_logic_vector(31 downto 0) := X"00100000";
+
+   constant RUN_REG_ADDR      : std_logic_vector(31 downto 0) := X"00101000";
+   constant TRANS_REG_ADDR    : std_logic_vector(31 downto 0) := X"00101004";
+   constant PART_NUM_REG_ADDR : std_logic_vector(31 downto 0) := X"00101010";
+   constant PART_SIZE_REG_ADDR: std_logic_vector(31 downto 0) := X"00101080";
    constant PART_REG_OFFSET   : integer := 16;
    constant PART_MASK_OFFSET  : integer := 0;
    constant PART_BASE_OFFSET  : integer := 4;
@@ -211,6 +215,7 @@ begin
 
       -- initialization of registers
 
+
       mi32_wr    <= '1';
 
       -- ----------- PARTS NUM --------------
@@ -362,12 +367,17 @@ begin
       mi32_dwr   <= conv_std_logic_vector(TRANSACTION_COUNT, 32);
       wait until rising_edge(clk);
 
-      -- -------------- RUN ------------------
-      mi32_addr  <= RUN_REG_ADDR;
+      -- -------------- RUN GENERATOR --------
+      mi32_addr  <= GEN_RUN_ADDR;
       mi32_dwr   <= X"00000001";
       wait until rising_edge(clk);
 
+      -- -------------- RUN ADAPTER ----------
+      mi32_addr  <= RUN_REG_ADDR;
+      mi32_dwr   <= X"00000001";
+      wait until rising_edge(clk);
       mi32_wr    <= '0';
+
 
       wait;
    end process;
