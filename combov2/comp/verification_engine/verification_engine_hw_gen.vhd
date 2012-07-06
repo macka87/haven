@@ -149,12 +149,12 @@ begin
       PORT0_LIMIT   => X"00100000",
 
       -- PORT1: 0x00100000 -- 0x001FFFFF
-      PORT0_BASE    => X"00100000",
-      PORT0_LIMIT   => X"00100000",
+      PORT1_BASE    => X"00100000",
+      PORT1_LIMIT   => X"00100000",
 
       -- Input pipeline
-      PIPE          => true,
-      PIPE_OUTREG   => true
+      PIPE          => false,
+      PIPE_OUTREG   => false
    )
    port map(
       -- Common interface -----------------------------------------------------

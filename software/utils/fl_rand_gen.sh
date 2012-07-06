@@ -2,6 +2,10 @@
 
 CSBUS=csbus
 
+
+
+COUNT=1
+
 #########################################
 # The address space
 #########################################
@@ -39,12 +43,12 @@ ${CSBUS}    ${NUM_PARTS_BASE}    "00"
 ${CSBUS}    ${NUM_PARTS_MAX}     "00"
 
 # set the range of size of the part 0
-${CSBUS}    ${PART0_SIZE_MASK}    "FF"
-${CSBUS}    ${PART0_SIZE_BASE}    "00"
-${CSBUS}    ${PART0_SIZE_MAX}     "FF"
+${CSBUS}    ${PART0_SIZE_MASK}    "3F"
+${CSBUS}    ${PART0_SIZE_BASE}    "01"
+${CSBUS}    ${PART0_SIZE_MAX}     "20"
 
 # set the desired number of transactions
-${CSBUS}    ${TRANS_COUNT}       "10"
+${CSBUS}    ${TRANS_COUNT}       ${COUNT}
 
 # start the random number generator
 ${CSBUS}    ${RND_GEN_RUN}       "1"
