@@ -2,9 +2,13 @@
 
 CSBUS=csbus
 
+if [ $# != 1 ] ; then
+  echo "Usage: $0 TRANSACTION_COUNT"
+  exit 1
+fi
 
 
-COUNT=1
+COUNT=$1
 
 #########################################
 # The address space
