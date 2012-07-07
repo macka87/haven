@@ -27,8 +27,10 @@ entity PACKETIZER is
       DATA_WIDTH       : integer := 64;
       -- maximum frame length in bytes
       FRAME_LENGTH     : integer := 4096;
-      -- Endpoint ID for NetCOPE protocol
-      ENDPOINT_ID      : integer := 64
+      -- Endpoint ID
+      ENDPOINT_ID      : std_logic_vector(7 downto 0);
+      -- ID of the protocol
+      PROTOCOL_ID      : std_logic_vector(7 downto 0)
    );
 
    port
@@ -74,13 +76,6 @@ constant WORD_CNT_MAX_VALUE   : integer := FRAME_LENGTH/(DATA_WIDTH/8)-1;
 
 -- width of the frame word counter
 constant WORD_CNT_WIDTH         : integer := log2(WORD_CNT_MAX_VALUE);
-
--- types of transactions
-constant OBSERVER_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"8B";
-
--- endpoint tag
-constant ENDPOINT_TAG : std_logic_vector(7 downto 0) :=
-   conv_std_logic_vector(ENDPOINT_ID, 8);
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -138,8 +133,8 @@ begin
 
    -- data in the header
    header_data(63 downto 16) <= (others => '0');
-   header_data(15 downto  8) <= OBSERVER_PROTOCOL_ID;
-   header_data(7  downto  0) <= ENDPOINT_TAG;
+   header_data(15 downto  8) <= PROTOCOL_ID;
+   header_data(7  downto  0) <= ENDPOINT_ID;
 
    -- ------------------- data multiplexer ----------------------
    mux_p: process(sig_rx_data, header_data, is_sending_header)

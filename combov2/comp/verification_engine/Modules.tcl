@@ -6,6 +6,7 @@
 
 # Set paths
 set COMP_BASE              "$ENTITY_BASE/.."
+set FIRMWARE_BASE          "$COMP_BASE/.."
 set FL_BASE                "$COMP_BASE/fl_tools"
 
 set FL_ADDER_BASE          "$FL_BASE/edit/netcope_adder"
@@ -45,6 +46,9 @@ if { $ARCHGRP == "CORE" } {
 #   * FrameLink adapter
 ##############################################################################
 if { $ARCHGRP == "HW_GEN" } {
+  # Source the HAVEN package
+  set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
+
   set MOD "$MOD $ENTITY_BASE/verification_engine_hw_gen.vhd"
 
    set COMPONENTS [concat $COMPONENTS [list \
@@ -64,6 +68,9 @@ if { $ARCHGRP == "HW_GEN" } {
 #   * signal observer
 ##############################################################################
 if { $ARCHGRP == "HW_GEN_CORE" } {
+  # Source the HAVEN package
+  set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
+
   set MOD "$MOD $ENTITY_BASE/verification_engine_hw_gen_core.vhd"
 
    set COMPONENTS [concat $COMPONENTS [list \

@@ -21,9 +21,11 @@ entity FL_ADAPTER_UNIT is
    generic
    (
       -- data width
-      DATA_WIDTH  : integer := 64;
-      -- endpoint id
-      ENDPOINT_ID : integer := 0
+      DATA_WIDTH     : integer := 64;
+      -- endpoint ID
+      ENDPOINT_ID    : std_logic_vector(7 downto 0);
+      -- ID of the FrameLink protocol
+      FL_PROTOCOL_ID : std_logic_vector(7 downto 0)
    );
 
    port
@@ -74,13 +76,6 @@ type state_type is (data_header_state, data_content_state, delay_header_state,
 
 -- the maximum number of parts in a frame
 constant MAX_PARTS        : integer := 8;
-
--- endpoint tag
-constant ENDPOINT_TAG     : std_logic_vector(7 downto 0) :=
-   conv_std_logic_vector(ENDPOINT_ID, 8);
-      
--- FrameLink protocol ID
-constant FL_PROTOCOL_ID   : std_logic_vector(7 downto 0) := X"90";
 
 -- data transaction type 
 constant DATA_TRANS_TYPE  : std_logic_vector(7 downto 0) := X"00";
@@ -390,7 +385,7 @@ begin
    sig_header(31 downto 24) <= X"00";
    sig_header(23 downto 16) <= X"00";
    sig_header(15 downto 8)  <= FL_PROTOCOL_ID;
-   sig_header( 7 downto 0)  <= ENDPOINT_TAG;
+   sig_header( 7 downto 0)  <= ENDPOINT_ID;
 
    -- the data header
    sig_data_header(63 downto 40) <= sig_header(63 downto 40);

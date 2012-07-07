@@ -6,6 +6,7 @@
 
 # Set paths
 set COMP_BASE              "$ENTITY_BASE/.."
+set FIRMWARE_BASE          "$COMP_BASE/.."
 set FL_BASE                "$COMP_BASE/fl_tools"
 
 set FL_ASFIFO_BASE         "$FL_BASE/storage/asfifo"
@@ -21,6 +22,9 @@ set FL_FIFO_BASE           "$FL_BASE/storage/fifo"
 set FL_BINDER_BASE         "$FL_BASE/flow/binder"
 set HGEN_BASE              "$COMP_BASE/hgen"
 set ERRONEOUS_FL_FIFO_BASE "$COMP_BASE/erroneous_fl_fifo"
+
+# Source the HAVEN package
+set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
 
 # Source files
 set MOD "$MOD $ENTITY_BASE/verification_core_ent.vhd"

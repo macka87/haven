@@ -23,7 +23,10 @@ entity FL_HW_MONITOR_SMART is
       -- data width
       IN_DATA_WIDTH  : integer := 64;
       OUT_DATA_WIDTH : integer := 64;
-      ENDPOINT_ID    : integer
+      -- ID of the endpoint
+      ENDPOINT_ID    : std_logic_vector(7 downto 0);
+      -- ID of the FrameLink protocol
+      FL_PROTOCOL_ID : std_logic_vector(7 downto 0)
    );
 
    port
@@ -236,7 +239,8 @@ begin
    monitor_packetizer_i : entity work.MONITOR_PACKETIZER
    generic map(
       DATA_WIDTH      => OUT_DATA_WIDTH,
-      ENDPOINT_ID     => ENDPOINT_ID
+      ENDPOINT_ID     => ENDPOINT_ID,
+      PROTOCOL_ID     => FL_PROTOCOL_ID
    )
    port map(
       CLK             => TX_CLK,

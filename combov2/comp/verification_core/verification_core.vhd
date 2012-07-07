@@ -10,6 +10,9 @@ use ieee.std_logic_1164.all;
 -- math package
 use work.math_pack.all;
 
+-- HAVEN constants
+use work.haven_const.all;
+
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
@@ -362,7 +365,8 @@ icon_i : icon3
       -- FrameLink data width
      IN_DATA_WIDTH   => DUT_DATA_WIDTH,
      OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
-     ENDPOINT_ID     => 136   -- 88 hexa
+     ENDPOINT_ID     => ENDPOINT_ID_MONITOR,
+     FL_PROTOCOL_ID  => PROTO_OUT_FRAMELINK
    )
    port map(
       -- input clock domain
@@ -403,8 +407,9 @@ icon_i : icon3
   fl_val_checker_i: entity work.FL_VAL_CHECKER
    generic map(
       -- FrameLink data width
-     OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
-     ENDPOINT_ID     => 170   -- AA hexa
+     OUT_DATA_WIDTH     => ENV_DATA_WIDTH,
+     ENDPOINT_ID        => ENDPOINT_ID_VAL_CHECKER,
+     FL_VAL_CH_PROTO_ID => PROTO_OUT_FL_VAL_CHECKER
    )
    port map(
       -- input clock domain
@@ -444,11 +449,12 @@ icon_i : icon3
   out_signal_observer_i: entity work.FL_OBSERVER
    generic map(
       -- FrameLink data width
-     IN_DATA_WIDTH   => DUT_DATA_WIDTH,
-     OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
-     ENDPOINT_ID     => 187,   -- BB hexa
-     LIMIT_FRAMES    => true,
-     SEND_X_FRAMES   => 0
+     IN_DATA_WIDTH       => DUT_DATA_WIDTH,
+     OUT_DATA_WIDTH      => ENV_DATA_WIDTH,
+     ENDPOINT_ID         => ENDPOINT_ID_SIG_OBSERV,
+     FL_OBS_PROTOCOL_ID  => PROTO_OUT_FL_SIG_OBS,
+     LIMIT_FRAMES        => true,
+     SEND_X_FRAMES       => 0
    )
    port map(
       -- input clock domain

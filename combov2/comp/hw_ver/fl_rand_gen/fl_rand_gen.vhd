@@ -13,39 +13,41 @@ use work.math_pack.all;
 
 -- generator of random FrameLink frames
 entity FL_RAND_GEN is
-  generic(
-     -- the width of the output FrameLink
-     DATA_WIDTH   : integer := 64;
-     -- ID of the endpoint that is the destination of the generated frames
-     ENDPOINT_ID  : integer := 0
-  );
-  
-  port
-  (
-     -- common signals
-     CLK         : in  std_logic;
-     RESET       : in  std_logic;
-
-     -- MI32 interface
-     MI_DWR    :  in std_logic_vector(31 downto 0);
-     MI_ADDR   :  in std_logic_vector(31 downto 0);
-     MI_RD     :  in std_logic;
-     MI_WR     :  in std_logic;
-     MI_BE     :  in std_logic_vector( 3 downto 0);
-     MI_DRD    : out std_logic_vector(31 downto 0);
-     MI_ARDY   : out std_logic;
-     MI_DRDY   : out std_logic;
-
-     -- output FrameLink
-     TX_DATA     : out std_logic_vector(DATA_WIDTH-1 downto 0);
-     TX_REM      : out std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
-     TX_SOF_N    : out std_logic;
-     TX_EOF_N    : out std_logic;
-     TX_SOP_N    : out std_logic;
-     TX_EOP_N    : out std_logic;
-     TX_SRC_RDY_N: out std_logic;
-     TX_DST_RDY_N:  in std_logic
-  );
+   generic(
+      -- the width of the output FrameLink
+      DATA_WIDTH      : integer := 64;
+      -- ID of the endpoint that is the destination of the generated frames
+      ENDPOINT_ID     : std_logic_vector(7 downto 0);
+      -- ID of the FrameLink protocol
+      FL_PROTOCOL_ID  : std_logic_vector(7 downto 0)
+   );
+   
+   port
+   (
+      -- common signals
+      CLK         : in  std_logic;
+      RESET       : in  std_logic;
+ 
+      -- MI32 interface
+      MI_DWR    :  in std_logic_vector(31 downto 0);
+      MI_ADDR   :  in std_logic_vector(31 downto 0);
+      MI_RD     :  in std_logic;
+      MI_WR     :  in std_logic;
+      MI_BE     :  in std_logic_vector( 3 downto 0);
+      MI_DRD    : out std_logic_vector(31 downto 0);
+      MI_ARDY   : out std_logic;
+      MI_DRDY   : out std_logic;
+ 
+      -- output FrameLink
+      TX_DATA     : out std_logic_vector(DATA_WIDTH-1 downto 0);
+      TX_REM      : out std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+      TX_SOF_N    : out std_logic;
+      TX_EOF_N    : out std_logic;
+      TX_SOP_N    : out std_logic;
+      TX_EOP_N    : out std_logic;
+      TX_SRC_RDY_N: out std_logic;
+      TX_DST_RDY_N:  in std_logic
+   );
 end entity;
 
 -- ==========================================================================
@@ -208,8 +210,9 @@ begin
    -- the FrameLink adapter -------------------------------------------------
    fl_adapter_i: entity work.fl_adapter_unit
    generic map(
-     DATA_WIDTH   => DATA_WIDTH,
-     ENDPOINT_ID  => ENDPOINT_ID
+     DATA_WIDTH     => DATA_WIDTH,
+     ENDPOINT_ID    => ENDPOINT_ID,
+     FL_PROTOCOL_ID => FL_PROTOCOL_ID
    )
    port map(
      -- common signals

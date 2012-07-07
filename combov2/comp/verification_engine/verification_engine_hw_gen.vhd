@@ -10,6 +10,9 @@ use ieee.std_logic_1164.all;
 -- math package
 use work.math_pack.all;
 
+-- HAVEN constants
+use work.haven_const.all;
+
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
@@ -204,7 +207,9 @@ begin
       -- the output FrameLink width
       DATA_WIDTH     => DATA_WIDTH,
       -- ID of the destination endpoint
-      ENDPOINT_ID    => 16#EA#
+      ENDPOINT_ID    => ENDPOINT_ID_FL_RAND_GEN,
+      -- ID of the FrameLink protocol
+      FL_PROTOCOL_ID => PROTO_IN_FRAMELINK
    )
    port map(
       -- input clock domain

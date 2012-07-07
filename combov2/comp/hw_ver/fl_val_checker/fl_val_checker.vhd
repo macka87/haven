@@ -19,8 +19,12 @@ use work.math_pack.all;
 entity FL_VAL_CHECKER is
    generic
    (
-      OUT_DATA_WIDTH : integer := 64;
-      ENDPOINT_ID    : integer
+      -- data width of the output
+      OUT_DATA_WIDTH     : integer := 64;
+      -- ID of the endpoint
+      ENDPOINT_ID        : std_logic_vector(7 downto 0);
+      -- ID of the FL validity checker protocol
+      FL_VAL_CH_PROTO_ID : std_logic_vector(7 downto 0)
    );
    port
    (
@@ -85,15 +89,8 @@ architecture arch of FL_VAL_CHECKER is
    constant DATA_FIFO_WIDTH : integer := ERROR_BITMAP_WIDTH + TIME_CNT_WIDTH
       + FRAME_CNT_WIDTH;
 
-   -- FrameLink protocol ID
-   constant FL_VAL_CHECKER_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"90";
-
    -- transaction type for invalid frame
    constant INVALID_TRANS_TYPE         :  std_logic_vector(7 downto 0) := X"EE";
-
-   -- endpoint tag
-   constant ENDPOINT_TAG : std_logic_vector(7 downto 0) :=
-      conv_std_logic_vector(ENDPOINT_ID, 8);
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -295,8 +292,8 @@ begin
    header_data(39 downto 32) <= INVALID_TRANS_TYPE;
    header_data(31 downto 24) <= X"00";
    header_data(23 downto 16) <= X"00";
-   header_data(15 downto  8) <= FL_VAL_CHECKER_PROTOCOL_ID;
-   header_data( 7 downto  0) <= ENDPOINT_TAG;
+   header_data(15 downto  8) <= FL_VAL_CH_PROTO_ID;
+   header_data( 7 downto  0) <= ENDPOINT_ID;
 
    -- create the timestamp word
    timestamp_data  <= sig_data_fifo_rd_data(TIMESTAMP_OFFSET+TIME_CNT_WIDTH-1

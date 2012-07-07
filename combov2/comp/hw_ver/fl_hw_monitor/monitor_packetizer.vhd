@@ -22,8 +22,11 @@ entity MONITOR_PACKETIZER is
    generic
    (
       -- data width
-      DATA_WIDTH  : integer := 64;
-      ENDPOINT_ID : integer
+      DATA_WIDTH     : integer := 64;
+      -- ID of the endpoint
+      ENDPOINT_ID    : std_logic_vector(7 downto 0);
+      -- ID of the FrameLink protocol
+      PROTOCOL_ID    : std_logic_vector(7 downto 0)
    );
 
    port
@@ -73,13 +76,6 @@ constant HEADER_WIDTH : integer := 8;
 
 -- output transaction type
 constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
-
--- FrameLink protocol ID
-constant FRAMELINK_PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"80";
-
--- endpoint tag
-constant ENDPOINT_TAG : std_logic_vector(7 downto 0) :=
-   conv_std_logic_vector(ENDPOINT_ID, 8);
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -281,8 +277,8 @@ begin
    header_data(39 downto 32) <= DATA_TYPE;
    header_data(31 downto 24) <= X"00";
    header_data(23 downto 16) <= X"00";
-   header_data(15 downto  8) <= FRAMELINK_PROTOCOL_ID;
-   header_data( 7 downto  0) <= ENDPOINT_TAG;
+   header_data(15 downto  8) <= PROTOCOL_ID;
+   header_data( 7 downto  0) <= ENDPOINT_ID;
    header_rem  <= (others => '1');
 
    -- output signal multiplexer
