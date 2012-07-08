@@ -1,0 +1,57 @@
+# signals.fdo : Include file with signals
+# Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
+
+view wave
+delete wave *
+
+proc blk_MONITOR_PACKETIZER_NEW_PROTOCOL { BASE } {
+  add_wave "-noupdate -label CLK"    $BASE/CLK
+  add_wave "-noupdate -label RESET"  $BASE/RESET
+
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label RX_DATA -hex" $BASE/RX_DATA
+  add_wave "-noupdate -label RX_REM  -hex" $BASE/RX_REM
+  add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
+  add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
+  add_wave "-noupdate -label RX_SOP_N"     $BASE/RX_SOP_N
+  add_wave "-noupdate -label RX_EOP_N"     $BASE/RX_EOP_N
+  add_wave "-noupdate -label RX_SOF_N"     $BASE/RX_SOF_N
+  add_wave "-noupdate -label RX_EOF_N"     $BASE/RX_EOF_N
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+  add_wave "-noupdate -label TX_REM  -hex" $BASE/TX_REM
+  add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+  add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+  add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
+  add_wave "-noupdate -label TX_EOP_N"     $BASE/TX_EOP_N
+  add_wave "-noupdate -label TX_SOF_N"     $BASE/TX_SOF_N
+  add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
+}
+
+proc blk_MONITOR_PACKETIZER_NEW_PROTOCOL_INTERNALS { BASE } {
+  add wave -divider "Internals"
+  add_wave "-noupdate -label state_reg"            $BASE/state_reg
+  add_wave "-noupdate -label state_next"           $BASE/state_next
+  add_wave "-noupdate -label fsm_en"               $BASE/fsm_en
+  add_wave "-noupdate -label sig_last_segment"     $BASE/sig_last_segment
+  add_wave "-noupdate -label sig_is_accepting"     $BASE/sig_is_accepting
+  add_wave "-noupdate -label mux_eop_n_out"        $BASE/mux_eop_n_out
+  add_wave "-noupdate -label mux_src_rdy_n_out"    $BASE/mux_src_rdy_n_out
+  add_wave "-noupdate -label mux_src_rdy_n_sel"    $BASE/mux_src_rdy_n_sel
+  add_wave "-noupdate -label cnt_length"           $BASE/cnt_length
+  add_wave "-noupdate -label cnt_length_load -hex" $BASE/cnt_length_load
+  add_wave "-noupdate -label cnt_length_en"        $BASE/cnt_length_en
+  add_wave "-noupdate -label cmp_cnt_length_zero"  $BASE/cmp_cnt_length_zero
+
+  add wave -divider "Buffer FIFO input"
+  add_wave "-noupdate -label rx_buffer_fifo_data -hex" $BASE/rx_buffer_fifo_data
+  add_wave "-noupdate -label rx_buffer_fifo_rem  -hex" $BASE/rx_buffer_fifo_rem
+  add_wave "-noupdate -label rx_buffer_fifo_src_rdy_n" $BASE/rx_buffer_fifo_src_rdy_n
+  add_wave "-noupdate -label rx_buffer_fifo_dst_rdy_n" $BASE/rx_buffer_fifo_dst_rdy_n
+  add_wave "-noupdate -label rx_buffer_fifo_sop_n"     $BASE/rx_buffer_fifo_sop_n
+  add_wave "-noupdate -label rx_buffer_fifo_eop_n"     $BASE/rx_buffer_fifo_eop_n
+  add_wave "-noupdate -label rx_buffer_fifo_sof_n"     $BASE/rx_buffer_fifo_sof_n
+  add_wave "-noupdate -label rx_buffer_fifo_eof_n"     $BASE/rx_buffer_fifo_eof_n
+
+}
