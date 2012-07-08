@@ -377,10 +377,10 @@ begin
    end process; 
    
    -- the universal header
-   sig_header(63 downto 50) <= (others => '0');
-   sig_header(49)           <= sig_frame_last_in_frame;
-   sig_header(48)           <= sig_frame_last_in_part;
-   sig_header(47 downto 40) <= X"00";
+   sig_header(63 downto 58) <= (others => '0');
+   sig_header(57)           <= sig_frame_last_in_part;
+   sig_header(56)           <= sig_frame_last_in_frame;
+   sig_header(55 downto 40) <= (others => '0');
    sig_header(39 downto 32) <= X"00";    -- for the transaction type
    sig_header(31 downto 24) <= X"00";
    sig_header(23 downto 16) <= X"00";
