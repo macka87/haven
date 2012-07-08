@@ -207,7 +207,8 @@ begin
 
    --
    output_reg_rdy_in <= mux_will_be_sent_out;
-   output_reg_write  <= sig_is_immediate OR impulse_cnt_zero_impulse;
+   output_reg_write  <=     (sig_is_immediate OR impulse_cnt_zero_impulse)
+                        AND (NOT sig_delay_empty);
 
    -- the output register
    output_reg_i: entity work.OUTPUT_REG
@@ -232,16 +233,16 @@ begin
 
    --
    reg_next_read_set <= sig_src_rdy AND sig_dst_rdy;
-   reg_next_read_clr <= reg_next_read;
+   reg_next_read_clr <= reg_next_read AND (NOT sig_delay_empty);
 
    -- register being set when there should be a read from the FIFO in the
    -- following clock cycle
-   reg_next_read_p: process(CLK)
+   reg_next_read_p: process(CLK, RESET)
    begin
-      if (rising_edge(CLK)) then
-         if (RESET = '1') then
-            reg_next_read <= '1';
-         elsif (reg_next_read_set = '1') then
+      if (RESET = '1') then
+         reg_next_read <= '1';
+      elsif (rising_edge(CLK)) then
+         if (reg_next_read_set = '1') then
             reg_next_read <= '1';
          elsif (reg_next_read_clr = '1') then
             reg_next_read <= '0';

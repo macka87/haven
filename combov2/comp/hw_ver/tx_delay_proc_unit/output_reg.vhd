@@ -98,12 +98,12 @@ begin
    reg_valid_set <= sig_write;
 
    -- the register denoting validity of reg_out_rdy
-   reg_valid_p: process(CLK)
+   reg_valid_p: process(CLK, RESET)
    begin
-      if (rising_edge(CLK)) then
-         if (RESET = '1') then
-            reg_valid <= '0';
-         elsif (reg_valid_clr = '1') then
+      if (RESET = '1') then
+         reg_valid <= '0';
+      elsif (rising_edge(CLK)) then
+         if (reg_valid_clr = '1') then
             reg_valid <= '0';
          elsif (reg_valid_set = '1') then
             reg_valid <= '1';
