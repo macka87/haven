@@ -35,6 +35,7 @@ architecture test of testbench is
    constant VER_CORE_ADDR     : std_logic_vector(31 downto 0) := X"00000000";
 
    constant GEN_RUN_ADDR      : std_logic_vector(31 downto 0) := X"00100000";
+   constant GEN_SEED_ADDR     : std_logic_vector(31 downto 0) := X"00100004";
 
    constant RUN_REG_ADDR      : std_logic_vector(31 downto 0) := X"00101000";
    constant TRANS_REG_ADDR    : std_logic_vector(31 downto 0) := X"00101004";
@@ -365,6 +366,11 @@ begin
       -- ------- TRANSACTION COUNT -----------
       mi32_addr  <= TRANS_REG_ADDR;
       mi32_dwr   <= conv_std_logic_vector(TRANSACTION_COUNT, 32);
+      wait until rising_edge(clk);
+
+      -- -------------- GENERATOR SEED --------
+      mi32_addr  <= GEN_SEED_ADDR;
+      mi32_dwr   <= X"00011ACA";
       wait until rising_edge(clk);
 
       -- -------------- RUN GENERATOR --------
