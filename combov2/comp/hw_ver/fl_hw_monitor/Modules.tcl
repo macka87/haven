@@ -6,21 +6,26 @@
 
 # Set paths
 set COMP_BASE              "$ENTITY_BASE/../.."
+set FL_FIFO_BASE           "$COMP_BASE/fl_tools/storage/fifo"
 set HW_VER_BASE            "$COMP_BASE/hw_ver"
 set CDC_FIFO_BASE          "$COMP_BASE/cdc_fifo"
 set LFSR_PRNG_BASE         "$HW_VER_BASE/lfsr_prng"
 set FL_TRANSFORMER_BASE    "$COMP_BASE/fl_tools/flow/transformer"
+set FRAME_SENDER_BASE      "$HW_VER_BASE/frame_sender"
 
 # Source files
 set MOD "$MOD $ENTITY_BASE/fl_hw_monitor.vhd"
 
 # Smart monitor
 set MOD "$MOD $ENTITY_BASE/monitor_packetizer.vhd"
+set MOD "$MOD $ENTITY_BASE/monitor_packetizer_new_protocol.vhd"
 set MOD "$MOD $ENTITY_BASE/fl_hw_monitor_smart.vhd"
 
 # Componentss
 set COMPONENTS [list \
    [ list "CDC_FIFO"       $CDC_FIFO_BASE        "FULL"] \
+   [ list "FL_FIFO"        $FL_FIFO_BASE         "FULL"] \
    [ list "LFSR_PRNG"      $LFSR_PRNG_BASE       "FULL"] \
    [ list "FL_TRANSFORMER" $FL_TRANSFORMER_BASE  "FULL"] \
+   [ list "FRAME_SENDER"   $FRAME_SENDER_BASE    "FULL"] \
 ]
