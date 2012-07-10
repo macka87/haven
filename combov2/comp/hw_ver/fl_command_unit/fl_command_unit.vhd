@@ -61,12 +61,11 @@ end entity;
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
-architecture arch of FL_ADAPTER_UNIT is
+architecture arch of FL_COMMAND_UNIT is
 
 -- ==========================================================================
 --                                      TYPES
 -- ==========================================================================
-type state_type is (state_idle, state_sending);
 
 -- ==========================================================================
 --                                    CONSTANTS
@@ -88,7 +87,7 @@ signal sig_mi_drdy   : std_logic;
 
 -- output signals
 signal sig_tx_data            : std_logic_vector(DATA_WIDTH-1 downto 0);
-signal sig_tx_rem             : std_logic_vector(DREM_WIDTH-1 downto 0);
+signal sig_tx_rem             : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
 signal sig_tx_sof_n           : std_logic;
 signal sig_tx_eof_n           : std_logic;
 signal sig_tx_sop_n           : std_logic;
@@ -96,12 +95,13 @@ signal sig_tx_eop_n           : std_logic;
 signal sig_tx_src_rdy_n       : std_logic;
 signal sig_tx_dst_rdy_n       : std_logic;
 
--- the FSM
-signal reg_state    : state_type;
-signal next_state   : state_type;
-
 -- the header
 signal header       : std_logic_vector(DATA_WIDTH-1 downto 0);
+
+-- the send register
+signal reg_send        : std_logic;
+signal reg_send_set    : std_logic;
+signal reg_send_clr    : std_logic;
 
 begin
 
@@ -122,7 +122,7 @@ begin
    -- handle MI32 signals
    sig_mi_ardy      <= sig_mi_wr OR sig_mi_rd;
    sig_mi_drdy      <= sig_mi_rd;
-   sig_mi_drd       <= X"CO11A1D0";
+   sig_mi_drd       <= X"C011A1D0";
 
    --
    reg_send_set     <= sig_mi_dwr(0) AND sig_mi_wr;
@@ -150,12 +150,13 @@ begin
    header(15 downto 8)  <= FL_PROTOCOL_ID;
    header( 7 downto 0)  <= ENDPOINT_ID;
 
-   -- FrameLink control signals
-   sig_rem            <= (others => '1');
-   sig_sof_n          <= '0';
-   sig_eof_n          <= '0';
-   sig_sop_n          <= '0';
-   sig_eop_n          <= '0';
+   -- FrameLink signals
+   sig_tx_data        <= header;
+   sig_tx_rem         <= (others => '1');
+   sig_tx_sof_n       <= '0';
+   sig_tx_eof_n       <= '0';
+   sig_tx_sop_n       <= '0';
+   sig_tx_eop_n       <= '0';
    sig_tx_src_rdy_n   <= NOT reg_send;
 
    -- mapping output signals
