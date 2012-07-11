@@ -1,0 +1,80 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+proc blk_SCOREBOARD { BASE } {
+
+   add_wave "-noupdate -label CLK -color yellow"    $BASE/CLK
+   add_wave "-noupdate -label RESET -color yellow"  $BASE/RESET
+
+   add wave -divider "TEST Interface"
+   add_wave "-noupdate -hex -label RX_DATA"       $BASE/RX_DATA(63:0)
+   add_wave "-noupdate -hex -label RX_REM"        $BASE/RX_REM(2:0)
+   add_wave "-noupdate      -label RX_SOF_N    "  $BASE/RX_SOF_N(0)
+   add_wave "-noupdate      -label RX_SOP_N    "  $BASE/RX_SOP_N(0)
+   add_wave "-noupdate      -label RX_EOP_N    "  $BASE/RX_EOP_N(0)
+   add_wave "-noupdate      -label RX_EOF_N    "  $BASE/RX_EOF_N(0)
+   add_wave "-noupdate      -label RX_SRC_RDY_N"  $BASE/RX_SRC_RDY_N(0)
+   add_wave "-noupdate      -label RX_DST_RDY_N"  $BASE/RX_DST_RDY_N(0)
+
+   add wave -divider "GOLDEN MODEL Interface"
+   add_wave "-noupdate -hex -label RX_DATA"       $BASE/RX_DATA(127:64)
+   add_wave "-noupdate -hex -label RX_REM"        $BASE/RX_REM(5:3)
+   add_wave "-noupdate      -label RX_SOF_N    "  $BASE/RX_SOF_N(1)
+   add_wave "-noupdate      -label RX_SOP_N    "  $BASE/RX_SOP_N(1)
+   add_wave "-noupdate      -label RX_EOP_N    "  $BASE/RX_EOP_N(1)
+   add_wave "-noupdate      -label RX_EOF_N    "  $BASE/RX_EOF_N(1)
+   add_wave "-noupdate      -label RX_SRC_RDY_N"  $BASE/RX_SRC_RDY_N(1)
+   add_wave "-noupdate      -label RX_DST_RDY_N"  $BASE/RX_DST_RDY_N(1)
+
+   add wave -divider "Output interface"
+   add_wave "-noupdate -hex -label TX_DATA"       $BASE/TX_DATA
+   add_wave "-noupdate -hex -label TX_REM"        $BASE/TX_REM
+   add_wave "-noupdate      -label TX_SOF_N    "  $BASE/TX_SOF_N
+   add_wave "-noupdate      -label TX_SOP_N    "  $BASE/TX_SOP_N
+   add_wave "-noupdate      -label TX_EOP_N    "  $BASE/TX_EOP_N
+   add_wave "-noupdate      -label TX_EOF_N    "  $BASE/TX_EOF_N
+   add_wave "-noupdate      -label TX_SRC_RDY_N"  $BASE/TX_SRC_RDY_N
+   add_wave "-noupdate      -label TX_DST_RDY_N"  $BASE/TX_DST_RDY_N
+}
+
+proc blk_SCOREBOARD_INTERNALS { BASE } {
+   add wave -divider "Internals"
+   add_wave "-noupdate      -label sig_accepting"       $BASE/sig_accepting
+   add_wave "-noupdate      -label shared_dst_rdy_n"    $BASE/shared_dst_rdy_n
+   add_wave "-noupdate      -label or_src_rdy_n"        $BASE/or_src_rdy_n
+   add_wave "-noupdate      -label sb_checker_en"       $BASE/sb_checker_en
+   add_wave "-noupdate      -label sb_checker_mismatch" $BASE/sb_checker_mismatch
+}
+
+proc blk_SCOREBOARD_CHECKER { BASE } {
+
+   add wave -divider "TEST Input"
+   add_wave "-noupdate -hex -label RX_DATA"       $BASE/RX_DATA(63:0)
+   add_wave "-noupdate -hex -label RX_REM"        $BASE/RX_REM(2:0)
+   add_wave "-noupdate      -label RX_SOF_N    "  $BASE/RX_SOF_N(0)
+   add_wave "-noupdate      -label RX_SOP_N    "  $BASE/RX_SOP_N(0)
+   add_wave "-noupdate      -label RX_EOP_N    "  $BASE/RX_EOP_N(0)
+   add_wave "-noupdate      -label RX_EOF_N    "  $BASE/RX_EOF_N(0)
+
+   add wave -divider "GOLDEN MODEL Input"
+   add_wave "-noupdate -hex -label RX_DATA"       $BASE/RX_DATA(127:64)
+   add_wave "-noupdate -hex -label RX_REM"        $BASE/RX_REM(5:3)
+   add_wave "-noupdate      -label RX_SOF_N    "  $BASE/RX_SOF_N(1)
+   add_wave "-noupdate      -label RX_SOP_N    "  $BASE/RX_SOP_N(1)
+   add_wave "-noupdate      -label RX_EOP_N    "  $BASE/RX_EOP_N(1)
+   add_wave "-noupdate      -label RX_EOF_N    "  $BASE/RX_EOF_N(1)
+
+   add wave -divider "Misc inputs"
+   add_wave "-noupdate      -label EN          "  $BASE/EN
+   add_wave "-noupdate      -label MISMATCH    "  $BASE/MISMATCH
+
+   add wave -divider "Internals"
+   add_wave "-noupdate      -label equiv_sof_n "  $BASE/equiv_sof_n
+   add_wave "-noupdate      -label equiv_eof_n "  $BASE/equiv_eof_n
+   add_wave "-noupdate      -label equiv_sop_n "  $BASE/equiv_sop_n
+   add_wave "-noupdate      -label equiv_eop_n "  $BASE/equiv_eop_n
+   add_wave "-noupdate      -label rem_is_ok   "  $BASE/rem_is_ok
+
+   add_wave "-noupdate      -label mux_equiv_data_out"  $BASE/mux_equiv_data_out
+}

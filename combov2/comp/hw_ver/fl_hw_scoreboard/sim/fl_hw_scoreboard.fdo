@@ -1,0 +1,17 @@
+# Copyright (C) 2012
+# Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
+
+set FIRMWARE_BASE         "../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set FL_HW_SCOREBOARD_BASE "$COMP_BASE/hw_ver/fl_hw_scoreboard"
+
+set SIG_FILE              "$FL_HW_SCOREBOARD_BASE/sim/fl_hw_scoreboard_sig.fdo"
+set TB_FILE               "$FL_HW_SCOREBOARD_BASE/sim/fl_hw_scoreboard_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "FL_HW_SCOREBOARD"   $FL_HW_SCOREBOARD_BASE   "FULL" ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE

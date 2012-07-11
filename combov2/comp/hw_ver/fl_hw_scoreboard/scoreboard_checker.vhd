@@ -306,7 +306,7 @@ begin
    end process;
 
    -- the signal denotes that there is no problem with REM
-   rem_is_ok          <= equiv_rem AND sig_eop;
+   rem_is_ok          <= (NOT sig_eop) OR equiv_rem;
 
    -- the global EOP signal
    sig_eop            <= NOT sig_rx_eop_n(0);

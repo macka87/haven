@@ -1,0 +1,24 @@
+# Copyright (C) 2012
+# Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
+
+# Paths
+set TB_BASE               "/testbench"
+set SCOREBOARD_PATH       "$TB_BASE/uut"
+set CHECKER_PATH          "$SCOREBOARD_PATH/sb_checker_i"
+
+source                    "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+blk_SCOREBOARD                "$SCOREBOARD_PATH"
+blk_SCOREBOARD_INTERNALS      "$SCOREBOARD_PATH"
+
+add wave -divider "***********"
+add wave -divider "* Checker *"
+add wave -divider "***********"
+blk_SCOREBOARD_CHECKER        "$CHECKER_PATH"
+
+restart -f
+run 100 us
