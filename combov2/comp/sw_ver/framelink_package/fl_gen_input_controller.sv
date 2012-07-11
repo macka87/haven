@@ -93,6 +93,7 @@
         SW_DES_HW_G : swFlDriver.setCallbacks(cbs);
         SW_ES_HW_GD : swFlDriver.setCallbacks(cbs);
         SW_GES_HW_D : hwFlSender.setCallbacks(cbs); 
+        HW_FULL     : $write("Not possible to set callbacks in this framework version!!!");
       endcase
     endfunction : setCallbacks 
     
@@ -105,6 +106,7 @@
         SW_DES_HW_G : swFlDriver.setEnabled();
         SW_ES_HW_GD : swFlDriver.setEnabled();
         SW_GES_HW_D : hwFlSender.sendStart();
+        HW_FULL     : $write("Not possible to send start in this framework version!!!");
       endcase  
     endtask : start
     
@@ -120,6 +122,7 @@
                         sendStop();
                       end  
         SW_GES_HW_D : hwFlSender.sendStop();
+        HW_FULL     : $write("Not possible to send stop in this framework version!!!");
       endcase 
     endtask : stop   
    
@@ -132,6 +135,7 @@
         SW_DES_HW_G : swFlDriver.sendWait(clocks);
         SW_ES_HW_GD : $write("Not possible to send wait in this framework version!!!");
         SW_GES_HW_D : hwFlSender.sendWait(clocks);
+        HW_FULL     : $write("Not possible to send wait in this framework version!!!");
       endcase 
     endtask : waitFor
     
@@ -144,6 +148,7 @@
         SW_DES_HW_G : swFlDriver.setDisabled(); 
         SW_ES_HW_GD : $write("Not possible to send wait forever in this framework version!!!");
         SW_GES_HW_D : hwFlSender.sendWaitForever();
+        HW_FULL     : $write("Not possible to send wait forever in this framework version!!!");
       endcase 
     endtask : waitForever    
    
@@ -160,6 +165,7 @@
           SW_DES_HW_G : swFlDriver.sendTransactions(transCount); 
           SW_ES_HW_GD : swFlDriver.sendCallbackData(transCount); 
           SW_GES_HW_D : hwFlSender.sendTransactions(transCount); 
+          HW_FULL     : $write("Not possible to send generated transactions in this framework version!!!");
         endcase 
       end    
     endtask : sendGenerated 

@@ -52,7 +52,7 @@
           cbs[i].post_tr(to, id);  
           
         $cast(transaction,to);   
-        transaction.display(inst);        //! Display transaction
+        //transaction.display(inst);        //! Display transaction
         createNetCOPETrans(transaction);  //! Create NetCOPE transactions
         i++;
       end  

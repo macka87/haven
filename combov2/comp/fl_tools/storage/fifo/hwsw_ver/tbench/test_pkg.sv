@@ -93,7 +93,7 @@ package test_pkg;
 
    // TEST PARAMETERS
 
-   parameter TRANSACTION_COUNT = 1000;  // Count of transactions
+   parameter TRANSACTION_COUNT = 10000;  // Count of transactions
    parameter SEED1             = 1;  // Seed for PRNG
    parameter SEED2             = 2;  // Seed for PRNG
 endpackage

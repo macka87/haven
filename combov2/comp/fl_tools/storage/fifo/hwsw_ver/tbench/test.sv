@@ -197,6 +197,15 @@ program TEST (
                       assertReporter.setEnabled();
                       sigReporter.setEnabled();
                     end
+      HW_FULL     : begin
+                      // Open channel for data generated in HW
+                      res = c_openDMAChannel();  
+                      $write("OPENING DMA CHANNEL (expected 0): %d\n",res); 
+                      outputWrapper.setEnabled();
+                      sorter.setEnabled();
+                      assertReporter.setEnabled();
+                    end              
+                    
     endcase 
   endtask : enableTestEnvironment
   
@@ -214,9 +223,8 @@ program TEST (
         SW_FULL     : if (flMonitor.busy) busy = 1; 
         SW_DES_HW_G : if (flMonitor.busy) busy = 1; 
         SW_ES_HW_GD : if (flOutCnt.busy || assertReporter.busy) busy = 1; 
-        //SW_ES_HW_GD : if (flOutCnt.counter<TRANSACTION_COUNT || assertReporter.busy) busy = 1; 
-        SW_GES_HW_D : if (inputWrapper.busy || flOutCnt.busy || assertReporter.busy) busy = 1; 
-        //SW_GES_HW_D : if (inputWrapper.busy || (outputWrapper.counter<TRANSACTION_COUNT) || flOutCnt.busy || assertReporter.busy) busy = 1; 
+        SW_GES_HW_D : if (inputWrapper.busy || (flOutCnt.counter<TRANSACTION_COUNT) || assertReporter.busy) busy = 1; 
+        HW_FULL     : if (assertReporter.busy) busy = 1; 
       endcase 
       
      /* $write("Looping at time %t ps\n", $time);
@@ -236,6 +244,7 @@ program TEST (
         SW_DES_HW_G : #(CLK_PERIOD);
         SW_ES_HW_GD : #(CLK_PERIOD);
         SW_GES_HW_D : #1ps; 
+        HW_FULL     : #1ps; 
       endcase 
     end
     
@@ -273,6 +282,13 @@ program TEST (
                       assertReporter.setDisabled();
                       sigReporter.setDisabled();
                     end
+      HW_FULL     : begin
+                      outputWrapper.setDisabled(); 
+                      sorter.setDisabled();
+                      assertReporter.setDisabled();
+                      res = c_closeDMAChannel();  
+                      $write("CLOSING CHANNEL (expected 0): %d\n",res);
+                    end              
     endcase 
   endtask : disableTestEnvironment
 
@@ -346,6 +362,11 @@ program TEST (
                        res = c_closeDMAChannel();  
                        $write("CLOSING CHANNEL (musi byt 0): %d\n",res);
                      end 
+       HW_FULL     : begin
+                       res = c_closeDMAChannel();  
+                       $write("CLOSING CHANNEL (musi byt 0): %d\n",res);
+                     end
+                       
      endcase 
    end
 endprogram
