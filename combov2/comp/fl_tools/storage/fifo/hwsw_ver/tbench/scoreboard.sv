@@ -144,8 +144,14 @@ typedef TransactionTable#(1) TransactionTableType;
 
       else begin
         $cast(tr, transaction);
+        
+        while (c_tableEmpty()) begin
+           #10ps;
+        end    
+        
         res = c_removeFromTable(tr.data[0]);
-        if (res==1)begin 
+                     
+        if (res) begin 
           $write("Unknown transaction received from output controller!\n");
           transaction.display();
           c_displayTable();

@@ -13,6 +13,7 @@
     */ 
     int frameCount;     // Number of FrameLink frames
     tTransMbx genMbx;   // Mailbox for transactions generated in hardware 
+    int counter;        // Counter of accepted transactions
     
    /*
     * Public Class Methods
@@ -29,6 +30,7 @@
        super.new(inst, id, outputMbx);
        this.frameCount = frameCount;
        this.genMbx     = genMbx; 
+       this.counter    = 0;
     endfunction: new
    
    /*! 
@@ -100,10 +102,12 @@
             fltr.itDelay[i][j] = ntr.data[j+9]; 
         end     
 
-        //fltr.display("OUTPUT FRAMELINK TRANSACTION");
+        //fltr.display("FL_GEN_OUTPUT_CONTROLLER: ");
 
         $cast(tr, fltr);
         
+        counter++;
+        //$write("FL_GEN_OUTPUT_CONTROLLER: COUNTER: %d\n", counter);
         genMbx.put(tr);
       end  
     endtask : run

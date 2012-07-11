@@ -17,6 +17,11 @@ package dpi_tr_table_pkg;
    *  Add transaction to scoreboard table. 
    */
   import "DPI-C" context function void c_addToTable(input byte unsigned inTrans[]);
+  
+  /*
+   *  Check emptiness of transaction table.
+   */
+  import "DPI-C" context function int c_tableEmpty();
    
   /*
    *  Remove transaction from scoreboard table.

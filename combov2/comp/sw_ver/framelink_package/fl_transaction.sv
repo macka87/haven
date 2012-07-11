@@ -242,8 +242,7 @@
       logic [31:0] part_reg_offset    = 32'h00000010;
       
       logic [31:0] frame_parts        = frameParts;
-      logic [31:0] data;
-      
+          
       logic [31:0] part_size_min[]      = new[frameParts];
       logic [31:0] part_size_max[]      = new[frameParts];
       
@@ -254,7 +253,7 @@
     
       // part num
       c_writeToRegister(hw_addr_adapt + part_num_reg_addr + part_mask_offset, 32'h00000007);
-      c_writeToRegister(hw_addr_adapt + part_num_reg_addr + part_base_offset, frame_parts);
+      c_writeToRegister(hw_addr_adapt + part_num_reg_addr + part_base_offset, frame_parts-1);
       c_writeToRegister(hw_addr_adapt + part_num_reg_addr + part_max_offset, 32'h00000000);
       
       // max number of parts is 8

@@ -116,7 +116,7 @@ program TEST (
      //! Create Sorter and Output Controllers' mailboxes
      mbx = new[4];
        // FL Output Controller mailbox
-       mbx[0] = new(1); 
+       mbx[0] = new(0); 
        // Assertion Reporter mailbox
        mbx[1] = new(1);
        // Signal Reporter
@@ -177,7 +177,18 @@ program TEST (
                       flChecker.setEnabled();
                       flMonitor.setEnabled();
                       flCoverage.setEnabled();
-                    end  
+                    end 
+      SW_ES_HW_GD : begin
+                      // Open channel for data generated in HW
+                      res = c_openDMAChannel();  
+                      $write("OPENING DMA CHANNEL (expected 0): %d\n",res); 
+                      outputWrapper.setEnabled();
+                      sorter.setEnabled();
+                      flGenOutCnt.setEnabled();
+                      flOutCnt.setEnabled();
+                      assertReporter.setEnabled();
+                      sigReporter.setEnabled();
+                    end               
       SW_GES_HW_D : begin
                       inputWrapper.setEnabled();
                       outputWrapper.setEnabled();
@@ -202,13 +213,16 @@ program TEST (
       priority case (FRAMEWORK)
         SW_FULL     : if (flMonitor.busy) busy = 1; 
         SW_DES_HW_G : if (flMonitor.busy) busy = 1; 
-        SW_GES_HW_D : if (inputWrapper.busy || (outputWrapper.counter<TRANSACTION_COUT) || flOutCnt.busy || assertReporter.busy) busy = 1; 
+        SW_ES_HW_GD : if (flOutCnt.busy || assertReporter.busy) busy = 1; 
+        //SW_ES_HW_GD : if (flOutCnt.counter<TRANSACTION_COUNT || assertReporter.busy) busy = 1; 
+        SW_GES_HW_D : if (inputWrapper.busy || flOutCnt.busy || assertReporter.busy) busy = 1; 
+        //SW_GES_HW_D : if (inputWrapper.busy || (outputWrapper.counter<TRANSACTION_COUNT) || flOutCnt.busy || assertReporter.busy) busy = 1; 
       endcase 
       
      /* $write("Looping at time %t ps\n", $time);
       $write("InputWrapper busy: %d\n", inputWrapper.busy);
       $write("OutputWrapper counter: %d/%d\n", outputWrapper.counter,
-        TRANSACTION_COUT);
+        TRANSACTION_COUNT);
       $write("FlOutCnt busy: %d\n", flOutCnt.busy);
       $write("AssertReporter busy: %d\n", assertReporter.busy);
       $write("SignalReporter busy: %d\n", sigReporter.busy);
@@ -220,6 +234,7 @@ program TEST (
       priority case (FRAMEWORK)
         SW_FULL     : #(CLK_PERIOD);
         SW_DES_HW_G : #(CLK_PERIOD);
+        SW_ES_HW_GD : #(CLK_PERIOD);
         SW_GES_HW_D : #1ps; 
       endcase 
     end
@@ -234,12 +249,22 @@ program TEST (
                       outputWrapper.setDisabled();
                       sorter.setDisabled();
                       flGenOutCnt.setDisabled();
-                      flChecker.setEnabled();
-                      flMonitor.setEnabled();
-                      flCoverage.setEnabled();
+                      flChecker.setDisabled();
+                      flMonitor.setDisabled();
+                      flCoverage.setDisabled();
                       res = c_closeDMAChannel();  
                       $write("CLOSING CHANNEL (expected 0): %d\n",res);
                     end  
+      SW_ES_HW_GD : begin
+                      outputWrapper.setDisabled();
+                      sorter.setDisabled();
+                      flGenOutCnt.setDisabled();
+                      flOutCnt.setDisabled();
+                      assertReporter.setDisabled();
+                      sigReporter.setDisabled();
+                      res = c_closeDMAChannel();  
+                      $write("CLOSING CHANNEL (expected 0): %d\n",res);
+                    end              
       SW_GES_HW_D : begin
                       inputWrapper.setDisabled();
                       outputWrapper.setDisabled();
@@ -272,10 +297,10 @@ program TEST (
      // Sending of transactions
      flGenInCnt.start(); 
      proc.srandom(SEED1);             
-     flGenInCnt.sendGenerated(TRANSACTION_COUT);
+     flGenInCnt.sendGenerated(TRANSACTION_COUNT);
      //flGenInCnt.waitFor(5);
      //proc.srandom(SEED2);       
-     //flGenInCnt.sendGenerated(TRANSACTION_COUT);
+     //flGenInCnt.sendGenerated(TRANSACTION_COUNT);
      flGenInCnt.stop();
      
      // Disable Test Enviroment
@@ -288,10 +313,7 @@ program TEST (
      // Display Scoreboard and Coverage
      scoreboard.display();
      
-     priority case (FRAMEWORK)
-       SW_FULL     : flCoverage.display();
-       SW_DES_HW_G : flCoverage.display();
-     endcase 
+     if (FRAMEWORK == SW_FULL || FRAMEWORK == SW_DES_HW_G) flCoverage.display();
    endtask: test1
 
   /*
@@ -316,6 +338,10 @@ program TEST (
      priority case (FRAMEWORK)
        SW_FULL     : scoreboard.displayTrans();
        SW_DES_HW_G : scoreboard.displayTrans();
+       SW_ES_HW_GD : begin
+                       res = c_closeDMAChannel();  
+                       $write("CLOSING CHANNEL (musi byt 0): %d\n",res);
+                     end 
        SW_GES_HW_D : begin
                        res = c_closeDMAChannel();  
                        $write("CLOSING CHANNEL (musi byt 0): %d\n",res);

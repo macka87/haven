@@ -30,7 +30,7 @@ package test_pkg;
    * SW_E_HW_GDS
    * SW_DES_HW_G
    */ 
-   parameter tFramework FRAMEWORK = SW_DES_HW_G;                 
+   parameter tFramework FRAMEWORK = SW_ES_HW_GD;                 
    
    // DUT GENERICS
    parameter DATA_WIDTH   = 64;                // FrameLink data width
@@ -65,9 +65,9 @@ package test_pkg;
    parameter tGenOutput GEN_OUTPUT = SV_SIM; 
   
    // TRANSACTION FORMAT 
-   int GENERATOR_FL_FRAME_COUNT     = 1;       // frame parts
-   int GENERATOR_FL_PART_SIZE_MAX[] = '{32};   // maximal size of part
-   int GENERATOR_FL_PART_SIZE_MIN[] = '{1};    // minimal size of part     
+   int GENERATOR_FL_FRAME_COUNT     = 3;           // frame parts
+   int GENERATOR_FL_PART_SIZE_MAX[] = '{32,32,32}; // maximal size of part
+   int GENERATOR_FL_PART_SIZE_MIN[] = '{1,1,1};    // minimal size of part     
    
    // SOFTWARE DRIVER PARAMETERS 
    // Enable/Disable weights of "delay between transactions" 
@@ -93,7 +93,7 @@ package test_pkg;
 
    // TEST PARAMETERS
 
-   parameter TRANSACTION_COUT = 100000;  // Count of transactions
-   parameter SEED1            = 1;  // Seed for PRNG
-   parameter SEED2            = 2;  // Seed for PRNG
+   parameter TRANSACTION_COUNT = 1000;  // Count of transactions
+   parameter SEED1             = 1;  // Seed for PRNG
+   parameter SEED2             = 2;  // Seed for PRNG
 endpackage

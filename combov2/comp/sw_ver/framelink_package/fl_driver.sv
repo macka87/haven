@@ -5,7 +5,7 @@
  * Author:       Marcela Simkova <xsimko03@stud.fit.vutbr.cz> 
  * Date:         27.2.2011 
  * ************************************************************************** */
-
+ 
 /*!
  * This class is responsible for generating signals to FrameLink
  * interface. Transactions are received by 'transMbx'(Mailbox) property.
@@ -58,7 +58,6 @@
     */
     task setEnabled();
       enabled = 1;  //! Driver Enabling
-//      @(fl.cb);  
     endtask : setEnabled
         
    /*! 
@@ -78,6 +77,28 @@
     task sendWait(int clocks);
        repeat (clocks) @(fl.cb);
     endtask : sendWait
+    
+   /*! 
+    * Send callback data - without sending transactions into DUT.    
+    */
+    task sendCallbackData(input int transCount);
+      Transaction to;
+      int i=0;
+      
+      while (enabled && (i < transCount)) begin 
+        transMbx.get(to);              //! Get transaction from mailbox 
+        
+        //to.display("FL_DRIVER: set callback data");
+        
+        foreach (cbs[i])               //! Call transaction preprocessing
+          cbs[i].pre_tr(to, id);
+      
+        foreach (cbs[i])               //! Call transaction postprocessing
+          cbs[i].post_tr(to, id);
+      
+        i++;
+      end
+    endtask : sendCallbackData 
     
    /*! 
     * Send transactions - takes transactions from mailbox and sends it 

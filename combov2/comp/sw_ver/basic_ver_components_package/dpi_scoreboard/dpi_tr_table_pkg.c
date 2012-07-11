@@ -58,6 +58,13 @@ void c_addToTable(const svOpenArrayHandle inTrans){
 }
 
 /*
+ *  Checking emptiness of the transaction table.  
+ */
+ int c_tableEmpty(){
+   return !scoreboard_front;
+ }
+
+/*
  *  Transaction is removed from scoreboard table after comparation. If any 
  *  discrepancy occures, error message is printed on screen and verification
  *  stops.  
