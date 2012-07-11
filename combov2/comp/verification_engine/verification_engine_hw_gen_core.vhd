@@ -60,14 +60,14 @@ constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
    signal mi_splitter_drdy     : std_logic;
 
    -- MI32 splitter outputs
-   signal mi_spl_out_dwr      : std_logic_vector(63 downto 0);
-   signal mi_spl_out_addr     : std_logic_vector(63 downto 0);
-   signal mi_spl_out_be       : std_logic_vector( 7 downto 0);
-   signal mi_spl_out_rd       : std_logic_vector( 1 downto 0);
-   signal mi_spl_out_wr       : std_logic_vector( 1 downto 0);
-   signal mi_spl_out_ardy     : std_logic_vector( 1 downto 0);
-   signal mi_spl_out_drd      : std_logic_vector(63 downto 0);
-   signal mi_spl_out_drdy     : std_logic_vector( 1 downto 0);
+   signal mi_spl_out_dwr      : std_logic_vector(95 downto 0);
+   signal mi_spl_out_addr     : std_logic_vector(95 downto 0);
+   signal mi_spl_out_be       : std_logic_vector(11 downto 0);
+   signal mi_spl_out_rd       : std_logic_vector( 2 downto 0);
+   signal mi_spl_out_wr       : std_logic_vector( 2 downto 0);
+   signal mi_spl_out_ardy     : std_logic_vector( 2 downto 0);
+   signal mi_spl_out_drd      : std_logic_vector(95 downto 0);
+   signal mi_spl_out_drdy     : std_logic_vector( 2 downto 0);
 
    -- FrameLink Generator MI32 interface
    signal fl_rand_gen_mi_dwr      : std_logic_vector(31 downto 0);
@@ -129,15 +129,35 @@ constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
    signal fl_fork_tx1_src_rdy_n : std_logic;
    signal fl_fork_tx1_dst_rdy_n : std_logic;
 
+   -- FrameLink Generator MI32 interface
+   signal fl_com_unit_mi_dwr      : std_logic_vector(31 downto 0);
+   signal fl_com_unit_mi_addr     : std_logic_vector(31 downto 0);
+   signal fl_com_unit_mi_be       : std_logic_vector( 3 downto 0);
+   signal fl_com_unit_mi_rd       : std_logic;
+   signal fl_com_unit_mi_wr       : std_logic;
+   signal fl_com_unit_mi_ardy     : std_logic;
+   signal fl_com_unit_mi_drd      : std_logic_vector(31 downto 0);
+   signal fl_com_unit_mi_drdy     : std_logic;
+
+   -- FrameLink command unit output FrameLink interface
+   signal fl_com_unit_tx_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_com_unit_tx_rem       : std_logic_vector(DREM_WIDTH-1 downto 0);
+   signal fl_com_unit_tx_sof_n     : std_logic;
+   signal fl_com_unit_tx_sop_n     : std_logic;
+   signal fl_com_unit_tx_eop_n     : std_logic;
+   signal fl_com_unit_tx_eof_n     : std_logic;
+   signal fl_com_unit_tx_src_rdy_n : std_logic;
+   signal fl_com_unit_tx_dst_rdy_n : std_logic;
+
    -- input binder input
-   signal input_binder_rx_data     : std_logic_vector(2*DATA_WIDTH-1 downto 0);
-   signal input_binder_rx_rem      : std_logic_vector(2*DREM_WIDTH-1 downto 0);
-   signal input_binder_rx_sof_n    : std_logic_vector(1 downto 0);
-   signal input_binder_rx_sop_n    : std_logic_vector(1 downto 0);
-   signal input_binder_rx_eop_n    : std_logic_vector(1 downto 0);
-   signal input_binder_rx_eof_n    : std_logic_vector(1 downto 0);
-   signal input_binder_rx_src_rdy_n: std_logic_vector(1 downto 0);
-   signal input_binder_rx_dst_rdy_n: std_logic_vector(1 downto 0);
+   signal input_binder_rx_data     : std_logic_vector(3*DATA_WIDTH-1 downto 0);
+   signal input_binder_rx_rem      : std_logic_vector(3*DREM_WIDTH-1 downto 0);
+   signal input_binder_rx_sof_n    : std_logic_vector(2 downto 0);
+   signal input_binder_rx_sop_n    : std_logic_vector(2 downto 0);
+   signal input_binder_rx_eop_n    : std_logic_vector(2 downto 0);
+   signal input_binder_rx_eof_n    : std_logic_vector(2 downto 0);
+   signal input_binder_rx_src_rdy_n: std_logic_vector(2 downto 0);
+   signal input_binder_rx_dst_rdy_n: std_logic_vector(2 downto 0);
 
    -- input binder output
    signal input_binder_tx_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -253,7 +273,7 @@ begin
       -- Data width
       DATA_WIDTH    => 32,
       -- Number of output ports
-      ITEMS         => 2,
+      ITEMS         => 3,
 
       -- ADDRESS SPACE
 
@@ -264,6 +284,10 @@ begin
       -- PORT1: 0x00100000 -- 0x001FFFFF
       PORT1_BASE    => X"00100000",
       PORT1_LIMIT   => X"00100000",
+
+      -- PORT2: 0x00200000 -- 0x002FFFFF
+      PORT2_BASE    => X"00200000",
+      PORT2_LIMIT   => X"00100000",
 
       -- Input pipeline
       PIPE          => false,
@@ -296,6 +320,15 @@ begin
    );
 
    --
+   fl_com_unit_mi_dwr            <= mi_spl_out_dwr( 95 downto 64);
+   fl_com_unit_mi_addr           <= mi_spl_out_addr(95 downto 64);
+   fl_com_unit_mi_rd             <= mi_spl_out_rd(2);
+   fl_com_unit_mi_wr             <= mi_spl_out_wr(2);
+   fl_com_unit_mi_be             <= mi_spl_out_be(11 downto 8);
+   mi_spl_out_drd(95 downto 64)  <= fl_com_unit_mi_drd;
+   mi_spl_out_ardy(2)            <= fl_com_unit_mi_ardy;
+   mi_spl_out_drdy(2)            <= fl_com_unit_mi_drdy;
+
    fl_rand_gen_mi_dwr            <= mi_spl_out_dwr( 63 downto 32);
    fl_rand_gen_mi_addr           <= mi_spl_out_addr(63 downto 32);
    fl_rand_gen_mi_rd             <= mi_spl_out_rd(1);
@@ -350,6 +383,45 @@ begin
       TX_EOF_N      => fl_gen_tx_eof_n,
       TX_SRC_RDY_N  => fl_gen_tx_src_rdy_n,
       TX_DST_RDY_N  => fl_gen_tx_dst_rdy_n
+   );
+
+
+   -- ------------------------------------------------------------------------
+   --                         FrameLink Command Unit
+   -- ------------------------------------------------------------------------
+   fl_com_unit_i: entity work.fl_command_unit
+   generic map(
+      -- the output FrameLink width
+      DATA_WIDTH     => DATA_WIDTH,
+      -- ID of the destination endpoint
+      ENDPOINT_ID    => ENDPOINT_ID_FL_RAND_GEN,
+      -- ID of the FrameLink protocol
+      FL_PROTOCOL_ID => PROTO_IN_FRAMELINK
+   )
+   port map(
+      -- input clock domain
+      CLK        => CLK,
+      RESET      => RESET,
+
+      -- MI32 interface
+      MI_DWR        => fl_com_unit_mi_dwr,
+      MI_ADDR       => fl_com_unit_mi_addr,
+      MI_RD         => fl_com_unit_mi_rd,
+      MI_WR         => fl_com_unit_mi_wr,
+      MI_BE         => fl_com_unit_mi_be,
+      MI_DRD        => fl_com_unit_mi_drd,
+      MI_ARDY       => fl_com_unit_mi_ardy,
+      MI_DRDY       => fl_com_unit_mi_drdy,
+
+      -- output FrameLink
+      TX_DATA       => fl_com_unit_tx_data,
+      TX_REM        => fl_com_unit_tx_rem,
+      TX_SOF_N      => fl_com_unit_tx_sof_n,
+      TX_SOP_N      => fl_com_unit_tx_sop_n,
+      TX_EOP_N      => fl_com_unit_tx_eop_n,
+      TX_EOF_N      => fl_com_unit_tx_eof_n,
+      TX_SRC_RDY_N  => fl_com_unit_tx_src_rdy_n,
+      TX_DST_RDY_N  => fl_com_unit_tx_dst_rdy_n
    );
 
    --
@@ -422,14 +494,23 @@ begin
    input_binder_rx_src_rdy_n(0)                 <= fl_input_src_rdy_n;
    fl_input_dst_rdy_n                           <= input_binder_rx_dst_rdy_n(0);
 
-   input_binder_rx_data(2*DATA_WIDTH-1 downto DATA_WIDTH)  <= fl_fork_tx0_data;
-   input_binder_rx_rem( 2*DREM_WIDTH-1 downto DREM_WIDTH)  <= fl_fork_tx0_rem;
-   input_binder_rx_sof_n(1)                                <= fl_fork_tx0_sof_n;
-   input_binder_rx_sop_n(1)                                <= fl_fork_tx0_sop_n;
-   input_binder_rx_eop_n(1)                                <= fl_fork_tx0_eop_n;
-   input_binder_rx_eof_n(1)                                <= fl_fork_tx0_eof_n;
-   input_binder_rx_src_rdy_n(1)                            <= fl_fork_tx0_src_rdy_n;
-   fl_fork_tx0_dst_rdy_n                                    <= input_binder_rx_dst_rdy_n(1);
+   input_binder_rx_data(2*DATA_WIDTH-1 downto DATA_WIDTH) <= fl_fork_tx0_data;
+   input_binder_rx_rem( 2*DREM_WIDTH-1 downto DREM_WIDTH) <= fl_fork_tx0_rem;
+   input_binder_rx_sof_n(1)                               <= fl_fork_tx0_sof_n;
+   input_binder_rx_sop_n(1)                               <= fl_fork_tx0_sop_n;
+   input_binder_rx_eop_n(1)                               <= fl_fork_tx0_eop_n;
+   input_binder_rx_eof_n(1)                               <= fl_fork_tx0_eof_n;
+   input_binder_rx_src_rdy_n(1)                           <= fl_fork_tx0_src_rdy_n;
+   fl_fork_tx0_dst_rdy_n                                  <= input_binder_rx_dst_rdy_n(1);
+
+   input_binder_rx_data(3*DATA_WIDTH-1 downto 2*DATA_WIDTH)<= fl_com_unit_tx_data;
+   input_binder_rx_rem( 3*DREM_WIDTH-1 downto 2*DREM_WIDTH)<= fl_com_unit_tx_rem;
+   input_binder_rx_sof_n(2)                                <= fl_com_unit_tx_sof_n;
+   input_binder_rx_sop_n(2)                                <= fl_com_unit_tx_sop_n;
+   input_binder_rx_eop_n(2)                                <= fl_com_unit_tx_eop_n;
+   input_binder_rx_eof_n(2)                                <= fl_com_unit_tx_eof_n;
+   input_binder_rx_src_rdy_n(2)                            <= fl_com_unit_tx_src_rdy_n;
+   fl_com_unit_tx_dst_rdy_n                                <= input_binder_rx_dst_rdy_n(2);
 
    -- the binder at the input of verification core
    input_binder_i: entity work.FL_BINDER
@@ -437,7 +518,7 @@ begin
       -- width of one input interface. Should be multiple of 8
       INPUT_WIDTH    => DATA_WIDTH,
       -- number of input interfaces: only 2,4,8,16 supported
-      INPUT_COUNT    => 2,
+      INPUT_COUNT    => 3,
       -- output width - most effective value is INPUT_WIDTH*INPUT_COUNT. In 
       -- other cases FL_TRANSFORMER is instantiated
       OUTPUT_WIDTH   => DATA_WIDTH,
