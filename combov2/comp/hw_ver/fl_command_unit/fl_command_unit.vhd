@@ -144,7 +144,7 @@ begin
 
    -- the header
    header(63 downto 40) <= (others => '0');
-   header(39 downto 32) <= X"03";    -- WAIT FOREVER
+   header(39 downto 32) <= X"04";    -- WAIT FOREVER
    header(31 downto 24) <= X"00";
    header(23 downto 16) <= X"00";
    header(15 downto 8)  <= FL_PROTOCOL_ID;
