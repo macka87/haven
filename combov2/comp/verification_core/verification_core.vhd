@@ -251,57 +251,261 @@ begin
    -- ------------------------------------------------------------------------
    --                              DUT
    -- ------------------------------------------------------------------------
-   dut_i: entity work.fl_fifo
-   generic map(
-      DATA_WIDTH  => DUT_DATA_WIDTH,
-      USE_BRAMS   => false,
-      ITEMS       => 64,
-      PARTS       => 1
-   )
---   dut_i: entity work.HGEN_VER_COVER
---   generic map(
---      DATA_WIDTH              => DUT_DATA_WIDTH
---   )
---   dut_i: entity work.MULTI_HGEN_VER_COVER
---   generic map(
---      DATA_WIDTH              => DUT_DATA_WIDTH,
---      BRANCH_COUNT            => 8,
---      USE_BRAMS_FOR_HGEN_FIFO => true
---   )
---   dut_i: entity work.DOUBLE_MULTI_HGEN_VER_COVER
---   generic map(
---      DATA_WIDTH    => DUT_DATA_WIDTH,
---      BRANCH_COUNT  => 2
---   )
---   dut_i: entity work.ERRONEOUS_FL_FIFO
---   generic map(
---      DATA_WIDTH  => DUT_DATA_WIDTH,
---      ITEMS => 64
---   )
-   port map(
-      CLK           => clk_dut,
-      RESET         => reset_dut,
+   gen_dut_fifo: if (CORE_TYPE = core_fifo) generate
+      dut_i: entity work.fl_fifo
+      generic map(
+         DATA_WIDTH  => DUT_DATA_WIDTH,
+         USE_BRAMS   => false,
+         ITEMS       => 64,
+         PARTS       => 1
+      )
+      port map(
+         CLK           => clk_dut,
+         RESET         => reset_dut,
 
-      -- input interface
-      RX_DATA       => dut_in_data,
-      RX_REM        => dut_in_rem,
-      RX_SOF_N      => dut_in_sof_n,
-      RX_SOP_N      => dut_in_sop_n,
-      RX_EOP_N      => dut_in_eop_n,
-      RX_EOF_N      => dut_in_eof_n,
-      RX_SRC_RDY_N  => dut_in_src_rdy_n,
-      RX_DST_RDY_N  => dut_in_dst_rdy_n,
+         -- input interface
+         RX_DATA       => dut_in_data,
+         RX_REM        => dut_in_rem,
+         RX_SOF_N      => dut_in_sof_n,
+         RX_SOP_N      => dut_in_sop_n,
+         RX_EOP_N      => dut_in_eop_n,
+         RX_EOF_N      => dut_in_eof_n,
+         RX_SRC_RDY_N  => dut_in_src_rdy_n,
+         RX_DST_RDY_N  => dut_in_dst_rdy_n,
 
-      -- output interface
-      TX_DATA       => dut_out_data,
-      TX_REM        => dut_out_rem,
-      TX_SOF_N      => dut_out_sof_n,
-      TX_SOP_N      => dut_out_sop_n,
-      TX_EOP_N      => dut_out_eop_n,
-      TX_EOF_N      => dut_out_eof_n,
-      TX_SRC_RDY_N  => dut_out_src_rdy_n,
-      TX_DST_RDY_N  => dut_out_dst_rdy_n
-   );
+         -- output interface
+         TX_DATA       => dut_out_data,
+         TX_REM        => dut_out_rem,
+         TX_SOF_N      => dut_out_sof_n,
+         TX_SOP_N      => dut_out_sop_n,
+         TX_EOP_N      => dut_out_eop_n,
+         TX_EOF_N      => dut_out_eof_n,
+         TX_SRC_RDY_N  => dut_out_src_rdy_n,
+         TX_DST_RDY_N  => dut_out_dst_rdy_n
+      );
+
+      -- output MI32 data
+      MI32_DRD <= X"0000F1F0";
+
+   end generate;
+
+   gen_dut_err_fifo: if (CORE_TYPE = core_err_fifo) generate
+      dut_i: entity work.ERRONEOUS_FL_FIFO
+      generic map(
+         DATA_WIDTH  => DUT_DATA_WIDTH,
+         ITEMS => 64
+      )
+      port map(
+         CLK           => clk_dut,
+         RESET         => reset_dut,
+
+         -- input interface
+         RX_DATA       => dut_in_data,
+         RX_REM        => dut_in_rem,
+         RX_SOF_N      => dut_in_sof_n,
+         RX_SOP_N      => dut_in_sop_n,
+         RX_EOP_N      => dut_in_eop_n,
+         RX_EOF_N      => dut_in_eof_n,
+         RX_SRC_RDY_N  => dut_in_src_rdy_n,
+         RX_DST_RDY_N  => dut_in_dst_rdy_n,
+
+         -- output interface
+         TX_DATA       => dut_out_data,
+         TX_REM        => dut_out_rem,
+         TX_SOF_N      => dut_out_sof_n,
+         TX_SOP_N      => dut_out_sop_n,
+         TX_EOP_N      => dut_out_eop_n,
+         TX_EOF_N      => dut_out_eof_n,
+         TX_SRC_RDY_N  => dut_out_src_rdy_n,
+         TX_DST_RDY_N  => dut_out_dst_rdy_n
+      );
+
+      -- output MI32 data
+      MI32_DRD <= X"E880F1F0";
+
+   end generate;
+
+   gen_dut_hgen_1x: if (CORE_TYPE = core_hgen_1x) generate
+      dut_i: entity work.HGEN_VER_COVER
+      generic map(
+         DATA_WIDTH              => DUT_DATA_WIDTH
+      )
+      port map(
+         CLK           => clk_dut,
+         RESET         => reset_dut,
+
+         -- input interface
+         RX_DATA       => dut_in_data,
+         RX_REM        => dut_in_rem,
+         RX_SOF_N      => dut_in_sof_n,
+         RX_SOP_N      => dut_in_sop_n,
+         RX_EOP_N      => dut_in_eop_n,
+         RX_EOF_N      => dut_in_eof_n,
+         RX_SRC_RDY_N  => dut_in_src_rdy_n,
+         RX_DST_RDY_N  => dut_in_dst_rdy_n,
+
+         -- output interface
+         TX_DATA       => dut_out_data,
+         TX_REM        => dut_out_rem,
+         TX_SOF_N      => dut_out_sof_n,
+         TX_SOP_N      => dut_out_sop_n,
+         TX_EOP_N      => dut_out_eop_n,
+         TX_EOF_N      => dut_out_eof_n,
+         TX_SRC_RDY_N  => dut_out_src_rdy_n,
+         TX_DST_RDY_N  => dut_out_dst_rdy_n
+      );
+
+      -- output MI32 data
+      MI32_DRD <= X"086E1001";
+
+   end generate;
+
+   gen_dut_hgen_2x: if (CORE_TYPE = core_hgen_2x) generate
+      dut_i: entity work.MULTI_HGEN_VER_COVER
+      generic map(
+         DATA_WIDTH              => DUT_DATA_WIDTH,
+         BRANCH_COUNT            => 2,
+         USE_BRAMS_FOR_HGEN_FIFO => true
+      )
+      port map(
+         CLK           => clk_dut,
+         RESET         => reset_dut,
+
+         -- input interface
+         RX_DATA       => dut_in_data,
+         RX_REM        => dut_in_rem,
+         RX_SOF_N      => dut_in_sof_n,
+         RX_SOP_N      => dut_in_sop_n,
+         RX_EOP_N      => dut_in_eop_n,
+         RX_EOF_N      => dut_in_eof_n,
+         RX_SRC_RDY_N  => dut_in_src_rdy_n,
+         RX_DST_RDY_N  => dut_in_dst_rdy_n,
+
+         -- output interface
+         TX_DATA       => dut_out_data,
+         TX_REM        => dut_out_rem,
+         TX_SOF_N      => dut_out_sof_n,
+         TX_SOP_N      => dut_out_sop_n,
+         TX_EOP_N      => dut_out_eop_n,
+         TX_EOF_N      => dut_out_eof_n,
+         TX_SRC_RDY_N  => dut_out_src_rdy_n,
+         TX_DST_RDY_N  => dut_out_dst_rdy_n
+      );
+
+      -- output MI32 data
+      MI32_DRD <= X"086E1002";
+
+   end generate;
+
+   gen_dut_hgen_4x: if (CORE_TYPE = core_hgen_4x) generate
+      dut_i: entity work.MULTI_HGEN_VER_COVER
+      generic map(
+         DATA_WIDTH              => DUT_DATA_WIDTH,
+         BRANCH_COUNT            => 4,
+         USE_BRAMS_FOR_HGEN_FIFO => true
+      )
+      port map(
+         CLK           => clk_dut,
+         RESET         => reset_dut,
+
+         -- input interface
+         RX_DATA       => dut_in_data,
+         RX_REM        => dut_in_rem,
+         RX_SOF_N      => dut_in_sof_n,
+         RX_SOP_N      => dut_in_sop_n,
+         RX_EOP_N      => dut_in_eop_n,
+         RX_EOF_N      => dut_in_eof_n,
+         RX_SRC_RDY_N  => dut_in_src_rdy_n,
+         RX_DST_RDY_N  => dut_in_dst_rdy_n,
+
+         -- output interface
+         TX_DATA       => dut_out_data,
+         TX_REM        => dut_out_rem,
+         TX_SOF_N      => dut_out_sof_n,
+         TX_SOP_N      => dut_out_sop_n,
+         TX_EOP_N      => dut_out_eop_n,
+         TX_EOF_N      => dut_out_eof_n,
+         TX_SRC_RDY_N  => dut_out_src_rdy_n,
+         TX_DST_RDY_N  => dut_out_dst_rdy_n
+      );
+
+      -- output MI32 data
+      MI32_DRD <= X"086E1004";
+
+   end generate;
+
+   gen_dut_hgen_8x: if (CORE_TYPE = core_hgen_8x) generate
+      dut_i: entity work.MULTI_HGEN_VER_COVER
+      generic map(
+         DATA_WIDTH              => DUT_DATA_WIDTH,
+         BRANCH_COUNT            => 8,
+         USE_BRAMS_FOR_HGEN_FIFO => true
+      )
+      port map(
+         CLK           => clk_dut,
+         RESET         => reset_dut,
+
+         -- input interface
+         RX_DATA       => dut_in_data,
+         RX_REM        => dut_in_rem,
+         RX_SOF_N      => dut_in_sof_n,
+         RX_SOP_N      => dut_in_sop_n,
+         RX_EOP_N      => dut_in_eop_n,
+         RX_EOF_N      => dut_in_eof_n,
+         RX_SRC_RDY_N  => dut_in_src_rdy_n,
+         RX_DST_RDY_N  => dut_in_dst_rdy_n,
+
+         -- output interface
+         TX_DATA       => dut_out_data,
+         TX_REM        => dut_out_rem,
+         TX_SOF_N      => dut_out_sof_n,
+         TX_SOP_N      => dut_out_sop_n,
+         TX_EOP_N      => dut_out_eop_n,
+         TX_EOF_N      => dut_out_eof_n,
+         TX_SRC_RDY_N  => dut_out_src_rdy_n,
+         TX_DST_RDY_N  => dut_out_dst_rdy_n
+      );
+
+      -- output MI32 data
+      MI32_DRD <= X"086E1008";
+
+   end generate;
+
+   gen_dut_hgen_16x: if (CORE_TYPE = core_hgen_16x) generate
+      dut_i: entity work.DOUBLE_MULTI_HGEN_VER_COVER
+      generic map(
+         DATA_WIDTH    => DUT_DATA_WIDTH,
+         BRANCH_COUNT  => 2
+      )
+      port map(
+         CLK           => clk_dut,
+         RESET         => reset_dut,
+
+         -- input interface
+         RX_DATA       => dut_in_data,
+         RX_REM        => dut_in_rem,
+         RX_SOF_N      => dut_in_sof_n,
+         RX_SOP_N      => dut_in_sop_n,
+         RX_EOP_N      => dut_in_eop_n,
+         RX_EOF_N      => dut_in_eof_n,
+         RX_SRC_RDY_N  => dut_in_src_rdy_n,
+         RX_DST_RDY_N  => dut_in_dst_rdy_n,
+
+         -- output interface
+         TX_DATA       => dut_out_data,
+         TX_REM        => dut_out_rem,
+         TX_SOF_N      => dut_out_sof_n,
+         TX_SOP_N      => dut_out_sop_n,
+         TX_EOP_N      => dut_out_eop_n,
+         TX_EOF_N      => dut_out_eof_n,
+         TX_SRC_RDY_N  => dut_out_src_rdy_n,
+         TX_DST_RDY_N  => dut_out_dst_rdy_n
+      );
+
+      -- output MI32 data
+      MI32_DRD <= X"086E1016";
+
+   end generate;
 
 --icon_i : icon3
 --  port map (
@@ -640,8 +844,5 @@ begin
 
    -- The data ready signal
    MI32_DRDY <= MI32_RD;
-
-   -- output MI32 data
-   MI32_DRD <= X"00011ACA";
 
 end architecture;

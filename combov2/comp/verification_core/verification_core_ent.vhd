@@ -8,6 +8,9 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.math_pack.all;
 
+-- HAVEN constants
+use work.haven_const.all;
+
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
@@ -15,7 +18,9 @@ entity verification_core is
    generic
    (
       -- data width 
-      DATA_WIDTH         : integer := 64
+      DATA_WIDTH         : integer := 64;
+      -- the CORE_TYPE generic specifies the verified unit in the core
+      CORE_TYPE          : core_type := core_fifo
    );
    port
    (
