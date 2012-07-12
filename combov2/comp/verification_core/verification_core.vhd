@@ -160,28 +160,28 @@ architecture arch of verification_core is
 --                                   COMPONENTS
 -- ==========================================================================
 
-   component icon3
-     PORT (
-       CONTROL0 : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0);
-       CONTROL1 : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0);
-       CONTROL2 : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0));
-
-   end component;
-
-   component ila73
-     PORT (
-       CONTROL : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0);
-       CLK : IN STD_LOGIC;
-       TRIG0 : IN STD_LOGIC_VECTOR(72 DOWNTO 0));
-
-   end component;
-
-   signal ila0_control   : std_logic_vector(35 downto 0);
-   signal ila1_control   : std_logic_vector(35 downto 0);
-   signal ila2_control   : std_logic_vector(35 downto 0);
-   signal ila0_trig0     : std_logic_vector(72 downto 0);
-   signal ila1_trig0     : std_logic_vector(72 downto 0);
-   signal ila2_trig0     : std_logic_vector(72 downto 0);
+--   component icon3
+--     PORT (
+--       CONTROL0 : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0);
+--       CONTROL1 : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0);
+--       CONTROL2 : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0));
+--
+--   end component;
+--
+--   component ila73
+--     PORT (
+--       CONTROL : INOUT STD_LOGIC_VECTOR(35 DOWNTO 0);
+--       CLK : IN STD_LOGIC;
+--       TRIG0 : IN STD_LOGIC_VECTOR(72 DOWNTO 0));
+--
+--   end component;
+--
+--   signal ila0_control   : std_logic_vector(35 downto 0);
+--   signal ila1_control   : std_logic_vector(35 downto 0);
+--   signal ila2_control   : std_logic_vector(35 downto 0);
+--   signal ila0_trig0     : std_logic_vector(72 downto 0);
+--   signal ila1_trig0     : std_logic_vector(72 downto 0);
+--   signal ila2_trig0     : std_logic_vector(72 downto 0);
 
 begin
 
@@ -303,50 +303,50 @@ begin
       TX_DST_RDY_N  => dut_out_dst_rdy_n
    );
 
-icon_i : icon3
-  port map (
-    CONTROL0 => ila0_control,
-    CONTROL1 => ila1_control,
-    CONTROL2 => ila2_control);
-
-   ila0_trig0(0)            <= dut_in_src_rdy_n;
-   ila0_trig0(1)            <= dut_in_dst_rdy_n;
-   ila0_trig0(2)            <= dut_in_sof_n;
-   ila0_trig0(3)            <= dut_in_sop_n;
-   ila0_trig0(4)            <= dut_in_eof_n;
-   ila0_trig0(5)            <= dut_in_eop_n;
-   ila0_trig0(8 downto 6)   <= dut_in_rem;
-   ila0_trig0(72 downto 9)  <= dut_in_data;
-
-   ila0_i : ila73
-   port map (
-      CONTROL => ila0_control,
-      CLK => clk_dut,
-      TRIG0 => ila0_trig0
-   );
-
-   ila1_trig0(0)            <= dut_out_src_rdy_n;
-   ila1_trig0(1)            <= dut_out_dst_rdy_n;
-   ila1_trig0(2)            <= dut_out_sof_n;
-   ila1_trig0(3)            <= dut_out_sop_n;
-   ila1_trig0(4)            <= dut_out_eof_n;
-   ila1_trig0(5)            <= dut_out_eop_n;
-   ila1_trig0(8 downto 6)   <= dut_out_rem;
-   ila1_trig0(72 downto 9)  <= dut_out_data;
-
-   ila1_i : ila73
-   port map (
-      CONTROL => ila1_control,
-      CLK => clk_dut,
-      TRIG0 => ila1_trig0
-   );
-
-   ila2_i : ila73
-   port map (
-      CONTROL => ila2_control,
-      CLK => CLK,
-      TRIG0 => ila2_trig0
-   );
+--icon_i : icon3
+--  port map (
+--    CONTROL0 => ila0_control,
+--    CONTROL1 => ila1_control,
+--    CONTROL2 => ila2_control);
+--
+--   ila0_trig0(0)            <= dut_in_src_rdy_n;
+--   ila0_trig0(1)            <= dut_in_dst_rdy_n;
+--   ila0_trig0(2)            <= dut_in_sof_n;
+--   ila0_trig0(3)            <= dut_in_sop_n;
+--   ila0_trig0(4)            <= dut_in_eof_n;
+--   ila0_trig0(5)            <= dut_in_eop_n;
+--   ila0_trig0(8 downto 6)   <= dut_in_rem;
+--   ila0_trig0(72 downto 9)  <= dut_in_data;
+--
+--   ila0_i : ila73
+--   port map (
+--      CONTROL => ila0_control,
+--      CLK => clk_dut,
+--      TRIG0 => ila0_trig0
+--   );
+--
+--   ila1_trig0(0)            <= dut_out_src_rdy_n;
+--   ila1_trig0(1)            <= dut_out_dst_rdy_n;
+--   ila1_trig0(2)            <= dut_out_sof_n;
+--   ila1_trig0(3)            <= dut_out_sop_n;
+--   ila1_trig0(4)            <= dut_out_eof_n;
+--   ila1_trig0(5)            <= dut_out_eop_n;
+--   ila1_trig0(8 downto 6)   <= dut_out_rem;
+--   ila1_trig0(72 downto 9)  <= dut_out_data;
+--
+--   ila1_i : ila73
+--   port map (
+--      CONTROL => ila1_control,
+--      CLK => clk_dut,
+--      TRIG0 => ila1_trig0
+--   );
+--
+--   ila2_i : ila73
+--   port map (
+--      CONTROL => ila2_control,
+--      CLK => CLK,
+--      TRIG0 => ila2_trig0
+--   );
 
    fl_hw_monitor_rx_data       <= dut_out_data;
    fl_hw_monitor_rx_rem        <= dut_out_rem;
