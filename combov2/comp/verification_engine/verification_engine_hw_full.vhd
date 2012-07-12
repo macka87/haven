@@ -611,7 +611,7 @@ begin
       -- FrameLink data width
       DATA_WIDTH   => DATA_WIDTH,
       -- type of the core
-      CORE_TYPE    => core_hgen_2x
+      CORE_TYPE    => VER_CORE0_TYPE
    )
    port map(
       -- input clock domain
@@ -667,7 +667,7 @@ begin
       -- FrameLink data width
       DATA_WIDTH   => DATA_WIDTH,
       -- type of the core
-      CORE_TYPE    => core_hgen_1x
+      CORE_TYPE    => VER_CORE1_TYPE
    )
    port map(
       -- input clock domain

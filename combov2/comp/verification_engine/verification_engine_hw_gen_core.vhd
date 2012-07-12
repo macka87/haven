@@ -570,7 +570,9 @@ begin
    ver_core_i: entity work.VERIFICATION_CORE
    generic map(
       -- FrameLink data width
-      DATA_WIDTH   => DATA_WIDTH
+      DATA_WIDTH   => DATA_WIDTH,
+      -- type of the core
+      CORE_TYPE    => VER_CORE0_TYPE
    )
    port map(
       -- input clock domain

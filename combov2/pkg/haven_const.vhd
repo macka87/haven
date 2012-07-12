@@ -26,6 +26,9 @@ package haven_const is
    type core_type is (core_fifo, core_err_fifo, core_hgen_1x, core_hgen_2x,
       core_hgen_4x, core_hgen_8x, core_hgen_16x);
 
+   constant VER_CORE0_TYPE    : core_type := core_hgen_4x;
+   constant VER_CORE1_TYPE    : core_type := core_hgen_1x;
+
    --------------------------------------------------------------------------
    --                            PROTOCOLS
    --------------------------------------------------------------------------
