@@ -1,5 +1,4 @@
--- verification_engine_hw_gen_core.vhd: HW_GEN_CORE architecture of
--- verification engine
+-- verification_engine_hw_gen_core.vhd: HW_GEN_CORE architecture of verification engine
 -- Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
 --
 -- $Id$
