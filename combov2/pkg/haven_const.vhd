@@ -41,6 +41,8 @@ package haven_const is
    constant PROTO_OUT_FL_SIG_OBS     : std_logic_vector(7 downto 0) := X"8B";
    -- FrameLink validity checker
    constant PROTO_OUT_FL_VAL_CHECKER : std_logic_vector(7 downto 0) := X"90";
+   -- Scoreboard
+   constant PROTO_OUT_SCOREBOARD     : std_logic_vector(7 downto 0) := X"BD";
 
    --------------------------------------------------------------------------
    --                           ENDPOINT IDs
@@ -55,6 +57,8 @@ package haven_const is
    constant ENDPOINT_ID_VAL_CHECKER  : std_logic_vector(7 downto 0) := X"AA";
    -- The signal observer
    constant ENDPOINT_ID_SIG_OBSERV   : std_logic_vector(7 downto 0) := X"BB";
+   -- Scoreboard
+   constant ENDPOINT_ID_SCOREBOARD   : std_logic_vector(7 downto 0) := X"5B";
 
 end haven_const;
 
