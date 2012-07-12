@@ -109,7 +109,15 @@
       blueprint       = null;            // Null the blueprint transaction
       data_id         = 0;               // Set default data identifier
     endfunction : new
-    
+   
+   /*
+    * Iniciate generator in full HW version of framework.  
+    */     
+    task initiateHW(int unsigned nInst=32'hFFFFFFFF);
+      stop_after_n_insts = nInst;
+      blueprint.configureRegisters(stop_after_n_insts);
+    endtask : initiateHW  
+   
    /*!
     * Enable generator for creating n Instances.
     */
@@ -139,7 +147,7 @@
               $write("Output file corrupted!!!");
               $stop;
             end
-            $fwrite(output_file, "%d\n", stop_after_n_insts);
+            $fwrite(output_file, "%d\n", stop_after_n_insts);    
           end  
           
           //! run generator

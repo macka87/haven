@@ -26,7 +26,8 @@
 DPI_LINK_DECL DPI_DLLESPEC
 void
 c_addToTable(
-    const svOpenArrayHandle inTrans);
+    const svOpenArrayHandle inTrans,
+    int incrCount);
 
 DPI_LINK_DECL DPI_DLLESPEC
 void
@@ -35,7 +36,8 @@ c_displayTable();
 DPI_LINK_DECL DPI_DLLESPEC
 int
 c_removeFromTable(
-    const svOpenArrayHandle outTrans);
+    const svOpenArrayHandle outTrans,
+    int incrCount);
 
 DPI_LINK_DECL DPI_DLLESPEC
 int

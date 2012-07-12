@@ -34,7 +34,7 @@ int removed = 0;
 /*
  *  Trasaction is added to scoreboard table implemented as list in C language. 
  */
-void c_addToTable(const svOpenArrayHandle inTrans){
+void c_addToTable(const svOpenArrayHandle inTrans, int incrCnt){
 
 	TListNode* newList = malloc(sizeof(TListNode));
 	newList->size = svSize(inTrans, 1);
@@ -47,13 +47,13 @@ void c_addToTable(const svOpenArrayHandle inTrans){
 		newList->prev = NULL;
 		scoreboard_front = newList;
 		scoreboard_end = newList;
-		added++; 
+		if (incrCnt == 1) added++; 
 	}
 	else{
 		newList->prev = scoreboard_end;
 		scoreboard_end->next = newList;
 		scoreboard_end = newList;
-		added++;
+		if (incrCnt == 1) added++;
 	}
 }
 
@@ -69,7 +69,7 @@ void c_addToTable(const svOpenArrayHandle inTrans){
  *  discrepancy occures, error message is printed on screen and verification
  *  stops.  
  */
-int c_removeFromTable(const svOpenArrayHandle outTrans){
+int c_removeFromTable(const svOpenArrayHandle outTrans, int incrCnt){
   unsigned int len;       // length of received data
   unsigned char *auxPkt;  // pointer to received data
   
@@ -102,7 +102,7 @@ int c_removeFromTable(const svOpenArrayHandle outTrans){
 		  }
 		}
     free(node);
-    removed++;
+    if (incrCnt == 1) removed++;
 	}
   return EXIT_SUCCESS;
 } 

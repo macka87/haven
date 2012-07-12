@@ -310,14 +310,17 @@ program TEST (
      // Enable Test environment
      enableTestEnvironment();
      
-     // Sending of transactions
-     flGenInCnt.start(); 
-     proc.srandom(SEED1);             
-     flGenInCnt.sendGenerated(TRANSACTION_COUNT);
-     //flGenInCnt.waitFor(5);
-     //proc.srandom(SEED2);       
-     //flGenInCnt.sendGenerated(TRANSACTION_COUNT);
-     flGenInCnt.stop();
+     if (FRAMEWORK == HW_FULL) begin
+       flGenInCnt.sendGenerated(TRANSACTION_COUNT);
+       flGenInCnt.stop();
+     end   
+     else begin  
+       // Sending of transactions
+       flGenInCnt.start(); 
+       proc.srandom(SEED1);             
+       flGenInCnt.sendGenerated(TRANSACTION_COUNT);
+       flGenInCnt.stop();
+     end
      
      // Disable Test Enviroment
      disableTestEnvironment();
@@ -366,7 +369,6 @@ program TEST (
                        res = c_closeDMAChannel();  
                        $write("CLOSING CHANNEL (musi byt 0): %d\n",res);
                      end
-                       
      endcase 
    end
 endprogram

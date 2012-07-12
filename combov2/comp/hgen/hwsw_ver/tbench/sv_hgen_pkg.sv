@@ -13,6 +13,7 @@
 package sv_hgen_pkg; 
 
   import sv_basic_comp_pkg::*; // Import SV basic verification components 
+  import sv_types_pkg::*;      // Import package of user defined types
   import sv_fl_pkg::*;         // Import SV FrameLink classes
   
   `include "scoreboard.sv"

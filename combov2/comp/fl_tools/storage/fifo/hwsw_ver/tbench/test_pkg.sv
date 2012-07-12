@@ -26,8 +26,8 @@ package test_pkg;
    * HW_FULL           
    * SW_GES_HW_D       
    * SW_ES_HW_GD        
-   * SW_GE_HW_DS       
-   * SW_E_HW_GDS
+   * SW_GE_HW_DS - unsopported     
+   * SW_E_HW_GDS - unsupported 
    * SW_DES_HW_G
    */ 
    parameter tFramework FRAMEWORK = SW_ES_HW_GD;                 
@@ -93,7 +93,7 @@ package test_pkg;
 
    // TEST PARAMETERS
 
-   parameter TRANSACTION_COUNT = 10000;  // Count of transactions
+   parameter TRANSACTION_COUNT = 1000;  // Count of transactions
    parameter SEED1             = 1;  // Seed for PRNG
    parameter SEED2             = 2;  // Seed for PRNG
 endpackage

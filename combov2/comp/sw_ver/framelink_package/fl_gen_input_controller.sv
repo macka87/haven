@@ -93,7 +93,7 @@
         SW_DES_HW_G : swFlDriver.setCallbacks(cbs);
         SW_ES_HW_GD : swFlDriver.setCallbacks(cbs);
         SW_GES_HW_D : hwFlSender.setCallbacks(cbs); 
-        HW_FULL     : $write("Not possible to set callbacks in this framework version!!!");
+        HW_FULL     : $write("Not possible to set callbacks in this framework version!!!\n");
       endcase
     endfunction : setCallbacks 
     
@@ -106,7 +106,7 @@
         SW_DES_HW_G : swFlDriver.setEnabled();
         SW_ES_HW_GD : swFlDriver.setEnabled();
         SW_GES_HW_D : hwFlSender.sendStart();
-        HW_FULL     : $write("Not possible to send start in this framework version!!!");
+        HW_FULL     : $write("Not possible to send start in this framework version!!!\n");
       endcase  
     endtask : start
     
@@ -122,7 +122,7 @@
                         sendStop();
                       end  
         SW_GES_HW_D : hwFlSender.sendStop();
-        HW_FULL     : $write("Not possible to send stop in this framework version!!!");
+        HW_FULL     : sendStop();
       endcase 
     endtask : stop   
    
@@ -133,9 +133,9 @@
       priority case (framework)
         SW_FULL     : swFlDriver.sendWait(clocks);
         SW_DES_HW_G : swFlDriver.sendWait(clocks);
-        SW_ES_HW_GD : $write("Not possible to send wait in this framework version!!!");
+        SW_ES_HW_GD : $write("Not possible to send wait in this framework version!!!\n");
         SW_GES_HW_D : hwFlSender.sendWait(clocks);
-        HW_FULL     : $write("Not possible to send wait in this framework version!!!");
+        HW_FULL     : $write("Not possible to send wait in this framework version!!!\n");
       endcase 
     endtask : waitFor
     
@@ -146,9 +146,9 @@
       priority case (framework)
         SW_FULL     : swFlDriver.setDisabled(); 
         SW_DES_HW_G : swFlDriver.setDisabled(); 
-        SW_ES_HW_GD : $write("Not possible to send wait forever in this framework version!!!");
+        SW_ES_HW_GD : $write("Not possible to send wait forever in this framework version!!!\n");
         SW_GES_HW_D : hwFlSender.sendWaitForever();
-        HW_FULL     : $write("Not possible to send wait forever in this framework version!!!");
+        HW_FULL     : $write("Not possible to send wait forever in this framework version!!!\n");
       endcase 
     endtask : waitForever    
    
@@ -157,7 +157,8 @@
     */
     task sendGenerated(int unsigned transCount);
       //! run generator
-      generator.setEnabled(transCount);
+      if (framework == HW_FULL) generator.initiateHW(transCount);
+      else generator.setEnabled(transCount);
       
       if (gen_output != EXT_FILE_OUT) begin
         priority case (framework)
@@ -165,7 +166,7 @@
           SW_DES_HW_G : swFlDriver.sendTransactions(transCount); 
           SW_ES_HW_GD : swFlDriver.sendCallbackData(transCount); 
           SW_GES_HW_D : hwFlSender.sendTransactions(transCount); 
-          HW_FULL     : $write("Not possible to send generated transactions in this framework version!!!");
+          HW_FULL     : $write("HW FULL version is running!\n");
         endcase 
       end    
     endtask : sendGenerated 
@@ -175,11 +176,23 @@
     */
     task sendStop();
       logic [31:0] counter;
+      logic [31:0] run;
       logic [31:0] hw_addr_counter = 32'h01101004;
       logic [31:0] hw_addr_stop    = 32'h01200000;
+      logic [31:0] hw_addr_start   = 32'h01101000;
       
+      // check if hw was initialized already
       do begin
+       //$write("waiting for hw init\n");
+       c_readFromRegister(hw_addr_start, run);
+       @(fl.cb); 
+      end while (run[0] != 1);
+      
+      // check if all transactions were processed in HW
+      do begin
+       //$write("waiting during running\n");
        c_readFromRegister(hw_addr_counter, counter);
+       $write("counter: %d\n", counter);
        @(fl.cb); 
       end while (counter != 0);
       

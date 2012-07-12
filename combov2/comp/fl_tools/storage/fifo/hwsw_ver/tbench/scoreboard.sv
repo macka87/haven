@@ -73,8 +73,12 @@ typedef TransactionTable#(1) TransactionTableType;
       
       if (FRAMEWORK == SW_FULL)
         sc_table.add(tr);
-      else 
-        c_addToTable(tr.data[0]);
+      else begin
+        for (int i=0; i<GENERATOR_FL_FRAME_COUNT; i++) begin 
+          if (i == GENERATOR_FL_FRAME_COUNT-1) c_addToTable(tr.data[i], 1);
+          else c_addToTable(tr.data[i], 0);
+        end  
+      end  
     endtask : post_tr
  endclass : ScoreboardInputCbs
 
@@ -149,14 +153,19 @@ typedef TransactionTable#(1) TransactionTableType;
            #10ps;
         end    
         
-        res = c_removeFromTable(tr.data[0]);
+        for (int i=0; i<GENERATOR_FL_FRAME_COUNT; i++) begin
+          if (i == GENERATOR_FL_FRAME_COUNT-1) 
+            res = c_removeFromTable(tr.data[i], 1);
+          else  
+            res = c_removeFromTable(tr.data[i], 0); 
                      
-        if (res) begin 
-          $write("Unknown transaction received from output controller!\n");
-          transaction.display();
-          c_displayTable();
-          $fatal(); 
-        end   
+          if (res) begin 
+            $write("Unknown transaction received from output controller!\n");
+            transaction.display();
+            c_displayTable();
+            $fatal(); 
+          end 
+        end    
       end
     endtask : post_tr 
  endclass : ScoreboardOutputCbs

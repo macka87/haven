@@ -228,12 +228,14 @@ typedef TransactionTable#(1) TransactionTableType;
         res.data[0][1] = result[15:8];
         res.data[0][0] = result[7:0];
 
-        if (FRAMEWORK == 0)
+        if (FRAMEWORK == SW_FULL)
           sc_table.add(res);
-
-        if (FRAMEWORK == 1) 
-          c_addToTable(res.data[0]);
-        
+        else begin
+          for (int i=0; i<GENERATOR_FL_FRAME_COUNT; i++) begin 
+            if (i == GENERATOR_FL_FRAME_COUNT-1) c_addToTable(res.data[i], 1);
+            else c_addToTable(res.data[i], 0);
+          end  
+        end  
       endtask : post_tr
  endclass : ScoreboardInputCbs
     
@@ -286,7 +288,7 @@ typedef TransactionTable#(1) TransactionTableType;
       bit status=0;
       int res;
       
-      if (FRAMEWORK == 0)begin
+      if (FRAMEWORK == SW_FULL)begin
         sc_table.remove(transaction, status);
        
         if (status==0)begin
@@ -300,15 +302,26 @@ typedef TransactionTable#(1) TransactionTableType;
         end;
       end  
 
-      if (FRAMEWORK == 1) begin 
+      else begin 
         $cast(tr, transaction);
-        res = c_removeFromTable(tr.data[0]);
-        if (res==1)begin 
-          $write("Unknown transaction received from output controller!\n");
-          transaction.display();
-          c_displayTable();
-          $fatal(); 
-        end   
+        
+        while (c_tableEmpty()) begin
+           #10ps;
+        end
+        
+        for (int i=0; i<GENERATOR_FL_FRAME_COUNT; i++) begin
+          if (i == GENERATOR_FL_FRAME_COUNT-1) 
+            res = c_removeFromTable(tr.data[i], 1);
+          else  
+            res = c_removeFromTable(tr.data[i], 0); 
+        
+          if (res==1)begin 
+            $write("Unknown transaction received from output controller!\n");
+            transaction.display();
+            c_displayTable();
+            $fatal(); 
+          end   
+        end 
       end
     endtask : post_tr 
  endclass : ScoreboardOutputCbs   
@@ -357,9 +370,9 @@ typedef TransactionTable#(1) TransactionTableType;
     * 
     */
     task display();
-      if (FRAMEWORK == 0)
+      if (FRAMEWORK == SW_FULL)
         scoreTable.display(0,"HGEN Scoreboard");
-      if (FRAMEWORK == 1)  
+      else 
         c_displayTable(); 
     endtask
 

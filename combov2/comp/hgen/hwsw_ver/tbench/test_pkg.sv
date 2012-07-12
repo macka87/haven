@@ -9,10 +9,29 @@
 package test_pkg;
 
    import math_pkg::*;
+   import sv_types_pkg::*; 
    
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK  = 0;                      // 0 = software framework
-                                            // 1 = sw/hw framework      
+  /*
+   * Enumeration type for Framework definition
+   * SW = software
+   * HW = hardware
+   * G  = generator included
+   * E  = enumaration part included
+   * S  = scoreboard included
+   * D  = design (DUT) included
+   * 
+   * Supported options: 
+   * SW_FULL           
+   * HW_FULL           
+   * SW_GES_HW_D       
+   * SW_ES_HW_GD        
+   * SW_GE_HW_DS - unsopported     
+   * SW_E_HW_GDS - unsupported 
+   * SW_DES_HW_G
+   */ 
+   parameter tFramework FRAMEWORK = HW_FULL;  
+     
    // DUT GENERICS
    parameter DATA_WIDTH = 128;                 // datova sirka RX
    parameter DREM_WIDTH = log2(DATA_WIDTH/8); // drem  sirka RX
@@ -34,13 +53,23 @@ package test_pkg;
    parameter SIM_DELAY  = 100;
    
    // GENERATOR PARAMETERS
-   parameter GEN_TRANS      = 0;   // 0 = simulation with generated transactions
-                                   // 1 = generation of transactions and their
-                                   //     storage to external file  
-                                   // 2 = reading transactions from external
-                                   //     file without generation
-                                   // 3 = simulation with generated transactions
-                                   //     and their storage to external file
+ 
+  /*
+   * Enumeration type for inputs of Generator
+   * SV_GEN      = SystemVerilog generator of transactions
+   * EXT_FILE_IN = reading transactions from external file  
+   * OTHER_GEN   = other generator of transactions
+   * HW_GEN      = hardware generator of transactions 
+   */ 
+   parameter tGenInput GEN_INPUT = HW_GEN;  
+   
+  /*
+   * Enumeration type for storage outputs of Generator
+   * SV_SIM          = SystemVerilog simulation
+   * EXT_FILE_OUT    = storing transactions into external file
+   * SV_SIM_EXT_FILE = SystemVerilog simulation and storing to ext. file
+   */ 
+   parameter tGenOutput GEN_OUTPUT = SV_SIM; 
    
    // TRANSACTION FORMAT 
    parameter GENERATOR_FL_FRAME_COUNT       = 1;                // frame parts
@@ -71,7 +100,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 10000;    // Count of transactions
-   parameter SEED1            = 1;    // Seed for PRNG
-   parameter SEED2            = 2;    // Seed for PRNG
+   parameter TRANSACTION_COUNT = 10000000;  // Count of transactions
+   parameter SEED1             = 1;      // Seed for PRNG
+   parameter SEED2             = 2;      // Seed for PRNG
 endpackage
