@@ -14,6 +14,7 @@ set VER_CORE_BASE          "$COMP_BASE/verification_core"
 set FL_RAND_GEN_BASE       "$COMP_BASE/hw_ver/fl_rand_gen"
 set FL_COM_UNIT_BASE       "$COMP_BASE/hw_ver/fl_command_unit"
 set FL_SCOREBOARD_BASE     "$COMP_BASE/hw_ver/fl_hw_scoreboard"
+set FL_FILTER_BASE         "$COMP_BASE/hw_ver/fl_filter"
 
 # Source files
 set MOD "$MOD $ENTITY_BASE/verification_engine_ent.vhd"
@@ -95,6 +96,7 @@ if { $ARCHGRP == "HW_GEN_CORE" } {
 #     * monitor
 #     * assertion checker at the output interface
 #     * signal observer
+#     * FrameLink filter
 #   * Scoreboard
 ##############################################################################
 if { $ARCHGRP == "HW_FULL" } {
@@ -108,5 +110,6 @@ if { $ARCHGRP == "HW_FULL" } {
      [ list "FL_RAND_GEN"        $FL_RAND_GEN_BASE      "FULL"] \
      [ list "FL_COM_UNIT"        $FL_COM_UNIT_BASE      "FULL"] \
      [ list "FL_SCOREBOARD"      $FL_SCOREBOARD_BASE    "FULL"] \
+     [ list "FL_FILTER"          $FL_FILTER_BASE        "FULL"] \
    ]]
 }

@@ -32,6 +32,15 @@ PART0_SIZE_MASK="01101080"
 PART0_SIZE_BASE="01101084"
 PART0_SIZE_MAX=" 01101088"
 
+# The register with the range for the size of part 1
+PART1_SIZE_MASK="01101090"
+PART1_SIZE_BASE="01101094"
+PART1_SIZE_MAX=" 01101098"
+
+# The register with the range for the size of part 2
+PART2_SIZE_MASK="011010A0"
+PART2_SIZE_BASE="011010A4"
+PART2_SIZE_MAX=" 011010A8"
 
 
 #########################################
@@ -47,9 +56,19 @@ ${CSBUS}    ${NUM_PARTS_BASE}    "00"
 ${CSBUS}    ${NUM_PARTS_MAX}     "00"
 
 # set the range of size of the part 0
-${CSBUS}    ${PART0_SIZE_MASK}    "3F"
-${CSBUS}    ${PART0_SIZE_BASE}    "01"
-${CSBUS}    ${PART0_SIZE_MAX}     "20"
+${CSBUS}    ${PART0_SIZE_MASK}    "00"
+${CSBUS}    ${PART0_SIZE_BASE}    "40"
+${CSBUS}    ${PART0_SIZE_MAX}     "00"
+
+# set the range of size of the part 1
+${CSBUS}    ${PART1_SIZE_MASK}    "3F"
+${CSBUS}    ${PART1_SIZE_BASE}    "01"
+${CSBUS}    ${PART1_SIZE_MAX}     "20"
+
+# set the range of size of the part 2
+${CSBUS}    ${PART2_SIZE_MASK}    "3F"
+${CSBUS}    ${PART2_SIZE_BASE}    "01"
+${CSBUS}    ${PART2_SIZE_MAX}     "20"
 
 # set the desired number of transactions
 ${CSBUS}    ${TRANS_COUNT}       ${COUNT}

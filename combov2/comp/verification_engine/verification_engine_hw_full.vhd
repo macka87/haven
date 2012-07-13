@@ -59,14 +59,14 @@ constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
    signal mi_splitter_drdy     : std_logic;
 
    -- MI32 splitter outputs
-   signal mi_spl_out_dwr      : std_logic_vector(95 downto 0);
-   signal mi_spl_out_addr     : std_logic_vector(95 downto 0);
-   signal mi_spl_out_be       : std_logic_vector(11 downto 0);
-   signal mi_spl_out_rd       : std_logic_vector( 2 downto 0);
-   signal mi_spl_out_wr       : std_logic_vector( 2 downto 0);
-   signal mi_spl_out_ardy     : std_logic_vector( 2 downto 0);
-   signal mi_spl_out_drd      : std_logic_vector(95 downto 0);
-   signal mi_spl_out_drdy     : std_logic_vector( 2 downto 0);
+   signal mi_spl_out_dwr      : std_logic_vector(5*32-1 downto 0);
+   signal mi_spl_out_addr     : std_logic_vector(5*32-1 downto 0);
+   signal mi_spl_out_be       : std_logic_vector(5* 4-1 downto 0);
+   signal mi_spl_out_rd       : std_logic_vector(   4   downto 0);
+   signal mi_spl_out_wr       : std_logic_vector(   4   downto 0);
+   signal mi_spl_out_ardy     : std_logic_vector(   4   downto 0);
+   signal mi_spl_out_drd      : std_logic_vector(5*32-1 downto 0);
+   signal mi_spl_out_drdy     : std_logic_vector(   4   downto 0);
 
    -- FrameLink Generator MI32 interface
    signal fl_rand_gen_mi_dwr      : std_logic_vector(31 downto 0);
@@ -228,6 +228,66 @@ constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
    signal fl_ver_core1_tx_src_rdy_n : std_logic;
    signal fl_ver_core1_tx_dst_rdy_n : std_logic;
 
+   -- FrameLink filter 0 input
+   signal fl_filter0_rx_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_filter0_rx_rem       : std_logic_vector(DREM_WIDTH-1 downto 0);
+   signal fl_filter0_rx_sof_n     : std_logic;
+   signal fl_filter0_rx_sop_n     : std_logic;
+   signal fl_filter0_rx_eop_n     : std_logic;
+   signal fl_filter0_rx_eof_n     : std_logic;
+   signal fl_filter0_rx_src_rdy_n : std_logic;
+   signal fl_filter0_rx_dst_rdy_n : std_logic;
+
+   -- FrameLink filter 0 main output
+   signal fl_filter0_tx_main_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_filter0_tx_main_rem       : std_logic_vector(DREM_WIDTH-1 downto 0);
+   signal fl_filter0_tx_main_sof_n     : std_logic;
+   signal fl_filter0_tx_main_sop_n     : std_logic;
+   signal fl_filter0_tx_main_eop_n     : std_logic;
+   signal fl_filter0_tx_main_eof_n     : std_logic;
+   signal fl_filter0_tx_main_src_rdy_n : std_logic;
+   signal fl_filter0_tx_main_dst_rdy_n : std_logic;
+
+   -- FrameLink filter 0 side output
+   signal fl_filter0_tx_side_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_filter0_tx_side_rem       : std_logic_vector(DREM_WIDTH-1 downto 0);
+   signal fl_filter0_tx_side_sof_n     : std_logic;
+   signal fl_filter0_tx_side_sop_n     : std_logic;
+   signal fl_filter0_tx_side_eop_n     : std_logic;
+   signal fl_filter0_tx_side_eof_n     : std_logic;
+   signal fl_filter0_tx_side_src_rdy_n : std_logic;
+   signal fl_filter0_tx_side_dst_rdy_n : std_logic;
+
+   -- FrameLink filter 1 input
+   signal fl_filter1_rx_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_filter1_rx_rem       : std_logic_vector(DREM_WIDTH-1 downto 0);
+   signal fl_filter1_rx_sof_n     : std_logic;
+   signal fl_filter1_rx_sop_n     : std_logic;
+   signal fl_filter1_rx_eop_n     : std_logic;
+   signal fl_filter1_rx_eof_n     : std_logic;
+   signal fl_filter1_rx_src_rdy_n : std_logic;
+   signal fl_filter1_rx_dst_rdy_n : std_logic;
+
+   -- FrameLink filter 1 main output
+   signal fl_filter1_tx_main_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_filter1_tx_main_rem       : std_logic_vector(DREM_WIDTH-1 downto 0);
+   signal fl_filter1_tx_main_sof_n     : std_logic;
+   signal fl_filter1_tx_main_sop_n     : std_logic;
+   signal fl_filter1_tx_main_eop_n     : std_logic;
+   signal fl_filter1_tx_main_eof_n     : std_logic;
+   signal fl_filter1_tx_main_src_rdy_n : std_logic;
+   signal fl_filter1_tx_main_dst_rdy_n : std_logic;
+
+   -- FrameLink filter 1 side output
+   signal fl_filter1_tx_side_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal fl_filter1_tx_side_rem       : std_logic_vector(DREM_WIDTH-1 downto 0);
+   signal fl_filter1_tx_side_sof_n     : std_logic;
+   signal fl_filter1_tx_side_sop_n     : std_logic;
+   signal fl_filter1_tx_side_eop_n     : std_logic;
+   signal fl_filter1_tx_side_eof_n     : std_logic;
+   signal fl_filter1_tx_side_src_rdy_n : std_logic;
+   signal fl_filter1_tx_side_dst_rdy_n : std_logic;
+
    -- FrameLink NetCOPE Adder component input
    signal fl_netcope_adder_in_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
    signal fl_netcope_adder_in_rem       : std_logic_vector(DREM_WIDTH-1 downto 0);
@@ -268,6 +328,36 @@ constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
    signal scoreboard_tx_src_rdy_n: std_logic;
    signal scoreboard_tx_dst_rdy_n: std_logic;
 
+   -- Scoreboard MI32 interface
+   signal scoreboard_mi_dwr      : std_logic_vector(31 downto 0);
+   signal scoreboard_mi_addr     : std_logic_vector(31 downto 0);
+   signal scoreboard_mi_be       : std_logic_vector( 3 downto 0);
+   signal scoreboard_mi_rd       : std_logic;
+   signal scoreboard_mi_wr       : std_logic;
+   signal scoreboard_mi_ardy     : std_logic;
+   signal scoreboard_mi_drd      : std_logic_vector(31 downto 0);
+   signal scoreboard_mi_drdy     : std_logic;
+
+   -- output binder input
+   signal output_binder_rx_data     : std_logic_vector(3*DATA_WIDTH-1 downto 0);
+   signal output_binder_rx_rem      : std_logic_vector(3*DREM_WIDTH-1 downto 0);
+   signal output_binder_rx_sof_n    : std_logic_vector(2 downto 0);
+   signal output_binder_rx_sop_n    : std_logic_vector(2 downto 0);
+   signal output_binder_rx_eop_n    : std_logic_vector(2 downto 0);
+   signal output_binder_rx_eof_n    : std_logic_vector(2 downto 0);
+   signal output_binder_rx_src_rdy_n: std_logic_vector(2 downto 0);
+   signal output_binder_rx_dst_rdy_n: std_logic_vector(2 downto 0);
+
+   -- output binder output
+   signal output_binder_tx_data     : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal output_binder_tx_rem      : std_logic_vector(DREM_WIDTH-1 downto 0);
+   signal output_binder_tx_sof_n    : std_logic;
+   signal output_binder_tx_sop_n    : std_logic;
+   signal output_binder_tx_eop_n    : std_logic;
+   signal output_binder_tx_eof_n    : std_logic;
+   signal output_binder_tx_src_rdy_n: std_logic;
+   signal output_binder_tx_dst_rdy_n: std_logic;
+
 -- ==========================================================================
 --                                   COMPONENTS
 -- ==========================================================================
@@ -302,21 +392,29 @@ begin
       -- Data width
       DATA_WIDTH    => 32,
       -- Number of output ports
-      ITEMS         => 3,
+      ITEMS         => 5,
 
       -- ADDRESS SPACE
 
-      -- PORT0: 0x00000000 -- 0x000FFFFF
+      -- PORT0: 0x00000000 -- 0x0007FFFF
       PORT0_BASE    => X"00000000",
-      PORT0_LIMIT   => X"00100000",
+      PORT0_LIMIT   => X"00080000",
 
-      -- PORT1: 0x00100000 -- 0x001FFFFF
-      PORT1_BASE    => X"00100000",
-      PORT1_LIMIT   => X"00100000",
+      -- PORT1: 0x00080000 -- 0x000FFFFF
+      PORT1_BASE    => X"00080000",
+      PORT1_LIMIT   => X"00080000",
 
-      -- PORT2: 0x00200000 -- 0x002FFFFF
-      PORT2_BASE    => X"00200000",
+      -- PORT2: 0x00100000 -- 0x001FFFFF
+      PORT2_BASE    => X"00100000",
       PORT2_LIMIT   => X"00100000",
+
+      -- PORT3: 0x00200000 -- 0x002FFFFF
+      PORT3_BASE    => X"00200000",
+      PORT3_LIMIT   => X"00100000",
+
+      -- PORT4: 0x00300000 -- 0x003FFFFF
+      PORT4_BASE    => X"00300000",
+      PORT4_LIMIT   => X"00100000",
 
       -- Input pipeline
       PIPE          => false,
@@ -348,25 +446,6 @@ begin
       OUT_DRDY    => mi_spl_out_drdy
    );
 
-   --
-   fl_com_unit_mi_dwr            <= mi_spl_out_dwr( 95 downto 64);
-   fl_com_unit_mi_addr           <= mi_spl_out_addr(95 downto 64);
-   fl_com_unit_mi_rd             <= mi_spl_out_rd(2);
-   fl_com_unit_mi_wr             <= mi_spl_out_wr(2);
-   fl_com_unit_mi_be             <= mi_spl_out_be(11 downto 8);
-   mi_spl_out_drd(95 downto 64)  <= fl_com_unit_mi_drd;
-   mi_spl_out_ardy(2)            <= fl_com_unit_mi_ardy;
-   mi_spl_out_drdy(2)            <= fl_com_unit_mi_drdy;
-
-   fl_rand_gen_mi_dwr            <= mi_spl_out_dwr( 63 downto 32);
-   fl_rand_gen_mi_addr           <= mi_spl_out_addr(63 downto 32);
-   fl_rand_gen_mi_rd             <= mi_spl_out_rd(1);
-   fl_rand_gen_mi_wr             <= mi_spl_out_wr(1);
-   fl_rand_gen_mi_be             <= mi_spl_out_be(7 downto 4);
-   mi_spl_out_drd(63 downto 32)  <= fl_rand_gen_mi_drd;
-   mi_spl_out_ardy(1)            <= fl_rand_gen_mi_ardy;
-   mi_spl_out_drdy(1)            <= fl_rand_gen_mi_drdy;
-
    ver_core0_mi_dwr              <= mi_spl_out_dwr( 31 downto 0);
    ver_core0_mi_addr             <= mi_spl_out_addr(31 downto 0);
    ver_core0_mi_rd               <= mi_spl_out_rd(0);
@@ -376,14 +455,41 @@ begin
    mi_spl_out_ardy(0)            <= ver_core0_mi_ardy;
    mi_spl_out_drdy(0)            <= ver_core0_mi_drdy;
 
-   ver_core1_mi_dwr              <= X"00000000";
-   ver_core1_mi_addr             <= X"00000000";
-   ver_core1_mi_rd               <= '0';
-   ver_core1_mi_wr               <= '0';
-   ver_core1_mi_be               <= "1111";
-   --mi_spl_out_drd(31 downto 0)   <= ver_core0_mi_drd;
-   --mi_spl_out_ardy(0)            <= ver_core0_mi_ardy;
-   --mi_spl_out_drdy(0)            <= ver_core0_mi_drdy;
+   ver_core1_mi_dwr              <= mi_spl_out_dwr( 63 downto 32);
+   ver_core1_mi_addr             <= mi_spl_out_addr(63 downto 32);
+   ver_core1_mi_rd               <= mi_spl_out_rd(1);
+   ver_core1_mi_wr               <= mi_spl_out_wr(1);
+   ver_core1_mi_be               <= mi_spl_out_be(7 downto 4);
+   mi_spl_out_drd(63 downto 32)  <= ver_core1_mi_drd;
+   mi_spl_out_ardy(1)            <= ver_core1_mi_ardy;
+   mi_spl_out_drdy(1)            <= ver_core1_mi_drdy;
+
+   fl_rand_gen_mi_dwr            <= mi_spl_out_dwr( 95 downto 64);
+   fl_rand_gen_mi_addr           <= mi_spl_out_addr(95 downto 64);
+   fl_rand_gen_mi_rd             <= mi_spl_out_rd(2);
+   fl_rand_gen_mi_wr             <= mi_spl_out_wr(2);
+   fl_rand_gen_mi_be             <= mi_spl_out_be(11 downto 8);
+   mi_spl_out_drd(95 downto 64)  <= fl_rand_gen_mi_drd;
+   mi_spl_out_ardy(2)            <= fl_rand_gen_mi_ardy;
+   mi_spl_out_drdy(2)            <= fl_rand_gen_mi_drdy;
+
+   fl_com_unit_mi_dwr            <= mi_spl_out_dwr( 127 downto 96);
+   fl_com_unit_mi_addr           <= mi_spl_out_addr(127 downto 96);
+   fl_com_unit_mi_rd             <= mi_spl_out_rd(3);
+   fl_com_unit_mi_wr             <= mi_spl_out_wr(3);
+   fl_com_unit_mi_be             <= mi_spl_out_be(15 downto 12);
+   mi_spl_out_drd(127 downto 96) <= fl_com_unit_mi_drd;
+   mi_spl_out_ardy(3)            <= fl_com_unit_mi_ardy;
+   mi_spl_out_drdy(3)            <= fl_com_unit_mi_drdy;
+
+   scoreboard_mi_dwr             <= mi_spl_out_dwr( 159 downto 128);
+   scoreboard_mi_addr            <= mi_spl_out_addr(159 downto 128);
+   scoreboard_mi_rd              <= mi_spl_out_rd(4);
+   scoreboard_mi_wr              <= mi_spl_out_wr(4);
+   scoreboard_mi_be              <= mi_spl_out_be(19 downto 16);
+   mi_spl_out_drd(159 downto 128)<= scoreboard_mi_drd;
+   mi_spl_out_ardy(4)            <= scoreboard_mi_ardy;
+   mi_spl_out_drdy(4)            <= scoreboard_mi_drdy;
 
    -- ------------------------------------------------------------------------
    --                         FrameLink Random Generator
@@ -593,7 +699,9 @@ begin
    fl_fork_tx1_src_rdy_n   <= fl_fork_tx_src_rdy_n(1);
    fl_fork_tx_dst_rdy_n(1) <= fl_fork_tx1_dst_rdy_n;
 
-   --
+   -- ------------------------------------------------------------------------
+   --                             Verification Core 0
+   -- ------------------------------------------------------------------------
    fl_ver_core0_rx_data       <= fl_fork_tx0_data;
    fl_ver_core0_rx_rem        <= fl_fork_tx0_rem;
    fl_ver_core0_rx_sof_n      <= fl_fork_tx0_sof_n;
@@ -603,9 +711,6 @@ begin
    fl_ver_core0_rx_src_rdy_n  <= fl_fork_tx0_src_rdy_n;
    fl_fork_tx0_dst_rdy_n      <= fl_ver_core0_rx_dst_rdy_n;
 
-   -- ------------------------------------------------------------------------
-   --                             Verification Core 0
-   -- ------------------------------------------------------------------------
    ver_core0_i: entity work.VERIFICATION_CORE
    generic map(
       -- FrameLink data width
@@ -649,7 +754,61 @@ begin
       MI32_DRDY     => ver_core0_mi_drdy
    );
 
-   --
+   fl_filter0_rx_data       <= fl_ver_core0_tx_data;
+   fl_filter0_rx_rem        <= fl_ver_core0_tx_rem;
+   fl_filter0_rx_sof_n      <= fl_ver_core0_tx_sof_n;
+   fl_filter0_rx_sop_n      <= fl_ver_core0_tx_sop_n;
+   fl_filter0_rx_eop_n      <= fl_ver_core0_tx_eop_n;
+   fl_filter0_rx_eof_n      <= fl_ver_core0_tx_eof_n;
+   fl_filter0_rx_src_rdy_n  <= fl_ver_core0_tx_src_rdy_n;
+   fl_ver_core0_tx_dst_rdy_n<= fl_filter0_rx_dst_rdy_n;
+
+   -- filters scoreboard-bound frames
+   fl_filter0_i: entity work.FL_FILTER
+   generic map (
+      -- data width
+      DATA_WIDTH     => DATA_WIDTH,
+      -- the value of the observed byte that is to be filtered
+      FILTERED_BYTE  => ENDPOINT_ID_MONITOR
+   )
+   port map (
+      CLK          => CLK,
+      RESET        => RESET,
+
+      -- Input FrameLink Interface
+      RX_DATA       => fl_filter0_rx_data,
+      RX_REM        => fl_filter0_rx_rem,
+      RX_SOF_N      => fl_filter0_rx_sof_n,
+      RX_SOP_N      => fl_filter0_rx_sop_n,
+      RX_EOP_N      => fl_filter0_rx_eop_n,
+      RX_EOF_N      => fl_filter0_rx_eof_n,
+      RX_SRC_RDY_N  => fl_filter0_rx_src_rdy_n,
+      RX_DST_RDY_N  => fl_filter0_rx_dst_rdy_n,
+
+      -- Main output FrameLink Interface
+      TX_MAIN_DATA       => fl_filter0_tx_main_data,
+      TX_MAIN_REM        => fl_filter0_tx_main_rem,
+      TX_MAIN_SOF_N      => fl_filter0_tx_main_sof_n,
+      TX_MAIN_SOP_N      => fl_filter0_tx_main_sop_n,
+      TX_MAIN_EOP_N      => fl_filter0_tx_main_eop_n,
+      TX_MAIN_EOF_N      => fl_filter0_tx_main_eof_n,
+      TX_MAIN_SRC_RDY_N  => fl_filter0_tx_main_src_rdy_n,
+      TX_MAIN_DST_RDY_N  => fl_filter0_tx_main_dst_rdy_n,
+
+      -- Side output FrameLink Interface
+      TX_SIDE_DATA       => fl_filter0_tx_side_data,
+      TX_SIDE_REM        => fl_filter0_tx_side_rem,
+      TX_SIDE_SOF_N      => fl_filter0_tx_side_sof_n,
+      TX_SIDE_SOP_N      => fl_filter0_tx_side_sop_n,
+      TX_SIDE_EOP_N      => fl_filter0_tx_side_eop_n,
+      TX_SIDE_EOF_N      => fl_filter0_tx_side_eof_n,
+      TX_SIDE_SRC_RDY_N  => fl_filter0_tx_side_src_rdy_n,
+      TX_SIDE_DST_RDY_N  => fl_filter0_tx_side_dst_rdy_n
+   );
+
+   -- ------------------------------------------------------------------------
+   --                             Verification Core 1
+   -- ------------------------------------------------------------------------
    fl_ver_core1_rx_data       <= fl_fork_tx1_data;
    fl_ver_core1_rx_rem        <= fl_fork_tx1_rem;
    fl_ver_core1_rx_sof_n      <= fl_fork_tx1_sof_n;
@@ -659,9 +818,6 @@ begin
    fl_ver_core1_rx_src_rdy_n  <= fl_fork_tx1_src_rdy_n;
    fl_fork_tx1_dst_rdy_n      <= fl_ver_core1_rx_dst_rdy_n;
 
-   -- ------------------------------------------------------------------------
-   --                             Verification Core 1
-   -- ------------------------------------------------------------------------
    ver_core1_i: entity work.VERIFICATION_CORE
    generic map(
       -- FrameLink data width
@@ -705,27 +861,79 @@ begin
       MI32_DRDY     => ver_core1_mi_drdy
    );
 
+   fl_filter1_rx_data       <= fl_ver_core1_tx_data;
+   fl_filter1_rx_rem        <= fl_ver_core1_tx_rem;
+   fl_filter1_rx_sof_n      <= fl_ver_core1_tx_sof_n;
+   fl_filter1_rx_sop_n      <= fl_ver_core1_tx_sop_n;
+   fl_filter1_rx_eop_n      <= fl_ver_core1_tx_eop_n;
+   fl_filter1_rx_eof_n      <= fl_ver_core1_tx_eof_n;
+   fl_filter1_rx_src_rdy_n  <= fl_ver_core1_tx_src_rdy_n;
+   fl_ver_core1_tx_dst_rdy_n<= fl_filter1_rx_dst_rdy_n;
+
+   -- filters scoreboard-bound frames
+   fl_filter1_i: entity work.FL_FILTER
+   generic map (
+      -- data width
+      DATA_WIDTH     => DATA_WIDTH,
+      -- the value of the observed byte that is to be filtered
+      FILTERED_BYTE  => ENDPOINT_ID_MONITOR
+   )
+   port map (
+      CLK          => CLK,
+      RESET        => RESET,
+
+      -- Input FrameLink Interface
+      RX_DATA       => fl_filter1_rx_data,
+      RX_REM        => fl_filter1_rx_rem,
+      RX_SOF_N      => fl_filter1_rx_sof_n,
+      RX_SOP_N      => fl_filter1_rx_sop_n,
+      RX_EOP_N      => fl_filter1_rx_eop_n,
+      RX_EOF_N      => fl_filter1_rx_eof_n,
+      RX_SRC_RDY_N  => fl_filter1_rx_src_rdy_n,
+      RX_DST_RDY_N  => fl_filter1_rx_dst_rdy_n,
+
+      -- Main output FrameLink Interface
+      TX_MAIN_DATA       => fl_filter1_tx_main_data,
+      TX_MAIN_REM        => fl_filter1_tx_main_rem,
+      TX_MAIN_SOF_N      => fl_filter1_tx_main_sof_n,
+      TX_MAIN_SOP_N      => fl_filter1_tx_main_sop_n,
+      TX_MAIN_EOP_N      => fl_filter1_tx_main_eop_n,
+      TX_MAIN_EOF_N      => fl_filter1_tx_main_eof_n,
+      TX_MAIN_SRC_RDY_N  => fl_filter1_tx_main_src_rdy_n,
+      TX_MAIN_DST_RDY_N  => fl_filter1_tx_main_dst_rdy_n,
+
+      -- Side output FrameLink Interface
+      TX_SIDE_DATA       => fl_filter1_tx_side_data,
+      TX_SIDE_REM        => fl_filter1_tx_side_rem,
+      TX_SIDE_SOF_N      => fl_filter1_tx_side_sof_n,
+      TX_SIDE_SOP_N      => fl_filter1_tx_side_sop_n,
+      TX_SIDE_EOP_N      => fl_filter1_tx_side_eop_n,
+      TX_SIDE_EOF_N      => fl_filter1_tx_side_eof_n,
+      TX_SIDE_SRC_RDY_N  => fl_filter1_tx_side_src_rdy_n,
+      TX_SIDE_DST_RDY_N  => fl_filter1_tx_side_dst_rdy_n
+   );
+
    -- ------------------------------------------------------------------------
    --                               Scoreboard
    -- ------------------------------------------------------------------------
 
-   scoreboard_rx_data(1*DATA_WIDTH-1 downto 0*DATA_WIDTH) <= fl_ver_core0_tx_data;
-   scoreboard_rx_rem( 1*DREM_WIDTH-1 downto 0*DREM_WIDTH) <= fl_ver_core0_tx_rem;
-   scoreboard_rx_sof_n(0)                                 <= fl_ver_core0_tx_sof_n;
-   scoreboard_rx_eof_n(0)                                 <= fl_ver_core0_tx_eof_n;
-   scoreboard_rx_sop_n(0)                                 <= fl_ver_core0_tx_sop_n;
-   scoreboard_rx_eop_n(0)                                 <= fl_ver_core0_tx_eop_n;
-   scoreboard_rx_src_rdy_n(0)                             <= fl_ver_core0_tx_src_rdy_n;
-   fl_ver_core0_tx_dst_rdy_n                              <= scoreboard_rx_dst_rdy_n(0);
+   scoreboard_rx_data(1*DATA_WIDTH-1 downto 0*DATA_WIDTH) <= fl_filter0_tx_side_data;
+   scoreboard_rx_rem( 1*DREM_WIDTH-1 downto 0*DREM_WIDTH) <= fl_filter0_tx_side_rem;
+   scoreboard_rx_sof_n(0)                                 <= fl_filter0_tx_side_sof_n;
+   scoreboard_rx_eof_n(0)                                 <= fl_filter0_tx_side_eof_n;
+   scoreboard_rx_sop_n(0)                                 <= fl_filter0_tx_side_sop_n;
+   scoreboard_rx_eop_n(0)                                 <= fl_filter0_tx_side_eop_n;
+   scoreboard_rx_src_rdy_n(0)                             <= fl_filter0_tx_side_src_rdy_n;
+   fl_filter0_tx_side_dst_rdy_n                           <= scoreboard_rx_dst_rdy_n(0);
 
-   scoreboard_rx_data(2*DATA_WIDTH-1 downto 1*DATA_WIDTH) <= fl_ver_core1_tx_data;
-   scoreboard_rx_rem( 2*DREM_WIDTH-1 downto 1*DREM_WIDTH) <= fl_ver_core1_tx_rem;
-   scoreboard_rx_sof_n(1)                                 <= fl_ver_core1_tx_sof_n;
-   scoreboard_rx_eof_n(1)                                 <= fl_ver_core1_tx_eof_n;
-   scoreboard_rx_sop_n(1)                                 <= fl_ver_core1_tx_sop_n;
-   scoreboard_rx_eop_n(1)                                 <= fl_ver_core1_tx_eop_n;
-   scoreboard_rx_src_rdy_n(1)                             <= fl_ver_core1_tx_src_rdy_n;
-   fl_ver_core1_tx_dst_rdy_n                              <= scoreboard_rx_dst_rdy_n(1);
+   scoreboard_rx_data(2*DATA_WIDTH-1 downto 1*DATA_WIDTH) <= fl_filter1_tx_side_data;
+   scoreboard_rx_rem( 2*DREM_WIDTH-1 downto 1*DREM_WIDTH) <= fl_filter1_tx_side_rem;
+   scoreboard_rx_sof_n(1)                                 <= fl_filter1_tx_side_sof_n;
+   scoreboard_rx_eof_n(1)                                 <= fl_filter1_tx_side_eof_n;
+   scoreboard_rx_sop_n(1)                                 <= fl_filter1_tx_side_sop_n;
+   scoreboard_rx_eop_n(1)                                 <= fl_filter1_tx_side_eop_n;
+   scoreboard_rx_src_rdy_n(1)                             <= fl_filter1_tx_side_src_rdy_n;
+   fl_filter1_tx_side_dst_rdy_n                           <= scoreboard_rx_dst_rdy_n(1);
 
    scoreboard_i: entity work.FL_HW_SCOREBOARD
    generic map (
@@ -765,21 +973,102 @@ begin
       TX_SOF_N       => scoreboard_tx_sof_n,
       TX_EOF_N       => scoreboard_tx_eof_n,
       TX_SRC_RDY_N   => scoreboard_tx_src_rdy_n,
-      TX_DST_RDY_N   => scoreboard_tx_dst_rdy_n
+      TX_DST_RDY_N   => scoreboard_tx_dst_rdy_n,
+
+      -- MI32 interface
+      MI_DWR         => scoreboard_mi_dwr,
+      MI_ADDR        => scoreboard_mi_addr,
+      MI_RD          => scoreboard_mi_rd,
+      MI_WR          => scoreboard_mi_wr,
+      MI_BE          => scoreboard_mi_be,
+      MI_DRD         => scoreboard_mi_drd,
+      MI_ARDY        => scoreboard_mi_ardy,
+      MI_DRDY        => scoreboard_mi_drdy
+   );
+
+   --
+   output_binder_rx_data(DATA_WIDTH-1 downto 0)  <= fl_filter0_tx_main_data;
+   output_binder_rx_rem( DREM_WIDTH-1 downto 0)  <= fl_filter0_tx_main_rem;
+   output_binder_rx_sof_n(0)                     <= fl_filter0_tx_main_sof_n;
+   output_binder_rx_sop_n(0)                     <= fl_filter0_tx_main_sop_n;
+   output_binder_rx_eop_n(0)                     <= fl_filter0_tx_main_eop_n;
+   output_binder_rx_eof_n(0)                     <= fl_filter0_tx_main_eof_n;
+   output_binder_rx_src_rdy_n(0)                 <= fl_filter0_tx_main_src_rdy_n;
+   fl_filter0_tx_main_dst_rdy_n                  <= output_binder_rx_dst_rdy_n(0);
+
+   output_binder_rx_data(2*DATA_WIDTH-1 downto DATA_WIDTH)  <= fl_filter1_tx_main_data;
+   output_binder_rx_rem( 2*DREM_WIDTH-1 downto DREM_WIDTH)  <= fl_filter1_tx_main_rem;
+   output_binder_rx_sof_n(1)                                <= fl_filter1_tx_main_sof_n;
+   output_binder_rx_sop_n(1)                                <= fl_filter1_tx_main_sop_n;
+   output_binder_rx_eop_n(1)                                <= fl_filter1_tx_main_eop_n;
+   output_binder_rx_eof_n(1)                                <= fl_filter1_tx_main_eof_n;
+   output_binder_rx_src_rdy_n(1)                            <= fl_filter1_tx_main_src_rdy_n;
+   fl_filter1_tx_main_dst_rdy_n                             <= output_binder_rx_dst_rdy_n(1);
+
+   output_binder_rx_data(3*DATA_WIDTH-1 downto 2*DATA_WIDTH)  <= scoreboard_tx_data;
+   output_binder_rx_rem( 3*DREM_WIDTH-1 downto 2*DREM_WIDTH)  <= scoreboard_tx_rem;
+   output_binder_rx_sof_n(2)                                  <= scoreboard_tx_sof_n;
+   output_binder_rx_sop_n(2)                                  <= scoreboard_tx_sop_n;
+   output_binder_rx_eop_n(2)                                  <= scoreboard_tx_eop_n;
+   output_binder_rx_eof_n(2)                                  <= scoreboard_tx_eof_n;
+   output_binder_rx_src_rdy_n(2)                              <= scoreboard_tx_src_rdy_n;
+   scoreboard_tx_dst_rdy_n                                    <= output_binder_rx_dst_rdy_n(2);
+
+   -- the binder at the output of verification core
+   output_binder_i: entity work.FL_BINDER
+   generic map(
+      -- width of one input interface. Should be multiple of 8
+      INPUT_WIDTH    => DATA_WIDTH,
+      -- number of input interfaces: only 2,4,8,16 supported
+      INPUT_COUNT    => 3,
+      -- output width - most effective value is INPUT_WIDTH*INPUT_COUNT. In 
+      -- other cases FL_TRANSFORMER is instantiated
+      OUTPUT_WIDTH   => DATA_WIDTH,
+      -- number of parts in one FrameLink frame
+      FRAME_PARTS    => 1,
+      
+      -- select BlockRAM or LUT memory
+      LUT_MEMORY     => true,
+      -- Queue choosing policy
+      SIMPLE_BINDER  => true
+   )
+   port map(
+      CLK            => CLK,
+      RESET          => RESET,
+
+      -- input FrameLink interface
+      RX_DATA        => output_binder_rx_data,
+      RX_REM         => output_binder_rx_rem,
+      RX_SOF_N       => output_binder_rx_sof_n,
+      RX_SOP_N       => output_binder_rx_sop_n,
+      RX_EOP_N       => output_binder_rx_eop_n,
+      RX_EOF_N       => output_binder_rx_eof_n,
+      RX_SRC_RDY_N   => output_binder_rx_src_rdy_n,
+      RX_DST_RDY_N   => output_binder_rx_dst_rdy_n,
+
+      -- output FrameLink interface
+      TX_DATA        => output_binder_tx_data,
+      TX_REM         => output_binder_tx_rem,
+      TX_SOF_N       => output_binder_tx_sof_n,
+      TX_SOP_N       => output_binder_tx_sop_n,
+      TX_EOP_N       => output_binder_tx_eop_n,
+      TX_EOF_N       => output_binder_tx_eof_n,
+      TX_SRC_RDY_N   => output_binder_tx_src_rdy_n,
+      TX_DST_RDY_N   => output_binder_tx_dst_rdy_n
    );
 
    -- ------------------------------------------------------------------------
    --                              NetCOPE Adder
    -- ------------------------------------------------------------------------
 
-   fl_netcope_adder_in_data       <= scoreboard_tx_data;
-   fl_netcope_adder_in_rem        <= scoreboard_tx_rem;
-   fl_netcope_adder_in_sof_n      <= scoreboard_tx_sof_n;
-   fl_netcope_adder_in_sop_n      <= scoreboard_tx_sop_n;
-   fl_netcope_adder_in_eop_n      <= scoreboard_tx_eop_n;
-   fl_netcope_adder_in_eof_n      <= scoreboard_tx_eof_n;
-   fl_netcope_adder_in_src_rdy_n  <= scoreboard_tx_src_rdy_n;
-   scoreboard_tx_dst_rdy_n        <= fl_netcope_adder_in_dst_rdy_n;
+   fl_netcope_adder_in_data       <= output_binder_tx_data;
+   fl_netcope_adder_in_rem        <= output_binder_tx_rem;
+   fl_netcope_adder_in_sof_n      <= output_binder_tx_sof_n;
+   fl_netcope_adder_in_sop_n      <= output_binder_tx_sop_n;
+   fl_netcope_adder_in_eop_n      <= output_binder_tx_eop_n;
+   fl_netcope_adder_in_eof_n      <= output_binder_tx_eof_n;
+   fl_netcope_adder_in_src_rdy_n  <= output_binder_tx_src_rdy_n;
+   output_binder_tx_dst_rdy_n     <= fl_netcope_adder_in_dst_rdy_n;
 
    netcope_adder_i: entity work.FL_NETCOPE_ADDER
    generic map(

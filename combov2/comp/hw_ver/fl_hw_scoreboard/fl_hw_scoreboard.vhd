@@ -61,7 +61,17 @@ entity FL_HW_SCOREBOARD is
       TX_SOF_N       : out std_logic;
       TX_EOF_N       : out std_logic;
       TX_SRC_RDY_N   : out std_logic;
-      TX_DST_RDY_N   : in  std_logic
+      TX_DST_RDY_N   : in  std_logic;
+
+      -- MI32 Interface
+      MI_DWR    :  in std_logic_vector(31 downto 0);
+      MI_ADDR   :  in std_logic_vector(31 downto 0);
+      MI_RD     :  in std_logic;
+      MI_WR     :  in std_logic;
+      MI_BE     :  in std_logic_vector( 3 downto 0);
+      MI_DRD    : out std_logic_vector(31 downto 0);
+      MI_ARDY   : out std_logic;
+      MI_DRDY   : out std_logic
    );
    
 end entity;
@@ -92,6 +102,15 @@ signal sig_rx_sop_n       : std_logic_vector(INTERFACES-1 downto 0);
 signal sig_rx_eop_n       : std_logic_vector(INTERFACES-1 downto 0);
 signal sig_rx_sof_n       : std_logic_vector(INTERFACES-1 downto 0);
 signal sig_rx_eof_n       : std_logic_vector(INTERFACES-1 downto 0);
+
+signal sig_mi_dwr         : std_logic_vector(31 downto 0);
+signal sig_mi_addr        : std_logic_vector(31 downto 0);
+signal sig_mi_rd          : std_logic;
+signal sig_mi_wr          : std_logic;
+signal sig_mi_be          : std_logic_vector( 3 downto 0);
+signal sig_mi_drd         : std_logic_vector(31 downto 0);
+signal sig_mi_ardy        : std_logic;
+signal sig_mi_drdy        : std_logic;
 
 -- output signals
 signal sig_tx_data        : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
@@ -154,13 +173,21 @@ signal sig_accepting      : std_logic;
 signal or_src_rdy_n        : std_logic;
 signal or_src_rdy_n_in     : std_logic_vector(INTERFACES-1 downto 0);
 
--- the word counter
-signal word_cnt            : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-signal word_cnt_en         : std_logic;
+-- the frame counter
+signal frame_cnt            : std_logic_vector(31 downto 0);
+signal frame_cnt_in         : std_logic_vector(31 downto 0);
+signal frame_cnt_en         : std_logic;
+signal frame_cnt_load       : std_logic;
+
+-- the MI32 data out multiplexer
+signal mux_drd_out          : std_logic_vector(31 downto 0);
+
+-- the address decoder output
+signal addr_sel_cnt         : std_logic;
 
 begin
 
-   -- Assertions
+   -- Assertions 
    assert    (IN_DATA_WIDTH = 16)
           OR (IN_DATA_WIDTH = 32)
           OR (IN_DATA_WIDTH = 64)
@@ -182,6 +209,23 @@ begin
    sig_rx_eop_n       <= RX_EOP_N;
    sig_rx_src_rdy_n   <= RX_SRC_RDY_N;
    RX_DST_RDY_N       <= sig_rx_dst_rdy_n;
+
+   sig_mi_dwr         <= MI_DWR;
+   sig_mi_addr        <= MI_ADDR;
+   sig_mi_wr          <= MI_WR;     
+   sig_mi_rd          <= MI_RD;     
+   sig_mi_be          <= MI_BE;
+   MI_ARDY            <= sig_mi_ardy;
+   MI_DRD             <= sig_mi_drd;
+   MI_DRDY            <= sig_mi_drdy;
+
+   -- mapping the MI32 signals
+   sig_mi_ardy        <= sig_mi_wr OR sig_mi_rd;
+   sig_mi_drdy        <= sig_mi_rd;
+   sig_mi_drd         <= mux_drd_out;
+
+   -- the address decoder
+   addr_sel_cnt       <= sig_mi_addr(2);
 
    --
    fifo_rx_data        <= sig_rx_data;
@@ -289,8 +333,9 @@ begin
    );
 
    --
-   sb_sender_send          <= sb_checker_mismatch;
-   sb_sender_data_content  <= word_cnt;
+   sb_sender_send                                     <= sb_checker_mismatch;
+   sb_sender_data_content(31 downto 0)                <= frame_cnt;
+   sb_sender_data_content(OUT_DATA_WIDTH-1 downto 32) <= (others => '0');
 
    -- the scoreboard sender
    sb_sender_i: entity work.SCOREBOARD_SENDER
@@ -336,18 +381,34 @@ begin
    sb_sender_tx_dst_rdy_n   <= sig_tx_dst_rdy_n;
 
    --
-   word_cnt_en       <= sig_accepting;
+   frame_cnt_en       <= sig_accepting AND (NOT fifo_tx_eof_n(0));
+   frame_cnt_load     <= addr_sel_cnt AND sig_mi_wr;
+   frame_cnt_in       <= sig_mi_dwr;
 
    -- the word counter
-   word_cnt_p: process(CLK)
+   frame_cnt_p: process(CLK)
    begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
-            word_cnt <= (others => '0');
-         elsif (word_cnt_en = '1') then
-            word_cnt <= word_cnt + 1;
+            frame_cnt <= (others => '0');
+         elsif (frame_cnt_load = '1') then
+            frame_cnt <= frame_cnt_in;
+         elsif (frame_cnt_en = '1') then
+            frame_cnt <= frame_cnt + 1;
          end if;
       end if;
+   end process;
+
+   -- the MI32 data out multiplexer
+   mux_drd_p: process(addr_sel_cnt)
+   begin
+      mux_drd_out <= frame_cnt;
+
+      case (addr_sel_cnt) is
+         when '0'    => mux_drd_out <= X"5C08EB8D";
+         when '1'    => mux_drd_out <= frame_cnt;
+         when others => null;
+      end case;
    end process;
 
    -- mapping output signals

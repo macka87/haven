@@ -59,7 +59,7 @@ entity FL_FILTER is
       TX_SIDE_EOF_N     : out std_logic;
       TX_SIDE_SRC_RDY_N : out std_logic;
       TX_SIDE_DST_RDY_N :  in std_logic
-   );       
+   );
    
 end entity;
 
