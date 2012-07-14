@@ -21,6 +21,10 @@ entity MONITOR_PACKETIZER_NEW_PROTOCOL is
    (
       -- data width
       DATA_WIDTH     : integer := 64;
+      -- should the buffer for output frames be used, so that a frame is
+      -- started to be sent only if it is complete? Note that setting this
+      -- option to "true" may consume a significant amount of FPGA's resources
+      USE_BUFFER     : boolean := true;
       -- ID of the endpoint
       ENDPOINT_ID    : std_logic_vector(7 downto 0);
       -- ID of the FrameLink protocol
@@ -345,40 +349,54 @@ begin
    rx_buffer_fifo_eop_n       <= mux_eop_n_out;
    rx_buffer_fifo_src_rdy_n   <= mux_src_rdy_n_out;
 
-   -- the buffer that has enough capacity to buffer at least one whole frame
-   buffer_fifo_i : entity work.FL_FIFO
-   generic map(
-      DATA_WIDTH      => DATA_WIDTH,
-      ITEMS           => BUFFER_FIFO_DEPTH,
-      USE_BRAMS       => true,
-      PARTS           => 1
-   )
-   port map(
-      CLK             => CLK,
-      RESET           => RESET,
-      
-      -- RX interface
-      RX_DATA         => rx_buffer_fifo_data,
-      RX_REM          => rx_buffer_fifo_rem,
-      RX_SOF_N        => rx_buffer_fifo_sof_n,
-      RX_EOF_N        => rx_buffer_fifo_eof_n,
-      RX_SOP_N        => rx_buffer_fifo_sop_n,
-      RX_EOP_N        => rx_buffer_fifo_eop_n,
-      RX_SRC_RDY_N    => rx_buffer_fifo_src_rdy_n,
-      RX_DST_RDY_N    => rx_buffer_fifo_dst_rdy_n,
+   gen_buffer_true: if (USE_BUFFER) generate
+      -- the buffer that has enough capacity to buffer at least one whole frame
+      buffer_fifo_i : entity work.FL_FIFO
+      generic map(
+         DATA_WIDTH      => DATA_WIDTH,
+         ITEMS           => BUFFER_FIFO_DEPTH,
+         USE_BRAMS       => true,
+         PARTS           => 1
+      )
+      port map(
+         CLK             => CLK,
+         RESET           => RESET,
+         
+         -- RX interface
+         RX_DATA         => rx_buffer_fifo_data,
+         RX_REM          => rx_buffer_fifo_rem,
+         RX_SOF_N        => rx_buffer_fifo_sof_n,
+         RX_EOF_N        => rx_buffer_fifo_eof_n,
+         RX_SOP_N        => rx_buffer_fifo_sop_n,
+         RX_EOP_N        => rx_buffer_fifo_eop_n,
+         RX_SRC_RDY_N    => rx_buffer_fifo_src_rdy_n,
+         RX_DST_RDY_N    => rx_buffer_fifo_dst_rdy_n,
 
-      -- TX interface
-      TX_DATA         => tx_buffer_fifo_data,
-      TX_REM          => tx_buffer_fifo_rem,
-      TX_SOF_N        => tx_buffer_fifo_sof_n,
-      TX_EOF_N        => tx_buffer_fifo_eof_n,
-      TX_SOP_N        => tx_buffer_fifo_sop_n,
-      TX_EOP_N        => tx_buffer_fifo_eop_n,
-      TX_SRC_RDY_N    => tx_buffer_fifo_src_rdy_n,
-      TX_DST_RDY_N    => tx_buffer_fifo_dst_rdy_n,
+         -- TX interface
+         TX_DATA         => tx_buffer_fifo_data,
+         TX_REM          => tx_buffer_fifo_rem,
+         TX_SOF_N        => tx_buffer_fifo_sof_n,
+         TX_EOF_N        => tx_buffer_fifo_eof_n,
+         TX_SOP_N        => tx_buffer_fifo_sop_n,
+         TX_EOP_N        => tx_buffer_fifo_eop_n,
+         TX_SRC_RDY_N    => tx_buffer_fifo_src_rdy_n,
+         TX_DST_RDY_N    => tx_buffer_fifo_dst_rdy_n,
 
-      FRAME_RDY       => tx_buffer_fifo_frame_rdy
-   );
+         FRAME_RDY       => tx_buffer_fifo_frame_rdy
+      );
+   end generate;
+
+   gen_buffer_false: if (NOT USE_BUFFER) generate
+      tx_buffer_fifo_data         <= rx_buffer_fifo_data;
+      tx_buffer_fifo_rem          <= rx_buffer_fifo_rem;
+      tx_buffer_fifo_sof_n        <= rx_buffer_fifo_sof_n;
+      tx_buffer_fifo_eof_n        <= rx_buffer_fifo_eof_n;
+      tx_buffer_fifo_sop_n        <= rx_buffer_fifo_sop_n;
+      tx_buffer_fifo_eop_n        <= rx_buffer_fifo_eop_n;
+      tx_buffer_fifo_src_rdy_n    <= rx_buffer_fifo_src_rdy_n;
+      rx_buffer_fifo_dst_rdy_n    <= tx_buffer_fifo_dst_rdy_n;
+      tx_buffer_fifo_frame_rdy    <= '1';
+   end generate;
 
    sig_rx_dst_rdy_n  <= rx_buffer_fifo_dst_rdy_n OR (NOT is_sending_data_content);
 
