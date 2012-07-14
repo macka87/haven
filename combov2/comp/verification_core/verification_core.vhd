@@ -30,7 +30,7 @@ architecture arch of verification_core is
    --constant DUT_DATA_WIDTH  : integer := 128;
 
    -- number of endpoints that transmit data to SW
-   constant OUTPUT_ENDPOINTS : integer := 3;
+   constant OUTPUT_ENDPOINTS : integer := 4;
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -57,6 +57,25 @@ architecture arch of verification_core is
    signal fl_hw_driver_tx_dst_rdy_n : std_logic;
 
    signal fl_hw_driver_output_ready : std_logic;
+
+   -- FrameLink coverage checker input
+   signal fl_cov_unit_rx_rem        : std_logic_vector(log2(DUT_DATA_WIDTH/8)-1 downto 0);
+   signal fl_cov_unit_rx_sof_n      : std_logic;
+   signal fl_cov_unit_rx_sop_n      : std_logic;
+   signal fl_cov_unit_rx_eop_n      : std_logic;
+   signal fl_cov_unit_rx_eof_n      : std_logic;
+   signal fl_cov_unit_rx_src_rdy_n  : std_logic;
+
+   -- FrameLink coverage checker output
+   signal fl_cov_unit_tx_data       : std_logic_vector(ENV_DATA_WIDTH-1 downto 0);
+   signal fl_cov_unit_tx_rem        : std_logic_vector(log2(ENV_DATA_WIDTH/8)-1 downto 0);
+   signal fl_cov_unit_tx_sof_n      : std_logic;
+   signal fl_cov_unit_tx_sop_n      : std_logic;
+   signal fl_cov_unit_tx_eop_n      : std_logic;
+   signal fl_cov_unit_tx_eof_n      : std_logic;
+   signal fl_cov_unit_tx_src_rdy_n  : std_logic;
+   signal fl_cov_unit_tx_dst_rdy_n  : std_logic;
+   signal fl_cov_unit_output_ready  : std_logic;
 
    -- DUT input
    signal dut_in_data        : std_logic_vector(DUT_DATA_WIDTH-1 downto 0);
@@ -239,6 +258,75 @@ begin
       OUTPUT_READY  => fl_hw_driver_output_ready
    );
 
+   --
+   fl_cov_unit_rx_rem                 <= dut_in_rem;
+   fl_cov_unit_rx_sof_n               <= dut_in_sof_n;
+   fl_cov_unit_rx_sop_n               <= dut_in_sop_n;
+   fl_cov_unit_rx_eop_n               <= dut_in_eop_n;
+   fl_cov_unit_rx_eof_n               <= dut_in_eof_n;
+   fl_cov_unit_rx_src_rdy_n           <= dut_in_src_rdy_n;
+
+   -- ------------------------------------------------------------------------
+   --                        Input FrameLink Coverage Unit
+   -- ------------------------------------------------------------------------
+   gen_fl_cov_true: if (USE_FL_COV_UNIT) generate
+      fl_cov_unit_i: entity work.FL_COV_UNIT
+      generic map(
+         -- input FrameLink data width
+         IN_DATA_WIDTH      => DUT_DATA_WIDTH,
+         -- output FrameLink data width
+         OUT_DATA_WIDTH     => ENV_DATA_WIDTH,
+         -- the interval between sending coverage report to SW
+         SEND_INTERVAL      => 1023,
+         -- ID of the endpoint
+         ENDPOINT_ID        => ENDPOINT_ID_FL_COV,
+         -- ID of the protocol
+         FL_COV_PROTOCOL_ID => PROTO_OUT_FL_COV
+      )
+      port map(
+         -- input clock domain
+         RX_CLK        => clk_dut,
+         RX_RESET      => reset_dut,
+
+         -- output clock domain
+         TX_CLK        => CLK,
+         TX_RESET      => RESET,
+
+         -- input interface
+         RX_REM        => fl_cov_unit_rx_rem,
+         RX_SOF_N      => fl_cov_unit_rx_sof_n,
+         RX_SOP_N      => fl_cov_unit_rx_sop_n,
+         RX_EOP_N      => fl_cov_unit_rx_eop_n,
+         RX_EOF_N      => fl_cov_unit_rx_eof_n,
+         RX_SRC_RDY_N  => fl_cov_unit_rx_src_rdy_n,
+
+         -- output interface
+         TX_DATA       => fl_cov_unit_tx_data,
+         TX_REM        => fl_cov_unit_tx_rem,
+         TX_SOF_N      => fl_cov_unit_tx_sof_n,
+         TX_SOP_N      => fl_cov_unit_tx_sop_n,
+         TX_EOP_N      => fl_cov_unit_tx_eop_n,
+         TX_EOF_N      => fl_cov_unit_tx_eof_n,
+         TX_SRC_RDY_N  => fl_cov_unit_tx_src_rdy_n,
+         TX_DST_RDY_N  => fl_cov_unit_tx_dst_rdy_n,
+
+         OUTPUT_READY  => fl_cov_unit_output_ready
+      );
+   end generate;
+
+   gen_fl_cov_false: if (NOT USE_FL_COV_UNIT) generate
+      fl_cov_unit_tx_data       <= (others => '0');
+      fl_cov_unit_tx_rem        <= (others => '0');
+      fl_cov_unit_tx_sof_n      <= '1';
+      fl_cov_unit_tx_sop_n      <= '1';
+      fl_cov_unit_tx_eop_n      <= '1';
+      fl_cov_unit_tx_eof_n      <= '1';
+      fl_cov_unit_tx_src_rdy_n  <= '1';
+
+      fl_cov_unit_output_ready  <= '1';
+   end generate;
+
+   --
    dut_in_data                <= fl_hw_driver_tx_data;
    dut_in_rem                 <= fl_hw_driver_tx_rem;
    dut_in_sof_n               <= fl_hw_driver_tx_sof_n;
@@ -715,34 +803,42 @@ begin
    end generate;
 
    -- FL_BINDER input mapping
-   fl_binder_in_data       <= out_sig_observer_tx_data &
+   fl_binder_in_data       <= fl_cov_unit_tx_data &
+                              out_sig_observer_tx_data &
                               fl_val_checker_tx_data &
                               fl_hw_monitor_tx_data;
 
-   fl_binder_in_rem        <= out_sig_observer_tx_rem &
+   fl_binder_in_rem        <= fl_cov_unit_tx_rem &
+                              out_sig_observer_tx_rem &
                               fl_val_checker_tx_rem &
                               fl_hw_monitor_tx_rem;
 
-   fl_binder_in_sof_n      <= out_sig_observer_tx_sof_n &
+   fl_binder_in_sof_n      <= fl_cov_unit_tx_sof_n &
+                              out_sig_observer_tx_sof_n &
                               fl_val_checker_tx_sof_n &
                               fl_hw_monitor_tx_sof_n;
 
-   fl_binder_in_sop_n      <= out_sig_observer_tx_sop_n &
+   fl_binder_in_sop_n      <= fl_cov_unit_tx_sop_n &
+                              out_sig_observer_tx_sop_n &
                               fl_val_checker_tx_sop_n &
                               fl_hw_monitor_tx_sop_n;
 
-   fl_binder_in_eop_n      <= out_sig_observer_tx_eop_n &
+   fl_binder_in_eop_n      <= fl_cov_unit_tx_eop_n &
+                              out_sig_observer_tx_eop_n &
                               fl_val_checker_tx_eop_n &
                               fl_hw_monitor_tx_eop_n;
 
-   fl_binder_in_eof_n      <= out_sig_observer_tx_eof_n &
+   fl_binder_in_eof_n      <= fl_cov_unit_tx_eof_n &
+                              out_sig_observer_tx_eof_n &
                               fl_val_checker_tx_eof_n &
                               fl_hw_monitor_tx_eof_n;
 
-   fl_binder_in_src_rdy_n  <= out_sig_observer_tx_src_rdy_n &
+   fl_binder_in_src_rdy_n  <= fl_cov_unit_tx_src_rdy_n &
+                              out_sig_observer_tx_src_rdy_n &
                               fl_val_checker_tx_src_rdy_n &
                               fl_hw_monitor_tx_src_rdy_n;
 
+   fl_cov_unit_tx_dst_rdy_n        <= fl_binder_in_dst_rdy_n(3);
    out_sig_observer_tx_dst_rdy_n   <= fl_binder_in_dst_rdy_n(2);
    fl_val_checker_tx_dst_rdy_n     <= fl_binder_in_dst_rdy_n(1);
    fl_hw_monitor_tx_dst_rdy_n      <= fl_binder_in_dst_rdy_n(0);
@@ -796,16 +892,6 @@ begin
    TX_SRC_RDY_N             <= fl_binder_out_src_rdy_n;
    fl_binder_out_dst_rdy_n  <= TX_DST_RDY_N;
 
-
---   TX_DATA       <= RX_DATA;
---   TX_REM        <= RX_REM;
---   TX_SOF_N      <= RX_SOF_N;
---   TX_SOP_N      <= RX_SOP_N;
---   TX_EOP_N      <= RX_EOP_N;
---   TX_EOF_N      <= RX_EOF_N;
---   TX_SRC_RDY_N  <= RX_SRC_RDY_N;
---   RX_DST_RDY_N  <= TX_DST_RDY_N;
-
    -- ------------------------------------------------------------------------
    --                              Clock gate
    -- ------------------------------------------------------------------------
@@ -854,7 +940,8 @@ begin
 
    output_ready_all <= fl_hw_driver_output_ready AND
                        fl_hw_monitor_output_ready AND
-                       fl_val_checker_output_ready;
+                       fl_val_checker_output_ready AND
+                       fl_cov_unit_output_ready;
 
    -- ------------------------------------------------------------------------
    --                            MI32 Connection

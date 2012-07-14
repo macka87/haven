@@ -27,9 +27,11 @@ proc blk_FL_COV_UNIT { BASE } {
   add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
   add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+  add_wave "-noupdate -label OUTPUT_READY" $BASE/OUTPUT_READY
 }
 
 proc blk_FL_COV_UNIT_INTERNALS { BASE } {
+   add wave -divider "Internals"
    add_wave "-noupdate -label acc_time_counter -unsigned"  $BASE/acc_time_counter
    add_wave "-noupdate -label sig_sample"                  $BASE/sig_sample
    add_wave "-noupdate -label cmp_acc_time_counter_is_max" $BASE/cmp_acc_time_counter_is_max
@@ -39,6 +41,18 @@ proc blk_FL_COV_UNIT_INTERNALS { BASE } {
    add_wave "-noupdate -label reg_rearranger_completed"      $BASE/reg_rearranger_completed
    add_wave "-noupdate -label reg_rearranger_completed_set"  $BASE/reg_rearranger_completed_set
    add_wave "-noupdate -label reg_rearranger_completed_clr"  $BASE/reg_rearranger_completed_clr
+
+  add wave -divider "FIFO Input"
+  add_wave "-noupdate -label RX_CLK"    $BASE/RX_CLK
+  add_wave "-noupdate -label RX_DATA"   $BASE/sig_data_fifo_wr_data
+  add_wave "-noupdate -label RX_WRITE"  $BASE/sig_data_fifo_wr_write
+
+  add wave -divider "FIFO Output"
+  add_wave "-noupdate -label TX_CLK"            $BASE/TX_CLK
+  add_wave "-noupdate -label TX_DATA"           $BASE/sig_data_fifo_rd_data
+  add_wave "-noupdate -label TX_READ"           $BASE/sig_data_fifo_rd_read
+  add_wave "-noupdate -label TX_EMPTY"          $BASE/sig_data_fifo_rd_empty
+  add_wave "-noupdate -label TX_ALMOST_EMPTY"   $BASE/sig_data_fifo_rd_almost_empty
 
   add wave -divider "REARRANGER"
   add_wave "-noupdate -label RX_DATA -hex" $BASE/rx_rearranger_data

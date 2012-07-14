@@ -22,7 +22,9 @@ entity verification_core is
       -- the CORE_TYPE generic specifies the verified unit in the core
       CORE_TYPE          : core_type := core_fifo;
       -- should signal observers be used?
-      USE_OBSERVERS      : boolean := false
+      USE_OBSERVERS      : boolean := false;
+      -- should the input FrameLink coverage unit be used?
+      USE_FL_COV_UNIT    : boolean := false
    );
    port
    (

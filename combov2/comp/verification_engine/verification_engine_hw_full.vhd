@@ -714,9 +714,13 @@ begin
    ver_core0_i: entity work.VERIFICATION_CORE
    generic map(
       -- FrameLink data width
-      DATA_WIDTH   => DATA_WIDTH,
+      DATA_WIDTH         => DATA_WIDTH,
       -- type of the core
-      CORE_TYPE    => VER_CORE0_TYPE
+      CORE_TYPE          => VER_CORE0_TYPE,
+      -- should signal observers be used?
+      USE_OBSERVERS      => VER_CORE0_USE_OBSERVERS,
+      -- should the input FrameLink coverage unit be used?
+      USE_FL_COV_UNIT    => VER_CORE0_USE_FL_COV_UNIT
    )
    port map(
       -- input clock domain
@@ -821,9 +825,13 @@ begin
    ver_core1_i: entity work.VERIFICATION_CORE
    generic map(
       -- FrameLink data width
-      DATA_WIDTH   => DATA_WIDTH,
+      DATA_WIDTH         => DATA_WIDTH,
       -- type of the core
-      CORE_TYPE    => VER_CORE1_TYPE
+      CORE_TYPE          => VER_CORE1_TYPE,
+      -- should signal observers be used?
+      USE_OBSERVERS      => VER_CORE1_USE_OBSERVERS,
+      -- should the input FrameLink coverage unit be used?
+      USE_FL_COV_UNIT    => VER_CORE1_USE_FL_COV_UNIT
    )
    port map(
       -- input clock domain

@@ -26,8 +26,15 @@ package haven_const is
    type core_type is (core_fifo, core_err_fifo, core_hgen_1x, core_hgen_2x,
       core_hgen_4x, core_hgen_8x, core_hgen_16x);
 
-   constant VER_CORE0_TYPE    : core_type := core_hgen_4x;
-   constant VER_CORE1_TYPE    : core_type := core_hgen_1x;
+   constant VER_CORE0_TYPE    : core_type := core_fifo;
+   constant VER_CORE1_TYPE    : core_type := core_fifo;
+
+   -- parameters of VERIFICATION_COREs
+   constant VER_CORE0_USE_OBSERVERS   : boolean := false;
+   constant VER_CORE1_USE_OBSERVERS   : boolean := false;
+
+   constant VER_CORE0_USE_FL_COV_UNIT : boolean := true;
+   constant VER_CORE1_USE_FL_COV_UNIT : boolean := false;
 
    --------------------------------------------------------------------------
    --                            PROTOCOLS
@@ -46,6 +53,8 @@ package haven_const is
    constant PROTO_OUT_FL_VAL_CHECKER : std_logic_vector(7 downto 0) := X"90";
    -- Scoreboard
    constant PROTO_OUT_SCOREBOARD     : std_logic_vector(7 downto 0) := X"BD";
+   -- FrameLink Coverage checker
+   constant PROTO_OUT_FL_COV         : std_logic_vector(7 downto 0) := X"92";
 
    --------------------------------------------------------------------------
    --                           ENDPOINT IDs
@@ -62,6 +71,8 @@ package haven_const is
    constant ENDPOINT_ID_SIG_OBSERV   : std_logic_vector(7 downto 0) := X"BB";
    -- Scoreboard
    constant ENDPOINT_ID_SCOREBOARD   : std_logic_vector(7 downto 0) := X"5B";
+   -- FrameLink Coverage checker
+   constant ENDPOINT_ID_FL_COV       : std_logic_vector(7 downto 0) := X"FC";
 
 end haven_const;
 
