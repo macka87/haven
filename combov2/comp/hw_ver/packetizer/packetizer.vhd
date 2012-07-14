@@ -25,7 +25,7 @@ entity PACKETIZER is
    (
       -- data width
       DATA_WIDTH       : integer := 64;
-      -- maximum frame length in bytes
+      -- maximum frame length in bytes (without the 1-word header)
       FRAME_LENGTH     : integer := 4096;
       -- Endpoint ID
       ENDPOINT_ID      : std_logic_vector(7 downto 0);
@@ -72,10 +72,10 @@ architecture arch of PACKETIZER is
 constant HEAD_WORD_LENGTH  : integer := 1;
 
 -- maximum value of the frame word counter
-constant WORD_CNT_MAX_VALUE   : integer := FRAME_LENGTH/(DATA_WIDTH/8)-1;
+constant WORD_CNT_MAX_VALUE   : integer := (FRAME_LENGTH-1)/(DATA_WIDTH/8);
 
 -- width of the frame word counter
-constant WORD_CNT_WIDTH         : integer := log2(WORD_CNT_MAX_VALUE);
+constant WORD_CNT_WIDTH         : integer := log2(WORD_CNT_MAX_VALUE + 1);
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -121,6 +121,10 @@ begin
 
    assert (DATA_WIDTH = 64)
       report "Unsupported DATA_WIDTH!"
+      severity failure;
+
+   assert (FRAME_LENGTH > 0)
+      report "Only positive FRAME_LENGTH supported!"
       severity failure;
 
    -- mapping of input signals
@@ -195,15 +199,13 @@ begin
          is_word_cnt_max <= '0';
 
          if (word_cnt = WORD_CNT_MAX_VALUE) then
-            is_word_cnt_max <= '1';
-         else
-            is_word_cnt_max <= '0';
+            is_word_cnt_max <= NOT is_sending_header;
          end if;
       end process;
    end generate;
 
    gen_no_word_cnt: if (WORD_CNT_WIDTH < 1) generate
-      is_word_cnt_max <= '1';
+      is_word_cnt_max <= NOT is_sending_header;
    end generate;
 
 

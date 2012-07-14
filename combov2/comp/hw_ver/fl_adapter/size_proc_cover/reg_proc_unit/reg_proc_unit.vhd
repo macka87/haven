@@ -54,7 +54,7 @@ entity REG_PROC_UNIT is
       PART_SIZE_TAKE:  in std_logic;                     -- take signal for part size
 
       -- additional signal denoting whether the part for which the size is
-      -- provided is the last part of the frame
+      -- provided is the last part of the frame, valid if PART_SIZE_VLD = '1'
       IS_LAST_IN_FRAME : out std_logic
    );       
    
@@ -155,6 +155,7 @@ signal sig_last_part          : std_logic;
 signal reg_is_last            : std_logic;
 
 -- is the size gen_proc_unit sampling?
+signal sig_num_sampling      : std_logic;
 signal sig_size_sampling      : std_logic;
 
 begin
@@ -373,6 +374,8 @@ begin
    num_proc_en  <= sig_should_run;
 
    -- gen_proc_unit instance --
+   -- it generates the count of frames to be generated -1, i.e. the number of
+   -- the last frame to be generated
    gen_proc_unit_num_i : entity work.gen_proc_unit
    generic map(
       DATA_WIDTH   => PART_NUM_CNT_WIDTH

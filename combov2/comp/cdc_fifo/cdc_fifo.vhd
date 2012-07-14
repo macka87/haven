@@ -92,6 +92,21 @@ component asfifo_lut_8
 	prog_empty: OUT std_logic);
 end component;
 
+component asfifo_lut_9
+	port (
+	rst: IN std_logic;
+	wr_clk: IN std_logic;
+	rd_clk: IN std_logic;
+	din: IN std_logic_VECTOR(8 downto 0);
+	wr_en: IN std_logic;
+	rd_en: IN std_logic;
+	dout: OUT std_logic_VECTOR(8 downto 0);
+	full: OUT std_logic;
+	empty: OUT std_logic;
+	prog_full: OUT std_logic;
+	prog_empty: OUT std_logic);
+end component;
+
 component asfifo_lut_16
 	port (
 	rst: IN std_logic;
@@ -107,15 +122,30 @@ component asfifo_lut_16
 	prog_empty: OUT std_logic);
 end component;
 
-component asfifo_lut_9
+component asfifo_lut_32
 	port (
 	rst: IN std_logic;
 	wr_clk: IN std_logic;
 	rd_clk: IN std_logic;
-	din: IN std_logic_VECTOR(8 downto 0);
+	din: IN std_logic_VECTOR(31 downto 0);
 	wr_en: IN std_logic;
 	rd_en: IN std_logic;
-	dout: OUT std_logic_VECTOR(8 downto 0);
+	dout: OUT std_logic_VECTOR(31 downto 0);
+	full: OUT std_logic;
+	empty: OUT std_logic;
+	prog_full: OUT std_logic;
+	prog_empty: OUT std_logic);
+end component;
+
+component asfifo_lut_60
+	port (
+	rst: IN std_logic;
+	wr_clk: IN std_logic;
+	rd_clk: IN std_logic;
+	din: IN std_logic_VECTOR(59 downto 0);
+	wr_en: IN std_logic;
+	rd_en: IN std_logic;
+	dout: OUT std_logic_VECTOR(59 downto 0);
 	full: OUT std_logic;
 	empty: OUT std_logic;
 	prog_full: OUT std_logic;
@@ -204,6 +234,8 @@ begin
            (DATA_WIDTH =   8) OR
            (DATA_WIDTH =   9) OR
            (DATA_WIDTH =  16) OR
+           (DATA_WIDTH =  32) OR 
+           (DATA_WIDTH =  60) OR 
            (DATA_WIDTH =  71) OR 
            (DATA_WIDTH =  73) OR 
            (DATA_WIDTH = 136) OR
@@ -287,6 +319,42 @@ gen_asfifo_16:
    if (DATA_WIDTH = 16) generate
 
       fifo_16 : asfifo_lut_16
+		port map (
+			rst => RESET,
+			wr_clk => WR_CLK,
+			rd_clk => RD_CLK,
+			din => WR_DATA,
+			wr_en => WR_WRITE,
+			rd_en => RD_READ,
+			dout => RD_DATA,
+			full => WR_FULL,
+			empty => RD_EMPTY,
+			prog_full => WR_ALMOST_FULL,
+			prog_empty => RD_ALMOST_EMPTY);
+   end generate;
+
+gen_asfifo_32:
+   if (DATA_WIDTH = 32) generate
+
+      fifo_32 : asfifo_lut_32
+		port map (
+			rst => RESET,
+			wr_clk => WR_CLK,
+			rd_clk => RD_CLK,
+			din => WR_DATA,
+			wr_en => WR_WRITE,
+			rd_en => RD_READ,
+			dout => RD_DATA,
+			full => WR_FULL,
+			empty => RD_EMPTY,
+			prog_full => WR_ALMOST_FULL,
+			prog_empty => RD_ALMOST_EMPTY);
+   end generate;
+
+gen_asfifo_60:
+   if (DATA_WIDTH = 60) generate
+
+      fifo_60 : asfifo_lut_60
 		port map (
 			rst => RESET,
 			wr_clk => WR_CLK,

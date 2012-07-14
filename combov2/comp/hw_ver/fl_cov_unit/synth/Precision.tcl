@@ -31,7 +31,7 @@
 #
 
 # top level entity
-set TOP_LEVEL_ENT   "FL_ADAPTER_UNIT"
+set TOP_LEVEL_ENT   "FL_COV_UNIT"
 
 # specify vhdl_design directory
 set FIRMWARE_BASE  "../../../.."
@@ -46,7 +46,7 @@ set SYNTH_FLAGS(FPGA)   "xc5vlx155t"
 
 # list of sub-components
 set COMPONENTS [list  \
-    [list "FL_ADAPTER_UNIT"   $FL_ADAPTER_BASE  "FULL"] \
+    [list "FL_COV_UNIT"   $FL_ADAPTER_BASE  "FULL"] \
 ]
 
 

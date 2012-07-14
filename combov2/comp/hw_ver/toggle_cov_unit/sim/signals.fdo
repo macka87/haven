@@ -1,0 +1,72 @@
+# signals.fdo : Include file with signals
+# Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
+
+view wave
+delete wave *
+
+proc blk_TOGGLE_COV_UNIT { BASE } {
+  add_wave "-noupdate -label RX_CLK"    $BASE/RX_CLK
+  add_wave "-noupdate -label RX_RESET"  $BASE/RX_RESET
+  add_wave "-noupdate -label TX_CLK"    $BASE/TX_CLK
+  add_wave "-noupdate -label TX_RESET"  $BASE/TX_RESET
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label RX_DATA -hex" $BASE/RX_DATA
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+  add_wave "-noupdate -label TX_REM  -hex" $BASE/TX_REM
+  add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+  add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+  add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
+  add_wave "-noupdate -label TX_EOP_N"     $BASE/TX_EOP_N
+  add_wave "-noupdate -label TX_SOF_N"     $BASE/TX_SOF_N
+  add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
+}
+
+proc blk_TOGGLE_COV_UNIT_INTERNALS { BASE } {
+   add_wave "-noupdate -label acc_time_counter -unsigned"  $BASE/acc_time_counter
+   add_wave "-noupdate -label sig_sample"                  $BASE/sig_sample
+   add_wave "-noupdate -label cmp_acc_time_counter_is_max" $BASE/cmp_acc_time_counter_is_max
+   add_wave "-noupdate -label reg_sample_valid_reg"        $BASE/reg_sample_valid_reg
+
+  add wave -divider "rearranger_completed register"
+   add_wave "-noupdate -label reg_rearranger_completed"      $BASE/reg_rearranger_completed
+   add_wave "-noupdate -label reg_rearranger_completed_set"  $BASE/reg_rearranger_completed_set
+   add_wave "-noupdate -label reg_rearranger_completed_clr"  $BASE/reg_rearranger_completed_clr
+
+  add wave -divider "REARRANGER"
+  add_wave "-noupdate -label RX_DATA -hex" $BASE/rx_rearranger_data
+  add_wave "-noupdate -label RX_VALID"     $BASE/rx_rearranger_valid
+  add_wave "-noupdate -label RX_READ_NEXT" $BASE/rx_rearranger_read_next
+  add wave -divider
+  add_wave "-noupdate -label TX_DATA -hex" $BASE/tx_rearranger_data
+  add_wave "-noupdate -label TX_VALID"     $BASE/tx_rearranger_valid
+  add_wave "-noupdate -label TX_READ_NEXT" $BASE/tx_rearranger_read_next
+
+  add wave -divider "PACKETIZER"
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label RX_DATA -hex" $BASE/packetizer_i/RX_DATA
+  add_wave "-noupdate -label RX_VALID"     $BASE/packetizer_i/RX_VALID
+  add_wave "-noupdate -label RX_READ_NEXT" $BASE/packetizer_i/RX_READ_NEXT
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label TX_DATA -hex" $BASE/packetizer_i/TX_DATA
+  add_wave "-noupdate -label TX_REM  -hex" $BASE/packetizer_i/TX_REM
+  add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/packetizer_i/TX_SRC_RDY_N
+  add_wave "-noupdate -label TX_DST_RDY_N" $BASE/packetizer_i/TX_DST_RDY_N
+  add_wave "-noupdate -label TX_SOP_N"     $BASE/packetizer_i/TX_SOP_N
+  add_wave "-noupdate -label TX_EOP_N"     $BASE/packetizer_i/TX_EOP_N
+  add_wave "-noupdate -label TX_SOF_N"     $BASE/packetizer_i/TX_SOF_N
+  add_wave "-noupdate -label TX_EOF_N"     $BASE/packetizer_i/TX_EOF_N
+
+  add wave -divider "Internals"
+  add_wave "-noupdate -label sig_rx_valid"                  $BASE/packetizer_i/sig_rx_valid
+  add_wave "-noupdate -label is_word_cnt_max"               $BASE/packetizer_i/is_word_cnt_max
+  add_wave "-noupdate -label word_cnt -hex"                 $BASE/packetizer_i/word_cnt
+
+  add wave -divider "is_sending_header register"
+  add_wave "-noupdate -label reg_is_sending_header"         $BASE/packetizer_i/reg_is_sending_header
+  add_wave "-noupdate -label reg_is_sending_header_set"     $BASE/packetizer_i/reg_is_sending_header_set
+  add_wave "-noupdate -label reg_is_sending_header_clr"     $BASE/packetizer_i/reg_is_sending_header_clr
+}
+
