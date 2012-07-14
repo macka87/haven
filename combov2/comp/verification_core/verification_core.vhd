@@ -569,6 +569,12 @@ begin
       -- FrameLink data width
      IN_DATA_WIDTH   => DUT_DATA_WIDTH,
      OUT_DATA_WIDTH  => ENV_DATA_WIDTH,
+     -- should the buffer for output frames be used, so that a frame is
+     -- started to be sent only if it is complete? Note that setting this
+     -- option to "true" may consume a significant amount of FPGA's resources
+     --      In this case, a buffer is used only if there are signal observers,
+     --      so that they would not deadlock each other
+     USE_BUFFER      => USE_OBSERVERS,
      ENDPOINT_ID     => ENDPOINT_ID_MONITOR,
      FL_PROTOCOL_ID  => PROTO_OUT_FRAMELINK
    )
@@ -650,48 +656,63 @@ begin
    -- ------------------------------------------------------------------------
    --                    Output FrameLink Signal Observer
    -- ------------------------------------------------------------------------
-  out_signal_observer_i: entity work.FL_OBSERVER
-   generic map(
-      -- FrameLink data width
-     IN_DATA_WIDTH       => DUT_DATA_WIDTH,
-     OUT_DATA_WIDTH      => ENV_DATA_WIDTH,
-     ENDPOINT_ID         => ENDPOINT_ID_SIG_OBSERV,
-     FL_OBS_PROTOCOL_ID  => PROTO_OUT_FL_SIG_OBS,
-     LIMIT_FRAMES        => true,
-     SEND_X_FRAMES       => 0
-   )
-   port map(
-      -- input clock domain
-      RX_CLK         => clk_dut,
-      RX_RESET       => reset_dut,
 
-      -- input interface
-      RX_DATA       => dut_out_data,
-      RX_REM        => dut_out_rem,
-      RX_SOF_N      => dut_out_sof_n,
-      RX_SOP_N      => dut_out_sop_n,
-      RX_EOP_N      => dut_out_eop_n,
-      RX_EOF_N      => dut_out_eof_n,
-      RX_SRC_RDY_N  => dut_out_src_rdy_n,
-      RX_DST_RDY_N  => dut_out_dst_rdy_n,
+   gen_observers_true: if (USE_OBSERVERS) generate
+      out_signal_observer_i: entity work.FL_OBSERVER
+      generic map(
+         -- FrameLink data width
+        IN_DATA_WIDTH       => DUT_DATA_WIDTH,
+        OUT_DATA_WIDTH      => ENV_DATA_WIDTH,
+        ENDPOINT_ID         => ENDPOINT_ID_SIG_OBSERV,
+        FL_OBS_PROTOCOL_ID  => PROTO_OUT_FL_SIG_OBS,
+        LIMIT_FRAMES        => true,
+        SEND_X_FRAMES       => 0
+      )
+      port map(
+         -- input clock domain
+         RX_CLK         => clk_dut,
+         RX_RESET       => reset_dut,
 
-      -- output clock domain
-      TX_CLK        => CLK,
-      TX_RESET      => RESET,
+         -- input interface
+         RX_DATA       => dut_out_data,
+         RX_REM        => dut_out_rem,
+         RX_SOF_N      => dut_out_sof_n,
+         RX_SOP_N      => dut_out_sop_n,
+         RX_EOP_N      => dut_out_eop_n,
+         RX_EOF_N      => dut_out_eof_n,
+         RX_SRC_RDY_N  => dut_out_src_rdy_n,
+         RX_DST_RDY_N  => dut_out_dst_rdy_n,
 
-      -- output interface
-      TX_DATA       => out_sig_observer_tx_data,
-      TX_REM        => out_sig_observer_tx_rem,
-      TX_SOF_N      => out_sig_observer_tx_sof_n,
-      TX_SOP_N      => out_sig_observer_tx_sop_n,
-      TX_EOP_N      => out_sig_observer_tx_eop_n,
-      TX_EOF_N      => out_sig_observer_tx_eof_n,
-      TX_SRC_RDY_N  => out_sig_observer_tx_src_rdy_n,
-      TX_DST_RDY_N  => out_sig_observer_tx_dst_rdy_n,
+         -- output clock domain
+         TX_CLK        => CLK,
+         TX_RESET      => RESET,
 
-      -- output ready signal
-      OUTPUT_READY  => out_sig_observer_output_ready
-   );
+         -- output interface
+         TX_DATA       => out_sig_observer_tx_data,
+         TX_REM        => out_sig_observer_tx_rem,
+         TX_SOF_N      => out_sig_observer_tx_sof_n,
+         TX_SOP_N      => out_sig_observer_tx_sop_n,
+         TX_EOP_N      => out_sig_observer_tx_eop_n,
+         TX_EOF_N      => out_sig_observer_tx_eof_n,
+         TX_SRC_RDY_N  => out_sig_observer_tx_src_rdy_n,
+         TX_DST_RDY_N  => out_sig_observer_tx_dst_rdy_n,
+
+         -- output ready signal
+         OUTPUT_READY  => out_sig_observer_output_ready
+      );
+   end generate;
+
+   gen_observers_false: if (NOT USE_OBSERVERS) generate
+      out_sig_observer_tx_data       <= (others => '0');
+      out_sig_observer_tx_rem        <= (others => '0');
+      out_sig_observer_tx_sof_n      <= '1';
+      out_sig_observer_tx_eof_n      <= '1';
+      out_sig_observer_tx_sop_n      <= '1';
+      out_sig_observer_tx_eop_n      <= '1';
+      out_sig_observer_tx_src_rdy_n  <= '1';
+
+      out_sig_observer_output_ready  <= '1';
+   end generate;
 
    -- FL_BINDER input mapping
    fl_binder_in_data       <= out_sig_observer_tx_data &

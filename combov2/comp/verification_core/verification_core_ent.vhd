@@ -20,7 +20,9 @@ entity verification_core is
       -- data width 
       DATA_WIDTH         : integer := 64;
       -- the CORE_TYPE generic specifies the verified unit in the core
-      CORE_TYPE          : core_type := core_fifo
+      CORE_TYPE          : core_type := core_fifo;
+      -- should signal observers be used?
+      USE_OBSERVERS      : boolean := false
    );
    port
    (
