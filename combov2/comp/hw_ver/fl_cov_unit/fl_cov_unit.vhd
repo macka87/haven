@@ -106,8 +106,8 @@ constant IN_DREM_WIDTH     : integer := log2(IN_DATA_WIDTH/8);
 -- the number of possible values in input DREM
 constant IN_DREM_NUM       : integer := 2**IN_DREM_WIDTH;
 
--- real input width (DREM + 4 control signals)
-constant REAL_IN_WIDTH     : integer := IN_DREM_WIDTH + 4;
+-- real input width (DREM + 5 control signals)
+constant REAL_IN_WIDTH     : integer := IN_DREM_WIDTH + 5;
 
 constant TOTAL_STATE_SPACE_SIZE : integer := 16 + IN_DREM_NUM;
 
@@ -128,6 +128,7 @@ signal sig_data_fifo_rd_empty        : std_logic;
 signal sig_data_fifo_rd_almost_empty : std_logic;
 
 -- FrameLink signals extracted from FIFO output
+signal sig_src_rdy_n           : std_logic;
 signal sig_sof_n               : std_logic;
 signal sig_eof_n               : std_logic;
 signal sig_sop_n               : std_logic;
@@ -201,12 +202,13 @@ begin
       severity failure;
 
    -- --------------- MAPPING OF INPUT PORTS --------------------------------
-   sig_data_fifo_wr_write  <= not (RX_RESET OR RX_SRC_RDY_N);
-   sig_data_fifo_wr_data(REAL_IN_WIDTH-1 downto 4)    <= RX_REM;
-   sig_data_fifo_wr_data(3)                           <= RX_SOP_N;
-   sig_data_fifo_wr_data(2)                           <= RX_EOP_N;
-   sig_data_fifo_wr_data(1)                           <= RX_SOF_N;
-   sig_data_fifo_wr_data(0)                           <= RX_EOF_N;
+   sig_data_fifo_wr_write  <= NOT RX_RESET;
+   sig_data_fifo_wr_data(REAL_IN_WIDTH-1 downto 5)    <= RX_REM;
+   sig_data_fifo_wr_data(4)                           <= RX_SOP_N;
+   sig_data_fifo_wr_data(3)                           <= RX_EOP_N;
+   sig_data_fifo_wr_data(2)                           <= RX_SOF_N;
+   sig_data_fifo_wr_data(1)                           <= RX_EOF_N;
+   sig_data_fifo_wr_data(0)                           <= RX_SRC_RDY_N;
 
    -- --------------- DATA FIFO INSTANCE ------------------------------------
    data_async_fifo : entity work.cdc_fifo
@@ -231,17 +233,18 @@ begin
       RD_ALMOST_EMPTY => sig_data_fifo_rd_almost_empty
    );
 
-   sig_data_fifo_rd_read     <= '1';
+   sig_data_fifo_rd_read     <= NOT TX_RESET;
 
-   sig_rem             <= sig_data_fifo_rd_data(REAL_IN_WIDTH-1 downto 4);
-   sig_sop_n           <= sig_data_fifo_rd_data(3);
-   sig_eop_n           <= sig_data_fifo_rd_data(2);
-   sig_sof_n           <= sig_data_fifo_rd_data(1);
-   sig_eof_n           <= sig_data_fifo_rd_data(0);
+   sig_rem             <= sig_data_fifo_rd_data(REAL_IN_WIDTH-1 downto 5);
+   sig_sop_n           <= sig_data_fifo_rd_data(4);
+   sig_eop_n           <= sig_data_fifo_rd_data(3);
+   sig_sof_n           <= sig_data_fifo_rd_data(2);
+   sig_eof_n           <= sig_data_fifo_rd_data(1);
+   sig_src_rdy_n       <= sig_data_fifo_rd_data(0);
 
 
    --
-   sig_coverage_regs_en    <= NOT sig_data_fifo_rd_empty;
+   sig_coverage_regs_en    <= NOT (sig_data_fifo_rd_empty OR sig_src_rdy_n);
                                                      
    sig_reg_controls_in(0)  <=     (NOT sig_sof_n)    -- |SOF_N|EOF_N|SOP_N|EOP_N|
                               AND (NOT sig_eof_n)
@@ -286,7 +289,7 @@ begin
       sig_reg_drem_in <= (others => '0');
 
       for i in 0 to IN_DREM_NUM-1 loop
-         if (i = unsigned(sig_rem)) then
+         if (sig_rem = i) then
             sig_reg_drem_in(i) <= '1';
          end if;
       end loop;
@@ -388,7 +391,7 @@ begin
    begin
       if (rising_edge(TX_CLK)) then
          if (TX_RESET = '1') then
-            reg_rearranger_completed <= '0';
+            reg_rearranger_completed <= '1';
          elsif (reg_rearranger_completed_set = '1') then
             reg_rearranger_completed <= '1';
          elsif (reg_rearranger_completed_clr = '1') then
@@ -400,7 +403,7 @@ begin
 
    --
    acc_time_counter_clr <= sig_sample;
-   acc_time_counter_en <= (NOT cmp_acc_time_counter_is_max) AND sig_coverage_regs_en;
+   acc_time_counter_en <= NOT (cmp_acc_time_counter_is_max OR sig_data_fifo_rd_empty);
 
    -- ---------------- ACCUMULATION TIME COUNTER ----------------------------
    acc_time_counter_p: process(TX_CLK)
