@@ -185,6 +185,9 @@ signal mux_drd_out          : std_logic_vector(31 downto 0);
 -- the address decoder output
 signal addr_sel_cnt         : std_logic;
 
+-- the end-of-frame checker
+signal is_end_of_frame      : std_logic;
+
 begin
 
    -- Assertions 
@@ -380,8 +383,23 @@ begin
    sig_tx_src_rdy_n         <= sb_sender_tx_src_rdy_n;
    sb_sender_tx_dst_rdy_n   <= sig_tx_dst_rdy_n;
 
+   -- checks the end-of-frame condition
+   is_end_of_frame_p: process(sig_accepting, fifo_tx_data, fifo_tx_sof_n,
+      fifo_tx_eof_n)
+   begin
+      is_end_of_frame <= '0';
+
+      if (sig_accepting = '1') then
+         if ((fifo_tx_sof_n(0) = '0') AND (fifo_tx_eof_n(0) = '0')) then
+            if (fifo_tx_data(39 downto 32) = X"03") then
+               is_end_of_frame <= '1';
+            end if;
+         end if;
+      end if;
+   end process;
+
    --
-   frame_cnt_en       <= sig_accepting AND (NOT fifo_tx_eof_n(0));
+   frame_cnt_en       <= is_end_of_frame;
    frame_cnt_load     <= addr_sel_cnt AND sig_mi_wr;
    frame_cnt_in       <= sig_mi_dwr;
 
