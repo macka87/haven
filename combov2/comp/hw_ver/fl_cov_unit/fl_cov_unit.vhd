@@ -38,8 +38,11 @@ entity fl_cov_unit is
 
    port
    (
+      -- input clock domain
       RX_CLK         :  in std_logic;
       RX_RESET       :  in std_logic;
+
+      -- output clock domain
       TX_CLK         :  in std_logic;
       TX_RESET       :  in std_logic;
 
@@ -202,7 +205,7 @@ begin
       severity failure;
 
    -- --------------- MAPPING OF INPUT PORTS --------------------------------
-   sig_data_fifo_wr_write  <= NOT RX_RESET;
+   sig_data_fifo_wr_write                             <= NOT RX_RESET;
    sig_data_fifo_wr_data(REAL_IN_WIDTH-1 downto 5)    <= RX_REM;
    sig_data_fifo_wr_data(4)                           <= RX_SOP_N;
    sig_data_fifo_wr_data(3)                           <= RX_EOP_N;

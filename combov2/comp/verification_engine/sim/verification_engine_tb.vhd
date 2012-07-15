@@ -46,7 +46,9 @@ architecture test of testbench is
    constant PART_BASE_OFFSET  : integer := 4;
    constant PART_MAX_OFFSET   : integer := 8;
 
-   constant TRANSACTION_COUNT : integer := 16;
+   constant FL_COMMAND_ADDR   : std_logic_vector(31 downto 0) := X"00200000";
+
+   constant TRANSACTION_COUNT : integer := 1000;
 
    -- ------------------------------------------------------------------------
    --                                 Signals
@@ -222,146 +224,146 @@ begin
       -- ----------- PARTS NUM --------------
       -- PARTS_NUM_MASK
       mi32_addr  <= PART_NUM_REG_ADDR + PART_MASK_OFFSET;
-      mi32_dwr   <= X"00000007";
+      mi32_dwr   <= X"00000000";
       wait until rising_edge(clk);
 
       -- PARTS_NUM_BASE
       mi32_addr  <= PART_NUM_REG_ADDR + PART_BASE_OFFSET;
-      mi32_dwr   <= X"00000001";
+      mi32_dwr   <= X"00000000";
       wait until rising_edge(clk);
 
       -- PARTS_NUM_MAX
       mi32_addr  <= PART_NUM_REG_ADDR + PART_MAX_OFFSET;
-      mi32_dwr   <= X"00000005";
+      mi32_dwr   <= X"00000000";
       wait until rising_edge(clk);
 
       -- ----------- PART 0 -----------------
       -- PART0_MASK
       mi32_addr  <= PART_SIZE_REG_ADDR + 0*PART_REG_OFFSET + PART_MASK_OFFSET;
-      mi32_dwr   <= X"0000000F";
+      mi32_dwr   <= X"00000000";
       wait until rising_edge(clk);
 
       -- PART0_BASE
       mi32_addr  <= PART_SIZE_REG_ADDR + 0*PART_REG_OFFSET + PART_BASE_OFFSET;
-      mi32_dwr   <= X"00000001";
+      mi32_dwr   <= X"00000040";
       wait until rising_edge(clk);
 
       -- PART0_MAX
       mi32_addr  <= PART_SIZE_REG_ADDR + 0*PART_REG_OFFSET + PART_MAX_OFFSET;
-      mi32_dwr   <= X"0000000A";
+      mi32_dwr   <= X"00000000";
       wait until rising_edge(clk);
 
-      -- ----------- PART 1 -----------------
-      -- PART1_MASK
-      mi32_addr  <= PART_SIZE_REG_ADDR + 1*PART_REG_OFFSET + PART_MASK_OFFSET;
-      mi32_dwr   <= X"000000FF";
-      wait until rising_edge(clk);
-
-      -- PART1_BASE
-      mi32_addr  <= PART_SIZE_REG_ADDR + 1*PART_REG_OFFSET + PART_BASE_OFFSET;
-      mi32_dwr   <= X"00000010";
-      wait until rising_edge(clk);
-
-      -- PART1_MAX
-      mi32_addr  <= PART_SIZE_REG_ADDR + 1*PART_REG_OFFSET + PART_MAX_OFFSET;
-      mi32_dwr   <= X"000000A0";
-      wait until rising_edge(clk);
-
-      -- ----------- PART 2 -----------------
-      -- PART2_MASK
-      mi32_addr  <= PART_SIZE_REG_ADDR + 2*PART_REG_OFFSET + PART_MASK_OFFSET;
-      mi32_dwr   <= X"00000FFF";
-      wait until rising_edge(clk);
-
-      -- PART2_BASE
-      mi32_addr  <= PART_SIZE_REG_ADDR + 2*PART_REG_OFFSET + PART_BASE_OFFSET;
-      mi32_dwr   <= X"00000100";
-      wait until rising_edge(clk);
-
-      -- PART2_MAX
-      mi32_addr  <= PART_SIZE_REG_ADDR + 2*PART_REG_OFFSET + PART_MAX_OFFSET;
-      mi32_dwr   <= X"00000A00";
-      wait until rising_edge(clk);
-
-      -- ----------- PART 3 -----------------
-      -- PART3_MASK
-      mi32_addr  <= PART_SIZE_REG_ADDR + 3*PART_REG_OFFSET + PART_MASK_OFFSET;
-      mi32_dwr   <= X"0000FFFF";
-      wait until rising_edge(clk);
-
-      -- PART3_BASE
-      mi32_addr  <= PART_SIZE_REG_ADDR + 3*PART_REG_OFFSET + PART_BASE_OFFSET;
-      mi32_dwr   <= X"00001000";
-      wait until rising_edge(clk);
-
-      -- PART3_MAX
-      mi32_addr  <= PART_SIZE_REG_ADDR + 3*PART_REG_OFFSET + PART_MAX_OFFSET;
-      mi32_dwr   <= X"0000A000";
-      wait until rising_edge(clk);
-
-      -- ----------- PART 4 -----------------
-      -- PART4_MASK
-      mi32_addr  <= PART_SIZE_REG_ADDR + 4*PART_REG_OFFSET + PART_MASK_OFFSET;
-      mi32_dwr   <= X"000FFFFF";
-      wait until rising_edge(clk);
-
-      -- PART4_BASE
-      mi32_addr  <= PART_SIZE_REG_ADDR + 4*PART_REG_OFFSET + PART_BASE_OFFSET;
-      mi32_dwr   <= X"00010000";
-      wait until rising_edge(clk);
-
-      -- PART4_MAX
-      mi32_addr  <= PART_SIZE_REG_ADDR + 4*PART_REG_OFFSET + PART_MAX_OFFSET;
-      mi32_dwr   <= X"000A0000";
-      wait until rising_edge(clk);
-
-      -- ----------- PART 5 -----------------
-      -- PART5_MASK
-      mi32_addr  <= PART_SIZE_REG_ADDR + 5*PART_REG_OFFSET + PART_MASK_OFFSET;
-      mi32_dwr   <= X"00FFFFFF";
-      wait until rising_edge(clk);
-
-      -- PART5_BASE
-      mi32_addr  <= PART_SIZE_REG_ADDR + 5*PART_REG_OFFSET + PART_BASE_OFFSET;
-      mi32_dwr   <= X"00100000";
-      wait until rising_edge(clk);
-
-      -- PART5_MAX
-      mi32_addr  <= PART_SIZE_REG_ADDR + 5*PART_REG_OFFSET + PART_MAX_OFFSET;
-      mi32_dwr   <= X"00A00000";
-      wait until rising_edge(clk);
-
-      -- ----------- PART 6 -----------------
-      -- PART6_MASK
-      mi32_addr  <= PART_SIZE_REG_ADDR + 6*PART_REG_OFFSET + PART_MASK_OFFSET;
-      mi32_dwr   <= X"0FFFFFFF";
-      wait until rising_edge(clk);
-
-      -- PART6_BASE
-      mi32_addr  <= PART_SIZE_REG_ADDR + 6*PART_REG_OFFSET + PART_BASE_OFFSET;
-      mi32_dwr   <= X"01000000";
-      wait until rising_edge(clk);
-
-      -- PART6_MAX
-      mi32_addr  <= PART_SIZE_REG_ADDR + 6*PART_REG_OFFSET + PART_MAX_OFFSET;
-      mi32_dwr   <= X"0A000000";
-      wait until rising_edge(clk);
-
-      -- ----------- PART 7 -----------------
-      -- PART7_MASK
-      mi32_addr  <= PART_SIZE_REG_ADDR + 7*PART_REG_OFFSET + PART_MASK_OFFSET;
-      mi32_dwr   <= X"FFFFFFFF";
-      wait until rising_edge(clk);
-
-      -- PART7_BASE
-      mi32_addr  <= PART_SIZE_REG_ADDR + 7*PART_REG_OFFSET + PART_BASE_OFFSET;
-      mi32_dwr   <= X"10000000";
-      wait until rising_edge(clk);
-
-      -- PART7_MAX
-      mi32_addr  <= PART_SIZE_REG_ADDR + 7*PART_REG_OFFSET + PART_MAX_OFFSET;
-      mi32_dwr   <= X"A0000000";
-      wait until rising_edge(clk);
+--      -- ----------- PART 1 -----------------
+--      -- PART1_MASK
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 1*PART_REG_OFFSET + PART_MASK_OFFSET;
+--      mi32_dwr   <= X"000000FF";
+--      wait until rising_edge(clk);
+--
+--      -- PART1_BASE
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 1*PART_REG_OFFSET + PART_BASE_OFFSET;
+--      mi32_dwr   <= X"00000010";
+--      wait until rising_edge(clk);
+--
+--      -- PART1_MAX
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 1*PART_REG_OFFSET + PART_MAX_OFFSET;
+--      mi32_dwr   <= X"000000A0";
+--      wait until rising_edge(clk);
+--
+--      -- ----------- PART 2 -----------------
+--      -- PART2_MASK
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 2*PART_REG_OFFSET + PART_MASK_OFFSET;
+--      mi32_dwr   <= X"00000FFF";
+--      wait until rising_edge(clk);
+--
+--      -- PART2_BASE
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 2*PART_REG_OFFSET + PART_BASE_OFFSET;
+--      mi32_dwr   <= X"00000100";
+--      wait until rising_edge(clk);
+--
+--      -- PART2_MAX
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 2*PART_REG_OFFSET + PART_MAX_OFFSET;
+--      mi32_dwr   <= X"00000A00";
+--      wait until rising_edge(clk);
+--
+--      -- ----------- PART 3 -----------------
+--      -- PART3_MASK
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 3*PART_REG_OFFSET + PART_MASK_OFFSET;
+--      mi32_dwr   <= X"0000FFFF";
+--      wait until rising_edge(clk);
+--
+--      -- PART3_BASE
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 3*PART_REG_OFFSET + PART_BASE_OFFSET;
+--      mi32_dwr   <= X"00001000";
+--      wait until rising_edge(clk);
+--
+--      -- PART3_MAX
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 3*PART_REG_OFFSET + PART_MAX_OFFSET;
+--      mi32_dwr   <= X"0000A000";
+--      wait until rising_edge(clk);
+--
+--      -- ----------- PART 4 -----------------
+--      -- PART4_MASK
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 4*PART_REG_OFFSET + PART_MASK_OFFSET;
+--      mi32_dwr   <= X"000FFFFF";
+--      wait until rising_edge(clk);
+--
+--      -- PART4_BASE
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 4*PART_REG_OFFSET + PART_BASE_OFFSET;
+--      mi32_dwr   <= X"00010000";
+--      wait until rising_edge(clk);
+--
+--      -- PART4_MAX
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 4*PART_REG_OFFSET + PART_MAX_OFFSET;
+--      mi32_dwr   <= X"000A0000";
+--      wait until rising_edge(clk);
+--
+--      -- ----------- PART 5 -----------------
+--      -- PART5_MASK
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 5*PART_REG_OFFSET + PART_MASK_OFFSET;
+--      mi32_dwr   <= X"00FFFFFF";
+--      wait until rising_edge(clk);
+--
+--      -- PART5_BASE
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 5*PART_REG_OFFSET + PART_BASE_OFFSET;
+--      mi32_dwr   <= X"00100000";
+--      wait until rising_edge(clk);
+--
+--      -- PART5_MAX
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 5*PART_REG_OFFSET + PART_MAX_OFFSET;
+--      mi32_dwr   <= X"00A00000";
+--      wait until rising_edge(clk);
+--
+--      -- ----------- PART 6 -----------------
+--      -- PART6_MASK
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 6*PART_REG_OFFSET + PART_MASK_OFFSET;
+--      mi32_dwr   <= X"0FFFFFFF";
+--      wait until rising_edge(clk);
+--
+--      -- PART6_BASE
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 6*PART_REG_OFFSET + PART_BASE_OFFSET;
+--      mi32_dwr   <= X"01000000";
+--      wait until rising_edge(clk);
+--
+--      -- PART6_MAX
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 6*PART_REG_OFFSET + PART_MAX_OFFSET;
+--      mi32_dwr   <= X"0A000000";
+--      wait until rising_edge(clk);
+--
+--      -- ----------- PART 7 -----------------
+--      -- PART7_MASK
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 7*PART_REG_OFFSET + PART_MASK_OFFSET;
+--      mi32_dwr   <= X"FFFFFFFF";
+--      wait until rising_edge(clk);
+--
+--      -- PART7_BASE
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 7*PART_REG_OFFSET + PART_BASE_OFFSET;
+--      mi32_dwr   <= X"10000000";
+--      wait until rising_edge(clk);
+--
+--      -- PART7_MAX
+--      mi32_addr  <= PART_SIZE_REG_ADDR + 7*PART_REG_OFFSET + PART_MAX_OFFSET;
+--      mi32_dwr   <= X"A0000000";
+--      wait until rising_edge(clk);
 
       -- ------- TRANSACTION COUNT -----------
       mi32_addr  <= TRANS_REG_ADDR;
@@ -384,6 +386,14 @@ begin
       wait until rising_edge(clk);
       mi32_wr    <= '0';
 
+      wait for 10000*CLK_PERIOD;
+
+      -- -------------- WAIT FOREVER ----------
+      mi32_addr  <= FL_COMMAND_ADDR;
+      mi32_dwr   <= X"00000001";
+      mi32_wr    <= '1';
+      wait for CLK_PERIOD;
+      mi32_wr    <= '0';
 
       wait;
    end process;

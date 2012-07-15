@@ -16,6 +16,7 @@ set TX_ASYNC_FL_UNIT_PATH      "$FL_DRIVER_PATH/tx_async_fl_unit_i"
 set TX_DELAY_PROC_UNIT_PATH    "$TX_ASYNC_FL_UNIT_PATH/delay_unit_i"
 set FL_MONITOR_PATH            "$VER_CORE_PATH/fl_hw_monitor_i"
 set MONITOR_PACKETIZER_PATH    "$FL_MONITOR_PATH/monitor_packetizer_i"
+set SCOREBOARD_PATH            "$VERIFICATION_ENGINE_PATH/scoreboard_i"
 
 # include signals
 source      "signals.fdo"
@@ -25,6 +26,8 @@ source      "../../hw_ver/fl_hw_driver/sim/signals.fdo"
 source      "../../hw_ver/fl_hw_driver/fl_driver_ctrl/sim/signals.fdo"
 source      "../../hw_ver/fl_hw_driver/tx_async_fl_unit/sim/signals.fdo"
 source      "../../hw_ver/fl_hw_monitor/sim/signals.fdo"
+source      "../../hw_ver/fl_hw_scoreboard/sim/signals.fdo"
+source      "../../hw_ver/fl_filter/sim/signals.fdo"
 
 exec make
 view wave
@@ -37,6 +40,19 @@ add wave -divider "****************************"
 add wave -divider "INTERFACE" 
 add wave -divider "****************************"
 blk_VER_ENGINE              $VERIFICATION_ENGINE_PATH
+
+add wave -divider "****************************"
+add wave -divider "SCOREBOARD"
+add wave -divider "****************************"
+blk_SCOREBOARD              $SCOREBOARD_PATH
+blk_SCOREBOARD_INTERNALS    $SCOREBOARD_PATH
+blk_SCOREBOARD_CHECKER      $SCOREBOARD_PATH/sb_checker_i
+
+add wave -divider "****************************"
+add wave -divider "FL_FILTER 0"
+add wave -divider "****************************"
+blk_FL_FILTER               $VERIFICATION_ENGINE_PATH/fl_filter0_i
+blk_FL_FILTER_INTERNALS     $VERIFICATION_ENGINE_PATH/fl_filter0_i
 
 add wave -divider "****************************"
 add wave -divider "FL Adapter"
@@ -81,4 +97,4 @@ blk_MONITOR_PACKETIZER_NEW_PROTOCOL            $MONITOR_PACKETIZER_PATH
 blk_MONITOR_PACKETIZER_NEW_PROTOCOL_INTERNALS  $MONITOR_PACKETIZER_PATH
 
 restart -f
-run 5 us
+run 50 us

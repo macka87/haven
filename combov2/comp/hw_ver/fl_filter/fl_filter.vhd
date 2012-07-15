@@ -180,10 +180,14 @@ begin
             if (sig_rx_src_rdy_n = '0') then
                if (data_match = '1') then
                   filtering <= '1';
-                  next_state <= filtering_state;
+                  if (sig_rx_eof_n = '1') then
+                     next_state <= filtering_state;
+                  end if;
                else
                   filtering <= '0';
-                  next_state <= passing_state;
+                  if (sig_rx_eof_n = '1') then
+                     next_state <= passing_state;
+                  end if;
                end if;
             end if;
            

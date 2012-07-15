@@ -12,7 +12,8 @@ set TB_FILE          "verification_engine_tb.vhd"
 
 #set VER_ENGINE_ARCH  "CORE"
 #set VER_ENGINE_ARCH  "HW_GEN"
-set VER_ENGINE_ARCH  "HW_GEN_CORE"
+#set VER_ENGINE_ARCH  "HW_GEN_CORE"
+set VER_ENGINE_ARCH  "HW_FULL"
 
 set COMPONENTS [list \
                   [ list "VERIFICATION_ENGINE"  ".."           $VER_ENGINE_ARCH  ] \
