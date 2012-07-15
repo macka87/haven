@@ -72,6 +72,9 @@ program TEST (
   //! Signal Reporter
   //FrameLinkSignalReporter #(DATA_WIDTH)                  sigReporter;
   
+  //! Coverage Reporter
+  //FrameLinkCoverageReporter                              covReporter;
+  
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
   
@@ -123,28 +126,34 @@ program TEST (
      outputWrapper = new("Output Wrapper", outputMbx); 
      
      //! Create Sorter and Output Controllers' mailboxes
-     mbx = new[4];
+     mbx = new[5];
        // FL Output Controller mailbox
-       mbx[0] = new(0); 
-       // Assertion Reporter mailbox
-       mbx[1] = new(1);
-       // Signal Reporter
-       mbx[2] = new(1);
+       mbx[0] = new(0);
        // FL Generator Output Controller mailbox
+       mbx[1] = new(1); 
+       // Assertion Reporter mailbox
+       mbx[2] = new(1);
+       // Signal Reporter
        mbx[3] = new(1);
-     sorter = new(outputMbx, mbx, 4);
+       // Coverage Reporter
+       mbx[4] = new(1);
+       
+     sorter = new(outputMbx, mbx, 5);
      
      flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
      flOutCnt.setCallbacks(scoreboard.outputCbs);  
      
+     //! Create FrameLink Generator Output Controller
+     flGenOutCnt = new("Generator Output Controller", 0, mbx[1], genMbx, GENERATOR_FL_FRAME_COUNT);
+     
      //! Create Assertion Reporter
-     assertReporter = new("Assertion Reporter", 0, mbx[1], CLK_PERIOD, RESET_TIME);
+     assertReporter = new("Assertion Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
 
      //! Create Signal Reporter
-     //sigReporter = new("Signal Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
+     //sigReporter = new("Signal Reporter", 0, mbx[3], CLK_PERIOD, RESET_TIME);
 
-     //! Create FrameLink Generator Output Controller
-     flGenOutCnt = new("Generator Output Controller", 0, mbx[3], genMbx, GENERATOR_FL_FRAME_COUNT);
+     //! Create Coverage Reporter
+     //covReporter = new("Coverage Reporter", 0, mbx[4], CLK_PERIOD, RESET_TIME);
 
      //! Create Monitor 
      flMonitor    = new("FrameLink Monitor", 0, MONITOR, TX);   

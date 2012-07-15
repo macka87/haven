@@ -24,6 +24,7 @@ package sv_basic_comp_pkg;
   `include "output_controller.sv"
   `include "assertion_reporter.sv"
   `include "signal_reporter.sv"
+  `include "coverage_reporter.sv"
   `include "monitor.sv"
   `include "transaction_table.sv"
   `include "lfsr.sv"

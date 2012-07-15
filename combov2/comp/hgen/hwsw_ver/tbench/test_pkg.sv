@@ -30,11 +30,13 @@ package test_pkg;
    * SW_E_HW_GDS - unsupported 
    * SW_DES_HW_G
    */ 
-   parameter tFramework FRAMEWORK = HW_FULL;  
+   parameter tFramework FRAMEWORK = SW_FULL;  
      
    // DUT GENERICS
-   parameter DATA_WIDTH = 128;                 // datova sirka RX
-   parameter DREM_WIDTH = log2(DATA_WIDTH/8); // drem  sirka RX
+   //parameter BRANCH_COUNT = 1;                  // number of HGEN units
+   //parameter USE_BRAMS_FOR_HGEN_FIFO = 0;
+   parameter DATA_WIDTH   = 128;                // datova sirka RX
+   parameter DREM_WIDTH   = log2(DATA_WIDTH/8); // drem  sirka RX
       
    // size of UH header (bytes 16 - 64)
    parameter UH_SIZE      = 64;
@@ -61,7 +63,7 @@ package test_pkg;
    * OTHER_GEN   = other generator of transactions
    * HW_GEN      = hardware generator of transactions 
    */ 
-   parameter tGenInput GEN_INPUT = HW_GEN;  
+   parameter tGenInput GEN_INPUT = SV_GEN;  
    
   /*
    * Enumeration type for storage outputs of Generator
@@ -100,7 +102,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUNT = 10000000;  // Count of transactions
+   parameter TRANSACTION_COUNT = 2000000;  // Count of transactions
    parameter SEED1             = 1;      // Seed for PRNG
    parameter SEED2             = 2;      // Seed for PRNG
 endpackage

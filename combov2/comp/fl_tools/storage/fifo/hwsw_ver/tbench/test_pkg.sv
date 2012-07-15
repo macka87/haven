@@ -30,7 +30,7 @@ package test_pkg;
    * SW_E_HW_GDS - unsupported 
    * SW_DES_HW_G
    */ 
-   parameter tFramework FRAMEWORK = SW_ES_HW_GD;                 
+   parameter tFramework FRAMEWORK = HW_FULL;                 
    
    // DUT GENERICS
    parameter DATA_WIDTH   = 64;                // FrameLink data width
@@ -93,7 +93,7 @@ package test_pkg;
 
    // TEST PARAMETERS
 
-   parameter TRANSACTION_COUNT = 1000;  // Count of transactions
+   parameter TRANSACTION_COUNT = 100;  // Count of transactions
    parameter SEED1             = 1;  // Seed for PRNG
    parameter SEED2             = 2;  // Seed for PRNG
 endpackage

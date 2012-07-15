@@ -27,8 +27,11 @@ module DUT (
 /*
  *  Module body
  */
+ //MULTI_HGEN_VER_COVER #(
  HGEN #(
      .DATA_WIDTH     (DATA_WIDTH),
+     //.BRANCH_COUNT   (BRANCH_COUNT),
+     //.USE_BRAMS_FOR_HGEN_FIFO  (USE_BRAMS_FOR_HGEN_FIFO)
      .UH_SIZE        (UH_SIZE),
      .FLOWID_WIDTH   (FLOWID_WIDTH),
      .ITEMS          (ITEMS)

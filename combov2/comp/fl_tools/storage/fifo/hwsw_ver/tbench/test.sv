@@ -67,6 +67,9 @@ program TEST (
   //! Signal Reporter
   FrameLinkSignalReporter #(DATA_WIDTH)                  sigReporter;
   
+  //! Coverage Reporter
+  FrameLinkCoverageReporter                              covReporter;
+  
   //! Monitor                                                       
   FrameLinkMonitor #(DATA_WIDTH, DREM_WIDTH)             flMonitor;
   
@@ -114,30 +117,36 @@ program TEST (
      outputWrapper = new("Output Wrapper", outputMbx); 
      
      //! Create Sorter and Output Controllers' mailboxes
-     mbx = new[4];
+     mbx = new[5];
        // FL Output Controller mailbox
-       mbx[0] = new(0); 
-       // Assertion Reporter mailbox
-       mbx[1] = new(1);
-       // Signal Reporter
-       mbx[2] = new(1);
+       mbx[0] = new(0);
        // FL Generator Output Controller mailbox
+       mbx[1] = new(1); 
+       // Assertion Reporter mailbox
+       mbx[2] = new(1);
+       // Signal Reporter
        mbx[3] = new(1);
-     sorter = new(outputMbx, mbx, 4);
+       // Coverage Reporter
+       mbx[4] = new(1);
+       
+     sorter = new(outputMbx, mbx, 5);
      
      //! Create FrameLink Output Controller
      flOutCnt = new("Output Controller", 0, mbx[0], GENERATOR_FL_FRAME_COUNT);
-     flOutCnt.setCallbacks(scoreboard.outputCbs);  
+     flOutCnt.setCallbacks(scoreboard.outputCbs); 
+     
+     //! Create FrameLink Generator Output Controller
+     flGenOutCnt = new("Generator Output Controller", 0, mbx[1], genMbx, GENERATOR_FL_FRAME_COUNT); 
      
      //! Create Assertion Reporter
-     assertReporter = new("Assertion Reporter", 0, mbx[1], CLK_PERIOD, RESET_TIME);
+     assertReporter = new("Assertion Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
 
      //! Create Signal Reporter
-     sigReporter = new("Signal Reporter", 0, mbx[2], CLK_PERIOD, RESET_TIME);
+     sigReporter = new("Signal Reporter", 0, mbx[3], CLK_PERIOD, RESET_TIME);
+     
+     //! Create Coverage Reporter
+     covReporter = new("Coverage Reporter", 0, mbx[4]);
 
-     //! Create FrameLink Generator Output Controller
-     flGenOutCnt = new("Generator Output Controller", 0, mbx[3], genMbx, GENERATOR_FL_FRAME_COUNT);
-    
      //! Create checker
      flChecker = new("Checker", RX, TX, CTRL);
      
@@ -204,6 +213,7 @@ program TEST (
                       outputWrapper.setEnabled();
                       sorter.setEnabled();
                       assertReporter.setEnabled();
+                      covReporter.setEnabled();
                     end              
                     
     endcase 
@@ -224,7 +234,7 @@ program TEST (
         SW_DES_HW_G : if (flMonitor.busy) busy = 1; 
         SW_ES_HW_GD : if (flOutCnt.busy || assertReporter.busy) busy = 1; 
         SW_GES_HW_D : if (inputWrapper.busy || (flOutCnt.counter<TRANSACTION_COUNT) || assertReporter.busy) busy = 1; 
-        HW_FULL     : if (assertReporter.busy) busy = 1; 
+        HW_FULL     : if (assertReporter.busy|covReporter.busy) busy = 1; 
       endcase 
       
      /* $write("Looping at time %t ps\n", $time);
@@ -286,6 +296,7 @@ program TEST (
                       outputWrapper.setDisabled(); 
                       sorter.setDisabled();
                       assertReporter.setDisabled();
+                      covReporter.setDisabled();
                       res = c_closeDMAChannel();  
                       $write("CLOSING CHANNEL (expected 0): %d\n",res);
                     end              
@@ -313,6 +324,7 @@ program TEST (
      if (FRAMEWORK == HW_FULL) begin
        flGenInCnt.sendGenerated(TRANSACTION_COUNT);
        flGenInCnt.stop();
+       flGenInCnt.checkScoreboard(TRANSACTION_COUNT);
      end   
      else begin  
        // Sending of transactions
@@ -330,9 +342,9 @@ program TEST (
      $system("date");
      
      // Display Scoreboard and Coverage
-     scoreboard.display();
-     
+     if (FRAMEWORK != HW_FULL) scoreboard.display();
      if (FRAMEWORK == SW_FULL || FRAMEWORK == SW_DES_HW_G) flCoverage.display();
+     if (FRAMEWORK == HW_FULL) covReporter.display();
    endtask: test1
 
   /*

@@ -192,13 +192,66 @@
       do begin
        //$write("waiting during running\n");
        c_readFromRegister(hw_addr_counter, counter);
-       $write("counter: %d\n", counter);
+       $write("stop counter: %d\n", counter);
        @(fl.cb); 
       end while (counter != 0);
       
       // flush remaining data from HW buffers
       c_writeToRegister(hw_addr_stop, 32'h00000001); 
     endtask : sendStop   
+    
+   /*!
+    * Check scoreboard state in HW version.
+    * !!! BUDE TREBA LEPSIE OSETRIT VSETKY STAVY SCOREBOARDU:
+    *     - malo transakcii v scoreboarde (nie transCount)
+    *     - nieco zostane visiet v scoreboarde 
+    */     
+    task checkScoreboard(int unsigned transCount);
+      logic [31:0] hw_addr_scoreb  = 32'h01300004;
+      int no_change; // change of scoreboard counter during verification run
+      logic [31:0] old_counter;
+      logic [31:0] counter = 0;
+      
+      // if the number of transactions processed in HW scoreboard is the same as
+      // requested, stop computation and print the scoreboard table
+      do begin
+       old_counter = counter;
+      
+       //$write("waiting during scoreboarding\n");
+       c_readFromRegister(hw_addr_scoreb, counter);
+       $write("scoreboard counter: %d\n", counter);
+      
+       // more transaction were accepted (this could happen because HW is fast)
+       if (counter > transCount) begin
+         $write("1: SCOREBOARD OVERFILLED!!!\n");
+         $stop;
+       end
+       
+       // if counter doesnt change for a long time, stop simulation
+       if (counter == old_counter) no_change++;
+       if (no_change > 20) begin
+         $write("FEW TRANSACTIONS RECEIVED IN SCOREBOARD %d!!!\n", counter);
+         $stop;
+       end
+                            
+       @(fl.cb); 
+      end while (counter < transCount);
+      
+      // check if the scoreboard is not overfilled
+      c_readFromRegister(hw_addr_scoreb, counter);
+      if (counter > transCount) begin
+        $write("2: SCOREBOARD OVERFILLED!!!\n");
+        $stop;
+      end
+      
+      $write("------------------------------------------------------------\n");
+      $write("-- TRANSACTION TABLE\n");
+      $write("------------------------------------------------------------\n");
+      $write("Items added: %d\n", transCount);
+      $write("Items removed: %d\n", transCount);
+      $write("\n");
+      $write("------------------------------------------------------------\n");
+    endtask : checkScoreboard
     
  endclass : FrameLinkGenInputController
   
