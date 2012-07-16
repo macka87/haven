@@ -153,7 +153,7 @@ begin
 
    --
    impulse_cnt_data  <= mux_input_out;
-   impulse_cnt_load  <= sig_delay_read;
+   impulse_cnt_load  <= sig_delay_read AND (NOT sig_is_immediate);
 
    -- the impulse counter that counts down the delay
    impulse_counter_i: entity work.IMPULSE_COUNTER
@@ -207,8 +207,8 @@ begin
 
    --
    output_reg_rdy_in <= mux_will_be_sent_out;
-   output_reg_write  <=     (sig_is_immediate OR impulse_cnt_zero_impulse)
-                        AND (NOT sig_delay_empty);
+   output_reg_write  <=    (sig_is_immediate AND (NOT sig_delay_empty))
+                        OR impulse_cnt_zero_impulse;
 
    -- the output register
    output_reg_i: entity work.OUTPUT_REG
@@ -232,7 +232,7 @@ begin
    output_reg_dst_rdy <= sig_dst_rdy;
 
    --
-   reg_next_read_set <= sig_src_rdy AND sig_dst_rdy;
+   reg_next_read_set <= sig_dst_rdy;
    reg_next_read_clr <= reg_next_read AND (NOT sig_delay_empty);
 
    -- register being set when there should be a read from the FIFO in the
