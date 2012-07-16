@@ -51,15 +51,3 @@ proc blk_ASYNC_UNIT_INTERNALS { BASE } {
    add wave -divider ""
    blk_CDC_FIFO     $BASE/delay_async_fifo
 }
-
-proc blk_DELAY_PROC_UNIT { BASE } {
-   add_wave "-noupdate -label CLK"    $BASE/CLK
-   add_wave "-noupdate -label RESET"  $BASE/RESET
-
-   add wave -divider "IFC"
-   add_wave "-noupdate -hex -label DELAY_DATA"  $BASE/DELAY_DATA
-   add_wave "-noupdate      -label DELAY_READ"  $BASE/DELAY_READ
-   add_wave "-noupdate      -label DELAY_EMPTY" $BASE/DELAY_EMPTY
-   add_wave "-noupdate      -label SRC_RDY"     $BASE/SRC_RDY
-   add_wave "-noupdate      -label DST_RDY"     $BASE/DST_RDY
-}

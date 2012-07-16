@@ -48,7 +48,7 @@ proc blk_SCOREBOARD_INTERNALS { BASE } {
 }
 
 proc blk_SCOREBOARD_CHECKER { BASE } {
-
+   add wave -divider "**** SB Checker ****"
    add wave -divider "TEST Input"
    add_wave "-noupdate -hex -label RX_DATA"       $BASE/RX_DATA(63:0)
    add_wave "-noupdate -hex -label RX_REM"        $BASE/RX_REM(2:0)
@@ -77,4 +77,47 @@ proc blk_SCOREBOARD_CHECKER { BASE } {
    add_wave "-noupdate      -label rem_is_ok   "  $BASE/rem_is_ok
 
    add_wave "-noupdate      -label mux_equiv_data_out"  $BASE/mux_equiv_data_out
+}
+
+proc blk_SCOREBOARD_FIFOS { BASE } {
+   add wave -divider "**** SB FIFOs ****"
+   add wave -divider "TEST FIFO input"
+   add_wave "-noupdate -hex -label RX_DATA"       $BASE/fifo_rx_data(63:0)
+   add_wave "-noupdate -hex -label RX_REM"        $BASE/fifo_rx_rem(2:0)
+   add_wave "-noupdate      -label RX_SOF_N    "  $BASE/fifo_rx_sof_n(0)
+   add_wave "-noupdate      -label RX_SOP_N    "  $BASE/fifo_rx_sop_n(0)
+   add_wave "-noupdate      -label RX_EOP_N    "  $BASE/fifo_rx_eop_n(0)
+   add_wave "-noupdate      -label RX_EOF_N    "  $BASE/fifo_rx_eof_n(0)
+   add_wave "-noupdate      -label RX_SRC_RDY_N"  $BASE/fifo_rx_src_rdy_n(0)
+   add_wave "-noupdate      -label RX_DST_RDY_N"  $BASE/fifo_rx_dst_rdy_n(0)
+
+   add wave -divider "TEST FIFO output"
+   add_wave "-noupdate -hex -label TX_DATA"       $BASE/fifo_tx_data(63:0)
+   add_wave "-noupdate -hex -label TX_REM"        $BASE/fifo_tx_rem(2:0)
+   add_wave "-noupdate      -label TX_SOF_N    "  $BASE/fifo_tx_sof_N(0)
+   add_wave "-noupdate      -label TX_SOP_N    "  $BASE/fifo_tx_sop_N(0)
+   add_wave "-noupdate      -label TX_EOP_N    "  $BASE/fifo_tx_eop_N(0)
+   add_wave "-noupdate      -label TX_EOF_N    "  $BASE/fifo_tx_eof_N(0)
+   add_wave "-noupdate      -label TX_SRC_RDY_N"  $BASE/fifo_tx_src_rdy_n(0)
+   add_wave "-noupdate      -label TX_DST_RDY_N"  $BASE/fifo_tx_dst_rdy_n(0)
+
+   add wave -divider "GOLDEN MODEL FIFO input"
+   add_wave "-noupdate -hex -label RX_DATA"       $BASE/fifo_rx_data(127:64)
+   add_wave "-noupdate -hex -label RX_REM"        $BASE/fifo_rx_rem(5:3)
+   add_wave "-noupdate      -label RX_SOF_N    "  $BASE/fifo_rx_sof_n(1)
+   add_wave "-noupdate      -label RX_SOP_N    "  $BASE/fifo_rx_sop_n(1)
+   add_wave "-noupdate      -label RX_EOP_N    "  $BASE/fifo_rx_eop_n(1)
+   add_wave "-noupdate      -label RX_EOF_N    "  $BASE/fifo_rx_eof_n(1)
+   add_wave "-noupdate      -label RX_SRC_RDY_N"  $BASE/fifo_rx_src_rdy_n(1)
+   add_wave "-noupdate      -label RX_DST_RDY_N"  $BASE/fifo_rx_dst_rdy_n(1)
+
+   add wave -divider "GOLDEN MODEL FIFO output"
+   add_wave "-noupdate -hex -label TX_DATA"       $BASE/fifo_tx_data(127:64)
+   add_wave "-noupdate -hex -label TX_REM"        $BASE/fifo_tx_rem(5:3)
+   add_wave "-noupdate      -label TX_SOF_N    "  $BASE/fifo_tx_sof_n(1)
+   add_wave "-noupdate      -label TX_SOP_N    "  $BASE/fifo_tx_sop_n(1)
+   add_wave "-noupdate      -label TX_EOP_N    "  $BASE/fifo_tx_eop_n(1)
+   add_wave "-noupdate      -label TX_EOF_N    "  $BASE/fifo_tx_eof_n(1)
+   add_wave "-noupdate      -label TX_SRC_RDY_N"  $BASE/fifo_tx_src_rdy_n(1)
+   add_wave "-noupdate      -label TX_DST_RDY_N"  $BASE/fifo_tx_dst_rdy_n(1)
 }
