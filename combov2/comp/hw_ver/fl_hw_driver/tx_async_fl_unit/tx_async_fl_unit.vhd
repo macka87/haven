@@ -79,8 +79,8 @@ architecture arch of TX_ASYNC_FL_UNIT is
 -- ==========================================================================
 --                                    CONSTANTS
 -- ==========================================================================
-constant FIFO_DATA_WIDTH : integer := DATA_WIDTH + log2(DATA_WIDTH/8) + 4;
-constant REM_INDEX  : integer := 4+log2(DATA_WIDTH/8);
+constant DREM_WIDTH      : integer := log2(DATA_WIDTH/8);
+constant FIFO_DATA_WIDTH : integer := DATA_WIDTH + DREM_WIDTH + 4;
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -118,12 +118,12 @@ signal delay_unit_dst_rdy         : std_logic;
 -- ==========================================================================
 begin
 
-   sig_data_fifo_data_in(FIFO_DATA_WIDTH-1 downto REM_INDEX) <= RX_DATA;
-   sig_data_fifo_data_in(REM_INDEX-1 downto 4)               <= RX_REM;
-   sig_data_fifo_data_in(0)                                  <= RX_SOF_N;
-   sig_data_fifo_data_in(1)                                  <= RX_EOF_N;
-   sig_data_fifo_data_in(2)                                  <= RX_SOP_N;
-   sig_data_fifo_data_in(3)                                  <= RX_EOP_N;
+   sig_data_fifo_data_in(DATA_WIDTH-1 downto 0)                     <= RX_DATA;
+   sig_data_fifo_data_in(DATA_WIDTH+DREM_WIDTH-1 downto DATA_WIDTH) <= RX_REM;
+   sig_data_fifo_data_in(DATA_WIDTH+DREM_WIDTH+0)                   <= RX_SOF_N;
+   sig_data_fifo_data_in(DATA_WIDTH+DREM_WIDTH+1)                   <= RX_EOF_N;
+   sig_data_fifo_data_in(DATA_WIDTH+DREM_WIDTH+2)                   <= RX_SOP_N;
+   sig_data_fifo_data_in(DATA_WIDTH+DREM_WIDTH+3)                   <= RX_EOP_N;
 
    -- --------------- DATA FIFO INSTANCE ------------------------------------
    data_async_fifo : entity work.cdc_fifo
@@ -175,12 +175,12 @@ begin
    sig_data_fifo_write  <= not RX_SRC_RDY_N;
    
    -- ----- data fifo output side -----
-   TX_SOF_N <= sig_data_fifo_data_out(0);
-   TX_EOF_N <= sig_data_fifo_data_out(1);
-   TX_SOP_N <= sig_data_fifo_data_out(2);
-   TX_EOP_N <= sig_data_fifo_data_out(3);
-   TX_REM   <= sig_data_fifo_data_out(REM_INDEX-1 downto 4); 
-   TX_DATA  <= sig_data_fifo_data_out(FIFO_DATA_WIDTH-1 downto REM_INDEX);
+   TX_DATA   <= sig_data_fifo_data_out(DATA_WIDTH-1 downto 0);
+   TX_REM    <= sig_data_fifo_data_out(DATA_WIDTH+DREM_WIDTH-1 downto DATA_WIDTH);
+   TX_SOF_N  <= sig_data_fifo_data_out(DATA_WIDTH+DREM_WIDTH+0);
+   TX_EOF_N  <= sig_data_fifo_data_out(DATA_WIDTH+DREM_WIDTH+1);
+   TX_SOP_N  <= sig_data_fifo_data_out(DATA_WIDTH+DREM_WIDTH+2);
+   TX_EOP_N  <= sig_data_fifo_data_out(DATA_WIDTH+DREM_WIDTH+3);
    
    sig_data_fifo_read <= sig_dst_rdy and sig_src_rdy;
    
