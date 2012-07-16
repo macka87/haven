@@ -83,6 +83,9 @@ constant STOP_TYPE   :  std_logic_vector(7 downto 0) := X"04";
 constant DELAY_TYPE  :  std_logic_vector(7 downto 0) := X"05";
 constant REM_INDEX   :  integer := 4+log2(DATA_WIDTH/8);
 
+-- width of the time send in the wait command
+constant WAIT_WIDTH  : integer := 32;
+
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
@@ -355,7 +358,7 @@ begin
    -- --------------- WAIT UNIT INSTANCE ------------------------------------
    wait_unit_i : entity work.wait_unit
    generic map(
-      DATA_WIDTH   => DATA_WIDTH,
+      DATA_WIDTH   => WAIT_WIDTH,
       DELAY_WIDTH  => DELAY_WIDTH
    )
    port map(
@@ -364,7 +367,7 @@ begin
 
       -- ----------------- INPUT INTERFACE ----------------------------------
       -- input interface
-      DATA           => RX_DATA,
+      DATA           => RX_DATA(WAIT_WIDTH-1 downto 0),
       IS_WAIT        => is_wait,
       IS_CNTR        => is_cntr,
       CNTR_ZERO      => sig_counter_is_zero,
