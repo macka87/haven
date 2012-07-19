@@ -315,7 +315,7 @@ program TEST (
      
      // time measuring
      $write("START TIME: ");
-     $system("date");
+     $system("date +%s.%N");
      
      // Enable Test environment
      enableTestEnvironment();
@@ -358,7 +358,7 @@ program TEST (
      
      // time measuring
      $write("END TIME: ");
-     $system("date");
+     $system("date +%s.%N");
      
      // Display Scoreboard and Coverage
      scoreboard.display();

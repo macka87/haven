@@ -85,7 +85,7 @@
                   end
           8'hF6 : begin
                     cntF6++;
-                    $write("SORTER: COUNTER FL_GEN_OUTPUT_CONTROLLER: %d\n", cntF6);
+                    //$write("SORTER: COUNTER FL_GEN_OUTPUT_CONTROLLER: %d\n", cntF6);
                     mbx[1].put(tr); // FL Generator Controller mailbox 
                   end         
           8'hAA : mbx[2].put(tr); // Assertion Reporter mailbox

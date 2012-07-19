@@ -33,8 +33,8 @@ package test_pkg;
    parameter tFramework FRAMEWORK = SW_FULL;  
      
    // DUT GENERICS
-   //parameter BRANCH_COUNT = 1;                  // number of HGEN units
-   //parameter USE_BRAMS_FOR_HGEN_FIFO = 0;
+   parameter BRANCH_COUNT = 4;                  // number of HGEN units
+   parameter USE_BRAMS_FOR_HGEN_FIFO = 0;
    parameter DATA_WIDTH   = 128;                // datova sirka RX
    parameter DREM_WIDTH   = log2(DATA_WIDTH/8); // drem  sirka RX
       
@@ -102,7 +102,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUNT = 2000000;  // Count of transactions
+   parameter TRANSACTION_COUNT = 100000;  // Count of transactions
    parameter SEED1             = 1;      // Seed for PRNG
    parameter SEED2             = 2;      // Seed for PRNG
 endpackage

@@ -27,14 +27,14 @@ module DUT (
 /*
  *  Module body
  */
- //MULTI_HGEN_VER_COVER #(
- HGEN #(
+ MULTI_HGEN_VER_COVER #(
+ //HGEN #(
      .DATA_WIDTH     (DATA_WIDTH),
-     //.BRANCH_COUNT   (BRANCH_COUNT),
-     //.USE_BRAMS_FOR_HGEN_FIFO  (USE_BRAMS_FOR_HGEN_FIFO)
-     .UH_SIZE        (UH_SIZE),
-     .FLOWID_WIDTH   (FLOWID_WIDTH),
-     .ITEMS          (ITEMS)
+     .BRANCH_COUNT   (BRANCH_COUNT),
+     .USE_BRAMS_FOR_HGEN_FIFO  (USE_BRAMS_FOR_HGEN_FIFO)
+     //.UH_SIZE        (UH_SIZE),
+     //.FLOWID_WIDTH   (FLOWID_WIDTH),
+     //.ITEMS          (ITEMS)
    )
 
    VHDL_DUT_U  (
@@ -60,9 +60,9 @@ module DUT (
      .TX_SOP_N      (TX.SOP_N),
      .TX_EOP_N      (TX.EOP_N),
      .TX_SRC_RDY_N  (TX.SRC_RDY_N),
-     .TX_DST_RDY_N  (TX.DST_RDY_N),
+     .TX_DST_RDY_N  (TX.DST_RDY_N)
      
-     .MI_DWR        (MI32_RXTX.DWR),
+     /*.MI_DWR        (MI32_RXTX.DWR),
      .MI_ADDR       (MI32_RXTX.ADDR),
      .MI_RD         (MI32_RXTX.RD),
      .MI_WR         (MI32_RXTX.WR),
@@ -71,6 +71,6 @@ module DUT (
      .MI_ARDY       (MI32_RXTX.ARDY),
      .MI_DRDY       (MI32_RXTX.DRDY),
      
-     .MASK          (HGEN_MASK)
+     .MASK          (HGEN_MASK)*/
   );
 endmodule : DUT
