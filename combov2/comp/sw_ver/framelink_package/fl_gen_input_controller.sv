@@ -192,7 +192,7 @@
       do begin
        //$write("waiting during running\n");
        c_readFromRegister(hw_addr_counter, counter);
-       $write("stop counter: %d\n", counter);
+       //$write("FL_GEN_INPUT_CTRL: stop counter: %d\n", counter);
        @(fl.cb); 
       end while (counter != 0);
       
@@ -224,13 +224,17 @@
        // more transaction were accepted (this could happen because HW is fast)
        if (counter > transCount) begin
          $write("1: SCOREBOARD OVERFILLED!!!\n");
+         $write("END TIME: ");
+         $system("date +%s.%N");
          $stop;
        end
        
        // if counter doesnt change for a long time, stop simulation
        if (counter == old_counter) no_change++;
-       if (no_change > 20) begin
+       if (no_change > 0) begin
          $write("FEW TRANSACTIONS RECEIVED IN SCOREBOARD %d!!!\n", counter);
+         $write("END TIME: ");
+         $system("date +%s.%N");
          $stop;
        end
                             
@@ -241,6 +245,8 @@
       c_readFromRegister(hw_addr_scoreb, counter);
       if (counter > transCount) begin
         $write("2: SCOREBOARD OVERFILLED!!!\n");
+        $write("END TIME: ");
+        $system("date +%s.%N");
         $stop;
       end
       

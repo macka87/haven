@@ -150,7 +150,7 @@ typedef TransactionTable#(1) TransactionTableType;
         $cast(tr, transaction);
         
         while (c_tableEmpty()) begin
-           #10ps;
+           #10ns;
         end    
         
         for (int i=0; i<GENERATOR_FL_FRAME_COUNT; i++) begin

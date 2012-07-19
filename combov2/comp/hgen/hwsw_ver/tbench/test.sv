@@ -200,7 +200,7 @@ program TEST (
                       flOutCnt.setEnabled();
                       assertReporter.setEnabled();
                       //sigReporter.setEnabled();
-                    end               
+                    end 
       SW_GES_HW_D : begin
                       inputWrapper.setEnabled();
                       outputWrapper.setEnabled();
@@ -344,13 +344,14 @@ program TEST (
      if (FRAMEWORK == HW_FULL) begin
        flGenInCnt.sendGenerated(TRANSACTION_COUNT);
        flGenInCnt.stop();
+       flGenInCnt.checkScoreboard(TRANSACTION_COUNT);
      end   
      else begin  
        // Sending of transactions
        flGenInCnt.start(); 
        proc.srandom(SEED1);             
        flGenInCnt.sendGenerated(TRANSACTION_COUNT);
-       flGenInCnt.stop();
+       //flGenInCnt.stop();
      end
      
      // Disable Test Enviroment
@@ -361,8 +362,9 @@ program TEST (
      $system("date +%s.%N");
      
      // Display Scoreboard and Coverage
-     scoreboard.display();
+     if (FRAMEWORK != HW_FULL) scoreboard.display();
      if (FRAMEWORK == SW_FULL || FRAMEWORK == SW_DES_HW_G) flCoverage.display();
+     //if (FRAMEWORK == HW_FULL) covReporter.display();
   endtask: test1
 
   /*

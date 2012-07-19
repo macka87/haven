@@ -27,8 +27,10 @@ module DUT (
 /*
  *  Module body
  */
+ //DOUBLE_MULTI_HGEN_VER_COVER #(
  MULTI_HGEN_VER_COVER #(
  //HGEN #(
+ //HGEN_VER_COVER #(
      .DATA_WIDTH     (DATA_WIDTH),
      .BRANCH_COUNT   (BRANCH_COUNT),
      .USE_BRAMS_FOR_HGEN_FIFO  (USE_BRAMS_FOR_HGEN_FIFO)
@@ -71,6 +73,6 @@ module DUT (
      .MI_ARDY       (MI32_RXTX.ARDY),
      .MI_DRDY       (MI32_RXTX.DRDY),
      
-     .MASK          (HGEN_MASK)*/
+     .MASK          (HGEN_MASK)*/ 
   );
 endmodule : DUT

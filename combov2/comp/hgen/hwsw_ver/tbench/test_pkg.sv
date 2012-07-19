@@ -30,12 +30,12 @@ package test_pkg;
    * SW_E_HW_GDS - unsupported 
    * SW_DES_HW_G
    */ 
-   parameter tFramework FRAMEWORK = SW_FULL;  
+   parameter tFramework FRAMEWORK = SW_GES_HW_D;  
      
    // DUT GENERICS
-   parameter BRANCH_COUNT = 4;                  // number of HGEN units
+   parameter BRANCH_COUNT = 2;                  // number of HGEN units
    parameter USE_BRAMS_FOR_HGEN_FIFO = 0;
-   parameter DATA_WIDTH   = 128;                // datova sirka RX
+   parameter DATA_WIDTH   = 64;                // datova sirka RX
    parameter DREM_WIDTH   = log2(DATA_WIDTH/8); // drem  sirka RX
       
    // size of UH header (bytes 16 - 64)
@@ -72,7 +72,7 @@ package test_pkg;
    * SV_SIM_EXT_FILE = SystemVerilog simulation and storing to ext. file
    */ 
    parameter tGenOutput GEN_OUTPUT = SV_SIM; 
-   
+
    // TRANSACTION FORMAT 
    parameter GENERATOR_FL_FRAME_COUNT       = 1;                // frame parts
    int       GENERATOR_FL_PART_SIZE_MAX[]   = '{UH_SIZE};       // maximal size of part
@@ -102,7 +102,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUNT = 100000;  // Count of transactions
+   parameter TRANSACTION_COUNT = 100;  // Count of transactions
    parameter SEED1             = 1;      // Seed for PRNG
    parameter SEED2             = 2;      // Seed for PRNG
 endpackage

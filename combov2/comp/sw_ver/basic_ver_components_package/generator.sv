@@ -200,6 +200,10 @@
                 end
           endcase
           
+          if (data_id % 100000 == 0) begin
+            #10ns;
+          end
+          
           data_id = data_id+1;         //! Increment instance counter      
         end
       end          
