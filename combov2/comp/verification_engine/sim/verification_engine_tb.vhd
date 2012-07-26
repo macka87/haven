@@ -48,7 +48,7 @@ architecture test of testbench is
 
    constant FL_COMMAND_ADDR   : std_logic_vector(31 downto 0) := X"00200000";
 
-   constant TRANSACTION_COUNT : integer := 1000;
+   constant TRANSACTION_COUNT : integer := 16#A0#;
 
    -- ------------------------------------------------------------------------
    --                                 Signals
@@ -386,7 +386,7 @@ begin
       wait until rising_edge(clk);
       mi32_wr    <= '0';
 
-      wait for 10000*CLK_PERIOD;
+      wait for 15000*CLK_PERIOD;
 
       -- -------------- WAIT FOREVER ----------
       mi32_addr  <= FL_COMMAND_ADDR;
@@ -394,6 +394,21 @@ begin
       mi32_wr    <= '1';
       wait for CLK_PERIOD;
       mi32_wr    <= '0';
+
+      wait for 3000*CLK_PERIOD;
+
+      mi32_addr  <= X"00F00014";
+      mi32_rd    <= '1';
+      wait for CLK_PERIOD;
+      mi32_rd    <= '0';
+
+      wait for 10*CLK_PERIOD;
+
+      mi32_addr  <= X"00F00018";
+      mi32_rd    <= '1';
+      wait for CLK_PERIOD;
+
+      mi32_rd    <= '0';
 
       wait;
    end process;

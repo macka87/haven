@@ -51,59 +51,94 @@ add wave -divider "****************************"
 blk_VER_ENGINE              $VERIFICATION_ENGINE_PATH
 
 add wave -divider "****************************"
+add wave -divider "FL FORK" 
+add wave -divider "****************************"
+fl_fork_norec               "FORK"   $VERIFICATION_ENGINE_PATH/fl_fork_i
+
+add wave -divider "****************************"
 add wave -divider "SCOREBOARD"
 add wave -divider "****************************"
 blk_SCOREBOARD              $SCOREBOARD_PATH
-blk_SCOREBOARD_INTERNALS    $SCOREBOARD_PATH
-blk_SCOREBOARD_CHECKER      $SCOREBOARD_PATH/sb_checker_i
+#blk_SCOREBOARD_INTERNALS    $SCOREBOARD_PATH
+#blk_SCOREBOARD_CHECKER      $SCOREBOARD_PATH/sb_checker_i
+blk_SCOREBOARD_FIFOS        $SCOREBOARD_PATH/
+
+#add wave -divider "****************************"
+#add wave -divider "FL_FILTER 0"
+#add wave -divider "****************************"
+#blk_FL_FILTER               $VERIFICATION_ENGINE_PATH/fl_filter0_i
+#blk_FL_FILTER_INTERNALS     $VERIFICATION_ENGINE_PATH/fl_filter0_i
+#
+#add wave -divider "****************************"
+#add wave -divider "FL Adapter"
+#add wave -divider "****************************"
+#blk_ADAPTER_UNIT            $FL_ADAPTER_PATH
+
+#add wave -divider "****************************"
+#add wave -divider "Verification Core 0" 
+#add wave -divider "****************************"
+#blk_VER_CORE                $VER_CORE0_PATH
+#blk_VER_CORE_INTERNALS      $VER_CORE0_PATH
+#
+#add wave -divider "****************************"
+#add wave -divider "DUT0 INTERFACE" 
+#add wave -divider "****************************"
+#blk_VER_CORE_DUT_IFC        $VER_CORE0_PATH
 
 add wave -divider "****************************"
-add wave -divider "FL_FILTER 0"
+add wave -divider "Verification Core 1" 
 add wave -divider "****************************"
-blk_FL_FILTER               $VERIFICATION_ENGINE_PATH/fl_filter0_i
-blk_FL_FILTER_INTERNALS     $VERIFICATION_ENGINE_PATH/fl_filter0_i
+blk_VER_CORE                $VER_CORE1_PATH
+blk_VER_CORE_INTERNALS      $VER_CORE1_PATH
 
 add wave -divider "****************************"
-add wave -divider "FL Adapter"
+add wave -divider "DUT1 INTERFACE" 
 add wave -divider "****************************"
-blk_ADAPTER_UNIT            $FL_ADAPTER_PATH
+blk_VER_CORE_DUT_IFC        $VER_CORE1_PATH
+
+#add wave -divider "****************************"
+#add wave -divider "FL_FILTER 1"
+#add wave -divider "****************************"
+#blk_FL_FILTER               $VERIFICATION_ENGINE_PATH/fl_filter1_i
+#blk_FL_FILTER_INTERNALS     $VERIFICATION_ENGINE_PATH/fl_filter1_i
 
 add wave -divider "****************************"
-add wave -divider "Verification Core" 
+add wave -divider "FL DRIVER 1" 
 add wave -divider "****************************"
-blk_VER_CORE                $VER_CORE_PATH
+blk_DRIVER_UNIT             $FL_DRIVER1_PATH
 
 add wave -divider "****************************"
-add wave -divider "DUT INTERFACE" 
+add wave -divider "FL DRIVER CTRL 1" 
 add wave -divider "****************************"
-blk_VER_CORE_DUT_IFC        $VER_CORE_PATH
+blk_FL_DRIVER_CTRL_IFC      $FL_DRIVER_CTRL1_PATH
 
 add wave -divider "****************************"
-add wave -divider "FL DRIVER" 
+add wave -divider "TX ASYNC FL UNIT 1"
 add wave -divider "****************************"
-blk_DRIVER_UNIT             $FL_DRIVER_PATH
+blk_ASYNC_UNIT              $TX_ASYNC_FL_UNIT1_PATH
+blk_ASYNC_UNIT_INTERNALS    $TX_ASYNC_FL_UNIT1_PATH
 
 add wave -divider "****************************"
-add wave -divider "FL DRIVER CTRL" 
+add wave -divider "TX DELAY PROC UNIT 1"
 add wave -divider "****************************"
-blk_FL_DRIVER_CTRL_IFC      $FL_DRIVER_CTRL_PATH
+blk_DELAY_PROC_UNIT              $TX_DELAY_PROC_UNIT1_PATH
+blk_DELAY_PROC_UNIT_INTERNALS    $TX_DELAY_PROC_UNIT1_PATH
 
-add wave -divider "****************************"
-add wave -divider "TX ASYNC FL UNIT"
-add wave -divider "****************************"
-blk_ASYNC_UNIT              $TX_ASYNC_FL_UNIT_PATH
-blk_ASYNC_UNIT_INTERNALS    $TX_ASYNC_FL_UNIT_PATH
+#add wave -divider "****************************"
+#add wave -divider "MONITOR PACKETIZER 0"
+#add wave -divider "****************************"
+#blk_MONITOR_PACKETIZER_NEW_PROTOCOL            $MONITOR_PACKETIZER0_PATH
+#blk_MONITOR_PACKETIZER_NEW_PROTOCOL_INTERNALS  $MONITOR_PACKETIZER0_PATH
 
-add wave -divider "****************************"
-add wave -divider "TX DELAY PROC UNIT"
-add wave -divider "****************************"
-blk_DELAY_PROC_UNIT         $TX_DELAY_PROC_UNIT_PATH
-
-add wave -divider "****************************"
-add wave -divider "MONITOR PACKETIZER"
-add wave -divider "****************************"
-blk_MONITOR_PACKETIZER_NEW_PROTOCOL            $MONITOR_PACKETIZER_PATH
-blk_MONITOR_PACKETIZER_NEW_PROTOCOL_INTERNALS  $MONITOR_PACKETIZER_PATH
+#add wave -divider "****************************"
+#add wave -divider "MONITOR 1"
+#add wave -divider "****************************"
+#
+#add wave -divider "****************************"
+#add wave -divider "MONITOR PACKETIZER 1"
+#add wave -divider "****************************"
+#blk_MONITOR_PACKETIZER_NEW_PROTOCOL            $MONITOR_PACKETIZER1_PATH
+#blk_MONITOR_PACKETIZER_NEW_PROTOCOL_INTERNALS  $MONITOR_PACKETIZER1_PATH
 
 restart -f
-run 50 us
+run 240 us

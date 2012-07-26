@@ -24,6 +24,12 @@ architecture arch of verification_engine is
 
 constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
 
+-- number of watched interfaces
+constant WATCH_IFCS   : integer := 6;
+
+-- number of MI32 interfaces
+constant MI_IFCS      : integer := 6;
+
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
@@ -59,14 +65,14 @@ constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
    signal mi_splitter_drdy     : std_logic;
 
    -- MI32 splitter outputs
-   signal mi_spl_out_dwr      : std_logic_vector(5*32-1 downto 0);
-   signal mi_spl_out_addr     : std_logic_vector(5*32-1 downto 0);
-   signal mi_spl_out_be       : std_logic_vector(5* 4-1 downto 0);
-   signal mi_spl_out_rd       : std_logic_vector(   4   downto 0);
-   signal mi_spl_out_wr       : std_logic_vector(   4   downto 0);
-   signal mi_spl_out_ardy     : std_logic_vector(   4   downto 0);
-   signal mi_spl_out_drd      : std_logic_vector(5*32-1 downto 0);
-   signal mi_spl_out_drdy     : std_logic_vector(   4   downto 0);
+   signal mi_spl_out_dwr      : std_logic_vector(MI_IFCS*32-1 downto 0);
+   signal mi_spl_out_addr     : std_logic_vector(MI_IFCS*32-1 downto 0);
+   signal mi_spl_out_be       : std_logic_vector(MI_IFCS* 4-1 downto 0);
+   signal mi_spl_out_rd       : std_logic_vector(MI_IFCS   -1 downto 0);
+   signal mi_spl_out_wr       : std_logic_vector(MI_IFCS   -1 downto 0);
+   signal mi_spl_out_ardy     : std_logic_vector(MI_IFCS   -1 downto 0);
+   signal mi_spl_out_drd      : std_logic_vector(MI_IFCS*32-1 downto 0);
+   signal mi_spl_out_drdy     : std_logic_vector(MI_IFCS   -1 downto 0);
 
    -- FrameLink Generator MI32 interface
    signal fl_rand_gen_mi_dwr      : std_logic_vector(31 downto 0);
@@ -97,16 +103,6 @@ constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
    signal fl_fork_rx_eof_n     : std_logic;
    signal fl_fork_rx_src_rdy_n : std_logic;
    signal fl_fork_rx_dst_rdy_n : std_logic;
-
-   -- FrameLink fork output
-   signal fl_fork_tx_data      : std_logic_vector(2*DATA_WIDTH-1 downto 0);
-   signal fl_fork_tx_rem       : std_logic_vector(2*DREM_WIDTH-1 downto 0);
-   signal fl_fork_tx_sof_n     : std_logic_vector(1 downto 0);
-   signal fl_fork_tx_sop_n     : std_logic_vector(1 downto 0);
-   signal fl_fork_tx_eop_n     : std_logic_vector(1 downto 0);
-   signal fl_fork_tx_eof_n     : std_logic_vector(1 downto 0);
-   signal fl_fork_tx_src_rdy_n : std_logic_vector(1 downto 0);
-   signal fl_fork_tx_dst_rdy_n : std_logic_vector(1 downto 0);
 
    -- FrameLink fork output 0
    signal fl_fork_tx0_data      : std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -358,6 +354,24 @@ constant DREM_WIDTH   : integer := log2(DATA_WIDTH/8);
    signal output_binder_tx_src_rdy_n: std_logic;
    signal output_binder_tx_dst_rdy_n: std_logic;
 
+   -- input signals for FrameLink watch
+   signal fl_watch_sof_n       : std_logic_vector(WATCH_IFCS-1 downto 0);
+   signal fl_watch_eof_n       : std_logic_vector(WATCH_IFCS-1 downto 0);
+   signal fl_watch_sop_n       : std_logic_vector(WATCH_IFCS-1 downto 0);
+   signal fl_watch_eop_n       : std_logic_vector(WATCH_IFCS-1 downto 0);
+   signal fl_watch_src_rdy_n   : std_logic_vector(WATCH_IFCS-1 downto 0);
+   signal fl_watch_dst_rdy_n   : std_logic_vector(WATCH_IFCS-1 downto 0);
+
+   -- MI32 interface for watches
+   signal mi_watch_dwr         : std_logic_vector(31 downto 0);
+   signal mi_watch_addr        : std_logic_vector(31 downto 0);
+   signal mi_watch_rd          : std_logic;
+   signal mi_watch_wr          : std_logic;
+   signal mi_watch_be          : std_logic_vector(3 downto 0);
+   signal mi_watch_drd         : std_logic_vector(31 downto 0);
+   signal mi_watch_ardy        : std_logic;
+   signal mi_watch_drdy        : std_logic;
+
 -- ==========================================================================
 --                                   COMPONENTS
 -- ==========================================================================
@@ -392,7 +406,7 @@ begin
       -- Data width
       DATA_WIDTH    => 32,
       -- Number of output ports
-      ITEMS         => 5,
+      ITEMS         => MI_IFCS,
 
       -- ADDRESS SPACE
 
@@ -415,6 +429,10 @@ begin
       -- PORT4: 0x00300000 -- 0x003FFFFF
       PORT4_BASE    => X"00300000",
       PORT4_LIMIT   => X"00100000",
+
+      -- PORT5: 0x00F00000 -- 0x00FFFFFF
+      PORT5_BASE    => X"00F00000",
+      PORT5_LIMIT   => X"00100000",
 
       -- Input pipeline
       PIPE          => false,
@@ -490,6 +508,15 @@ begin
    mi_spl_out_drd(159 downto 128)<= scoreboard_mi_drd;
    mi_spl_out_ardy(4)            <= scoreboard_mi_ardy;
    mi_spl_out_drdy(4)            <= scoreboard_mi_drdy;
+
+   mi_watch_dwr                  <= mi_spl_out_dwr( 191 downto 160);
+   mi_watch_addr                 <= mi_spl_out_addr(191 downto 160);
+   mi_watch_rd                   <= mi_spl_out_rd(5);
+   mi_watch_wr                   <= mi_spl_out_wr(5);
+   mi_watch_be                   <= mi_spl_out_be(23 downto 20);
+   mi_spl_out_drd(191 downto 160)<= mi_watch_drd;
+   mi_spl_out_ardy(5)            <= mi_watch_ardy;
+   mi_spl_out_drdy(5)            <= mi_watch_drdy;
 
    -- ------------------------------------------------------------------------
    --                         FrameLink Random Generator
@@ -650,10 +677,15 @@ begin
    input_binder_tx_dst_rdy_n   <= fl_fork_rx_dst_rdy_n;
 
    -- the fork of the output of the random FrameLink generator
-   fl_fork_i: entity work.FL_FORK
+   fl_fork_i: entity work.FL_FORK_1TO2
    generic map(
-       DATA_WIDTH     => DATA_WIDTH,
-       OUTPUT_PORTS   => 2
+      DATA_WIDTH     => DATA_WIDTH,
+      -- should there be FIFOs used at outputs?
+      USE_FIFOS      => true,
+      -- depth of the FIFOs if present
+      FIFO_DEPTH     => 1024,
+      -- should BlockRAMs be used for FIFOs?
+      USE_BRAMS      => true
    )
    port map(
        -- Common interface
@@ -670,34 +702,26 @@ begin
       RX_SRC_RDY_N   => fl_fork_rx_src_rdy_n,
       RX_DST_RDY_N   => fl_fork_rx_dst_rdy_n,
 
-      -- Frame link concentrated interface
-      TX_DATA        => fl_fork_tx_data,
-      TX_REM         => fl_fork_tx_rem,
-      TX_SOF_N       => fl_fork_tx_sof_n,
-      TX_EOF_N       => fl_fork_tx_eof_n,
-      TX_SOP_N       => fl_fork_tx_sop_n,
-      TX_EOP_N       => fl_fork_tx_eop_n,
-      TX_SRC_RDY_N   => fl_fork_tx_src_rdy_n,
-      TX_DST_RDY_N   => fl_fork_tx_dst_rdy_n
+      -- Frame link interface 0
+      TX0_DATA       => fl_fork_tx0_data,
+      TX0_REM        => fl_fork_tx0_rem,
+      TX0_SOF_N      => fl_fork_tx0_sof_n,
+      TX0_EOF_N      => fl_fork_tx0_eof_n,
+      TX0_SOP_N      => fl_fork_tx0_sop_n,
+      TX0_EOP_N      => fl_fork_tx0_eop_n,
+      TX0_SRC_RDY_N  => fl_fork_tx0_src_rdy_n,
+      TX0_DST_RDY_N  => fl_fork_tx0_dst_rdy_n,
+
+      -- Frame link interface 1
+      TX1_DATA       => fl_fork_tx1_data,
+      TX1_REM        => fl_fork_tx1_rem,
+      TX1_SOF_N      => fl_fork_tx1_sof_n,
+      TX1_EOF_N      => fl_fork_tx1_eof_n,
+      TX1_SOP_N      => fl_fork_tx1_sop_n,
+      TX1_EOP_N      => fl_fork_tx1_eop_n,
+      TX1_SRC_RDY_N  => fl_fork_tx1_src_rdy_n,
+      TX1_DST_RDY_N  => fl_fork_tx1_dst_rdy_n
    );
-
-   fl_fork_tx0_data        <= fl_fork_tx_data(DATA_WIDTH-1 downto 0);
-   fl_fork_tx0_rem         <= fl_fork_tx_rem( DREM_WIDTH-1 downto 0);
-   fl_fork_tx0_sof_n       <= fl_fork_tx_sof_n(0);
-   fl_fork_tx0_eof_n       <= fl_fork_tx_eof_n(0);
-   fl_fork_tx0_sop_n       <= fl_fork_tx_sop_n(0);
-   fl_fork_tx0_eop_n       <= fl_fork_tx_eop_n(0);
-   fl_fork_tx0_src_rdy_n   <= fl_fork_tx_src_rdy_n(0);
-   fl_fork_tx_dst_rdy_n(0) <= fl_fork_tx0_dst_rdy_n;
-
-   fl_fork_tx1_data        <= fl_fork_tx_data(2*DATA_WIDTH-1 downto DATA_WIDTH);
-   fl_fork_tx1_rem         <= fl_fork_tx_rem( 2*DREM_WIDTH-1 downto DREM_WIDTH);
-   fl_fork_tx1_sof_n       <= fl_fork_tx_sof_n(1);
-   fl_fork_tx1_eof_n       <= fl_fork_tx_eof_n(1);
-   fl_fork_tx1_sop_n       <= fl_fork_tx_sop_n(1);
-   fl_fork_tx1_eop_n       <= fl_fork_tx_eop_n(1);
-   fl_fork_tx1_src_rdy_n   <= fl_fork_tx_src_rdy_n(1);
-   fl_fork_tx_dst_rdy_n(1) <= fl_fork_tx1_dst_rdy_n;
 
    -- ------------------------------------------------------------------------
    --                             Verification Core 0
@@ -1115,6 +1139,84 @@ begin
    fl_output_eof_n                 <= fl_netcope_adder_out_eof_n;
    fl_output_src_rdy_n             <= fl_netcope_adder_out_src_rdy_n;
    fl_netcope_adder_out_dst_rdy_n  <= fl_output_dst_rdy_n;
+
+   -- -------------------------------------------------------------------------
+   -- FrameLink watch
+   -- -------------------------------------------------------------------------
+
+   fl_watch_sof_n(0)      <=       fl_fork_rx_sof_n;
+   fl_watch_sof_n(1)      <=      fl_fork_tx0_sof_n;
+   fl_watch_sof_n(2)      <=      fl_fork_tx1_sof_n;
+   fl_watch_sof_n(3)      <=  fl_ver_core0_tx_sof_n;
+   fl_watch_sof_n(4)      <=  fl_ver_core1_tx_sof_n;
+   fl_watch_sof_n(5)      <= output_binder_tx_sof_n;
+
+   fl_watch_eof_n(0)      <=       fl_fork_rx_eof_n;
+   fl_watch_eof_n(1)      <=      fl_fork_tx0_eof_n;
+   fl_watch_eof_n(2)      <=      fl_fork_tx1_eof_n;
+   fl_watch_eof_n(3)      <=  fl_ver_core0_tx_eof_n;
+   fl_watch_eof_n(4)      <=  fl_ver_core1_tx_eof_n;
+   fl_watch_eof_n(5)      <= output_binder_tx_eof_n;
+
+   fl_watch_sop_n(0)      <=       fl_fork_rx_sop_n;
+   fl_watch_sop_n(1)      <=      fl_fork_tx0_sop_n;
+   fl_watch_sop_n(2)      <=      fl_fork_tx1_sop_n;
+   fl_watch_sop_n(3)      <=  fl_ver_core0_tx_sop_n;
+   fl_watch_sop_n(4)      <=  fl_ver_core1_tx_sop_n;
+   fl_watch_sop_n(5)      <= output_binder_tx_sop_n;
+
+   fl_watch_eop_n(0)      <=       fl_fork_rx_eop_n;
+   fl_watch_eop_n(1)      <=      fl_fork_tx0_eop_n;
+   fl_watch_eop_n(2)      <=      fl_fork_tx1_eop_n;
+   fl_watch_eop_n(3)      <=  fl_ver_core0_tx_eop_n;
+   fl_watch_eop_n(4)      <=  fl_ver_core1_tx_eop_n;
+   fl_watch_eop_n(5)      <= output_binder_tx_eop_n;
+
+   fl_watch_src_rdy_n(0)  <=       fl_fork_rx_src_rdy_n;
+   fl_watch_src_rdy_n(1)  <=      fl_fork_tx0_src_rdy_n;
+   fl_watch_src_rdy_n(2)  <=      fl_fork_tx1_src_rdy_n;
+   fl_watch_src_rdy_n(3)  <=  fl_ver_core0_tx_src_rdy_n;
+   fl_watch_src_rdy_n(4)  <=  fl_ver_core1_tx_src_rdy_n;
+   fl_watch_src_rdy_n(5)  <= output_binder_tx_src_rdy_n;
+
+   fl_watch_dst_rdy_n(0)  <=       fl_fork_rx_dst_rdy_n;
+   fl_watch_dst_rdy_n(1)  <=      fl_fork_tx0_dst_rdy_n;
+   fl_watch_dst_rdy_n(2)  <=      fl_fork_tx1_dst_rdy_n;
+   fl_watch_dst_rdy_n(3)  <=  fl_ver_core0_tx_dst_rdy_n;
+   fl_watch_dst_rdy_n(4)  <=  fl_ver_core1_tx_dst_rdy_n;
+   fl_watch_dst_rdy_n(5)  <= output_binder_tx_dst_rdy_n;
+
+   fl_watch_i: entity work.FL_WATCH_NOREC
+   generic map(
+      INTERFACES     => WATCH_IFCS,
+      CNTR_WIDTH     => 32,
+      PIPELINE_LEN   => 2,
+      GUARD          => true,
+      HEADER         => false,
+      FOOTER         => false
+   )
+   port map(
+      CLK            => CLK,
+      RESET          => RESET,
+                                 
+      SOF_N          => fl_watch_sof_n,
+      EOF_N          => fl_watch_eof_n,
+      SOP_N          => fl_watch_sop_n,
+      EOP_N          => fl_watch_eop_n,
+      SRC_RDY_N      => fl_watch_src_rdy_n,
+      DST_RDY_N      => fl_watch_dst_rdy_n,
+                                 
+      FRAME_ERR      => open,
+                                 
+      MI_DWR         => mi_watch_dwr,
+      MI_ADDR        => mi_watch_addr,
+      MI_RD          => mi_watch_rd,
+      MI_WR          => mi_watch_wr,
+      MI_BE          => mi_watch_be,
+      MI_DRD         => mi_watch_drd,
+      MI_ARDY        => mi_watch_ardy,
+      MI_DRDY        => mi_watch_drdy
+   );
 
    -- ------------------------------------------------------------------------
    --                          Mapping of outputs

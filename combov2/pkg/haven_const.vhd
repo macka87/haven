@@ -33,7 +33,7 @@ package haven_const is
    constant VER_CORE0_USE_OBSERVERS   : boolean := false;
    constant VER_CORE1_USE_OBSERVERS   : boolean := false;
 
-   constant VER_CORE0_USE_FL_COV_UNIT : boolean := true;
+   constant VER_CORE0_USE_FL_COV_UNIT : boolean := false;
    constant VER_CORE1_USE_FL_COV_UNIT : boolean := false;
 
    --------------------------------------------------------------------------
@@ -70,7 +70,7 @@ package haven_const is
    -- The signal observer
    constant ENDPOINT_ID_SIG_OBSERV   : std_logic_vector(7 downto 0) := X"BB";
    -- Scoreboard
-   constant ENDPOINT_ID_SCOREBOARD   : std_logic_vector(7 downto 0) := X"5B";
+   constant ENDPOINT_ID_SCOREBOARD   : std_logic_vector(7 downto 0) := X"AA";
    -- FrameLink Coverage checker
    constant ENDPOINT_ID_FL_COV       : std_logic_vector(7 downto 0) := X"FC";
 
