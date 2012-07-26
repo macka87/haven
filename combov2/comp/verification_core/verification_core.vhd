@@ -175,6 +175,23 @@ architecture arch of verification_core is
    -- clock enable register
    signal reg_clock_enable       : std_logic;
 
+   -- MI32 signals
+   signal sig_mi_dwr             : std_logic_vector(31 downto 0);
+   signal sig_mi_addr            : std_logic_vector(31 downto 0);
+   signal sig_mi_rd              : std_logic;
+   signal sig_mi_wr              : std_logic;
+   signal sig_mi_be              : std_logic_vector(3 downto 0);
+   signal sig_mi_drd             : std_logic_vector(31 downto 0);
+   signal sig_mi_ardy            : std_logic;
+   signal sig_mi_drdy            : std_logic;
+
+   -- the type of design
+   signal design_type            : std_logic_vector(31 downto 0);
+
+   -- the debug register
+   signal reg_debug              : std_logic_vector(31 downto 0);
+   signal reg_debug_in           : std_logic_vector(31 downto 0);
+
 -- ==========================================================================
 --                                   COMPONENTS
 -- ==========================================================================
@@ -216,6 +233,14 @@ begin
    fl_hw_driver_rx_src_rdy_n  <= RX_SRC_RDY_N;
    RX_DST_RDY_N  <= fl_hw_driver_rx_dst_rdy_n;
 
+   sig_mi_dwr                 <= MI32_DWR;
+   sig_mi_addr                <= MI32_ADDR;
+   sig_mi_rd                  <= MI32_RD;
+   sig_mi_wr                  <= MI32_WR;
+   sig_mi_be                  <= MI32_BE;
+   MI32_DRD                   <= sig_mi_drd;
+   MI32_ARDY                  <= sig_mi_ardy;
+   MI32_DRDY                  <= sig_mi_drdy;
 
    -- ------------------------------------------------------------------------
    --                        Input FrameLink Driver
@@ -373,7 +398,7 @@ begin
       );
 
       -- output MI32 data
-      MI32_DRD <= X"0000F1F0";
+      design_type <= X"0000F1F0";
 
    end generate;
 
@@ -409,7 +434,7 @@ begin
       );
 
       -- output MI32 data
-      MI32_DRD <= X"E880F1F0";
+      design_type <= X"E880F1F0";
 
    end generate;
 
@@ -444,7 +469,7 @@ begin
       );
 
       -- output MI32 data
-      MI32_DRD <= X"086E1001";
+      design_type <= X"086E1001";
 
    end generate;
 
@@ -452,8 +477,7 @@ begin
       dut_i: entity work.MULTI_HGEN_VER_COVER
       generic map(
          DATA_WIDTH              => DUT_DATA_WIDTH,
-         BRANCH_COUNT            => 2,
-         USE_BRAMS_FOR_HGEN_FIFO => true
+         BRANCH_COUNT            => 2
       )
       port map(
          CLK           => clk_dut,
@@ -481,7 +505,7 @@ begin
       );
 
       -- output MI32 data
-      MI32_DRD <= X"086E1002";
+      design_type <= X"086E1002";
 
    end generate;
 
@@ -489,8 +513,7 @@ begin
       dut_i: entity work.MULTI_HGEN_VER_COVER
       generic map(
          DATA_WIDTH              => DUT_DATA_WIDTH,
-         BRANCH_COUNT            => 4,
-         USE_BRAMS_FOR_HGEN_FIFO => true
+         BRANCH_COUNT            => 4
       )
       port map(
          CLK           => clk_dut,
@@ -518,7 +541,7 @@ begin
       );
 
       -- output MI32 data
-      MI32_DRD <= X"086E1004";
+      design_type <= X"086E1004";
 
    end generate;
 
@@ -526,8 +549,7 @@ begin
       dut_i: entity work.MULTI_HGEN_VER_COVER
       generic map(
          DATA_WIDTH              => DUT_DATA_WIDTH,
-         BRANCH_COUNT            => 8,
-         USE_BRAMS_FOR_HGEN_FIFO => true
+         BRANCH_COUNT            => 8
       )
       port map(
          CLK           => clk_dut,
@@ -555,15 +577,17 @@ begin
       );
 
       -- output MI32 data
-      MI32_DRD <= X"086E1008";
+      design_type <= X"086E1008";
 
    end generate;
 
    gen_dut_hgen_16x: if (CORE_TYPE = core_hgen_16x) generate
       dut_i: entity work.DOUBLE_MULTI_HGEN_VER_COVER
       generic map(
-         DATA_WIDTH    => DUT_DATA_WIDTH,
-         BRANCH_COUNT  => 2
+         DATA_WIDTH                   => DUT_DATA_WIDTH,
+         BRANCH_COUNT                 => 2,
+         USE_LUTS_FOR_X_HGEN_MEMORY   => 6,
+         USE_LUTS_FOR_X_HGEN_FIFOS    => 6
       )
       port map(
          CLK           => clk_dut,
@@ -591,7 +615,7 @@ begin
       );
 
       -- output MI32 data
-      MI32_DRD <= X"086E1016";
+      design_type <= X"086E1016";
 
    end generate;
 
@@ -928,8 +952,8 @@ begin
       if (rising_edge(CLK)) then
          if (RESET = '1') then
             reg_clock_enable <= '1';
-         elsif (MI32_WR = '1') then
-            reg_clock_enable <= MI32_DWR(0);
+         elsif (sig_mi_wr = '1') then
+            reg_clock_enable <= sig_mi_dwr(0);
          end if;
       end if;
    end process;
@@ -941,16 +965,48 @@ begin
    output_ready_all <= fl_hw_driver_output_ready AND
                        fl_hw_monitor_output_ready AND
                        fl_val_checker_output_ready AND
-                       fl_cov_unit_output_ready;
+                       fl_cov_unit_output_ready AND
+                       out_sig_observer_output_ready;
+
+   -- the debug register
+   reg_debug_in(31 downto 8)   <= X"DB6000";
+   reg_debug_in(7)             <= '0';
+   reg_debug_in(6)             <= '0';
+   reg_debug_in(5)             <= fl_hw_driver_output_ready;
+   reg_debug_in(4)             <= fl_hw_monitor_output_ready;
+   reg_debug_in(3)             <= fl_val_checker_output_ready;
+   reg_debug_in(2)             <= fl_cov_unit_output_ready;
+   reg_debug_in(1)             <= output_ready_all;
+   reg_debug_in(0)             <= clock_enable;
+   --
+   reg_debug_p: process(CLK)
+   begin
+      if (rising_edge(CLK)) then
+         reg_debug <= reg_debug_in;
+      end if;
+   end process;
+
 
    -- ------------------------------------------------------------------------
    --                            MI32 Connection
    -- ------------------------------------------------------------------------
 
    -- The address ready signal
-   MI32_ARDY <= MI32_RD OR MI32_WR;
+   sig_mi_ardy <= sig_mi_rd OR sig_mi_wr;
 
    -- The data ready signal
-   MI32_DRDY <= MI32_RD;
+   sig_mi_drdy <= sig_mi_rd;
+
+   -- the read data
+   mi_drd_mux_p: process(sig_mi_addr, design_type, reg_debug)
+   begin
+      sig_mi_drd <= design_type;
+
+      case sig_mi_addr(2) is
+         when '0'    => sig_mi_drd <= design_type;
+         when '1'    => sig_mi_drd <= reg_debug;
+         when others => null;
+      end case;
+   end process;
 
 end architecture;

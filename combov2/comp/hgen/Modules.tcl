@@ -50,13 +50,13 @@ set SEQUENCER_BASE      "$COMP_BASE/fl_tools/flow/sequencer"
 set PACKAGES "$PACKAGES $COMP_BASE/base/pkg/math_pack.vhd"
 
 set COMPONENTS [list \
+    [list "FL_FIFO"        $FL_FIFO_BASE        "FULL"] \
     [list "GEN_MUX"        $MUX_BASE            "FULL"] \
     [list "GEN_DEMUX"      $DEMUX_BASE          "FULL"] \
     [list "SPLITER"        $SPLITER_BASE        "FULL"] \
     [list "FIFO"           $FIFO_BASE           "FULL"] \
     [list "JENKINS"        $JENKINS_BASE        "FULL"] \
     [list "FORK"           $FORK_BASE           "FULL"] \
-    [list "FL_FIFO"        $FL_FIFO_BASE        "FULL"] \
     [list "MASK"           $MASK_BASE           "FULL"] \
     [list "TRANSFORMER"    $TRANSFORMER_BASE    "FULL"] \
     [list "128_TO_96"      $CONV_BASE           "FULL"] \

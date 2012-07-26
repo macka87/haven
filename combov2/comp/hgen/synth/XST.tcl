@@ -31,7 +31,7 @@
 #
 
 # top level entity
-set TOP_LEVEL_ENT "HGEN"
+set TOP_LEVEL_ENT "HGEN_VER_COVER"
 
 # specify vhdl_design directory
 set FIRMWARE_BASE  "../../.."

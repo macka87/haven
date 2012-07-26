@@ -14,9 +14,12 @@ use work.math_pack.all;
 entity MULTI_HGEN_VER_COVER is
    generic(
       -- the data width of the data input/output
-      DATA_WIDTH     : integer   := 128;
-      BRANCH_COUNT   : integer   := 8;
-      USE_BRAMS_FOR_HGEN_FIFO : boolean := true
+      DATA_WIDTH                 : integer   := 128;
+      BRANCH_COUNT               : integer   := 8;
+      -- for how many of the HGENs memories should LUT memory be used?
+      USE_LUTS_FOR_X_HGEN_MEMORY : integer   := 0;
+      -- for how many of the HGENs FIFOs should LUT memory be used?
+      USE_LUTS_FOR_X_HGEN_FIFOS  : integer   := 0
    );
    port(
       CLK            : in std_logic;
@@ -46,6 +49,24 @@ entity MULTI_HGEN_VER_COVER is
 end entity;
 
 architecture arch of MULTI_HGEN_VER_COVER is
+
+   function use_brams_for_memory(hgen_num : integer) return boolean is
+   begin
+      if (hgen_num < USE_LUTS_FOR_X_HGEN_MEMORY) then
+         return false;
+      else
+         return true;
+      end if;
+   end function;
+
+   function use_brams_for_fifos(hgen_num : integer) return boolean is
+   begin
+      if (hgen_num < USE_LUTS_FOR_X_HGEN_FIFOS) then
+         return false;
+      else
+         return true;
+      end if;
+   end function;
 
    constant INPUT_PARTS       : integer := 1;
    constant BRANCH_PARTS      : integer := 1;
@@ -252,7 +273,8 @@ gen_hgen: for i in 0 to BRANCH_COUNT-1 generate
       generic map(
          -- the data width of the data input/output
          DATA_WIDTH     => HGEN_DATA_WIDTH,
-         USE_BRAMS_FOR_HGEN_FIFO => USE_BRAMS_FOR_HGEN_FIFO
+         USE_BRAMS_FOR_HGEN_FIFO => use_brams_for_fifos(i),
+         USE_BRAMS_FOR_MEMORY    => use_brams_for_memory(i)
       )
       port map(
          -- common signals
