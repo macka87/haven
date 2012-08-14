@@ -10,8 +10,8 @@
  * Settings when this file was generated:
  *   PLATFORM = 'linux_x86_64'
  */
-#ifndef INCLUDED_DPI_TR_TABLE_PKG
-#define INCLUDED_DPI_TR_TABLE_PKG
+#ifndef INCLUDED_DPI_MI32_WRAPPER_PKG
+#define INCLUDED_DPI_MI32_WRAPPER_PKG
 
 #ifdef __cplusplus
 #define DPI_LINK_DECL  extern "C" 
@@ -25,22 +25,14 @@
 
 DPI_LINK_DECL DPI_DLLESPEC
 void
-c_addToTable(
-    const svOpenArrayHandle inTrans,
-    int incrCount);
+c_readFromRegister(
+    const svBitVecVal* hw_addr,
+    svBitVecVal* hw_data);
 
 DPI_LINK_DECL DPI_DLLESPEC
 void
-c_displayTable();
-
-DPI_LINK_DECL DPI_DLLESPEC
-int
-c_removeFromTable(
-    const svOpenArrayHandle outTrans,
-    int incrCount);
-
-DPI_LINK_DECL DPI_DLLESPEC
-int
-c_tableEmpty();
+c_writeToRegister(
+    const svBitVecVal* hw_addr,
+    const svBitVecVal* hw_data);
 
 #endif 

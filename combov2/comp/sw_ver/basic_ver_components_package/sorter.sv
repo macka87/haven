@@ -16,7 +16,7 @@
     int        mbxNum;     //! Number of mailboxes
     bit        enabled;    //! Sorter enabling
     bit        busy;       //! Sorter is receiving transaction
-
+    
    /*
     * Public Class Methods
     */ 
@@ -64,6 +64,10 @@
       NetCOPETransaction ntr;
       Transaction tr;
       int monitorID;
+      
+      int cnt88 = 0;
+      int cntF6 = 0;
+      int cntFC = 0;
 
       while(enabled) begin
         busy = 0;
@@ -74,11 +78,30 @@
         monitorID =  ntr.data[0];
 
         priority case (monitorID)
-          8'h88 : mbx[0].put(tr);
-          8'hAA : mbx[1].put(tr);
-          8'hBB : mbx[2].put(tr);
+          8'h88 : begin
+                    cnt88++;
+                    $write("SORTER: COUNTER FL_OUTPUT_CONTROLLER: %d\n", cnt88);             
+                    if (cnt88 % 100000 == 0) begin
+                      $write("%d\n",cnt88);
+                      #10ns;
+                    end
+                    
+                    mbx[0].put(tr); // FL Output Controller mailbox 
+                  end
+          8'hF6 : begin
+                    cntF6++;
+                    $write("SORTER: COUNTER FL_GEN_OUTPUT_CONTROLLER: %d\n", cntF6);
+                    mbx[1].put(tr); // FL Generator Controller mailbox 
+                  end         
+          8'hAA : mbx[2].put(tr); // Assertion Reporter mailbox
+          8'hBB : mbx[3].put(tr); // Signal Reporter mailbox 
+          8'hFC : begin
+                    cntFC++;
+                    $write("SORTER: COUNTER COVERAGE_REPORTER: %d\n", cntFC);
+                    mbx[4].put(tr); // Coverage Reporter mailbox 
+                  end          
           default : begin
-                      $error("!!!SORTER: Unknown Output Controller Identifier!!!\n");
+                      $error("!!!SORTER: Unknown Output Controller Identifier!!!\n");                 $write("%x\n", monitorID);
                       $finish();
                     end  
         endcase

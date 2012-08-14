@@ -20,7 +20,6 @@
     */
     string    inst;      //! Output Wrapper identification
     bit       enabled;   //! Output Wrapper enabling
-    int       counter;   //! Output Wrapper busy signal
     tTransMbx outputMbx; //! NetCOPE transactions mailbox
         
    /*
@@ -37,7 +36,6 @@
                   tTransMbx outputMbx);
       this.inst        = inst;      //! Store wrapper identifier
       this.enabled     = 0;         //! Output Wrapper is disabled by default
-      this.counter     = 0;
       this.outputMbx   = outputMbx; //! Store pointer to mailbox
     endfunction: new          
    
@@ -89,11 +87,11 @@
           if (size > 0) begin
             // store the right size of data
 						ntr.size = size;
-						
+						//$write("received size: %d\n", size);
+            //ntr.display("OUTPUT NETCOPE TRANSACTION");
             // put received data to output mailbox
             outputMbx.put(ntr);  
-            counter++;
-					end
+          end
 					else begin
 						#10ns;
 					end
