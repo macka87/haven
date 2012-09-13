@@ -8,7 +8,6 @@ module top;
   import my_pkg::*;
   import my_seq_library::*;
   import my_test_library::*;
-  import ovm_container_pkg::*;
   
   //instancovanie struktur DUT a interface
   dut_if dut_if1 ();
