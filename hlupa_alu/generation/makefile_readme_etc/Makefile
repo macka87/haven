@@ -1,6 +1,5 @@
 
 OVM_HOME ?= $(QUESTA_HOME)/verilog_src/ovm-2.1
-OVM_CONTAINER ?= ../../../ovm_container
 
 all: work build run
 
@@ -10,7 +9,6 @@ work:
 	vlib work
 
 build:
-	vlog -cover sbce +incdir+$(OVM_HOME)/src $(OVM_CONTAINER)/ovm_container.sv
 	vlog -cover sbce ../common/dut_if.sv
 	vlog -cover sbce ../common/dut.sv
 	vlog -cover sbce +incdir+$(OVM_HOME)/src ../common/my_pkg.sv
