@@ -1,5 +1,4 @@
 set OVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/ovm-2.1
-set OVM_CONTAINER ../../../ovm_container
 
 vlib work
 
@@ -7,7 +6,6 @@ vlib work
 vcom -93 -explicit -work work ../src/alu.vhd
 
 #preloz zdrojaky s verifikaciou
-vlog -cover sbce +incdir+$OVM_HOME/src $OVM_CONTAINER/ovm_container.sv
 vlog -cover sbce ../common/dut_if.sv
 vlog -cover sbce ../common/dut.sv
 vlog -cover sbce +incdir+$OVM_HOME/src ../common/my_pkg.sv
