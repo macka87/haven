@@ -1,0 +1,8 @@
+spustenie sim.fdo:
+do prikazovej riadky napisat vsim -do sim.fdo
+
+spustenie Makefile
+do prikazovej riadky napisat make
+
+-makefile nezobrazi v modelsime vlny
+-inak je jedno ktory z tychto dvoch prikazov sa pouzije
