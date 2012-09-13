@@ -24,7 +24,7 @@ package sv_alu_pkg;
   `include "alu_output_transaction.sv"
   `include "alu_sender.sv"
   `include "alu_driver.sv"
-  `include "alu_gen_input_controller.sv"
+  //`include "alu_gen_input_controller.sv"
   `include "alu_ga_input_controller.sv"
   `include "alu_output_controller.sv"
   `include "alu_monitor.sv"

@@ -28,7 +28,7 @@ if { $ARCHGRP == "GENALG" } {
   
   set COMPONENTS [list \
       [ list "SV_BASIC_BASE"  $SV_BASIC_BASE  "FULL"] \
-      [ list "SV_GA_BASE"     $SV_GA_BASE     "FULL"] \
+      [ list "SV_GA_BASE"     $SV_GA_BASE     "GENALG"] \
   ]
   set MOD "$MOD $ENTITY_BASE/tbench/test_pkg.sv"
   set MOD "$MOD $ENTITY_BASE/tbench/ga_test_pkg.sv"
