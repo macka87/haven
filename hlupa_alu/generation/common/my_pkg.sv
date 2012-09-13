@@ -8,8 +8,6 @@ package my_pkg;
   
   //include na oficialny ovm balicek
   import ovm_pkg::*;
-
-  import ovm_container_pkg::*;
   
   
   
@@ -315,7 +313,7 @@ package my_pkg;
 
 
   //trieda pre subscribera vo vnutri verifikacneho prostredia
-  //funkcia subscriberov je na overovanie coverage a spravnosti vysledkov DUT
+  //funkcia subscriberov je na overovanie funkcionalneho coverage
   class my_subscriber extends ovm_subscriber#(my_transaction);
   
     //zaregistrovanie
@@ -333,7 +331,7 @@ package my_pkg;
       //OPERAND_A: coverpoint OPERAND_A { bins a[2] = {[0:9],[10:15]}; }
       //OPERAND_B: coverpoint OPERAND_B { bins b[2] = {[0:9],[10:15]}; }
       //basic: cross RESET,OPERACIA,OPERAND_A,OPERAND_B;
-      RESET: coverpoint RESET { bins reset = {0}; bins not_reset = {1};}
+      RESET: coverpoint RESET { bins not_reset = {0}; bins reset = {1};}
       OPERACIA: coverpoint OPERACIA { bins scitanie = {0}; bins minimum = {1}; bins posuv = {2}; bins neplatne ={3}; }
       OPERAND_A: coverpoint OPERAND_A { bins A_ok = {[0:9]}; bins A_fail = {[10:15]}; }
       OPERAND_B: coverpoint OPERAND_B { bins B_ok = {[0:9]}; bins B_fail = {[10:15]}; }
