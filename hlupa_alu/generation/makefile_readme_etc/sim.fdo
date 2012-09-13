@@ -1,0 +1,34 @@
+set OVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/ovm-2.1
+set OVM_CONTAINER ../../../ovm_container
+
+vlib work
+
+#preloz DUT
+vcom -93 -explicit -work work ../src/alu.vhd
+
+#preloz zdrojaky s verifikaciou
+vlog -cover sbce +incdir+$OVM_HOME/src $OVM_CONTAINER/ovm_container.sv
+vlog -cover sbce ../common/dut_if.sv
+vlog -cover sbce ../common/dut.sv
+vlog -cover sbce +incdir+$OVM_HOME/src ../common/my_pkg.sv
+vlog -cover sbce +incdir+$OVM_HOME/src ../sequence_library/my_seq_library.sv
+vlog -cover sbce +incdir+$OVM_HOME/src ../tests/my_test_library.sv
+vlog -cover sbce ../common/top.sv
+
+vsim -coverage -covergroups -lib work top
+
+#co vsetko ma zobrazit
+view wave
+#navolenie signalov ktore maju byt zobrazene vlnami
+add wave -noupdate       -label CLK /top/dut1/VHDL_DUT_U/CLK
+add wave -noupdate       -label RST /top/dut1/VHDL_DUT_U/RST
+add wave -noupdate  -hex -label OPERACIA /top/dut1/VHDL_DUT_U/OPERACIA
+add wave -noupdate  -hex -label OPERAND_A /top/dut1/VHDL_DUT_U/OPERAND_A
+add wave -noupdate  -hex -label OPERAND_B /top/dut1/VHDL_DUT_U/OPERAND_B
+add wave -noupdate  -hex -label VYSLEDOK /top/dut1/VHDL_DUT_U/VYSLEDOK
+view structure
+view signals
+view covergroups
+
+restart -f
+run -all
