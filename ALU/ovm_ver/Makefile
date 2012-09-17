@@ -16,7 +16,15 @@ work:
 	vlib work
 
 build:
-	vlog -cover sbce +incdir+$(OVM_HOME)/src +incdir+$(OVM_BASIC) $(OVM_BASIC)/sv_basic_comp_pkg.sv
+	vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/basic_driver.sv
+  vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/basic_input_controller.sv
+  vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/basic_monitor.sv
+  vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/basic_output_controller.sv
+  vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/basic_sequencer.sv
+  vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/basic_transaction.sv
+  vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/basic_transaction_table.sv
+  vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/sv_types_pkg.sv
+  vlog -cover sbce +incdir+$(OVM_HOME)/src ../../combov2/comp/sw_ver/ovm_basic_components/sv_basic_comp_pkg.sv
 	vlog -cover sbce alu_general_settings.sv
 	vlog -cover sbce dut_if.sv
 	vlog -cover sbce dut.sv
