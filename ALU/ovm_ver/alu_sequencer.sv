@@ -7,6 +7,12 @@
  * Date:         17.8.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_sequencer_pkg;
+ import ovm_pkg::*;
+ import sv_basic_comp_pkg::*;
+ import alu_transaction_result_pkg::*; 
+ 
 /*!
  * \brief AluSequencer
  * 
@@ -29,3 +35,5 @@
    endfunction: new
 
  endclass: AluSequencer
+ 
+endpackage: alu_sequencer_pkg 

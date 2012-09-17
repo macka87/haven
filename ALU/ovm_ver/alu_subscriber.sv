@@ -7,6 +7,11 @@
  * Date:         13.9.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_subscriber_pkg;
+ import ovm_pkg::*; 
+ import alu_transaction_pkg::*; 
+ 
 /*!
  * \brief AluSubscriber
  * 
@@ -181,4 +186,6 @@
      cover_bus.sample();
    endfunction: write
     
- endclass: AluSubscriber 
+ endclass: AluSubscriber
+ 
+endpackage: alu_subscriber_pkg  

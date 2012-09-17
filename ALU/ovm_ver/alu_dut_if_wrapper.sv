@@ -7,6 +7,10 @@
  * Date:         11.9.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_dut_if_wrapper_pkg;
+ import ovm_pkg::*; 
+ 
  /*!
  * \brief AluDutIfWrapper
  * 
@@ -32,3 +36,5 @@
    endfunction: new
 
  endclass: AluDutIfWrapper
+
+endpackage: alu_dut_if_wrapper_pkg

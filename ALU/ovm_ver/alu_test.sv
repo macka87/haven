@@ -6,7 +6,13 @@
  *               Marcela Simkova <isimkova@fit.vutbr.cz> 
  * Date:         12.9.2012
  * ************************************************************************** */
- 
+
+`include "ovm_macros.svh"
+package alu_test_pkg;
+ import ovm_pkg::*;
+ import alu_env_pkg::*;
+ import alu_sequence_pkg::*; 
+  
 /*!
  * \brief AluTest
  * 
@@ -50,3 +56,5 @@
    endtask: run
   
  endclass: AluTest
+
+endpackage: alu_test_pkg

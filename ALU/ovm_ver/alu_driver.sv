@@ -7,6 +7,13 @@
  * Date:         16.8.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_driver_pkg;
+ import ovm_pkg::*;
+ import sv_basic_comp_pkg::*;
+ import alu_transaction_pkg::*;
+ import alu_dut_if_wrapper_pkg::*; 
+
 /*!
  * \brief AluDriver
  * 
@@ -84,3 +91,5 @@
    endtask: run
 
  endclass: AluDriver
+ 
+endpackage: alu_driver_pkg 

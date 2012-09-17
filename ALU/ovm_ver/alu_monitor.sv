@@ -7,6 +7,13 @@
  * Date:         16.8.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_monitor_pkg;
+ import ovm_pkg::*;
+ import sv_basic_comp_pkg::*;
+ import alu_transaction_result_pkg::*;
+ import alu_dut_if_wrapper_pkg::*;  
+
 /*!
  * \brief AluMonitor
  * 
@@ -70,3 +77,5 @@
    endtask: run
       
  endclass: AluMonitor
+ 
+endpackage: alu_monitor_pkg 

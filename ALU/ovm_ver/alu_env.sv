@@ -7,6 +7,13 @@
  * Date:         10.9.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_env_pkg;
+ import ovm_pkg::*;
+ import alu_agent_pkg::*;
+ import alu_subscriber_pkg::*;
+ //import alu_scoreboard_pkg::*; 
+ 
 /*!
  * \brief AluEnv
  * 
@@ -21,7 +28,7 @@
    //handles to the contained objects
    AluAgent #(pDataWidth) AluAgent_h;
    AluSubscriber #(pDataWidth) AluSubscriber_h;
-   AluScoreboard #(pDataWidth) AluScoreboard_h;
+   //AluScoreboard #(pDataWidth) AluScoreboard_h;
 
   /*! 
    * Constructor - creates AluEnv object  
@@ -40,7 +47,7 @@
      super.build();
      AluAgent_h = my_agent ::type_id::create("AluAgent_h" , this);
      AluSubscriber_h = my_subscriber::type_id::create("AluSubscriber_h" , this);
-     AluScoreboard_h = my_scoreboard::type_id::create("AluScoreboard_h", this); 
+     //AluScoreboard_h = my_scoreboard::type_id::create("AluScoreboard_h", this); 
    endfunction: build
 
   /*! 
@@ -48,8 +55,8 @@
    */    
    function void connect;
      AluAgent_h.aport_zadanie.connect(AluSubscriber_h.analysis_export);
-     AluAgent_h.aport_zadanie.connect(AluScoreboard_h.driver_export);
-     AluAgent_h.aport_vysledok.connect(AluScoreboard_h.monitor_export);
+     //AluAgent_h.aport_zadanie.connect(AluScoreboard_h.driver_export);
+     //AluAgent_h.aport_vysledok.connect(AluScoreboard_h.monitor_export);
    endfunction: connect
 
   /*! 
@@ -63,4 +70,6 @@
    
    endtask: run
   
-  endclass: my_env 
+  endclass: my_env
+
+endpackage: alu_env_pkg  

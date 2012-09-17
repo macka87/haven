@@ -7,6 +7,11 @@
  * Date:         7.9.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_transaction_pkg;
+ import ovm_pkg::*;
+ import sv_basic_comp_pkg::*; 
+  
 /*!
  * \brief BasicTransaction
  * 
@@ -207,3 +212,5 @@
    endfunction : fread
    
  endclass: AluTransaction
+ 
+endpackage: alu_transaction_pkg

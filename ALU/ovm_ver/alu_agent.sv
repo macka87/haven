@@ -7,6 +7,15 @@
  * Date:         12.9.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_agent_pkg;
+ import ovm_pkg::*;
+ import alu_monitor_pkg::*;
+ import alu_driver_pkg::*;
+ import alu_sequencer_pkg::*;
+ import alu_transaction_pkg::*;
+ import alu_transaction_result_pkg::*; 
+
  /*!
  * \brief AluAgent
  * 
@@ -62,4 +71,5 @@
    endfunction: connect
   
  endclass: AluAgent
- 
+
+endpackage: alu_agent_pkg 

@@ -15,7 +15,9 @@
 
 module AluTop;
 
-  //INCLUDY NA VSETKO ASI TREBA DOPISAT
+  import alu_general_settings_pkg::*;
+  import alu_dut_if_wrapper_pkg::*;
+  import alu_test_pkg::*;
   
   AluDutIf #(pDataWidth) dut_if1 ();
   AluDut dut1 ( ._if(dut_if1) );

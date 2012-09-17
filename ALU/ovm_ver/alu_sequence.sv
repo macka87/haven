@@ -7,6 +7,11 @@
  * Date:         11.9.2012
  * ************************************************************************** */
 
+`include "ovm_macros.svh"
+package alu_sequence_pkg;
+ import ovm_pkg::*;
+ import alu_transaction_result_pkg::*; 
+ 
 /*!
  * \brief AluSequence
  * 
@@ -48,3 +53,5 @@
    endtask: body
 
  endclass: AluSequence
+ 
+endpackage: alu_sequence_pkg 
