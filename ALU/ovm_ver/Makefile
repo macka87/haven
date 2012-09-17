@@ -16,7 +16,7 @@ work:
 	vlib work
 
 build:
-	vlog -cover sbce +incdir+$(OVM_HOME)/src \ $(OVM_BASIC) $(OVM_BASIC)/sv_basic_comp_pkg.sv
+	vlog -cover sbce +incdir+$(OVM_HOME)/src +incdir+$(OVM_BASIC) $(OVM_BASIC)/sv_basic_comp_pkg.sv
 	vlog -cover sbce alu_general_settings.sv
 	vlog -cover sbce dut_if.sv
 	vlog -cover sbce dut.sv
