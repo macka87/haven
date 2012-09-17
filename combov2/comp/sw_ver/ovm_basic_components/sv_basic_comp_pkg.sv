@@ -7,10 +7,11 @@
  * Date:         17.9.2012
  * ************************************************************************** */
  
-package sv_basic_comp_pkg; 
-   import sv_types_pkg::*; // Import package of user defined types 
+package sv_basic_comp_pkg;
 
-  `include "basic_driver.sv"
+  import sv_types_pkg::*; // Import package of user defined types 
+
+  `include "../../combov2/comp/sw_ver/ovm_basic_components/basic_driver.sv"
   `include "basic_input_controller.sv"
   `include "basic_monitor.sv"
   `include "basic_output_controller.sv"
