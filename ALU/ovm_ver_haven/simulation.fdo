@@ -1,0 +1,52 @@
+# *****************************************************************************
+# Project Name: HAVEN
+# File Name:    alu.fdo
+# Description:  Simulation starting script
+# Authors:      Michaela Belesova <xbeles00@stud.fit.vutbr.cz>,
+#               Marcela Simkova <isimkova@fit.vutbr.cz> 
+# Date:         18.9.2012
+# ************************************************************************** */
+
+set OVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/ovm-2.1
+
+# Working library
+vlib work
+
+# DUT compilation
+vcom -93 -explicit -work work ../mult/mult.vhd
+vcom -93 -explicit -work work ../alu/alu.vhd
+
+# Path to basic components
+set BASE_PATH ../../ver_base/
+
+# Verification environment compilation
+vlog -cover sbce test_pkg.sv
+vlog -cover sbce dut.sv
+vlog -cover sbce alu_dut_if_wrapper.sv
+vlog -cover sbce alu_dut_if.sv
+vlog -cover sbce top_level.sv
+
+# Set path to testbench instance of the DUT 
+set PATH "testbench"
+
+# Start of the simulation
+vsim -coverage -t 1ps -lib work $PATH
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# View a simulation wave
+source "./signals.fdo"
+view wave
+
+# Definition of signals in a wave window
+add wave -divider "ALU"  
+basic     BASIC    /testbench/DUT_U/
+alu_in    ALU_IN   /testbench/DUT_U/VHDL_DUT_U
+alu_out   ALU_OUT  /testbench/DUT_U/VHDL_DUT_U
+
+view structure
+view signals
+restart -f
+run -all
