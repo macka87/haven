@@ -1,0 +1,32 @@
+# ------------------------------------------------------------------------------
+# Project Name: ALU Functional Verification
+# File Name:    signals.fdo 
+# Description:  Definition of signals which are displayed in simulator. 
+# Author:       Marcela Simkova <isimkova@fit.vutbr.cz>    
+# Date:         22.3.2012
+# ------------------------------------------------------------------------------
+
+# Signals of interfaces
+proc basic {NAME PATH} {
+    add wave -divider "$NAME"      
+     add wave -noupdate -color yellow -label CLK      $PATH/CLK
+     add wave -noupdate -color yellow -label RST      $PATH/RST
+}
+
+proc alu_in {NAME PATH} {
+    add wave -divider "$NAME"   
+     add wave -noupdate  -color yellow -label ACT     $PATH/ACT   
+     add wave -noupdate  -hex -label OP               $PATH/OP
+     add wave -noupdate  -hex -label MOVI             $PATH/MOVI
+     add wave -noupdate  -hex -label REG_A            $PATH/REG_A
+     add wave -noupdate  -hex -label REG_B            $PATH/REG_B
+     add wave -noupdate  -hex -label IMM              $PATH/IMM
+     add wave -noupdate  -hex -label MEM              $PATH/MEM
+}
+
+proc alu_out {NAME PATH} {
+    add wave -divider "$NAME"      
+     add wave -noupdate  -label      ALU_RDY          $PATH/ALU_RDY
+     add wave -noupdate  -hex -label EX_ALU           $PATH/EX_ALU
+     add wave -noupdate  -hex -label EX_ALU_VLD       $PATH/EX_ALU_VLD
+}
