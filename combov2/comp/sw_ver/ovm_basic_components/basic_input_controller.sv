@@ -19,7 +19,7 @@
    * 
    * This class is parent class for any input controller.
    */
-   class BasicInputController extends ovm_monitor;
+   class BasicInputController extends ovm_component;
      
      //registration of component tools
      `ovm_component_utils(BasicInputController)
