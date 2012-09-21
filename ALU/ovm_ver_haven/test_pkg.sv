@@ -25,7 +25,7 @@
                                   // 2 = other generator
                                   // 3 = hardware generator  
                                   
-   parameter GEN_OUTPUT     = 2;  // 0 = SV simulation
+   parameter GEN_OUTPUT     = 0;  // 0 = SV simulation
                                   // 1 = storing transactions into external file  
                                   // 2 = SV simulation and storing to ext. file
                                                            

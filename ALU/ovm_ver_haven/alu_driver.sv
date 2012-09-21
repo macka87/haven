@@ -19,7 +19,8 @@ package sv_alu_pkg;
  * This class puts transactions from sequencer on ALU interface.
  */
 
- class AluDriver #(int pDataWidth = 8) extends ovm_driver #(AluTransactionDUTInput);
+ class AluDriver #(int pDataWidth = 8, int GEN_OUTPUT=0) 
+   extends ovm_driver #(AluTransactionDUTInput);
 
    //registration of component tools
    `ovm_component_utils(AluDriver)
@@ -73,18 +74,20 @@ package sv_alu_pkg;
   
        tx.display("DRIVER:");
 
-       //sends values from transaction on the virtual interface
-       dut_if1.RST  = tx.RST;
-       dut_if1.ACT  = tx.ACT;
-       dut_if1.ACT  = tx.ALU_RDY;
-       dut_if1.OP   = tx.OP;
-       dut_if1.MOVI = tx.MOVI;
-       dut_if1.REGA = tx.REG_A;
-       dut_if1.REGB = tx.REG_B;
-       dut_if1.MEM  = tx.MEM;
-       dut_if1.IMM  = tx.IMM;
+       if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
+         begin
+           //sends values from transaction on the virtual interface
+           dut_if1.RST  = tx.RST;
+           dut_if1.ACT  = tx.ACT;
+           dut_if1.OP   = tx.OP;
+           dut_if1.MOVI = tx.MOVI;
+           dut_if1.REGA = tx.REG_A;
+           dut_if1.REGB = tx.REG_B;
+           dut_if1.MEM  = tx.MEM;
+           dut_if1.IMM  = tx.IMM;
+         end
         
-       //sends generated transaction to the scoreboards or subscribers
+       //sends generated transaction to the scoreboards, subscribers etc.
        aport.write(tx);
              
      end
