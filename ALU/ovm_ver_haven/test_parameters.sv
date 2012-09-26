@@ -7,7 +7,7 @@
  * Date:         18.9.2012 
  * ************************************************************************** */ 
 
- package test_pkg;
+ package sv_alu_param_pkg;
    
    // VERIFICATION FRAMEWORK
    int FRAMEWORK            = 0; // 0 = software framework

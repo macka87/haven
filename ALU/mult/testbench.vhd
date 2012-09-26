@@ -13,6 +13,7 @@ architecture tb_arch of testbench is
   -- prepajacie signaly
   signal clk         : std_logic;
   signal rst         : std_logic;
+  signal act         : std_logic;
   signal input_a     : std_logic_vector(data_width-1 downto 0);
   signal input_b     : std_logic_vector(data_width-1 downto 0);
   signal start       : std_logic;
@@ -24,6 +25,7 @@ begin
   UUT : entity work.MULT
   port map( CLK         => clk,
             RST         => rst,
+            ACT         => act,
             INPUT_A     => input_a,
             INPUT_B     => input_b,
             START       => start,
@@ -47,6 +49,8 @@ begin
       rst <= '0';
       wait;
    end process;
+   
+   act <= '1';
 
   -- generovanie vstupov
   behaviour : process

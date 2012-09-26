@@ -18,6 +18,7 @@ view wave
   add  wave -divider "MULT" 
   add wave -hex -label "clk"          sim:/testbench/clk 
   add wave -hex -label "rst"          sim:/testbench/rst
+  add wave -hex -label "act"          sim:/testbench/act
   add wave -hex -label "input_a"      sim:/testbench/input_a
   add wave -hex -label "input_b"      sim:/testbench/input_b
   add wave -hex -label "start"        sim:/testbench/start

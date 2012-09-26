@@ -7,9 +7,6 @@
  * Date:         18.9.2012
  * ************************************************************************** */
 
-import test_pkg::*; 
-import sv_alu_pkg::*;
-
 /*!
  * \brief AluTop
  * 
@@ -18,6 +15,11 @@ import sv_alu_pkg::*;
 
 module AluTop;
 
+  import ovm_pkg::*;
+  import sv_alu_env_pkg::*;
+  import sv_alu_test_pkg::*;   
+  import sv_alu_param_pkg::*;
+      
   // DUT primary interfaces
   logic CLK;                                      // Clock signal
   iAluIn  #(DATA_WIDTH) dut_alu_in_if   (CLK);    // ALU input interface
@@ -45,7 +47,7 @@ module AluTop;
     begin: blk
 
       // DUT Interface Wrapper
-      AluDutIfWrapper #(DATA_WIDTH) if_wrapper = new("if_wrapper", dut_alu_in_if, dut_alu_out_if);
+      AluDutIfWrapper if_wrapper = new("if_wrapper", dut_alu_in_if, dut_alu_out_if);
       
       // Registration of DUT Interface Wrapper in configuration table
       // Arguments: path(* = all objects can use it), name, value, don't clone

@@ -7,12 +7,6 @@
  * Date:         20.9.2012
  * ************************************************************************** */
 
-`include "ovm_macros.svh"
-
-package sv_alu_pkg;
- 
- import ovm_pkg::*;
- 
 /*!
  * \brief AluEnv
  * 
@@ -22,17 +16,16 @@ package sv_alu_pkg;
  * \param pDataWidth - data width of the verified ALU  
  * \param GEN_OUTPUT - destination for generated data   
  */
- class AluEnv #(int pDataWidth = 8, int GEN_OUTPUT=0) 
-   extends ovm_env;
+ class AluEnv extends ovm_env;
   
-   //registration of component tools
-   `ovm_component_utils(my_env)
+   // registration of component tools
+   `ovm_component_utils(AluEnv)
    
    //handles to the contained objects
-   AluDriver #(pDataWidth,GEN_OUTPUT) AluDriver_h;
-   AluMonitor #(pDataWidth) AluMonitor_h;
-   AluSequencer #(pDataWidth) AluSequencer_h;
-   AluSender #(pDataWidth) AluSender_h;
+   //AluDriver #(pDataWidth,GEN_OUTPUT) AluDriver_h;
+   //AluMonitor #(pDataWidth) AluMonitor_h;
+   //AluSequencer #(pDataWidth) AluSequencer_h;
+   //AluSender #(pDataWidth) AluSender_h;
    //AluScoreboard #(pDataWidth) AluScoreboard_h;
    //AluSubscriber #(pDataWidth) AluSubscriber_h;
 
@@ -52,19 +45,19 @@ package sv_alu_pkg;
    function void build;
      super.build();
      
-     AluDriver_h = AluDriver::type_id::create("AluDriver_h", this);
+     /*AluDriver_h = AluDriver::type_id::create("AluDriver_h", this);
      AluSequencer_h = AluSequencer::type_id::create("AluSequencer_h", this);
      
      if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
        begin
          AluMonitor_h = AluMonitor::type_id::create("AluMonitor_h", this);
               
-         /*AluScoreboard_h = AluScoreboard::type_id::create("AluScoreboard_h", this);
-         AluSubscriber_h = AluSubscriber::type_id::create("AluSubscriber_h", this);*/
+         AluScoreboard_h = AluScoreboard::type_id::create("AluScoreboard_h", this);
+         AluSubscriber_h = AluSubscriber::type_id::create("AluSubscriber_h", this);
        end
        
      if(GEN_OUTPUT==1 || GEN_OUTPUT==2)
-       AluSender_h = AluSender::type_id::create("AluSender_h", this);
+       AluSender_h = AluSender::type_id::create("AluSender_h", this); */
         
    endfunction: build
 
@@ -73,17 +66,17 @@ package sv_alu_pkg;
    */    
    function void connect;
      
-     AluDriver_h.seq_item_port.connect(AluSequencer_h.seq_item_export);
+     /*AluDriver_h.seq_item_port.connect(AluSequencer_h.seq_item_export);
      
      if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
        begin
-         /*AluMonitor_h.aport_dut_output.connect(AluScoreboard_h.aport_dut_output);
+         AluMonitor_h.aport_dut_output.connect(AluScoreboard_h.aport_dut_output);
          AluDriver_h.aport_dut_input.connect(AluScoreboard_h.aport_dut_input);
-         AluDriver_h.aport_dut_input.connect(AluSubscriber_h.analysis_export);*/
+         AluDriver_h.aport_dut_input.connect(AluSubscriber_h.analysis_export);
        end
      
      if(GEN_OUTPUT==1 || GEN_OUTPUT==2)
-       AluDriver_h.aport_dut_input.connect(AluSender_h.aport_dut_input);
+       AluDriver_h.aport_dut_input.connect(AluSender_h.aport_dut_input);*/
    
    endfunction: connect
 
@@ -101,6 +94,5 @@ package sv_alu_pkg;
    
    endtask: run
   
-  endclass: AluEnv
+ endclass: AluEnv
 
-endpackage

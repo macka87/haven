@@ -6,7 +6,6 @@
  * Date:         22.3.2012 
  * ************************************************************************** */
 
-import test_pkg::*; // Test constants
 
 /*
  *  Module declaration
@@ -17,6 +16,9 @@ import test_pkg::*; // Test constants
    iAluIn       ALU_IN,
    iAluOut      ALU_OUT
  );
+
+ import sv_alu_param_pkg::*; // Test constants
+
 
 /*
  *  Module body
