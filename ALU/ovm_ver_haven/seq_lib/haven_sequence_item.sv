@@ -14,7 +14,7 @@
  * HAVEN Transaction = x HAVEN sequence items. 
  */
  
- class HavenSequenceItem;
+ class HavenSequenceItem extends ovm_sequence_item;
 
    // registration of component 
    `ovm_object_utils(HavenSequenceItem)
@@ -33,8 +33,7 @@
    */
    virtual task getRaw();
      assert (0) 
-       $fatal("HAVEN Sequence Item: Task getRaw() must be implemented in derived 
-               class"); 
+       $fatal("HAVEN Sequence Item: Task getRaw() must be implemented in derived     class"); 
    endtask : getRaw   
    
  endclass: HavenSequenceItem

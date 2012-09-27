@@ -24,7 +24,7 @@
    //handles to the contained objects
    //AluDriver #(pDataWidth,GEN_OUTPUT) AluDriver_h;
    //AluMonitor #(pDataWidth) AluMonitor_h;
-   //AluSequencer #(pDataWidth) AluSequencer_h;
+   AluSequencer AluSequencer_h;
    //AluSender #(pDataWidth) AluSender_h;
    //AluScoreboard #(pDataWidth) AluScoreboard_h;
    //AluSubscriber #(pDataWidth) AluSubscriber_h;
@@ -45,8 +45,10 @@
    function void build;
      super.build();
      
-     /*AluDriver_h = AluDriver::type_id::create("AluDriver_h", this);
      AluSequencer_h = AluSequencer::type_id::create("AluSequencer_h", this);
+     
+     /*AluDriver_h = AluDriver::type_id::create("AluDriver_h", this);
+    
      
      if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
        begin

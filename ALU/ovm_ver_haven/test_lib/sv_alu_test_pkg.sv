@@ -9,6 +9,8 @@
 
 package sv_alu_test_pkg;
   import ovm_pkg::*;
+  import sv_alu_param_pkg::*;
+  import sv_alu_seq_pkg::*;
   import sv_alu_env_pkg::*;
   
   `include "ovm_macros.svh"

@@ -1,26 +1,26 @@
 /* *****************************************************************************
  * Project Name: HAVEN
- * File Name:    haven_transaction.sv
- * Description:  OVM HAVEN Transaction Class 
+ * File Name:    haven_input_transaction.sv
+ * Description:  OVM HAVEN Input Transaction Class 
  * Authors:      Marcela Simkova <isimkova@fit.vutbr.cz>, 
  *               Michaela Belesova <xbeles00@stud.fit.vutbr.cz>
- * Date:         20.9.2012
+ * Date:         27.9.2012
  * ************************************************************************** */
 
 /*!
- * \brief Basic HAVEN Transaction
+ * \brief Basic HAVEN Input Transaction
  * 
- * This class represents abstract transaction which contains determine number of 
- * parts: HAVEN Transaction = x HAVEN sequence items. 
+ * This class represents abstract input transaction which contains specific 
+ * number of parts: HAVEN Transaction = x HAVEN sequence items. 
  */
  
- class HavenTransaction extends ovm_sequence_item;
+ class HavenInputTransaction extends ovm_sequence_item;
 
    // registration of component 
-   `ovm_object_utils(HavenTransaction)
+   `ovm_object_utils(HavenInputTransaction)
    
   /*! 
-   * Constructor - creates AluTransaction object  
+   * Constructor
    *
    * \param name - transaction instance name
    */
@@ -33,8 +33,7 @@
    */
    virtual task send();
      assert (0) 
-       $fatal("HAVEN Transaction: Task send must be implemented in derived 
-               class"); 
+       $fatal("HAVEN Input Transaction: Task send must be implemented in derived              class"); 
    endtask : send   
    
- endclass: HavenTransaction
+ endclass: HavenInputTransaction

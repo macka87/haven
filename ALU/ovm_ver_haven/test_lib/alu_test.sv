@@ -44,14 +44,14 @@
    */     
    task run;
      
-     /*if(GEN_INPUT==0) // 0 = SV generator of transactions
+     if(GEN_INPUT==0) // 0 = SV generator of transactions
        begin
-         SwSequence #(DATA_WIDTH) seq;
+         AluSequence seq;
          seq = AluSequence::type_id::create("seq");
          seq.start( AluEnv_h.AluSequencer_h);
        end
        
-     else if(GEN_INPUT==1) // 1 = reading transactions from external file
+     /*else if(GEN_INPUT==1) // 1 = reading transactions from external file
        begin
          FileSequence #(DATA_WIDTH) seq;
          seq = AluSequence::type_id::create("seq");

@@ -11,6 +11,7 @@ package sv_alu_env_pkg;
 
  import ovm_pkg::*;
  import sv_alu_param_pkg::*;
+ import sv_alu_seq_pkg::*;
 
 `include "ovm_macros.svh"
 `include "alu_dut_if_wrapper.sv"
