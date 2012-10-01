@@ -80,10 +80,10 @@
         2'b10 : $write("MOVI: IMMEDIATE OPERAND\n");
         2'b11 : $write("UNSUPPORTED!!!!!\n");
       endcase
-      $write("REG_A: %d\n", reg_a);      
-      $write("REG_B: %d\n", reg_b);  
-      $write("MEM: %d\n", mem); 
-      $write("IMM: %d\n", imm);
+      $write("REG_A: %b\n", reg_a);      
+      $write("REG_B: %b\n", reg_b);  
+      $write("MEM: %b\n", mem); 
+      $write("IMM: %b\n", imm);
       $write("\n");
    endfunction: display
 

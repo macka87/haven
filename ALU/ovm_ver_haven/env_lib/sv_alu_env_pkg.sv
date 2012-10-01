@@ -15,6 +15,7 @@ package sv_alu_env_pkg;
 
 `include "ovm_macros.svh"
 `include "alu_dut_if_wrapper.sv"
+`include "alu_driver.sv"
 `include "alu_env.sv"
 
 endpackage

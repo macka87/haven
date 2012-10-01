@@ -18,8 +18,8 @@
    
  class AluDutIfWrapper extends ovm_object;
       
-   virtual iAluIn  #(DATA_WIDTH) dut_alu_in_if;
-   virtual iAluOut #(DATA_WIDTH) dut_alu_out_if; 
+   virtual iAluIn  dut_alu_in_if;
+   virtual iAluOut dut_alu_out_if; 
      
   /*! 
    * Constructor - creates AluDutIfWrapper object  
@@ -28,8 +28,8 @@
    * \param arg      - virtual interface
    */ 
    function new(string name, 
-                virtual iAluIn #(DATA_WIDTH) dut_alu_in_if,
-                virtual iAluOut #(DATA_WIDTH) dut_alu_out_if
+                virtual iAluIn  dut_alu_in_if,
+                virtual iAluOut dut_alu_out_if
                 );
      super.new(name);
      this.dut_alu_in_if  = dut_alu_in_if;

@@ -10,21 +10,18 @@
 /*!
  * \brief AluEnv
  * 
- * This class is verification enviroment which contains agents, subscribers and
- * scoreboards.
- * 
- * \param pDataWidth - data width of the verified ALU  
- * \param GEN_OUTPUT - destination for generated data   
+ * This class represents the main parts of the verification enviroment.
  */
  class AluEnv extends ovm_env;
   
    // registration of component tools
    `ovm_component_utils(AluEnv)
    
-   //handles to the contained objects
-   //AluDriver #(pDataWidth,GEN_OUTPUT) AluDriver_h;
-   //AluMonitor #(pDataWidth) AluMonitor_h;
+   // handles to the main objects
    AluSequencer AluSequencer_h;
+   AluDriver    AluDriver_h;
+   
+   //AluMonitor #(pDataWidth) AluMonitor_h;
    //AluSender #(pDataWidth) AluSender_h;
    //AluScoreboard #(pDataWidth) AluScoreboard_h;
    //AluSubscriber #(pDataWidth) AluSubscriber_h;
@@ -46,10 +43,9 @@
      super.build();
      
      AluSequencer_h = AluSequencer::type_id::create("AluSequencer_h", this);
-     
-     /*AluDriver_h = AluDriver::type_id::create("AluDriver_h", this);
+     AluDriver_h    = AluDriver::type_id::create("AluDriver_h", this);
     
-     
+     /*
      if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
        begin
          AluMonitor_h = AluMonitor::type_id::create("AluMonitor_h", this);
@@ -68,9 +64,10 @@
    */    
    function void connect;
      
-     /*AluDriver_h.seq_item_port.connect(AluSequencer_h.seq_item_export);
+     // SEQUENCER <= DRIVER (? driver calls functions of sequencer ?)
+     AluDriver_h.seq_item_port.connect(AluSequencer_h.seq_item_export);
      
-     if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
+     /*if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
        begin
          AluMonitor_h.aport_dut_output.connect(AluScoreboard_h.aport_dut_output);
          AluDriver_h.aport_dut_input.connect(AluScoreboard_h.aport_dut_input);
@@ -90,9 +87,8 @@
      if(GEN_OUTPUT<0 || GEN_OUTPUT>2) 
        $fatal("AluEnv: Parameter GEN_OUTPUT must be from {0,1,2,3}");
               
-     //after 50 time units stop the simulation
-     //the driver stops the simulation now because of the small number of loops
-     #50 ovm_top.stop_request();
+     // end of the simulation
+     #10us ovm_top.stop_request();
    
    endtask: run
   

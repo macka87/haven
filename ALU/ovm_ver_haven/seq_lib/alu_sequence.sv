@@ -35,13 +35,12 @@
      forever
      begin
       
-       AluInputTransaction tr;
-       tr = AluInputTransaction::type_id::create("tr");
+       assert($cast(req, create_item(AluInputTransaction::get_type(), m_sequencer, "req")));
  
-       start_item(tr);
-       assert( tr.randomize() );
-       tr.display();
-       finish_item(tr);
+       start_item(req);
+       assert(req.randomize());
+       req.display();
+       finish_item(req);
         
      end
      

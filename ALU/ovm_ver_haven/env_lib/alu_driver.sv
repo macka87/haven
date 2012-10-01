@@ -4,33 +4,27 @@
  * Description:  OVM Driver Class for ALU
  * Authors:      Michaela Belesova <xbeles00@stud.fit.vutbr.cz>,
  *               Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         20.9.2012
+ * Date:         1.10.2012
  * ************************************************************************** */
-
-`include "ovm_macros.svh"
-
-package sv_alu_pkg;
- 
- import ovm_pkg::*; 
 
 /*!
  * \brief AluDriver
  * 
- * This class puts transactions from sequencer on ALU interface.
+ * This class drives the input interface of ALU and supplies transactions from 
+ * sequencer to this interface.
  */
 
- class AluDriver #(int pDataWidth = 8, int GEN_OUTPUT=0) 
-   extends ovm_driver #(AluTransactionDUTInput);
+ class AluDriver extends ovm_driver #(AluInputTransaction);
 
-   //registration of component tools
+   // registration of component tools
    `ovm_component_utils(AluDriver)
     
-   //reference on the vitrtual interface
-   virtual iAluIn #(pDataWidth) dut_if1;
+   // reference to the input virtual interface
+   virtual iAluIn dut_alu_in_if;
    
-   //analysis port, sends data received from sequencer
-   //used to connect driver with scoreboards or subscribers
-   ovm_analysis_port #(AluTransactionDUTInput) aport_dut_input;
+   // analysis port for sending data received from sequencer to the connected 
+   // scoreboard and subscriber 
+   ovm_analysis_port #(AluInputTransaction) aport_alu_in_if;
 
   /*! 
    * Constructor - creates AluDriver object  
@@ -47,57 +41,60 @@ package sv_alu_pkg;
    */ 
    function void build;
      super.build();
-     aport_dut_input = new("aport_dut_input", this);
+     aport_alu_in_if = new("Analysis Port for ALU Input Interface", this);
      begin
        ovm_object obj;
-       AluDutIfWrapper  #(pDataWidth) if_wrapper;
-       //reads object from configuration table
+       AluDutIfWrapper dut_if_wrapper;
+       
+       // read object from the configuration table
        get_config_object("AluDutIfWrapper", obj, 0);
-       //transforms obtained object to wrapper for virtual interface
-       assert( $cast(if_wrapper, obj) );
-       //takes input virtual interface from the wrapper
-       dut_if1 = if_wrapper.dut_alu_in_if;
+       
+       // cast obtained object into the ALU Wrapper
+       assert( $cast(dut_if_wrapper, obj) );
+       
+       // receive input virtual interface from the ALU wrapper
+       dut_alu_in_if = dut_if_wrapper.dut_alu_in_if;
      end
    endfunction: build   
-   
+  
+  /*! 
+   * Run - starts the processing in driver
+   */ 
    task run;
-
+   
      forever begin
 
-       AluTransactionDUTInput #(pDataWidth) tx;
+       AluInputTransaction tr;
 
-       //$write("Driver waits for CLK\n");
-
-       //synchronization with DUT
-       @(posedge dut_if1.CLK);
-       seq_item_port.get(tx);
+       // synchronization with the DUT
+       @(posedge dut_alu_in_if.CLK);
+       
+       // receive transaction from sequencer
+       seq_item_port.get(tr);
   
-       tx.display("DRIVER:");
+       tr.display("DRIVER:");
 
-       if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
+       if (GEN_OUTPUT==0 || GEN_OUTPUT==2)
          begin
-           //sends values from transaction on the virtual interface
-           dut_if1.RST  = tx.RST;
-           dut_if1.ACT  = tx.ACT;
-           dut_if1.OP   = tx.OP;
-           dut_if1.MOVI = tx.MOVI;
-           dut_if1.REGA = tx.REG_A;
-           dut_if1.REGB = tx.REG_B;
-           dut_if1.MEM  = tx.MEM;
-           dut_if1.IMM  = tx.IMM;
+           // sends values from transaction on the virtual interface
+           dut_alu_in_if.RST  = tr.rst;
+           dut_alu_in_if.ACT  = 1;         // change later !!!
+           dut_alu_in_if.OP   = tr.op;
+           dut_alu_in_if.MOVI = tr.movi;
+           dut_alu_in_if.REG_A = tr.reg_a;
+           dut_alu_in_if.REG_B = tr.reg_b;
+           dut_alu_in_if.MEM  = tr.mem;
+           dut_alu_in_if.IMM  = tr.imm;
          end
         
-       //sends generated transaction to the scoreboards, subscribers etc.
-       aport.write(tx);
+       // sends generated transaction to the scoreboard, subscriber etc.
+       aport_alu_in_if.write(tr);
+       
+       // synchronise with CLK 
+       @(posedge dut_alu_in_if.CLK);
              
      end
      
-     //wait for CLK and then end, program will never reach this command
-     //it would reach it, if repeat(n) was used instead of forever 
-     @(posedge dut_if1.CLK) ovm_top.stop_request();
-   
    endtask: run
 
  endclass: AluDriver
- 
-endpackage 
