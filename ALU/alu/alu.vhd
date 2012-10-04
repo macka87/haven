@@ -176,10 +176,10 @@ begin
    mux4 : process (sig_output_sel, sig_alu_result, sig_mult_result_red)
    begin
       case sig_output_sel is
-         when '0'   => EX_ALU <= sig_alu_result;
-         when '1'   => EX_ALU <= sig_mult_result_red;
+         when '0'   => EX_ALU <= sig_alu_result; --after 2ns;
+         when '1'   => EX_ALU <= sig_mult_result_red; --after 2ns;
          when others => null;   
-      end case;   
+      end case; 
    end process;
    
 -- ------------------------- FSM --------------------------------------------   
@@ -230,7 +230,7 @@ begin
       end case;      
    end process;  
 
-   EX_ALU_VLD <= sig_ex_alu_vld;
+   EX_ALU_VLD <= sig_ex_alu_vld AND (not RST); --after 2ns;
    
 -- Moore output logic
    moore_output : process (state_reg)
@@ -253,6 +253,6 @@ begin
       end case;   
    end process moore_output;
 
-   ALU_RDY <= sig_alu_rdy;
+   ALU_RDY <= sig_alu_rdy; -- after 2ns;
 
 end architecture;

@@ -43,6 +43,7 @@
    * Run - runs the sequence of transactions
    */     
    task run;
+     string msg;
      
      if(GEN_INPUT==0) // 0 = SV generator of transactions
        begin
@@ -66,7 +67,10 @@
        begin
        end
        
-     else $fatal("AluTest: Parameter GEN_INPUT must be from {0,1,2,3}!\n"); */
+     else begin
+       $sformat(msg, "Parameter GEN_INPUT must be from {0,1,2,3}!\n");
+       ovm_report_fatal("ALU_TEST", msg, OVM_NONE);
+     end     */
        
    endtask: run
   

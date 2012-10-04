@@ -21,9 +21,10 @@ module AluTop;
   import sv_alu_param_pkg::*;
       
   // DUT primary interfaces
-  logic CLK;                      // Clock signal
-  iAluIn  dut_alu_in_if   (CLK);  // ALU input interface
-  iAluOut dut_alu_out_if  (CLK);  // ALU output interface
+  logic CLK;                           // Clock signal
+  logic RST;                           // Reset signal
+  iAluIn  dut_alu_in_if   (CLK, RST);  // ALU input interface
+  iAluOut dut_alu_out_if  (CLK, RST);  // ALU output interface
   
   // DUT 
   AluDUT dut ( CLK, dut_alu_in_if, dut_alu_out_if);
@@ -40,8 +41,10 @@ module AluTop;
   // Reset at the start of the simulation
   initial
     begin
-      dut_alu_in_if.RST = 1;
-    end
+      RST = 1;
+      #(RESET_TIME);
+      RST = 0;
+    end 
   
   initial
     begin: blk

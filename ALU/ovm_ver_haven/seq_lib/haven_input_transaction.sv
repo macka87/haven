@@ -32,8 +32,12 @@
    * Virtual task send - transaction is sent to the connected component. 
    */
    virtual task send();
-     assert (0) 
-       $fatal("HAVEN Input Transaction: Task send must be implemented in derived              class"); 
+     string msg;
+   
+     assert (0) begin 
+       $sformat(msg, "Task send must be implemented in derived class!\n");
+       ovm_report_fatal("HAVEN INPUT TRANSACTION", msg, OVM_NONE);
+     end  
    endtask : send   
    
  endclass: HavenInputTransaction

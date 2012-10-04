@@ -33,8 +33,12 @@
    * component. 
    */
    virtual task receive();
-     assert (0) 
-       $fatal("HAVEN OutputTransaction: Task send must be implemented in derived              class"); 
+     string msg;
+     
+     assert (0) begin 
+       $sformat(msg, "Task receive must be implemented in derived class!\n");
+       ovm_report_fatal("HAVEN OUTPUT TRANSACTION", msg, OVM_NONE);
+     end  
    endtask : receive   
    
  endclass: HavenOutputTransaction

@@ -32,8 +32,12 @@
    * Virtual task send - transaction is sent to the connected component. 
    */
    virtual task getRaw();
-     assert (0) 
-       $fatal("HAVEN Sequence Item: Task getRaw() must be implemented in derived     class"); 
+     string msg;
+     
+     assert (0) begin
+       $sformat(msg, "Task getRaw must be implemented in derived class!\n");
+       ovm_report_error("HAVEN SEQUENCE ITEM", msg, OVM_NONE); 
+     end  
    endtask : getRaw   
    
  endclass: HavenSequenceItem

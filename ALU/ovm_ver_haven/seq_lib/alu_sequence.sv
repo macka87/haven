@@ -39,7 +39,7 @@
  
        start_item(req);
        assert(req.randomize());
-       req.display();
+       //req.display();
        finish_item(req);
         
      end

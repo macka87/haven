@@ -4,33 +4,27 @@
  * Description:  OVM Monitor Class for ALU
  * Authors:      Michaela Belesova <xbeles00@stud.fit.vutbr.cz>,
  *               Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         20.9.2012
+ * Date:         2.10.2012
  * ************************************************************************** */
-
-`include "ovm_macros.svh"
-
-package sv_alu_pkg;
- 
- import ovm_pkg::*; 
 
 /*!
  * \brief AluMonitor
  * 
- * This class reads signals on ALU interface and sends their values transformed
- * into transactions to other components.
+ * This class monitors signals on ALU output interface and sends their values 
+ * in the form of transactions to other components.
  */
 
- class AluMonitor #(int pDataWidth = 8) extends ovm_monitor #(AluTransactionDUTOutput);
+ class AluMonitor extends ovm_monitor;
 
-   //registration of component tools
+   // registration of component tools
    `ovm_component_utils(AluMonitor)
 
-   //reference to a virtual interface
-   virtual iAluOut #(pDataWidth) dut_if1;
+   // reference to virtual output interface
+   virtual iAluOut dut_alu_out_if;
    
-   //analysis port, sends data received from the DUT output interface
-   //used to connect monitor with scoreboards or subscribers
-   ovm_analysis_port #(AluTransactionDUTOutput) aport_dut_output;
+   // analysis port for sending data received from the DUT output interface
+   // to the connected scoreboard or subscriber
+   ovm_analysis_port #(AluOutputTransaction) aport_alu_out_if;
     
   /*! 
    * Constructor - creates AluMonitor object  
@@ -46,39 +40,64 @@ package sv_alu_pkg;
    * Build - instanciates child components
    */ 
    function void build;
+     string msg;
+   
      super.build();
-     aport_dut_output = new("aport_dut_output", this);
+     aport_alu_out_if = new("Analysis Port for ALU Output Interface", this);
      begin
        ovm_object obj;
-       AluDutIfWrapper #(pDataWidth) if_wrapper;
-       //reads object from configuration table
-       get_config_object("AluDutIfWrapper", obj, 0);
-       //transforms obtained object to wrapper for virtual interface
-       assert( $cast(if_wrapper, obj) );
-       //takes output virtual interface from the wrapper
-       dut_if1 = if_wrapper.dut_alu_out_if;
+       AluDutIfWrapper dut_if_wrapper;
+       
+       // reads object from configuration table
+       if (!get_config_object("AluDutIfWrapper", obj, 0)) begin
+         $sformat(msg, "It is not possible to obtain AluDutIfWrapper from the configuration table!\n");
+         ovm_report_error("MONITOR", msg, OVM_NONE);
+       end  
+       
+       // cast obtained object into the ALU Wrapper
+       assert($cast(dut_if_wrapper, obj));
+       
+       // receive output virtual interface from the ALU wrapper
+       dut_alu_out_if = dut_if_wrapper.dut_alu_out_if;
      end
    endfunction: build
-    
+  
+  /*! 
+   * Run - starts the processing in monitor
+   */   
    task run;
-
-     //delay, so the actual and predicted restults would be at the same time
-     #10;
-      
+     // check RESET
+     while (dut_alu_out_if.RST) 
+       @(dut_alu_out_if.cb); 
+     
      forever
      begin
-       AluTransactionDUTOutput #(pDataWidth) tx_results;
-       //synchronisation with DUT
-       @(posedge dut_if1.CLK);
-       tx_results = AluTransactionDUTOutput::type_id::create("tx_results");
-       tx_results.EX_ALU     = dut_if1.EX_ALU;
-       tx_results.EX_ALU_VLD = dut_if1.EX_ALU_VLD;
-       tx_results.display("MONITOR:"); 
-       //sends transaction through analysis port
-       aport.write(tx_results);
+       AluOutputTransaction tr;      
+       tr = new("Output Transaction");
+
+       // wait for EX_ALU_VLD = 1
+       waitForVld();
+       
+       // receive the value of output
+       tr.ex_alu = dut_alu_out_if.cb.EX_ALU;
+       
+       // display the content of transaction 
+       //tr.display("MONITOR:"); 
+       
+       // sends generated transaction to the scoreboard, subscriber etc.
+       aport_alu_out_if.write(tr);
+       
+       // synchronisation with the DUT
+       @(dut_alu_out_if.cb);
      end
    endtask: run
+   
+  /*! 
+   * Wait for validity of output EX_ALU and not RESET.
+   */ 
+   task waitForVld();
+     while (!dut_alu_out_if.cb.EX_ALU_VLD)
+       @(dut_alu_out_if.cb);
+   endtask : waitForVld
       
  endclass: AluMonitor
- 
-endpackage

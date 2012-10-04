@@ -40,6 +40,8 @@
    * Build - instanciates child components
    */ 
    function void build;
+     string msg;
+   
      super.build();
      aport_alu_in_if = new("Analysis Port for ALU Input Interface", this);
      begin
@@ -47,10 +49,13 @@
        AluDutIfWrapper dut_if_wrapper;
        
        // read object from the configuration table
-       get_config_object("AluDutIfWrapper", obj, 0);
+       if (!get_config_object("AluDutIfWrapper", obj, 0)) begin
+         $sformat(msg, "It is not possible to obtain AluDutIfWrapper from the configuration table!\n");
+         ovm_report_error("DRIVER", msg, OVM_NONE);
+       end
        
        // cast obtained object into the ALU Wrapper
-       assert( $cast(dut_if_wrapper, obj) );
+       assert($cast(dut_if_wrapper, obj));
        
        // receive input virtual interface from the ALU wrapper
        dut_alu_in_if = dut_if_wrapper.dut_alu_in_if;
@@ -61,40 +66,55 @@
    * Run - starts the processing in driver
    */ 
    task run;
+     // count number of transactions
+     int trans_count = 0;
+     
+     dut_alu_in_if.cb.ACT <= 0;  
+     
+     // synchronization with the DUT
+     @(dut_alu_in_if.cb);
    
-     forever begin
-
+     while (trans_count < TRANSACTION_COUT) begin
+     
        AluInputTransaction tr;
 
-       // synchronization with the DUT
-       @(posedge dut_alu_in_if.CLK);
-       
        // receive transaction from sequencer
        seq_item_port.get(tr);
   
-       tr.display("DRIVER:");
+       // display the content of transaction 
+       //tr.display("DRIVER:");
+       
+       // wait for readiness of ALU to process data
+       waitForAluRdy();
 
        if (GEN_OUTPUT==0 || GEN_OUTPUT==2)
          begin
            // sends values from transaction on the virtual interface
-           dut_alu_in_if.RST  = tr.rst;
-           dut_alu_in_if.ACT  = 1;         // change later !!!
-           dut_alu_in_if.OP   = tr.op;
-           dut_alu_in_if.MOVI = tr.movi;
-           dut_alu_in_if.REG_A = tr.reg_a;
-           dut_alu_in_if.REG_B = tr.reg_b;
-           dut_alu_in_if.MEM  = tr.mem;
-           dut_alu_in_if.IMM  = tr.imm;
+           dut_alu_in_if.cb.ACT   <= 1;         // change later !!!
+           dut_alu_in_if.cb.OP    <= tr.op;
+           dut_alu_in_if.cb.MOVI  <= tr.movi;
+           dut_alu_in_if.cb.REG_A <= tr.reg_a;
+           dut_alu_in_if.cb.REG_B <= tr.reg_b;
+           dut_alu_in_if.cb.MEM   <= tr.mem;
+           dut_alu_in_if.cb.IMM   <= tr.imm;
          end
         
        // sends generated transaction to the scoreboard, subscriber etc.
        aport_alu_in_if.write(tr);
        
        // synchronise with CLK 
-       @(posedge dut_alu_in_if.CLK);
-             
+       @(dut_alu_in_if.cb);
+       
+       // increase number of processed transactions
+       trans_count++;      
      end
-     
    endtask: run
-
+  
+  /*!
+   * Wait for ALU_RDY
+   */
+   task waitForAluRdy();
+     while (!dut_alu_in_if.cb.ALU_RDY || dut_alu_in_if.RST) 
+       @(dut_alu_in_if.cb);
+   endtask : waitForAluRdy     
  endclass: AluDriver

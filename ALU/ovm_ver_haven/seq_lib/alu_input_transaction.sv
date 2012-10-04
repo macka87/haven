@@ -20,7 +20,6 @@
    `ovm_object_utils(AluInputTransaction)
    
    // random values of signals
-   rand bit rst;                         // reset
    rand logic [3:0] op;                  // operation
    rand logic [1:0] movi;                // selection signal of operand B
    rand logic [DATA_WIDTH-1:0] reg_a;    // operand A from register
@@ -53,7 +52,6 @@
         $write("-- %s\n",prefix);
         $write("---------------------------------------------------------\n");
       end
-      $write("RST: %d\n", rst);      
       $write("OP: ");
       priority case (op) 
         4'b0000 : $write("ADD\n");
@@ -80,102 +78,12 @@
         2'b10 : $write("MOVI: IMMEDIATE OPERAND\n");
         2'b11 : $write("UNSUPPORTED!!!!!\n");
       endcase
-      $write("REG_A: %b\n", reg_a);      
-      $write("REG_B: %b\n", reg_b);  
-      $write("MEM: %b\n", mem); 
-      $write("IMM: %b\n", imm);
+      $write("REG_A: %d\n", reg_a);      
+      $write("REG_B: %d\n", reg_b);  
+      $write("MEM: %d\n", mem); 
+      $write("IMM: %d\n", imm);
       $write("\n");
    endfunction: display
-
-  /*!
-   * Copies the current value of the object instance to the specified object
-   * instance. Returns a reference to the target instance.
-   * 
-   * \param to - original transaction        
-   */
-   virtual function AluInputTransaction copy(AluInputTransaction to = null);
-     AluInputTransaction tr;
-     
-     if (to == null)
-       tr = new();
-     else 
-       $cast(tr, to);
-
-     tr.rst   = rst;
-     tr.op    = op;
-     tr.movi  = movi;
-     tr.reg_a = reg_a;
-     tr.reg_b = reg_b;
-     tr.mem   = mem;
-     tr.imm   = imm;
-             
-     copy = tr;
-   endfunction : copy
-   
-  /*!
-   * Compares the current value of the object instance with the current value
-   * of the specified object instance, according to the specified kind. 
-   * Returns TRUE (i.e., non-zero) if the value is identical. If the value is
-   * different, FALSE is returned and a descriptive text of the first 
-   * difference found is returned in the specified string variable. The kind 
-   * argument may be used to implement different comparison functions (e.g., 
-   * full compare, comparison of rand properties only, comparison of all 
-   * properties physically implemented in a protocol and so on.)
-   * 
-   * \param to - transaction instance
-   * \param diff - first difference
-   * \param kind - comparation function                 
-   */
-   virtual function bit compare(input HavenInputTransaction to, 
-                                output string diff, input int kind = -1);
-     bit same = 1; // Suppose that are same
-     AluInputTransaction tr;
-     $cast(tr, to);
-       
-     if (rst != tr.rst) 
-     begin
-       same = 0;
-       $write(diff, "RST does not match!\n");
-     end
-       
-     if (op != tr.op) 
-     begin
-       same = 0;
-       $write(diff, "OP does not match!\n");
-     end
-       
-     if (movi != tr.movi) 
-     begin
-       same = 0;
-       $write(diff, "MOVI does not match!\n");
-     end
-     
-     if (reg_a != tr.reg_a) 
-     begin
-       same = 0;
-       $write(diff, "REG_A does not match!\n");
-     end
-       
-     if (reg_b != tr.reg_b) 
-     begin
-       same = 0;
-       $write(diff, "REG_B does not match!\n");
-     end
-     
-     if (mem != tr.mem) 
-     begin
-       same = 0;
-       $write(diff, "MEM does not match!\n");
-     end
-       
-     if (imm != tr.imm) 
-     begin
-       same = 0;
-       $write(diff, "IMM does not match!\n");
-     end
-           
-     compare = same; 
-   endfunction : compare 
 
   /*!
    * Function for writing transaction into an external file. 

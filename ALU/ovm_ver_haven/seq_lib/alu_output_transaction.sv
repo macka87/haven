@@ -20,7 +20,6 @@
    `ovm_object_utils(AluOutputTransaction)
    
    //included data
-   bit ex_alu_vld;
    logic [DATA_WIDTH-1:0] ex_alu;
 
   /*! 
@@ -45,31 +44,11 @@
         $write("-- %s\n",prefix);
         $write("---------------------------------------------------------\n");
       end
-      $write("EX_ALU_VLD: %d\n", ex_alu_vld);   
-      $write("EX_ALU: %d\n", ex_alu);
+
+      $write("EX_ALU: %b\n", ex_alu);
       $write("\n");
    endfunction: display
 
-  /*!
-   * Copies the current value of the object instance to the specified object
-   * instance. Returns a reference to the target instance.
-   * 
-   * \param to - original transaction        
-   */
-   virtual function AluOutputTransaction copy(HavenOutputTransaction to = null);
-   
-     AluOutputTransaction tr;
-     if (to == null)
-       tr = new();
-     else 
-       $cast(tr, to);
-
-     tr.ex_alu_vld = ex_alu_vld;
-     tr.ex_alu     = ex_alu;
-             
-     copy = tr;
-   endfunction : copy
-   
   /*!
    * Compares the current value of the object instance with the current value
    * of the specified object instance, according to the specified kind. 
@@ -84,22 +63,15 @@
    * \param diff - first difference
    * \param kind - comparation function                 
    */
-   virtual function bit compare(input HavenOutputTransaction to, 
-                                output string diff, input int kind = -1);
+   virtual function bit compare(input AluOutputTransaction tr);
+     string msg;
      bit same = 1; // Suppose that are same
-     AluOutputTransaction tr;
-     $cast(tr, to);
-       
-     if (ex_alu_vld != tr.ex_alu_vld) 
-     begin
-       same = 0;
-       $write(diff, "EX_ALU_VLD does not match!\n");
-     end
-     
+            
      if (ex_alu != tr.ex_alu) 
      begin
        same = 0;
-       $write(diff, "EX_ALU does not match!\n");
+       $sformat(msg, "EX_ALU does not match!\n");
+       ovm_report_error("OUTPUT TRANSACTION", msg, OVM_NONE);
      end
      
      compare = same; 
