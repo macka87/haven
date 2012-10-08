@@ -52,26 +52,6 @@
          seq.start( AluEnv_h.AluSequencer_h);
        end
        
-     /*else if(GEN_INPUT==1) // 1 = reading transactions from external file
-       begin
-         FileSequence #(DATA_WIDTH) seq;
-         seq = AluSequence::type_id::create("seq");
-         seq.start( AluEnv_h.AluSequencer_h);
-       end
-       
-     else if(GEN_INPUT==2) // 2 = other generator
-       begin
-       end
-       
-     else if(GEN_INPUT==3) // 3 = hardware generator 
-       begin
-       end
-       
-     else begin
-       $sformat(msg, "Parameter GEN_INPUT must be from {0,1,2,3}!\n");
-       ovm_report_fatal("ALU_TEST", msg, OVM_NONE);
-     end     */
-       
    endtask: run
   
  endclass: AluTest

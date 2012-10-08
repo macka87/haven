@@ -21,6 +21,7 @@ set BASE_PATH ../../ver_base/
 
 # Verification environment compilation
 vlog -cover sbce test_parameters.sv
+vlog -cover sbce math_pkg.sv
 
 vlog -cover sbce dut.sv
 vlog -cover sbce alu_dut_if.sv

@@ -25,6 +25,33 @@
    // analysis port for sending data received from sequencer to the connected 
    // scoreboard and subscriber 
    ovm_analysis_port #(AluInputTransaction) aport_alu_in_if;
+   
+   // inbuild covergroup
+   logic act;
+   
+   // Enumeration for operation
+   enum logic [3:0] {ADD, SUB, MULT, SHIFT_RIGHT, SHIFT_LEFT, ROTATE_RIGHT, ROTATE_LEFT, NOT, AND, OR, XOR, NAND, NOR, XNOR, INC, DEC} operation;
+   
+   logic [3:0] operation_s;
+   
+   covergroup ActCovergroup;
+     // delayed setting of activity signal
+     delayed_act: coverpoint act { 
+       bins delayed1_act = (1 => 0 => 1);
+       bins delayed2_act = (1 => 0 [* 2] => 1);
+       bins delayed3_act = (1 => 0 [* 3] => 1);
+       bins delayed4_act = (1 => 0 [* 4] => 1);
+       bins delayed5_act = (1 => 0 [* 5] => 1);
+     }
+     
+     // operation 
+     operationH: coverpoint operation;
+     
+     // operation x delayed_act
+     delayed_act_operation_cross : cross delayed_act, operationH;
+     
+     option.per_instance=1; // Also per instance statistics
+   endgroup    
 
   /*! 
    * Constructor - creates AluDriver object  
@@ -34,6 +61,7 @@
    */ 
    function new(string name, ovm_component parent);
      super.new(name, parent);
+     ActCovergroup = new();
    endfunction: new
 
   /*! 
@@ -66,6 +94,7 @@
    * Run - starts the processing in driver
    */ 
    task run;
+     AluInputTransaction tr;
      // count number of transactions
      int trans_count = 0;
      
@@ -76,8 +105,6 @@
    
      while (trans_count < TRANSACTION_COUT) begin
      
-       AluInputTransaction tr;
-
        // receive transaction from sequencer
        seq_item_port.get(tr);
   
@@ -86,11 +113,20 @@
        
        // wait for readiness of ALU to process data
        waitForAluRdy();
+       
+       tr.rst = dut_alu_in_if.RST;
+       
+       // sample coverage
+       act = tr.act;
+       operation_s = tr.op;
+       $cast(operation, operation_s);
+       ActCovergroup.sample();
 
+       // set input signals of DUT
        if (GEN_OUTPUT==0 || GEN_OUTPUT==2)
          begin
            // sends values from transaction on the virtual interface
-           dut_alu_in_if.cb.ACT   <= 1;         // change later !!!
+           dut_alu_in_if.cb.ACT   <= tr.act;        
            dut_alu_in_if.cb.OP    <= tr.op;
            dut_alu_in_if.cb.MOVI  <= tr.movi;
            dut_alu_in_if.cb.REG_A <= tr.reg_a;
@@ -98,15 +134,17 @@
            dut_alu_in_if.cb.MEM   <= tr.mem;
            dut_alu_in_if.cb.IMM   <= tr.imm;
          end
+         
+       // synchronise with CLK 
+       @(dut_alu_in_if.cb);  
         
        // sends generated transaction to the scoreboard, subscriber etc.
-       aport_alu_in_if.write(tr);
+       if (tr.act) begin
+         aport_alu_in_if.write(tr);
        
-       // synchronise with CLK 
-       @(dut_alu_in_if.cb);
-       
-       // increase number of processed transactions
-       trans_count++;      
+         // increase number of processed transactions
+         trans_count++;  
+       end      
      end
    endtask: run
   

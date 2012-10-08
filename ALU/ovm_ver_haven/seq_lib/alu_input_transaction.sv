@@ -19,7 +19,11 @@
    // registration of component tools
    `ovm_object_utils(AluInputTransaction)
    
+   // basic signals
+   logic rst;
+   
    // random values of signals
+   rand logic act;                       // activation signal
    rand logic [3:0] op;                  // operation
    rand logic [1:0] movi;                // selection signal of operand B
    rand logic [DATA_WIDTH-1:0] reg_a;    // operand A from register
@@ -52,6 +56,8 @@
         $write("-- %s\n",prefix);
         $write("---------------------------------------------------------\n");
       end
+      $write("RST: %b\n", rst);
+      $write("ACT: %b\n", act);
       $write("OP: ");
       priority case (op) 
         4'b0000 : $write("ADD\n");

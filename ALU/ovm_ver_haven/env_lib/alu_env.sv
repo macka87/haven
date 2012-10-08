@@ -18,13 +18,12 @@
    `ovm_component_utils(AluEnv)
    
    // handles to the main objects
-   AluSequencer  AluSequencer_h;
-   AluDriver     AluDriver_h;
-   AluMonitor    AluMonitor_h;
-   AluScoreboard AluScoreboard_h;
-   
-   //AluSender #(pDataWidth) AluSender_h;
-   //AluSubscriber #(pDataWidth) AluSubscriber_h;
+   AluSequencer        AluSequencer_h;
+   AluDriver           AluDriver_h;
+   AluMonitor          AluMonitor_h;
+   AluScoreboard       AluScoreboard_h;
+   AluInputSubscriber  AluInputSubscriber_h;
+   AluOutputSubscriber AluOutputSubscriber_h;
 
   /*! 
    * Constructor - creates AluEnv object  
@@ -46,19 +45,9 @@
      AluDriver_h     = new("AluDriver_h", this);
      AluMonitor_h    = new("AluMonitor_h", this);
      AluScoreboard_h = new("AluScoreboard_h", this);
+     AluInputSubscriber_h  = new("AluInputSubscriber_h", this);
+     AluOutputSubscriber_h = new("AluOutputSubscriber_h", this);
     
-    /*
-     if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
-       begin
-         AluMonitor_h = AluMonitor::type_id::create("AluMonitor_h", this);
-              
-         AluScoreboard_h = AluScoreboard::type_id::create("AluScoreboard_h", this);
-         AluSubscriber_h = AluSubscriber::type_id::create("AluSubscriber_h", this);
-       end
-       
-     if(GEN_OUTPUT==1 || GEN_OUTPUT==2)
-       AluSender_h = AluSender::type_id::create("AluSender_h", this); */
-        
    endfunction: build
 
   /*! 
@@ -72,37 +61,18 @@
      AluDriver_h.seq_item_port.connect(AluSequencer_h.seq_item_export);
      
      // DRIVER => SCOREBOARD
-     AluDriver_h.aport_alu_in_if.connect(AluScoreboard_h.export_alu_in_if);     
+     AluDriver_h.aport_alu_in_if.connect(AluScoreboard_h.export_alu_in_if);  
+     
+     // DRIVER => SUBSCRIBER   
+     AluDriver_h.aport_alu_in_if.connect(AluInputSubscriber_h.analysis_export);
      
      // MONITOR => SCOREBOARD
      AluMonitor_h.aport_alu_out_if.connect(AluScoreboard_h.export_alu_out_if);
  
+     // MONITOR => SUBSCRIBER   
+     AluMonitor_h.aport_alu_out_if.connect(AluOutputSubscriber_h.analysis_export);
      
-     
-     /*
-     $write("AluSequencer: %d\n", AluSequencer_h.seq_item_export.size());    
-     $write("AluDriver: %d\n", AluDriver_h.aport_alu_in_if.size());
-     $write("AluScoreboard: %d\n", AluScoreboard_h.export_alu_in_if.size());
-     $write("AluScoreboard name: %s\n", AluScoreboard_h.export_alu_in_if.get_name());
-     */
-     
-          
-     /*if(GEN_OUTPUT==0 || GEN_OUTPUT==2)
-       begin
-         AluMonitor_h.aport_dut_output.connect(AluScoreboard_h.aport_dut_output);
-         AluDriver_h.aport_dut_input.connect(AluScoreboard_h.aport_dut_input);
-         AluDriver_h.aport_dut_input.connect(AluSubscriber_h.analysis_export);
-       end
-     
-     if(GEN_OUTPUT==1 || GEN_OUTPUT==2)
-       AluDriver_h.aport_dut_input.connect(AluSender_h.aport_dut_input);*/
-   
    endfunction: connect
-
-   /*function void end_of_elaboration();
-     AluScoreboard_h.export_alu_in_if.debug_connected_to();
-     AluDriver_h.aport_alu_in_if.debug_connected_to();
-   endfunction*/
 
   /*! 
    * Run - runs the simulation
@@ -114,10 +84,7 @@
        $sformat(msg, "Parameter GEN_OUTPUT must be from {0,1,2,3}!\n");
        ovm_report_fatal("ALU_ENV", msg, OVM_NONE);
      end
-
-     // end of the simulation
-     //#20us ovm_top.stop_request();
-   
+  
    endtask: run
   
  endclass: AluEnv

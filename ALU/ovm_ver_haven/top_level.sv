@@ -58,7 +58,6 @@ module AluTop;
       
       // Start of the simulation
       run_test("AluTest");
-      
     end
 
 endmodule: AluTop
