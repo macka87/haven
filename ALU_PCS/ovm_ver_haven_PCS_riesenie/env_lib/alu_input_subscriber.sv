@@ -24,13 +24,13 @@
    
    // *** Doplnte nasledujici ENUM ***
    
-   enum logic [3:0] {ADD, SUB, MULT, SHIFT_RIGHT, SHIFT_LEFT, ROTATE_RIGHT, ROTATE_LEFT, NOT, AND, OR, XOR, NAND, NOR, XNOR, INC, DEC} operation;
+   typedef enum logic [3:0] {ADD, SUB, MULT, SHIFT_RIGHT, SHIFT_LEFT, ROTATE_RIGHT, ROTATE_LEFT, NOT, AND, OR, XOR, NAND, NOR, XNOR, INC, DEC} t_operation;
 
    // Sampled values of interface signals
    logic rst;
    logic act;
    logic [1:0] movi;
-   logic [3:0] operation_s;
+   t_operation operation;
    byte unsigned operandA;
    byte unsigned operandB;
    byte unsigned operandIMM;
@@ -57,8 +57,6 @@
        bins movi_opIMM        = {2};  
        illegal_bins movi_ill_op = {3};
      } 
-     
-     // *** Upravte nasledujici bod pokryti ***
      
      // operation coverpoint
      operationH: coverpoint operation;
@@ -156,14 +154,12 @@
      
      rst         = t.rst;
      act         = t.act;
-     operation_s = t.op;
+     $cast(operation, t.op);
      movi        = t.movi;
      operandA    = t.reg_a;
      operandB    = t.reg_b;
      operandMEM  = t.mem;
      operandIMM  = t.imm;
-     
-     $cast(operation, operation_s);
      
      AluInCovergroup.sample();
      

@@ -10,8 +10,8 @@
  package sv_alu_param_pkg;
    
    // VERIFICATION FRAMEWORK
-   int FRAMEWORK            = 0; // 0 = software framework
-                                 // 1 = sw/hw framework     
+   int FRAMEWORK            = 0; 
+     
    // DUT GENERICS
    parameter DATA_WIDTH     = 8; // data width
    
