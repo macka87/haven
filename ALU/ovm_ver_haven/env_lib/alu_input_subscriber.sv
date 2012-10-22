@@ -24,7 +24,6 @@
    typedef enum logic [3:0] {ADD, SUB, MULT, SHIFT_RIGHT, SHIFT_LEFT, ROTATE_RIGHT, ROTATE_LEFT, NOT, AND, OR, XOR, NAND, NOR, XNOR, INC, DEC} t_operation;
 
    // Sampled values of interface signals
-   logic rst;
    logic act;
    logic [1:0] movi;
    t_operation operation;
@@ -40,11 +39,6 @@
    * Definition of covergroups
    */
    covergroup AluInCovergroup;
-     resetB : coverpoint rst {
-       bins rst0 = {0};        
-       bins rst1 = {1};
-     }
-     
      actH : coverpoint act {
        bins act1          = {1};    
        ignore_bins act_ig = {0};
@@ -114,12 +108,6 @@
      opIMM_movi_act_cross : cross opIMM, moviH, actH;
      opMEM_movi_act_cross : cross opMEM, moviH, actH;
      
-     // reset at least two times
-    /* reset_after_reset: coverpoint rst {
-       bins reset_down = (1 => 0); 
-       bins reset_up   = (0 => 1);
-     } */
-     
      option.per_instance=1; // Also per instance statistics
    endgroup
     
@@ -155,7 +143,6 @@
    function void write(AluInputTransaction t);
      real coverage;
      
-     rst         = t.rst;
      act         = t.act;
      $cast(operation, t.op);
      movi        = t.movi;

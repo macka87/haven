@@ -3,13 +3,13 @@
 
 vlib work
 
-vcom -93 -explicit -work work ../mult/mult.vhd
+vcom -cover sbcet -93 -explicit -work work ../mult/mult.vhd
 
 # Kompilace potøebných zdrojových kódù
-vcom alu.vhd testbench.vhd 
+vcom -cover sbcet alu.vhd testbench.vhd 
 
 # Spustìní simulace 
-vsim -t 1ps -lib work testbench
+vsim -coverage -t 1ps -lib work testbench
 
 view wave
 

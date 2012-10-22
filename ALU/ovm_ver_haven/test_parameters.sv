@@ -30,7 +30,7 @@
                                   // 2 = SV simulation and storing to ext. file
                                                            
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 10000; // Count of transactions
+   parameter TRANSACTION_COUNT = 10200; // Count of transactions
    parameter SEED1            = 0;     // Seed for PRNG
    
  endpackage

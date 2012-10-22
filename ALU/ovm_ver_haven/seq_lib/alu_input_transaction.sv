@@ -19,9 +19,6 @@
    // registration of component tools
    `ovm_object_utils(AluInputTransaction)
    
-   // basic signals
-   logic rst;
-   
    // random values of signals
    rand logic act;                       // activation signal
    rand logic [3:0] op;                  // operation
@@ -56,7 +53,6 @@
         $write("-- %s\n",prefix);
         $write("---------------------------------------------------------\n");
       end
-      $write("RST: %b\n", rst);
       $write("ACT: %b\n", act);
       $write("OP: ");
       priority case (op) 
@@ -95,7 +91,7 @@
    * Function for writing transaction into an external file. 
    */
    function void fwrite(int fileDescr);
-     $fwrite(fileDescr, "%b %b %b %b %b %b\n", op, movi, reg_a, reg_b, mem, imm);
+     $fwrite(fileDescr, "%b %b %b %b %b %b %b\n", act, op, movi, reg_a, reg_b, mem, imm);
    endfunction : fwrite
     
   /*!

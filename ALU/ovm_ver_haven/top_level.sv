@@ -44,6 +44,10 @@ module AluTop;
       RST = 1;
       #(RESET_TIME);
       RST = 0;
+      #(200*RESET_TIME);
+      RST = 1;
+      #(RESET_TIME);
+      RST = 0;
     end 
   
   initial
@@ -58,6 +62,7 @@ module AluTop;
       
       // Start of the simulation
       run_test("AluTest");
+      
     end
 
 endmodule: AluTop

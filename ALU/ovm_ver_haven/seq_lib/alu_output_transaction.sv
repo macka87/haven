@@ -67,7 +67,7 @@
      string msg;
      bit same = 1; // Suppose that are same
             
-     if (ex_alu != tr.ex_alu) 
+     if (ex_alu !== tr.ex_alu) 
      begin
        same = 0;
        $sformat(msg, "EX_ALU does not match!\n");

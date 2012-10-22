@@ -13,8 +13,8 @@ set OVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/ovm-2.1
 vlib work
 
 # DUT compilation
-vcom -93 -explicit -work work ../mult/mult.vhd
-vcom -93 -explicit -work work ../alu/alu.vhd
+vcom -93 -cover sbcet -explicit -work work ../mult/mult.vhd
+vcom -93 -cover sbcet -explicit -work work ../alu/alu.vhd
 
 # Path to basic components
 set BASE_PATH ../../ver_base/

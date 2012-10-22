@@ -31,6 +31,8 @@
        bins zeros = {0};
        bins ones  = {8'hFF}; 
      } 
+     
+     option.per_instance=1; // Also per instance statistics
    endgroup
    
   /*! 

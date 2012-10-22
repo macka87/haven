@@ -27,7 +27,7 @@
    ovm_analysis_port #(AluInputTransaction) aport_alu_in_if;
    
    // inbuild covergroup
-   logic act;
+   logic act, rst;
    
    // Enumeration for operation
    enum logic [3:0] {ADD, SUB, MULT, SHIFT_RIGHT, SHIFT_LEFT, ROTATE_RIGHT, ROTATE_LEFT, NOT, AND, OR, XOR, NAND, NOR, XNOR, INC, DEC} operation;
@@ -35,6 +35,18 @@
    logic [3:0] operation_s;
    
    covergroup ActCovergroup;
+     // reset
+     resetB : coverpoint rst {
+       bins rst0 = {0};        
+       bins rst1 = {1};
+     }
+     
+     // reset at least two times
+     reset_after_reset: coverpoint rst {
+       bins reset_down = (1 => 0); 
+       bins reset_up   = (0 => 1);
+     } 
+     
      // delayed setting of activity signal
      delayed_act: coverpoint act { 
        bins delayed1_act = (1 => 0 => 1);
@@ -95,15 +107,14 @@
    */ 
    task run;
      AluInputTransaction tr;
-     // count number of transactions
-     int trans_count = 0;
-     
+          
      dut_alu_in_if.cb.ACT <= 0;  
      
      // synchronization with the DUT
      @(dut_alu_in_if.cb);
    
-     while (trans_count < TRANSACTION_COUT) begin
+     forever
+     begin
      
        // receive transaction from sequencer
        seq_item_port.get(tr);
@@ -114,9 +125,8 @@
        // wait for readiness of ALU to process data
        waitForAluRdy();
        
-       tr.rst = dut_alu_in_if.RST;
-       
        // sample coverage
+       rst = dut_alu_in_if.RST;
        act = tr.act;
        operation_s = tr.op;
        $cast(operation, operation_s);
@@ -139,12 +149,8 @@
        @(dut_alu_in_if.cb);  
         
        // sends generated transaction to the scoreboard, subscriber etc.
-       if (tr.act) begin
+       if (tr.act)
          aport_alu_in_if.write(tr);
-       
-         // increase number of processed transactions
-         trans_count++;  
-       end      
      end
    endtask: run
   
@@ -152,7 +158,10 @@
    * Wait for ALU_RDY
    */
    task waitForAluRdy();
-     while (!dut_alu_in_if.cb.ALU_RDY || dut_alu_in_if.RST) 
+     while (!dut_alu_in_if.cb.ALU_RDY || dut_alu_in_if.RST) begin
+       rst = dut_alu_in_if.RST;
+       ActCovergroup.sample(); 
        @(dut_alu_in_if.cb);
+     end  
    endtask : waitForAluRdy     
  endclass: AluDriver
