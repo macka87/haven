@@ -17,7 +17,7 @@
    parameter RESET_TIME     = 10*CLK_PERIOD;
      
    // TEST PARAMETERS
-   parameter TRANSACTION_COUT = 3000; // Count of transactions
-   parameter SEED1            = 0;     // Seed for PRNG
+   parameter TRANSACTION_COUNT = 8000; // Count of transactions  !!! UPRAVIT TAK ABY SA DOSIAHLO 100% POKRYTIE !!!
+   parameter SEED1             = 0;   // Seed for PRNG
    
  endpackage

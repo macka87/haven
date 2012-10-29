@@ -67,15 +67,14 @@
    */ 
    task run;
      AluInputTransaction tr;
-     // count number of transactions
-     int trans_count = 0;
-     
+          
      dut_alu_in_if.cb.ACT <= 0;  
      
      // synchronization with the DUT
      @(dut_alu_in_if.cb);
    
-     while (trans_count < TRANSACTION_COUT) begin
+     forever
+     begin
      
        // receive transaction from sequencer
        seq_item_port.get(tr);
@@ -102,12 +101,8 @@
        @(dut_alu_in_if.cb);  
         
        // sends generated transaction to the scoreboard, subscriber etc.
-       if (tr.act) begin
+       if (tr.act) 
          aport_alu_in_if.write(tr);
-       
-         // increase number of processed transactions
-         trans_count++;  
-       end      
      end
    endtask: run
   

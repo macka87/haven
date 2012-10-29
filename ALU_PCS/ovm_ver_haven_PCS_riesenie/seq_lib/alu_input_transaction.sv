@@ -33,13 +33,13 @@
 
    // constraints for values of input signals
    
-   // *** Upravte nasledujici podminku SPRAVNE: movi < 3 ***
+   // *** Upravte nasledujici podminku ***
    
-   constraint c_movi { movi >= 0; movi < 3; }
+   constraint c_movi { movi >= 0; movi < 3;}
    
    // constraint for values of operation signal
    
-   // *** Upravte nasledujici podminku SPRAVNE: op <=15 ***
+   // *** Upravte nasledujici podminku ***
    
    constraint c_op { op >= 0; op <= 15; }
 
@@ -83,6 +83,9 @@
         4'b1011 : $write("NAND\n");
         4'b1100 : $write("NOR\n");
         4'b1101 : $write("XNOR\n");
+        /*
+        *** zde doplnte kod pro nove operace ***
+        */        
         4'b1110 : $write("INC\n");
         4'b1111 : $write("DEC\n");
       endcase

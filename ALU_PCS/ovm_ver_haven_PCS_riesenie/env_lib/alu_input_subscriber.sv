@@ -64,8 +64,8 @@
      // *** Zde doplnte bod pokryti: op_after_op ***
      op_after_op: coverpoint operation {
        bins op_after_op[] = ([0:15] => [0:15]); 
-     }     
-     
+     }
+          
      // operand A coverpoint          
      opA: coverpoint operandA {
        bins zeros        = {0};

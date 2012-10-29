@@ -31,19 +31,29 @@
    * Body - implements behavior of the transaction
    */ 
    task body;
+     int trans_count = 0;
      
-     forever
-     begin
-      
+     while (trans_count < TRANSACTION_COUNT) begin
+     
        assert($cast(req, create_item(AluInputTransaction::get_type(), m_sequencer, "req")));
  
        start_item(req);
+       
        assert(req.randomize());
+       
        //req.display();
        finish_item(req);
-        
+       
+       trans_count++; 
      end
-     
    endtask: body
+   
+  /*! 
+   * Post-body - implements closing of output file with transactions
+   */ 
+   task post_body;
+     ovm_report_info("SCOREBOARD", ":\n\nVERIFICATION ENDED CORRECTLY :)\n\n");
+     $stop();
+   endtask : post_body
 
  endclass: AluSequence

@@ -70,10 +70,8 @@
      logic [DATA_WIDTH-1:0]   operandB;
      logic [DATA_WIDTH*2-1:0] multResult;
      
-     // count number of transactions
-     int trans_count = 0;
-     
-     while (trans_count < TRANSACTION_COUT) begin
+     forever
+     begin
     
        // receive input transaction from Driver
        driver_fifo.get(alu_in_tr);
@@ -180,14 +178,7 @@
          ovm_report_error("SCOREBOARD", msg, OVM_NONE);
          $stop;
        end 
-       
-       trans_count++;
-     
-     end  // of while
-     
-     ovm_report_info("SCOREBOARD", ":\n\nVERIFICATION ENDED CORRECTLY :)\n\n");
-     $stop();
-     
+     end  // of forever
    endtask : run    
 
  endclass : AluScoreboard   

@@ -70,10 +70,8 @@
      logic [DATA_WIDTH-1:0]   operandB;
      logic [DATA_WIDTH*2-1:0] multResult;
      
-     // count number of transactions
-     int trans_count = 0;
-     
-     while (trans_count < TRANSACTION_COUT) begin
+     forever
+     begin
     
        // receive input transaction from Driver
        driver_fifo.get(alu_in_tr);
@@ -154,9 +152,11 @@
          4'b1100 : alu_out_tr_exp.ex_alu = ~(alu_in_tr.reg_a | operandB);
          // XNOR
          4'b1101 : alu_out_tr_exp.ex_alu = alu_in_tr.reg_a ~^ operandB;
-         // INC !! DOPLNIT !!
+         // INC
+         // *** Zde doplnte svuj kod pro INCREMENT ***
          4'b1110 : alu_out_tr_exp.ex_alu = alu_in_tr.reg_a + 1;
-         // DEC !! DOPLNIT !!
+         // DEC
+         // *** Zde doplnte svuj kod pro DECREMENT ***
          4'b1111 : alu_out_tr_exp.ex_alu = alu_in_tr.reg_a - 1;
          default : begin
                      $sformat(msg, "Unsupported operation!!!\n");
@@ -180,14 +180,7 @@
          ovm_report_error("SCOREBOARD", msg, OVM_NONE);
          $stop;
        end 
-       
-       trans_count++;
-     
-     end  // of while
-     
-     ovm_report_info("SCOREBOARD", ":\n\nVERIFICATION ENDED CORRECTLY :)\n\n");
-     $stop();
-     
+     end  // of forever
    endtask : run    
 
  endclass : AluScoreboard   
