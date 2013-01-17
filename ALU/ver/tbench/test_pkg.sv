@@ -6,7 +6,11 @@
  * Date:         22.3.2012 
  * ************************************************************************** */ 
 
+ 
+
  package test_pkg;
+ 
+    import sv_types_pkg::*;
    
    // VERIFICATION FRAMEWORK
    int FRAMEWORK            = 0; // 0 = software framework
@@ -21,12 +25,12 @@
    parameter SIM_DELAY      = 100;
   
    // GENERATOR PARAMETERS
-   parameter GEN_INPUT      = 0;  // 0 = SV generator of transactions
+   tGenInput GEN_INPUT      = SV_GEN;  // 0 = SV generator of transactions
                                   // 1 = reading transactions from external file  
                                   // 2 = other generator
                                   // 3 = hardware generator  
                                   
-   parameter GEN_OUTPUT     = 0;  // 0 = SV simulation
+   tGenOutput GEN_OUTPUT     = SV_SIM;  // 0 = SV simulation
                                   // 1 = storing transactions into external file  
                                   // 2 = SV simulation and storing to ext. file
                                                            

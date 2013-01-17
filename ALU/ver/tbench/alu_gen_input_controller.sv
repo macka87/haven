@@ -40,7 +40,7 @@
                   virtual iAluIn #(pDataWidth) aluIn  
                  ); 
       
-      super.new(inst, framework, inputMbx);
+      super.new(inst, framework, inputMbx, transMbx);
       
       this.aluIn    = aluIn;
       

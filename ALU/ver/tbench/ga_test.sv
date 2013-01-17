@@ -40,7 +40,7 @@ program TEST (
   Population                                             population;
   
   //! Input Controller of generated input  
-  ALUGAInputController #(DATA_WIDTH, GEN_INPUT, GEN_OUTPUT) aluGAInCnt;
+  ALUGAInputController #(DATA_WIDTH) aluGAInCnt;
   
   //! Input Wrapper
   InputWrapper                                           inputWrapper;  
@@ -136,7 +136,7 @@ program TEST (
       end
       
       if (FRAMEWORK == 1) begin
-        if (inputWrapper.busy || (outputWrapper.counter!=TRANSACTION_COUT) || aluOutCnt.busy) busy = 1; 
+        if (inputWrapper.busy || aluOutCnt.busy) busy = 1; 
       end
         
       if (busy) i = 0;

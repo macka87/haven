@@ -7,8 +7,8 @@
  * ************************************************************************** */
  
  class ALUGAInputController #(int pDataWidth = 8, 
-                              int genInput = 0,
-                              int genOutput = 0
+                              tGenInput genInput = SV_GEN,
+                              tGenOutput genOutput = SV_SIM
                               ) extends GenInputController;
        
    /*
@@ -36,7 +36,7 @@
                   virtual iAluIn #(pDataWidth) aluIn  
                  ); 
       
-      super.new(inst, framework, inputMbx);
+      super.new(inst, framework, inputMbx, transMbx);
       
       this.aluIn    = aluIn;
       

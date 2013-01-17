@@ -15,6 +15,7 @@
 package sv_alu_pkg; 
 
   import sv_basic_comp_pkg::*; // Import SV basic verification components 
+  import sv_types_pkg::*;      // Import SV types
   import ga_pkg::*;            // Import genetic algorithm verification components 
   
   `include "alu_input_transaction.sv"
