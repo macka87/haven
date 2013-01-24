@@ -1,0 +1,58 @@
+# *****************************************************************************
+# Project Name: HAVEN
+# File Name:    alu.fdo
+# Description:  Simulation starting script
+# Authors:      Michaela Belesova <xbeles00@stud.fit.vutbr.cz>,
+#               Marcela Simkova <isimkova@fit.vutbr.cz> 
+# Date:         18.9.2012
+# ************************************************************************** */
+
+set OVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/ovm-2.1
+
+# Working library
+vlib work
+
+# DUT compilation
+vcom -93 -explicit -work work src/mult/mult.vhd
+vcom -93 -explicit -work work src/alu/alu.vhd
+
+# Path to basic components
+set BASE_PATH ../../ver_base/
+
+# Verification environment compilation
+vlog -cover sbce test_parameters.sv
+vlog -cover sbce math_pkg.sv
+
+vlog -cover sbce dut.sv
+vlog -cover sbce alu_dut_if.sv
+
+vlog -cover sbce +incdir+seq_lib/  seq_lib/sv_alu_seq_pkg.sv
+vlog -cover sbce +incdir+env_lib/  env_lib/sv_alu_env_pkg.sv
+vlog -cover sbce +incdir+test_lib/ test_lib/sv_alu_test_pkg.sv
+
+vlog -cover sbce top_level.sv
+
+# Set path to testbench instance of the DUT 
+set TOP_MODULE "AluTop"
+
+# Start of the simulation
+vsim -coverage -t 1ps -lib work $TOP_MODULE
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# View a simulation wave
+source "./signals.fdo"
+view wave
+
+# Definition of signals in a wave window
+add wave -divider "ALU"  
+basic     BASIC    /$TOP_MODULE/dut/VHDL_DUT_U
+alu_in    ALU_IN   /$TOP_MODULE/dut/VHDL_DUT_U
+alu_out   ALU_OUT  /$TOP_MODULE/dut/VHDL_DUT_U
+
+view structure
+view signals
+restart -f
+run -all
