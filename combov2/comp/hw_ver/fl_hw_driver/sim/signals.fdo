@@ -29,7 +29,7 @@ proc blk_DRIVER_UNIT { BASE } {
    add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
    add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
    
-	 add_wave "-noupdate -label OUTPUT_RDY"   $BASE/OUTPUT_RDY
+   add_wave "-noupdate -label OUTPUT_RDY"   $BASE/OUTPUT_RDY
 }
 
 

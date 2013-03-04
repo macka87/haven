@@ -51,7 +51,9 @@ entity HGEN_CORE is
       -- items in input fifos
       INPUT_FIFO_ITEMS : integer := 16;
       -- items in hash fifo
-      HASH_FIFO_ITEMS  : integer := 32
+      HASH_FIFO_ITEMS  : integer := 32;
+      -- should BlockRAMs be used for memory?
+      USE_BRAMS_FOR_MEMORY : boolean := true
    );
    port(
       -- common signals
@@ -82,6 +84,16 @@ end entity HGEN_CORE;
 --  Architecture: HGEN_CORE
 -- ----------------------------------------------------------------------------
 architecture full of HGEN_CORE is
+
+   function get_mem_type return mem_type is
+   begin
+      if USE_BRAMS_FOR_MEMORY then
+         return BRAM;
+      else
+         return LUT;
+      end if;
+   end function;
+
    -- number of pipeline stages in jenkins block
    constant INTERFACES : integer := 4;
    -- fifo latency - for LUT memory 1 
@@ -89,7 +101,7 @@ architecture full of HGEN_CORE is
    -- all fifos in hgen_core use prefetch
    constant PREFETCH : boolean := true;
    -- all fifos in hgen_core uses memory composed of LUT
-   constant MEMORY_TYPE : mem_type := BRAM;
+   constant MEMORY_TYPE : mem_type := get_mem_type;
    
    -- input fifos data width
    constant INPUT_FIFO_WIDTH : integer := 98;

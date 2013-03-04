@@ -1,0 +1,106 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+proc blk_REG_PROC_UNIT { BASE } {
+
+   add_wave "-noupdate -label CLK -color yellow"    $BASE/CLK
+   add_wave "-noupdate -label RESET -color yellow"  $BASE/RESET
+
+   add wave -divider "MI32 Interface"
+   add_wave "-noupdate -hex -label MI_DWR"  $BASE/MI_DWR
+   add_wave "-noupdate -hex -label MI_ADDR" $BASE/MI_ADDR
+   add_wave "-noupdate -label MI_RD"        $BASE/MI_RD
+   add_wave "-noupdate -label MI_WR"        $BASE/MI_WR
+   add_wave "-noupdate -hex -label MI_BE"   $BASE/MI_BE
+   add_wave "-noupdate -hex -label MI_DRD"  $BASE/MI_DRD
+   add_wave "-noupdate -label MI_ARDY"      $BASE/MI_ARDY
+   add_wave "-noupdate -label MI_DRDY"      $BASE/MI_DRDY
+   
+   add wave -divider "Generator interface"
+   add_wave "-noupdate -label GEN_FLOW -hex"  $BASE/GEN_FLOW  
+      
+   add wave -divider "Output interface"
+   add_wave "-noupdate -hex -label PART_SIZE"        $BASE/PART_SIZE
+   add_wave "-noupdate      -label PART_SIZE_VLD"    $BASE/PART_SIZE_VLD
+   add_wave "-noupdate      -label PART_SIZE_TAKE"   $BASE/PART_SIZE_TAKE
+   add_wave "-noupdate      -label IS_LAST_IN_FRAME" $BASE/IS_LAST_IN_FRAME
+}
+
+proc blk_REG_PROC_UNIT_INTERNALS { BASE } {
+
+   add wave -divider "Internal signals"
+   add_wave "-noupdate -hex -label sig_parts_number" $BASE/sig_parts_number
+   add_wave "-noupdate      -label sig_parts_number_vld"  $BASE/sig_parts_number_vld
+   add_wave "-noupdate -hex -label sig_part_mask"  $BASE/sig_part_mask
+   add_wave "-noupdate -hex -label sig_part_base"  $BASE/sig_part_base
+   add_wave "-noupdate -hex -label sig_part_max"   $BASE/sig_part_max
+   add_wave "-noupdate      -label sig_should_run" $BASE/sig_should_run
+   add_wave "-noupdate      -label sig_next_frame" $BASE/sig_next_frame
+   add_wave "-noupdate      -label sig_cnt_inc"    $BASE/sig_cnt_inc
+   add_wave "-noupdate      -label sig_last_part"  $BASE/sig_last_part
+   add_wave "-noupdate      -label sig_trans_more_than_zero"  $BASE/sig_trans_more_than_zero
+   add_wave "-noupdate      -label sig_parts_sampling" $BASE/sig_parts_sampling
+   add_wave "-noupdate      -label sig_size_sampling"  $BASE/sig_size_sampling
+
+   add wave -divider "Parts counter"
+   add_wave "-noupdate      -label cnt_part"     $BASE/cnt_part
+   add_wave "-noupdate      -label cnt_part_en"  $BASE/cnt_part_en
+   add_wave "-noupdate      -label cnt_part_clr" $BASE/cnt_part_clr
+}
+
+proc blk_REG_PROC_UNIT_REGS { BASE } {
+
+   add wave -divider "REG_RUN"
+   add_wave "-noupdate -hex -label reg_run"        $BASE/reg_run
+   add_wave "-noupdate      -label reg_run_sel"    $BASE/reg_run_sel
+
+   add wave -divider "REG_TRANS"
+   add_wave "-noupdate -hex -label reg_trans"      $BASE/reg_trans
+   add_wave "-noupdate      -label reg_trans_sel"  $BASE/reg_trans_sel
+
+   add wave -divider "REGS_NUM"
+   add_wave "-noupdate -hex -label reg_num_mask"   $BASE/reg_num_mask
+   add_wave "-noupdate -hex -label reg_num_base"   $BASE/reg_num_base
+   add_wave "-noupdate -hex -label reg_num_max"    $BASE/reg_num_max
+
+   add wave -divider "REGS_PART0"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(31:0)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(31:0)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(31:0)
+
+   add wave -divider "REGS_PART1"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(63:32)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(63:32)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(63:32)
+
+   add wave -divider "REGS_PART2"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(95:64)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(95:64)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(95:64)
+
+   add wave -divider "REGS_PART3"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(127:96)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(127:96)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(127:96)
+
+   add wave -divider "REGS_PART4"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(159:128)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(159:128)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(159:128)
+
+   add wave -divider "REGS_PART5"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(191:160)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(191:160)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(191:160)
+
+   add wave -divider "REGS_PART6"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(223:192)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(223:192)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(223:192)
+
+   add wave -divider "REGS_PART7"
+   add_wave "-noupdate -hex -label reg_size_mask"  $BASE/reg_size_mask(255:224)
+   add_wave "-noupdate -hex -label reg_size_base"  $BASE/reg_size_base(255:224)
+   add_wave "-noupdate -hex -label reg_size_max"   $BASE/reg_size_max(255:224)
+}

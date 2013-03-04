@@ -42,9 +42,8 @@ package addr_space is
    -- are reserved for NetCOPE purposes
    -- use X"00020000" to X"02000000" for application (NetCOPE plugin)
 
-   -- FL_WATCH ------------------------------------------
-   constant WATCH_BASE_ADDR : std_logic_vector := X"00010000";
-   constant WATCH_LIMIT     : std_logic_vector := X"00010000"; 
+   -- see https://merlin.fit.vutbr.cz/wiki-haven/index.php/Address_spaces
+   -- for an up-to-date address space
 
 end addr_space;
 

@@ -193,8 +193,8 @@ begin
 
          -- count enabling
          if (ADDR32_CE = '1') then
-            reg_addr32(min(ADDR_WIDTH,C_IB_LENGTH_WIDTH)-1 downto log2(DATA_WIDTH/8)) <= 
-               reg_addr32(min(ADDR_WIDTH,C_IB_LENGTH_WIDTH)-1 downto log2(DATA_WIDTH/8)) + 1;
+            reg_addr32(work.math_pack.min(ADDR_WIDTH,C_IB_LENGTH_WIDTH)-1 downto log2(DATA_WIDTH/8)) <= 
+               reg_addr32(work.math_pack.min(ADDR_WIDTH,C_IB_LENGTH_WIDTH)-1 downto log2(DATA_WIDTH/8)) + 1;
          end if;                                                     -- align_width                                            
          
       end if;
@@ -239,8 +239,8 @@ begin
 
          -- count enabling
          if (ADDR64_CE = '1') then
-            reg_addr64(min(ADDR_WIDTH,C_IB_LENGTH_WIDTH)-1 downto log2(DATA_WIDTH/8)) <= 
-               reg_addr64(min(ADDR_WIDTH,C_IB_LENGTH_WIDTH)-1 downto log2(DATA_WIDTH/8)) + 1;
+            reg_addr64(work.math_pack.min(ADDR_WIDTH,C_IB_LENGTH_WIDTH)-1 downto log2(DATA_WIDTH/8)) <= 
+               reg_addr64(work.math_pack.min(ADDR_WIDTH,C_IB_LENGTH_WIDTH)-1 downto log2(DATA_WIDTH/8)) + 1;
          end if;                                                     -- align_width                                        
          
       end if;

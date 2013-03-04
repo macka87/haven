@@ -14,8 +14,12 @@ use work.math_pack.all;
 entity DOUBLE_MULTI_HGEN_VER_COVER is
    generic(
       -- the data width of the data input/output
-      DATA_WIDTH             : integer   := 128;
-      BRANCH_COUNT           : integer   := 8
+      DATA_WIDTH                   : integer   := 64;
+      BRANCH_COUNT                 : integer   := 2;
+      -- for how many of the HGENs memories should LUT memory be used?
+      USE_LUTS_FOR_X_HGEN_MEMORY   : integer   := 0;
+      -- for how many of the HGENs FIFOs should LUT memory be used?
+      USE_LUTS_FOR_X_HGEN_FIFOS    : integer   := 0
    );
    port(
       CLK            : in std_logic;
@@ -46,12 +50,46 @@ end entity;
 
 architecture arch of DOUBLE_MULTI_HGEN_VER_COVER is
 
+   constant MULTI_COUNT  : integer := 8;
+
+   function luts_for_cover_memory(cover_num : integer) return integer is
+   begin
+      if (USE_LUTS_FOR_X_HGEN_MEMORY / MULTI_COUNT > cover_num) then
+         return MULTI_COUNT;
+      elsif (USE_LUTS_FOR_X_HGEN_MEMORY / MULTI_COUNT = cover_num) then
+         return USE_LUTS_FOR_X_HGEN_MEMORY rem MULTI_COUNT;
+      else
+         return 0;
+      end if;
+   end function;
+
+   function luts_for_cover_fifos(cover_num : integer) return integer is
+   begin
+      if (USE_LUTS_FOR_X_HGEN_FIFOS / MULTI_COUNT > cover_num) then
+         return MULTI_COUNT;
+      elsif (USE_LUTS_FOR_X_HGEN_FIFOS / MULTI_COUNT = cover_num) then
+         return USE_LUTS_FOR_X_HGEN_FIFOS rem MULTI_COUNT;
+      else
+         return 0;
+      end if;
+   end function;
+
    constant INPUT_PARTS       : integer := 1;
    constant BRANCH_PARTS      : integer := 1;
    constant TICKET_WIDTH      : integer := 12; -- bits
    constant TICKET_FIFO_ITEMS : integer := 8;
 
    constant HGEN_DATA_WIDTH   : integer := 128;
+
+   -- Transformer input
+   signal trans_rx_data        : std_logic_vector(DATA_WIDTH-1 downto 0);
+   signal trans_rx_rem         : std_logic_vector(log2(DATA_WIDTH/8)-1 downto 0);
+   signal trans_rx_sof_n       : std_logic;
+   signal trans_rx_eof_n       : std_logic;
+   signal trans_rx_sop_n       : std_logic;
+   signal trans_rx_eop_n       : std_logic;
+   signal trans_rx_src_rdy_n   : std_logic;
+   signal trans_rx_dst_rdy_n   : std_logic;
 
    -- Ticket counter
    signal cnt_ticket          : std_logic_vector(TICKET_WIDTH-1 downto 0);
@@ -106,7 +144,38 @@ architecture arch of DOUBLE_MULTI_HGEN_VER_COVER is
 
 begin
 
-   -- Input interface
+
+   fl_pipe_i: entity work.FL_PIPE
+   generic map(
+      -- FrameLink Data Width
+      DATA_WIDTH     => DATA_WIDTH,
+      USE_OUTREG     => false
+   )
+   port map(
+      -- Common interface 
+      CLK            => CLK,
+      RESET          => RESET,
+      
+      -- Input interface
+      RX_DATA           => RX_DATA,
+      RX_REM            => RX_REM,
+      RX_SOP_N          => RX_SOP_N,
+      RX_EOP_N          => RX_EOP_N,
+      RX_SOF_N          => RX_SOF_N,
+      RX_EOF_N          => RX_EOF_N,
+      RX_SRC_RDY_N      => RX_SRC_RDY_N,
+      RX_DST_RDY_N      => RX_DST_RDY_N,
+ 
+      -- Output interface
+      TX_DATA           => trans_rx_data,
+      TX_REM            => trans_rx_rem,
+      TX_SOP_N          => trans_rx_sop_n,
+      TX_EOP_N          => trans_rx_eop_n,
+      TX_SOF_N          => trans_rx_sof_n,
+      TX_EOF_N          => trans_rx_eof_n,
+      TX_SRC_RDY_N      => trans_rx_src_rdy_n,
+      TX_DST_RDY_N      => trans_rx_dst_rdy_n
+   );
 
    -- input transformer
    input_trans_i: entity work.FL_TRANSFORMER
@@ -124,14 +193,14 @@ begin
       RESET             => RESET,
 
       -- RX Framelink interface
-      RX_DATA           => RX_DATA,
-      RX_REM            => RX_REM,
-      RX_SOP_N          => RX_SOP_N,
-      RX_EOP_N          => RX_EOP_N,
-      RX_SOF_N          => RX_SOF_N,
-      RX_EOF_N          => RX_EOF_N,
-      RX_SRC_RDY_N      => RX_SRC_RDY_N,
-      RX_DST_RDY_N      => RX_DST_RDY_N,
+      RX_DATA           => trans_rx_data,
+      RX_REM            => trans_rx_rem,
+      RX_SOP_N          => trans_rx_sop_n,
+      RX_EOP_N          => trans_rx_eop_n,
+      RX_SOF_N          => trans_rx_sof_n,
+      RX_EOF_N          => trans_rx_eof_n,
+      RX_SRC_RDY_N      => trans_rx_src_rdy_n,
+      RX_DST_RDY_N      => trans_rx_dst_rdy_n,
 
       -- TX FrameLink interface
       TX_DATA           => split_rx_data,
@@ -210,8 +279,9 @@ gen_hgen: for i in 0 to BRANCH_COUNT-1 generate
       generic map(
          -- the data width of the data input/output
          DATA_WIDTH     => HGEN_DATA_WIDTH,
-         USE_BRAMS_FOR_HGEN_FIFO => false,
-         BRANCH_COUNT   => 8
+         USE_LUTS_FOR_X_HGEN_MEMORY => luts_for_cover_memory(i),
+         USE_LUTS_FOR_X_HGEN_FIFOS  => luts_for_cover_fifos(i),
+         BRANCH_COUNT   => MULTI_COUNT
       )
       port map(
          -- common signals

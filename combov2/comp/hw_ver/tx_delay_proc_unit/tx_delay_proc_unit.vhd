@@ -11,8 +11,6 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 
-use work.math_pack.all;
-
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
@@ -26,11 +24,16 @@ entity TX_DELAY_PROC_UNIT is
 
    port
    (
+      -- common signals
       CLK            : in  std_logic;
       RESET          : in  std_logic;
+
+      -- inputs
       DELAY_DATA     : in  std_logic_vector(DELAY_WIDTH-1 downto 0);
       DELAY_READ     : out std_logic;
       DELAY_EMPTY    : in  std_logic;
+
+      -- outputs
       DST_RDY        : in  std_logic;
       SRC_RDY        : out std_logic
    );
@@ -49,134 +52,209 @@ architecture arch of TX_DELAY_PROC_UNIT is
 --                                    CONSTANTS
 -- ==========================================================================
 
+-- the width of the delay counter
+constant CNT_WIDTH         : integer := DELAY_WIDTH-1;
 
 -- ==========================================================================
 --                                     SIGNALS
 -- ==========================================================================
 
--- delay signals
-signal sig_is_wait          : std_logic; 
-signal sig_drive_mx         : std_logic;
-signal sig_reg_is_wait      : std_logic; 
-signal sig_mux_is_wait      : std_logic; 
-signal sig_mux_delay_data   : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_decremented      : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_delay            : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_delay_data       : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_reg_delay        : std_logic_vector(DELAY_WIDTH-2 downto 0);
-signal sig_take             : std_logic;
-signal sig_comp_output      : std_logic;
-signal sig_reg_reset        : std_logic;
-signal sig_taken_or         : std_logic;
-signal sig_taken            : std_logic;
+-- inputs
+signal sig_delay_data    : std_logic_vector(DELAY_WIDTH-1 downto 0);
+signal sig_delay_read    : std_logic;
+signal sig_delay_empty   : std_logic;
+
+-- outputs
+signal sig_src_rdy       : std_logic;
+signal sig_dst_rdy       : std_logic;
+
+-- misc signals
+signal sig_delay_data_trimmed     : std_logic_vector(CNT_WIDTH-1 downto 0);
+signal sig_delay_data_trimmed_dec : std_logic_vector(CNT_WIDTH-1 downto 0);
+signal sig_will_be_sent           : std_logic;
+signal sig_is_immediate           : std_logic;
+
+-- the input multiplexer
+signal mux_input_out              : std_logic_vector(CNT_WIDTH-1 downto 0);
+signal mux_input_sel              : std_logic;
+
+-- the input data zero comparer
+signal cmp_input_zero_out         : std_logic;
+
+-- register for the 'will_be_sent' signal
+signal reg_will_be_sent           : std_logic;
+signal reg_will_be_sent_en        : std_logic;
+signal reg_will_be_sent_in        : std_logic;
+
+-- the 'will_be_sent' multiplexer
+signal mux_will_be_sent_out       : std_logic;
+signal mux_will_be_sent_sel       : std_logic;
+
+-- register keeping value whether it should be read from the FIFO
+signal reg_next_read     : std_logic;
+signal reg_next_read_set : std_logic;
+signal reg_next_read_clr : std_logic;
+
+-- the impulse_counter component
+signal impulse_cnt_data         : std_logic_vector(CNT_WIDTH-1 downto 0);
+signal impulse_cnt_load         : std_logic;
+signal impulse_cnt_zero_impulse : std_logic;
+
+-- the output_reg component
+signal output_reg_rdy_in        : std_logic;
+signal output_reg_write         : std_logic;
+signal output_reg_src_rdy       : std_logic;
+signal output_reg_dst_rdy       : std_logic;
 
 -- ==========================================================================
 --                           ARCHITECTURE BODY
 -- ==========================================================================
 begin
 
-   sig_is_wait    <= DELAY_DATA(DELAY_WIDTH-1); -- delay (0), wait (1)
-   sig_delay_data <= DELAY_DATA(DELAY_WIDTH-2 downto 0);
+   -- mapping input signals
+   sig_delay_data  <= DELAY_DATA;
+   sig_delay_empty <= DELAY_EMPTY;
+   DELAY_READ      <= sig_delay_read;
 
-   -- multiplexer
-   mux0 : process (sig_is_wait, sig_delay_data)
+   -- decomposition of the input data signal
+   sig_delay_data_trimmed <= sig_delay_data(CNT_WIDTH-1 downto 0);
+   sig_will_be_sent       <= NOT sig_delay_data(CNT_WIDTH);
+
+   -- decrement of the input data
+   sig_delay_data_trimmed_dec <= sig_delay_data_trimmed - 1;
+
+   --
+   mux_input_sel <= sig_will_be_sent;
+
+   -- the input data multiplexer
+   mux_input_p: process(mux_input_sel, sig_delay_data_trimmed,
+      sig_delay_data_trimmed_dec)
    begin
-      sig_mux_delay_data <= sig_delay_data;
+      mux_input_out <= sig_delay_data_trimmed;
 
-      case sig_is_wait is
-         when '0'    => sig_mux_delay_data <= sig_delay_data;
-         when '1'    => sig_mux_delay_data <= sig_delay_data-1;
-         when others => null;   
-      end case;   
+      case (mux_input_sel) is
+         when '0'     => mux_input_out <= sig_delay_data_trimmed_dec;
+         when '1'     => mux_input_out <= sig_delay_data_trimmed;
+         when others  => null;
+      end case;
    end process;
 
-   -- register for sig_is_wait 
-   reg1 : process (CLK)
+   -- comparer whether the input data is zero
+   cmp_input_zero_p: process(mux_input_out)
+   begin
+      cmp_input_zero_out <= '0';
+
+      if (mux_input_out = 0) then
+         cmp_input_zero_out <= '1';
+      end if;
+   end process;
+
+   sig_is_immediate <= cmp_input_zero_out AND sig_delay_read;
+
+   --
+   impulse_cnt_data  <= mux_input_out;
+   impulse_cnt_load  <= sig_delay_read AND (NOT sig_is_immediate);
+
+   -- the impulse counter that counts down the delay
+   impulse_counter_i: entity work.IMPULSE_COUNTER
+   generic map(
+      DATA_WIDTH => CNT_WIDTH
+   )
+   port map(
+      
+      CLK            => CLK,
+      RESET          => RESET,
+      -- ----------- INPUT -----------
+      -- the number of clock cycles to wait (aka 'the delay')
+      DATA           => impulse_cnt_data,
+      -- load the data into the counter and starts counting
+      LOAD           => impulse_cnt_load,
+
+      -- ----------- OUTPUT -----------
+      -- produces an impulse when the counter reaches zero
+      ZERO_IMPULSE   => impulse_cnt_zero_impulse
+   );
+
+   --
+   reg_will_be_sent_en <= sig_delay_read;
+   reg_will_be_sent_in <= sig_will_be_sent;
+
+   -- register for the sig_will_be_sent signal
+   reg_will_be_sent_p: process(CLK)
    begin
       if (rising_edge(CLK)) then
-         if (sig_take = '1') then
-            sig_reg_is_wait <= sig_is_wait OR DELAY_EMPTY;   
-         end if;   
+         if (reg_will_be_sent_en = '1') then
+            reg_will_be_sent <= reg_will_be_sent_in;
+         end if;
       end if;
    end process;
-   
-   sig_drive_mx <= sig_take and sig_comp_output;
-   
-   -- multiplexer
-   mux1 : process (sig_drive_mx, sig_is_wait, sig_reg_is_wait)
-   begin
-      sig_mux_is_wait <= '0';
 
-      case sig_drive_mx is
-         when '0'    => sig_mux_is_wait <= sig_reg_is_wait;
-         when '1'    => sig_mux_is_wait <= sig_is_wait;
-         when others => null;   
-      end case;   
-   end process;
-   
-   -- multiplexer
-   mux2 : process (sig_take, sig_mux_delay_data, sig_decremented)
-   begin
-      sig_delay <= sig_decremented;
+   --
+   mux_will_be_sent_sel <= sig_is_immediate;
 
-      case sig_take is
-         when '0'    => sig_delay <= sig_decremented;
-         when '1'    => sig_delay <= sig_mux_delay_data;
-         when others => null;   
-      end case;   
-   end process;
-   
-   -- comparator
-   comp : process (sig_delay)
+   -- the multiplexer for the value of the 'will_be_sent' signal
+   mux_will_be_sent_p: process(mux_will_be_sent_sel, sig_will_be_sent,
+      reg_will_be_sent)
    begin
-     if (sig_delay = 0) then sig_comp_output <= '1';
-     else sig_comp_output <= '0'; 
-     end if;
+      mux_will_be_sent_out <= sig_will_be_sent;
+
+      case (mux_will_be_sent_sel) is
+         when '0'    => mux_will_be_sent_out <= reg_will_be_sent;
+         when '1'    => mux_will_be_sent_out <= sig_will_be_sent;
+         when others => null;
+      end case;
    end process;
-   
-   -- register for decrement 
-   reg2 : process (CLK)
+
+   --
+   output_reg_rdy_in <= mux_will_be_sent_out;
+   output_reg_write  <=    (sig_is_immediate AND (NOT sig_delay_empty))
+                        OR impulse_cnt_zero_impulse;
+
+   -- the output register
+   output_reg_i: entity work.OUTPUT_REG
+   port map(
+      CLK            => CLK,
+      RESET          => RESET,
+
+      -- ----------- INPUT -----------
+      -- the value of the ready signal (which should be put at the output
+      RDY_IN         => output_reg_rdy_in,
+      -- write into the register (when active, the RDY_IN signal is directly
+      -- passed to SRC_RDY)
+      WRITE          => output_reg_write,
+
+      -- ----------- OUTPUT -----------
+      SRC_RDY        => output_reg_src_rdy,
+      DST_RDY        => output_reg_dst_rdy
+   );
+
+   sig_src_rdy        <= output_reg_src_rdy;
+   output_reg_dst_rdy <= sig_dst_rdy;
+
+   --
+   reg_next_read_set <= sig_dst_rdy;
+   reg_next_read_clr <= reg_next_read AND (NOT sig_delay_empty);
+
+   -- register being set when there should be a read from the FIFO in the
+   -- following clock cycle
+   reg_next_read_p: process(CLK, RESET)
    begin
-      if (rising_edge(CLK)) then
-         if (sig_comp_output = '0') then
-            sig_reg_delay <= sig_delay;   
-         end if;   
-      end if;
-   end process;
-   
-   sig_decremented <= sig_reg_delay - 1;
-   
-   sig_taken <= (sig_comp_output and DST_RDY) or (sig_comp_output and sig_mux_is_wait);
-   
-   -- register for reset
-   reg3 : process (CLK, RESET)
-   begin
-      if (RESET = '1') then 
-         sig_reg_reset <= '1';
+      if (RESET = '1') then
+         reg_next_read <= '1';
       elsif (rising_edge(CLK)) then
-         if (sig_reg_reset = '1') then
-            sig_reg_reset <= '0';  
-         end if;   
+         if (reg_next_read_set = '1') then
+            reg_next_read <= '1';
+         elsif (reg_next_read_clr = '1') then
+            reg_next_read <= '0';
+         end if;
       end if;
    end process;
-   
-   sig_taken_or <= sig_taken or sig_reg_reset; 
-   
-   -- register for taken
-   reg4 : process (CLK, RESET)
-   begin
-      if (RESET = '1') then 
-         sig_take <= '0'; 
-      elsif (rising_edge(CLK)) then
-         if (sig_taken_or = '1') then
-            sig_take <= sig_taken_or;     
-         elsif (sig_take = '1') then
-            sig_take <= '0';   
-         end if;   
-      end if;
-   end process;
-   
-   SRC_RDY <= ((not sig_mux_is_wait) and sig_comp_output) AND (NOT(DELAY_EMPTY and sig_take));
-   DELAY_READ  <= sig_take and (not DELAY_EMPTY);
+
+   sig_delay_read <= reg_next_read;
+
+
+   -- mapping output signals
+   SRC_RDY         <= sig_src_rdy;
+   sig_dst_rdy     <= DST_RDY;
 
 end architecture;

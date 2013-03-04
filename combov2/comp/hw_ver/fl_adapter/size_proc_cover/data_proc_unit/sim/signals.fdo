@@ -1,0 +1,33 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+proc blk_DATA_PROC_UNIT { BASE } {
+
+   add_wave "-noupdate -label CLK"    $BASE/CLK
+   add_wave "-noupdate -label RESET"  $BASE/RESET
+
+   add wave -divider "Input Interface"
+   add_wave "-noupdate -hex -label DATA_SIZE"        $BASE/DATA_SIZE
+   add_wave "-noupdate      -label DATA_SIZE_VLD"    $BASE/DATA_SIZE_VLD
+   add_wave "-noupdate      -label DATA_SIZE_REQ"    $BASE/DATA_SIZE_REQ
+      
+   add wave -divider "Output interface"
+   add_wave "-noupdate -hex -label DATA_REM"       $BASE/DATA_REM
+   add_wave "-noupdate      -label DATA_COMPLETE " $BASE/DATA_COMPLETE
+   add_wave "-noupdate      -label DATA_RDY"       $BASE/DATA_RDY
+   add_wave "-noupdate      -label DATA_TAKE"      $BASE/DATA_TAKE
+      
+   add wave -divider "Internals"
+   add_wave "-noupdate      -label sig_cmp_out"    $BASE/sig_cmp_out
+
+   add wave -divider "reg_data"
+   add_wave "-noupdate -hex -label reg_data"       $BASE/reg_data
+   add_wave "-noupdate -hex -label reg_data_in"    $BASE/reg_data_in
+   add_wave "-noupdate      -label reg_data_en"    $BASE/reg_data_en
+
+   add wave -divider "reg_valid"
+   add_wave "-noupdate      -label reg_valid"      $BASE/reg_valid
+   add_wave "-noupdate      -label reg_valid_set"  $BASE/reg_valid_set
+   add_wave "-noupdate      -label reg_valid_clr"  $BASE/reg_valid_clr
+}   

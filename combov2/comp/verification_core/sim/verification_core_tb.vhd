@@ -13,6 +13,9 @@ use work.fl_sim_oper.all;
 use work.fl_bfm_pkg.all;
 use work.fl_bfm_rdy_pkg.all;
 
+-- HAVEN constants
+use work.haven_const.all;
+
 entity testbench is
 end entity;
 
@@ -75,7 +78,14 @@ begin
    -- -----------------------------------------------------------------------
    uut: entity work.verification_core
    generic map(
-      DATA_WIDTH  => DATA_WIDTH
+      -- data width 
+      DATA_WIDTH         => DATA_WIDTH,
+      -- the CORE_TYPE generic specifies the verified unit in the core
+      CORE_TYPE          => core_fifo,
+      -- should signal observers be used?
+      USE_OBSERVERS      => false,
+      -- should the input FrameLink coverage unit be used?
+      USE_FL_COV_UNIT    => true
    )
    port map(
       CLK            => clk,

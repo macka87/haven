@@ -369,9 +369,10 @@ begin
    -- Hash generator core      
    HGEN_CORE_U: entity work.HGEN_CORE
    generic map(
-      UH_SIZE          => UH_SIZE,
-      INPUT_FIFO_ITEMS => INPUT_FIFO_ITEMS,
-      HASH_FIFO_ITEMS  => HASH_FIFO_ITEMS
+      UH_SIZE               => UH_SIZE,
+      INPUT_FIFO_ITEMS      => INPUT_FIFO_ITEMS,
+      HASH_FIFO_ITEMS       => HASH_FIFO_ITEMS,
+      USE_BRAMS_FOR_MEMORY  => USE_BRAMS_FOR_MEMORY
    )
    port map(
       -- common signals

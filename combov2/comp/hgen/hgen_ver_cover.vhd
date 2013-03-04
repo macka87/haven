@@ -15,7 +15,8 @@ entity HGEN_VER_COVER is
    generic(
       -- the data width of the data input/output
       DATA_WIDTH              : integer := 128;
-      USE_BRAMS_FOR_HGEN_FIFO : boolean := true
+      USE_BRAMS_FOR_HGEN_FIFO : boolean := true;
+      USE_BRAMS_FOR_MEMORY    : boolean := true
    );
    port(
       CLK            : in std_logic;
@@ -126,7 +127,9 @@ begin
       -- defines UH size in bytes; min 16 - 128 bytes
       UH_SIZE        => HGEN_UH_SIZE,
       -- should BlockRAMs be used for FIFO?
-      USE_BRAMS_FOR_FIFO  => USE_BRAMS_FOR_HGEN_FIFO
+      USE_BRAMS_FOR_FIFO  => USE_BRAMS_FOR_HGEN_FIFO,
+      -- should BlockRAMs be used for memory?
+      USE_BRAMS_FOR_MEMORY  => USE_BRAMS_FOR_MEMORY
    )
    port map(
       -- common signals
