@@ -21,7 +21,7 @@ package sv_codix_ca_param_pkg;
 	parameter ITERATION_COUNT_LIMIT = 1000000;
 
 	// test parameters
-	parameter TRANSACTION_COUNT = 10000;
+	parameter TRANSACTION_COUNT = 1000;
 	parameter SEED = 0;
 
 endpackage
