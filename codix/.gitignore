@@ -1,0 +1,5 @@
+# Codix source files
+vhdl/*
+
+# reference model
+fve/golden_model/*

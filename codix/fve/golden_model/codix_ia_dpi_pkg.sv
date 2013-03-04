@@ -1,0 +1,20 @@
+package codix_ia_dpi_pkg;
+import "DPI-C" context function void codix_ia_reset();
+import "DPI-C" context function int codix_ia_clock_cycle();
+import "DPI-C" context function void codix_ia_load_program_file(input string executable);
+import "DPI-C" context function void codix_ia_load_program_direct(input int addr, input logic [31:0] data, input int bw);
+import "DPI-C" context function void codix_ia_get_regs(output logic [31:0] data, input int addr);
+import "DPI-C" context function void codix_ia_set_regs(input int addr, input logic [31:0] data);
+import "DPI-C" context function void codix_ia_get_irq(output logic  data);
+import "DPI-C" context function void codix_ia_set_irq(input logic  data);
+import "DPI-C" context function void codix_ia_get_port_halt(output logic  data);
+import "DPI-C" context function void codix_ia_set_port_halt(input logic  data);
+import "DPI-C" context function void codix_ia_get_port_output(output logic [31:0] data);
+import "DPI-C" context function void codix_ia_set_port_output(input logic [31:0] data);
+import "DPI-C" context function void codix_ia_get_port_output_en(output logic  data);
+import "DPI-C" context function void codix_ia_set_port_output_en(input logic  data);
+import "DPI-C" context function void codix_ia_get_port_error(output logic [31:0] data);
+import "DPI-C" context function void codix_ia_set_port_error(input logic [31:0] data);
+import "DPI-C" context function void codix_ia_get_mem(output logic [31:0] data, input int addr);
+import "DPI-C" context function void codix_ia_set_mem(input int addr, input logic [31:0] data);
+endpackage
