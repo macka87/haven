@@ -1,0 +1,18 @@
+# Copyright (C) 2012
+# Author(s): Marcela Simkova <isimkova@fit.vutbr.cz>
+
+# Paths
+set TB_BASE               "/testbench"
+set RAND_GEN_PATH         "$TB_BASE/uut"
+
+source                    "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+blk_RAND_GEN                "$RAND_GEN_PATH"
+blk_RAND_GEN_INTERNALS      "$RAND_GEN_PATH"
+
+restart -f
+run 10 us

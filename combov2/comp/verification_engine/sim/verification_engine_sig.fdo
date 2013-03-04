@@ -1,0 +1,144 @@
+# verification_core_sig.fdo : Include file with signals
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id: frame_meter_sig.fdo 1333 2008-02-14 22:20:10Z korcek $
+#
+
+# Paths
+set TB_PATH                    "/testbench"
+set VERIFICATION_ENGINE_PATH   "$TB_PATH/uut"
+set FL_RAND_GEN_PATH           "$VERIFICATION_ENGINE_PATH/fl_rand_gen_i"
+set FL_ADAPTER_PATH            "$FL_RAND_GEN_PATH/fl_adapter_i"
+set VER_CORE0_PATH             "$VERIFICATION_ENGINE_PATH/ver_core0_i"
+set VER_CORE1_PATH             "$VERIFICATION_ENGINE_PATH/ver_core1_i"
+set FL_DRIVER0_PATH            "$VER_CORE0_PATH/fl_hw_driver_i"
+set FL_DRIVER1_PATH            "$VER_CORE1_PATH/fl_hw_driver_i"
+set FL_DRIVER_CTRL0_PATH       "$FL_DRIVER0_PATH/fl_driver_ctrl_i"
+set FL_DRIVER_CTRL1_PATH       "$FL_DRIVER1_PATH/fl_driver_ctrl_i"
+set TX_ASYNC_FL_UNIT0_PATH     "$FL_DRIVER0_PATH/tx_async_fl_unit_i"
+set TX_ASYNC_FL_UNIT1_PATH     "$FL_DRIVER1_PATH/tx_async_fl_unit_i"
+set TX_DELAY_PROC_UNIT0_PATH   "$TX_ASYNC_FL_UNIT0_PATH/delay_unit_i"
+set TX_DELAY_PROC_UNIT1_PATH   "$TX_ASYNC_FL_UNIT1_PATH/delay_unit_i"
+set FL_MONITOR0_PATH           "$VER_CORE0_PATH/fl_hw_monitor_i"
+set FL_MONITOR1_PATH           "$VER_CORE1_PATH/fl_hw_monitor_i"
+set MONITOR_PACKETIZER0_PATH   "$FL_MONITOR0_PATH/monitor_packetizer_i"
+set MONITOR_PACKETIZER1_PATH   "$FL_MONITOR1_PATH/monitor_packetizer_i"
+set SCOREBOARD_PATH            "$VERIFICATION_ENGINE_PATH/scoreboard_i"
+
+# include signals
+source      "signals.fdo"
+source      "../../verification_core/sim/signals.fdo"
+source      "../../hw_ver/fl_adapter/sim/signals.fdo"
+source      "../../hw_ver/fl_hw_driver/sim/signals.fdo"
+source      "../../hw_ver/fl_hw_driver/fl_driver_ctrl/sim/signals.fdo"
+source      "../../hw_ver/fl_hw_driver/tx_async_fl_unit/sim/signals.fdo"
+source      "../../hw_ver/tx_delay_proc_unit/sim/signals.fdo"
+source      "../../hw_ver/fl_hw_monitor/sim/signals.fdo"
+source      "../../hw_ver/fl_hw_scoreboard/sim/signals.fdo"
+source      "../../hw_ver/fl_filter/sim/signals.fdo"
+source      "../../fl_tools/flow/fork/sim/signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add_wave "-noupdate -label RESET -color yellow"  $TB_PATH/reset
+add_wave "-noupdate -label CLK   -color yellow"  $TB_PATH/clk
+
+add wave -divider "****************************"
+add wave -divider "INTERFACE" 
+add wave -divider "****************************"
+blk_VER_ENGINE              $VERIFICATION_ENGINE_PATH
+
+add wave -divider "****************************"
+add wave -divider "FL FORK" 
+add wave -divider "****************************"
+fl_fork_norec               "FORK"   $VERIFICATION_ENGINE_PATH/fl_fork_i
+
+add wave -divider "****************************"
+add wave -divider "SCOREBOARD"
+add wave -divider "****************************"
+blk_SCOREBOARD              $SCOREBOARD_PATH
+#blk_SCOREBOARD_INTERNALS    $SCOREBOARD_PATH
+#blk_SCOREBOARD_CHECKER      $SCOREBOARD_PATH/sb_checker_i
+blk_SCOREBOARD_FIFOS        $SCOREBOARD_PATH/
+
+#add wave -divider "****************************"
+#add wave -divider "FL_FILTER 0"
+#add wave -divider "****************************"
+#blk_FL_FILTER               $VERIFICATION_ENGINE_PATH/fl_filter0_i
+#blk_FL_FILTER_INTERNALS     $VERIFICATION_ENGINE_PATH/fl_filter0_i
+#
+#add wave -divider "****************************"
+#add wave -divider "FL Adapter"
+#add wave -divider "****************************"
+#blk_ADAPTER_UNIT            $FL_ADAPTER_PATH
+
+#add wave -divider "****************************"
+#add wave -divider "Verification Core 0" 
+#add wave -divider "****************************"
+#blk_VER_CORE                $VER_CORE0_PATH
+#blk_VER_CORE_INTERNALS      $VER_CORE0_PATH
+#
+#add wave -divider "****************************"
+#add wave -divider "DUT0 INTERFACE" 
+#add wave -divider "****************************"
+#blk_VER_CORE_DUT_IFC        $VER_CORE0_PATH
+
+add wave -divider "****************************"
+add wave -divider "Verification Core 1" 
+add wave -divider "****************************"
+blk_VER_CORE                $VER_CORE1_PATH
+blk_VER_CORE_INTERNALS      $VER_CORE1_PATH
+
+add wave -divider "****************************"
+add wave -divider "DUT1 INTERFACE" 
+add wave -divider "****************************"
+blk_VER_CORE_DUT_IFC        $VER_CORE1_PATH
+
+#add wave -divider "****************************"
+#add wave -divider "FL_FILTER 1"
+#add wave -divider "****************************"
+#blk_FL_FILTER               $VERIFICATION_ENGINE_PATH/fl_filter1_i
+#blk_FL_FILTER_INTERNALS     $VERIFICATION_ENGINE_PATH/fl_filter1_i
+
+add wave -divider "****************************"
+add wave -divider "FL DRIVER 1" 
+add wave -divider "****************************"
+blk_DRIVER_UNIT             $FL_DRIVER1_PATH
+
+add wave -divider "****************************"
+add wave -divider "FL DRIVER CTRL 1" 
+add wave -divider "****************************"
+blk_FL_DRIVER_CTRL_IFC      $FL_DRIVER_CTRL1_PATH
+
+add wave -divider "****************************"
+add wave -divider "TX ASYNC FL UNIT 1"
+add wave -divider "****************************"
+blk_ASYNC_UNIT              $TX_ASYNC_FL_UNIT1_PATH
+blk_ASYNC_UNIT_INTERNALS    $TX_ASYNC_FL_UNIT1_PATH
+
+add wave -divider "****************************"
+add wave -divider "TX DELAY PROC UNIT 1"
+add wave -divider "****************************"
+blk_DELAY_PROC_UNIT              $TX_DELAY_PROC_UNIT1_PATH
+blk_DELAY_PROC_UNIT_INTERNALS    $TX_DELAY_PROC_UNIT1_PATH
+
+#add wave -divider "****************************"
+#add wave -divider "MONITOR PACKETIZER 0"
+#add wave -divider "****************************"
+#blk_MONITOR_PACKETIZER_NEW_PROTOCOL            $MONITOR_PACKETIZER0_PATH
+#blk_MONITOR_PACKETIZER_NEW_PROTOCOL_INTERNALS  $MONITOR_PACKETIZER0_PATH
+
+#add wave -divider "****************************"
+#add wave -divider "MONITOR 1"
+#add wave -divider "****************************"
+#
+#add wave -divider "****************************"
+#add wave -divider "MONITOR PACKETIZER 1"
+#add wave -divider "****************************"
+#blk_MONITOR_PACKETIZER_NEW_PROTOCOL            $MONITOR_PACKETIZER1_PATH
+#blk_MONITOR_PACKETIZER_NEW_PROTOCOL_INTERNALS  $MONITOR_PACKETIZER1_PATH
+
+restart -f
+run 240 us

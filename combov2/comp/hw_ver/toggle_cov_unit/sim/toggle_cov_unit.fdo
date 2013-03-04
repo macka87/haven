@@ -1,0 +1,20 @@
+# toggle_cov_unit.fdo: toggle_cov_unit functional simulation file
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+
+set FIRMWARE_BASE    "../../../.."
+set COMP_BASE        "$FIRMWARE_BASE/comp"
+set FL_SIM_BASE      "$COMP_BASE/fl_tools/debug/sim"
+
+set SIG_FILE         "toggle_cov_unit_sig.fdo"
+set TB_FILE          "toggle_cov_unit_tb.vhd"
+
+set COMPONENTS [list \
+                  [ list "TOGGLE_COV_UNIT"      ".."                 "FULL"   ] \
+                  [ list "FL_SIM"               $FL_SIM_BASE         "FULL"   ] \
+               ]
+
+set PACKAGES "$FL_SIM_BASE/fl_sim_oper.vhd"
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE

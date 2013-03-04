@@ -1,0 +1,52 @@
+# signals.fdo : Include file with signals
+# Copyright (C) 2012 
+# Author: Marcela Simkova <isimkova@fit.vutbr.cz>
+
+proc blk_RAND_GEN { BASE } {
+
+   add_wave "-noupdate -label CLK -color yellow"    $BASE/CLK
+   add_wave "-noupdate -label RESET -color yellow"  $BASE/RESET
+
+   add wave -divider "MI32 Interface"
+   add_wave "-noupdate -hex -label MI_DWR"  $BASE/MI_DWR
+   add_wave "-noupdate -hex -label MI_ADDR" $BASE/MI_ADDR
+   add_wave "-noupdate -label MI_RD"        $BASE/MI_RD
+   add_wave "-noupdate -label MI_WR"        $BASE/MI_WR
+   add_wave "-noupdate -hex -label MI_BE"   $BASE/MI_BE
+   add_wave "-noupdate -hex -label MI_DRD"  $BASE/MI_DRD
+   add_wave "-noupdate -label MI_ARDY"      $BASE/MI_ARDY
+   add_wave "-noupdate -label MI_DRDY"      $BASE/MI_DRDY
+   
+   add wave -divider "Output interface"
+   add_wave "-noupdate -hex -label RND_NUM"    $BASE/RND_NUM
+   add_wave "-noupdate      -label RND_VAL"    $BASE/RND_VAL
+   add_wave "-noupdate      -label RND_RUN"    $BASE/RND_RUN
+}
+
+proc blk_RAND_GEN_INTERNALS { BASE } {
+   add wave -divider "Internals"
+   add_wave "-noupdate      -label sig_sel_run"    $BASE/sig_sel_run
+   add_wave "-noupdate      -label sig_sel_seed"   $BASE/sig_sel_seed
+
+   add wave -divider "The Run register"
+   add_wave "-noupdate      -label reg_run"    $BASE/reg_run
+   add_wave "-noupdate      -label reg_run_en" $BASE/reg_run_en
+   add_wave "-noupdate      -label reg_run_in" $BASE/reg_run_in
+   
+   add wave -divider "The Seed register"
+   add_wave "-noupdate -hex -label reg_seed"    $BASE/reg_seed
+   add_wave "-noupdate      -label reg_seed_en" $BASE/reg_seed_en
+   add_wave "-noupdate -hex -label reg_seed_in" $BASE/reg_seed_in
+
+   add wave -divider "The Init register"
+   add_wave "-noupdate      -label reg_init"      $BASE/reg_init
+   add_wave "-noupdate      -label reg_init_set"  $BASE/reg_init_set
+   add_wave "-noupdate      -label reg_init_clr"  $BASE/reg_init_clr
+
+   add wave -divider "The Mersenne Twister"
+   add_wave "-noupdate      -label mt_init"      $BASE/mt_init
+   add_wave "-noupdate -hex -label mt_seed"      $BASE/mt_seed
+   add_wave "-noupdate      -label mt_rnd_run"   $BASE/mt_rnd_run
+   add_wave "-noupdate -hex -label mt_rnd_num"   $BASE/mt_rnd_num
+   add_wave "-noupdate      -label mt_rnd_val"   $BASE/mt_rnd_val
+}

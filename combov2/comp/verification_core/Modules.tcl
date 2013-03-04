@@ -6,6 +6,7 @@
 
 # Set paths
 set COMP_BASE              "$ENTITY_BASE/.."
+set FIRMWARE_BASE          "$COMP_BASE/.."
 set FL_BASE                "$COMP_BASE/fl_tools"
 
 set FL_ASFIFO_BASE         "$FL_BASE/storage/asfifo"
@@ -16,11 +17,15 @@ set FL_HW_MONITOR_BASE     "$COMP_BASE/hw_ver/fl_hw_monitor"
 set FL_VAL_CHECKER_BASE    "$COMP_BASE/hw_ver/fl_val_checker"
 set FL_OBSERVER_BASE       "$COMP_BASE/hw_ver/fl_observer"
 set RESET_GEN_BASE         "$COMP_BASE/hw_ver/reset_gen"
+set FL_BINDER_BASE         "$FL_BASE/flow/binder"
+set FL_COV_UNIT_BASE       "$COMP_BASE/hw_ver/fl_cov_unit"
 
 set FL_FIFO_BASE           "$FL_BASE/storage/fifo"
-set FL_BINDER_BASE         "$FL_BASE/flow/binder"
 set HGEN_BASE              "$COMP_BASE/hgen"
 set ERRONEOUS_FL_FIFO_BASE "$COMP_BASE/erroneous_fl_fifo"
+
+# Source the HAVEN package
+set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
 
 # Source files
 set MOD "$MOD $ENTITY_BASE/verification_core_ent.vhd"
@@ -39,4 +44,5 @@ set COMPONENTS [list \
    [ list "ERRONEOUS_FL_FIFO"  $ERRONEOUS_FL_FIFO_BASE   "FULL"] \
    [ list "FL_VAL_CHECKER"     $FL_VAL_CHECKER_BASE      "FULL"] \
    [ list "FL_OBSERVER"        $FL_OBSERVER_BASE         "FULL"] \
+   [ list "FL_COV_UNIT"        $FL_COV_UNIT_BASE         "FULL"] \
 ]

@@ -46,7 +46,13 @@ use work.math_pack.all;
 -- ----------------------------------------------------------------------------
 entity FL_FORK_1TO2 is
    generic(
-       DATA_WIDTH:   integer:=32
+       DATA_WIDTH:   integer:=32;
+      -- should there be FIFOs used at outputs?
+      USE_FIFOS     : boolean := false;
+      -- depth of the FIFOs if present
+      FIFO_DEPTH    : integer := 64;
+      -- should BlockRAMs be used for FIFOs?
+      USE_BRAMS     : boolean := false
    );
    port(
        -- Common interface
@@ -107,8 +113,11 @@ begin
 -- FL_FORK entity instance
   fl_fork: entity work.FL_FORK
   generic map(
-       DATA_WIDTH=>DATA_WIDTH,
-       OUTPUT_PORTS=>OUTPUT_PORTS
+       DATA_WIDTH    => DATA_WIDTH,
+       OUTPUT_PORTS  => OUTPUT_PORTS,
+       USE_FIFOS     => USE_FIFOS,
+       FIFO_DEPTH    => FIFO_DEPTH,
+       USE_BRAMS     => USE_BRAMS
    )
    port map(
        -- Common interface

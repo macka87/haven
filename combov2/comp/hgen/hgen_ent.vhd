@@ -52,11 +52,13 @@ entity HGEN is
       -- items in FL fifo
       ITEMS          : integer   := 64;
       -- items in input fifos
-      INPUT_FIFO_ITEMS : integer := 16;
+      INPUT_FIFO_ITEMS     : integer := 16;
       -- items in hash fifo
-      HASH_FIFO_ITEMS  : integer := 32;
+      HASH_FIFO_ITEMS      : integer := 32;
       -- should BlockRAMs be used for FIFO?
-      USE_BRAMS_FOR_FIFO : boolean := true
+      USE_BRAMS_FOR_FIFO   : boolean := true;
+      -- should BlockRAMs be used for memory?
+      USE_BRAMS_FOR_MEMORY : boolean := true
    );
    port(
       CLK            : in std_logic;

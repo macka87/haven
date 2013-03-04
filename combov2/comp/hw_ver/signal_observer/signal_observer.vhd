@@ -21,13 +21,16 @@ entity SIGNAL_OBSERVER is
    generic
    (
       -- data width
-      IN_DATA_WIDTH  : integer := 64;
-      OUT_DATA_WIDTH : integer := 64;
+      IN_DATA_WIDTH     : integer := 64;
+      OUT_DATA_WIDTH    : integer := 64;
       -- should be the number of sent frames limited?
-      LIMIT_FRAMES   : boolean := false;
+      LIMIT_FRAMES      : boolean := false;
       -- how many frames should the observer send
-      SEND_X_FRAMES  : integer := 1;
-      ENDPOINT_ID    : integer
+      SEND_X_FRAMES     : integer := 1;
+      -- ID of the endpint
+      ENDPOINT_ID       : std_logic_vector(7 downto 0);
+      -- ID of the protocol
+      SIG_OBS_PROTO_ID  : std_logic_vector(7 downto 0)
    );
 
    port
@@ -242,6 +245,7 @@ begin
    generic map(
       DATA_WIDTH      => OUT_DATA_WIDTH,
       ENDPOINT_ID     => ENDPOINT_ID,
+      PROTOCOL_ID     => SIG_OBS_PROTO_ID,
       FRAME_LENGTH    => FRAME_LENGTH
    )
    port map(

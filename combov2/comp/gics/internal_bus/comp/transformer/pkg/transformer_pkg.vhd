@@ -115,7 +115,7 @@ package body IB_TRANSFORMER_PKG is
       variable aux : integer;
    begin
   
-      aux := log2( max(IN_DATA_WIDTH,OUT_DATA_WIDTH)/min(IN_DATA_WIDTH,OUT_DATA_WIDTH) );
+      aux := log2( max(IN_DATA_WIDTH,OUT_DATA_WIDTH)/work.math_pack.min(IN_DATA_WIDTH,OUT_DATA_WIDTH) );
    
       return aux;
    end part_sel_width; 

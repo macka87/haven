@@ -63,6 +63,13 @@ proc blk_VER_CORE_DUT_IFC { BASE } {
 }
 
 proc blk_VER_CORE_INTERNALS { BASE } {
+  add wave -divider "Output ready signals"
+  add_wave "-noupdate -label output_ready_all"               $BASE/output_ready_all
+  add_wave "-noupdate -label fl_hw_driver_output_ready"      $BASE/fl_hw_driver_output_ready
+  add_wave "-noupdate -label fl_hw_monitor_output_ready"     $BASE/fl_hw_monitor_output_ready
+  add_wave "-noupdate -label fl_val_checker_output_ready"    $BASE/fl_val_checker_output_ready
+  add_wave "-noupdate -label fl_cov_unit_output_ready"       $BASE/fl_cov_unit_output_ready
+
   add wave -divider "Misc"
   add_wave "-noupdate -label reset_dut"     $BASE/reset_dut
 

@@ -42,7 +42,12 @@ package combov2_user_const is
    -- -------------------------------------------------------------------------
    constant CLK_MULT          : integer := 15;  -- Fvco = 62.5 MHz x CLK_MULT
    constant CLK_ICS_DIV       : integer := 5;   -- CLK_ICS freq. = Fvco / CLK_ICS_DIV
+
+   -- originally: 5
+   -- for HGENx1: 6
+   -- for HGENx4: 7
    constant CLK_USER0_DIV     : integer := 5;   -- CLK_USER0 freq. = Fvco / CLK_USER0_DIV
+
    constant CLK_USER1_DIV     : integer := 5;   -- CLK_USER1 freq. = Fvco / CLK_USER1_DIV
    constant CLK_USER2_DIV     : integer := 5;   -- CLK_USER2 freq. = Fvco / CLK_USER2_DIV
    constant CLK_USER3_DIV     : integer := 5;   -- CLK_USER3 freq. = Fvco / CLK_USER3_DIV
@@ -56,8 +61,8 @@ package combov2_user_const is
    constant ID_HW_MAJOR             : std_logic_vector( 15 downto 0):= X"0007";
    constant ID_HW_MINOR             : std_logic_vector( 15 downto 0):= X"0000";
    constant ID_PROJECT_TEXT         : std_logic_vector(255 downto 0):=
-      X"484156454E2C20286329204D61636B612026204F6e6472696B2C203230313100"; 
-   --   H A V E N ,   ( c )   M a c k a   &   O n d r i k ,   2 0 1 1
+      X"484156454E2C20286329204D61636B612026204F6e6472696B2C203230313200"; 
+   --   H A V E N ,   ( c )   M a c k a   &   O n d r i k ,   2 0 1 2
    constant ID_TX_CHANNELS          : std_logic_vector(  7 downto 0):=   X"01";
    constant ID_RX_CHANNELS          : std_logic_vector(  7 downto 0):=   X"01";
    -- -------------------------------------------------------------------------

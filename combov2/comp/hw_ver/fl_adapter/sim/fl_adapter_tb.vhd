@@ -39,7 +39,7 @@ architecture behavioral of testbench is
    constant PART_BASE_OFFSET  : integer := 4;
    constant PART_MAX_OFFSET   : integer := 8;
 
-   constant TRANSACTION_COUNT : integer := 16;
+   constant TRANSACTION_COUNT : integer := 1;
 
    -- signals declarations
    ----------------------------------------------------------------------------
@@ -79,8 +79,6 @@ begin
    uut: entity work.FL_ADAPTER_UNIT
    generic map (
       DATA_WIDTH           => DATA_WIDTH,
-      PART_NUM_CNT_WIDTH   => PART_NUM_CNT_WIDTH,
-      PART_SIZE_CNT_WIDTH  => PART_SIZE_CNT_WIDTH,
       ENDPOINT_ID          => ENDPOINT_ID
    )
    port map (
@@ -101,14 +99,14 @@ begin
       GEN_FLOW          => adapter_gen_flow,
    
       -- Output FrameLink Interface
-      DATA              => adapter_fl_data,
-      D_REM             => adapter_fl_rem,
-      SRC_RDY_N         => adapter_fl_src_rdy_n,
-      DST_RDY_N         => adapter_fl_dst_rdy_n,
-      SOP_N             => adapter_fl_sop_n,
-      EOP_N             => adapter_fl_eop_n,
-      SOF_N             => adapter_fl_sof_n,
-      EOF_N             => adapter_fl_eof_n
+      TX_DATA              => adapter_fl_data,
+      TX_REM               => adapter_fl_rem,
+      TX_SRC_RDY_N         => adapter_fl_src_rdy_n,
+      TX_DST_RDY_N         => adapter_fl_dst_rdy_n,
+      TX_SOP_N             => adapter_fl_sop_n,
+      TX_EOP_N             => adapter_fl_eop_n,
+      TX_SOF_N             => adapter_fl_sof_n,
+      TX_EOF_N             => adapter_fl_eof_n
    );
 
    -- ----------------------------------------------------
@@ -164,6 +162,8 @@ begin
       end if;
    end process;
 
+   adapter_fl_dst_rdy_n   <= reg_rand_bit;
+
    -- the testbench process
    tb: process
    begin
@@ -174,8 +174,6 @@ begin
       adapter_mi_be    <= "1111";
       adapter_mi_dwr   <= (others => '0');
       adapter_mi_addr  <= X"DEADBEEF";
-      
-      adapter_fl_dst_rdy_n   <= '0';
 
       wait for reset_time; 
       wait until rising_edge(clk);
@@ -340,6 +338,10 @@ begin
 
       adapter_mi_wr    <= '0';
 
+      -- ------- read TRANSACTION COUNT -----------
+      adapter_mi_addr  <= TRANS_REG_ADDR;
+      adapter_mi_rd    <= '1';
+      wait until rising_edge(clk);
       wait;
    end process;
 end architecture behavioral;

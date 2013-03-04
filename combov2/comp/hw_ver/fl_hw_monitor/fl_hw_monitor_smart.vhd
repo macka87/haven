@@ -23,7 +23,14 @@ entity FL_HW_MONITOR_SMART is
       -- data width
       IN_DATA_WIDTH  : integer := 64;
       OUT_DATA_WIDTH : integer := 64;
-      ENDPOINT_ID    : integer
+      -- should the buffer for output frames be used, so that a frame is
+      -- started to be sent only if it is complete? Note that setting this
+      -- option to "true" may consume a significant amount of FPGA's resources
+      USE_BUFFER     : boolean := true;
+      -- ID of the endpoint
+      ENDPOINT_ID    : std_logic_vector(7 downto 0) := X"00";
+      -- ID of the FrameLink protocol
+      FL_PROTOCOL_ID : std_logic_vector(7 downto 0) := X"00"
    );
 
    port
@@ -233,10 +240,12 @@ begin
    tx_fl_transformer_dst_rdy_n    <= rx_packetizer_dst_rdy_n;
 
    -- --------------- MONITOR_PACKETIZER instance -------------------------------
-   monitor_packetizer_i : entity work.MONITOR_PACKETIZER
+   monitor_packetizer_i : entity work.MONITOR_PACKETIZER_NEW_PROTOCOL
    generic map(
       DATA_WIDTH      => OUT_DATA_WIDTH,
-      ENDPOINT_ID     => ENDPOINT_ID
+      ENDPOINT_ID     => ENDPOINT_ID,
+      USE_BUFFER      => USE_BUFFER,
+      PROTOCOL_ID     => FL_PROTOCOL_ID
    )
    port map(
       CLK             => TX_CLK,

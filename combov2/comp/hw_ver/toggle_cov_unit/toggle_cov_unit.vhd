@@ -74,7 +74,11 @@ architecture arch of toggle_cov_unit is
 -- ==========================================================================
 
 -- the number of data frames at the output
-constant FRAME_LENGTH    : integer := ((2*IN_DATA_WIDTH-1) / OUT_DATA_WIDTH) + 1;
+constant FRAME_LENGTH    : integer := ((2*IN_DATA_WIDTH-1) / 8) + 1;
+
+-- counter width
+constant COUNTER_WIDTH   : integer := log2(SEND_INTERVAL+1);
+
 
 -- ==========================================================================
 --                                     SIGNALS
@@ -125,12 +129,12 @@ signal reg_rearranger_completed_clr  : std_logic;
 signal reg_rearranger_completed_set  : std_logic;
 
 -- the acc_time_counter counting the interval between sending of coverage report packets
-signal acc_time_counter              : std_logic_vector(log2(SEND_INTERVAL-1) downto 0);
+signal acc_time_counter              : std_logic_vector(COUNTER_WIDTH-1 downto 0);
 signal acc_time_counter_en           : std_logic;
 signal acc_time_counter_clr          : std_logic;
 
 -- the comparer of acc_time_counter
-signal cmp_acc_time_counter_is_max_in: std_logic_vector(log2(SEND_INTERVAL-1) downto 0);
+signal cmp_acc_time_counter_is_max_in: std_logic_vector(COUNTER_WIDTH-1 downto 0);
 signal cmp_acc_time_counter_is_max   : std_logic;
 
 -- packetizer input
@@ -280,7 +284,7 @@ begin
    begin
       if (rising_edge(TX_CLK)) then
          if (TX_RESET = '1') then
-            reg_rearranger_completed <= '0';
+            reg_rearranger_completed <= '1';
          elsif (reg_rearranger_completed_set = '1') then
             reg_rearranger_completed <= '1';
          elsif (reg_rearranger_completed_clr = '1') then
@@ -333,7 +337,9 @@ begin
    generic map(
       DATA_WIDTH      => OUT_DATA_WIDTH,
       ENDPOINT_ID     => ENDPOINT_ID,
-      FRAME_LENGTH    => FRAME_LENGTH
+      FRAME_LENGTH    => FRAME_LENGTH,
+      PROTOCOL_ID     => 16#C0#
+
    )
    port map(
       CLK             => TX_CLK,
