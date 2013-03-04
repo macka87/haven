@@ -30,7 +30,7 @@ package test_pkg;
    * SW_E_HW_GDS - unsupported 
    * SW_DES_HW_G
    */ 
-   parameter tFramework FRAMEWORK = SW_ES_HW_GD;                 
+   parameter tFramework FRAMEWORK = SW_GES_HW_D;                 
    
    // DUT GENERICS
    parameter DATA_WIDTH   = 64;                // FrameLink data width
@@ -54,7 +54,7 @@ package test_pkg;
    * OTHER_GEN   = other generator of transactions
    * HW_GEN      = hardware generator of transactions 
    */ 
-   parameter tGenInput GEN_INPUT = HW_GEN;  
+   parameter tGenInput GEN_INPUT = SV_GEN;  
    
   /*
    * Enumeration type for storage outputs of Generator
@@ -92,7 +92,7 @@ package test_pkg;
    parameter byte RESPONDER_IT_DELAY_HIGH   = 10;
 
    // TEST PARAMETERS
-   parameter TRANSACTION_COUNT = 200000;  // Count of transactions
+   parameter TRANSACTION_COUNT = 10000;  // Count of transactions
    parameter SEED1             = 1;  // Seed for PRNG
    parameter SEED2             = 2;  // Seed for PRNG
 endpackage

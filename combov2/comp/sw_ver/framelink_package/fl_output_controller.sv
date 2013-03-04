@@ -24,7 +24,7 @@
     function new(string inst,
                  byte id,
                  tTransMbx outputMbx, 
-                 int frameCount); 
+                 int frameCount);                    
        super.new(inst, id, outputMbx);
        this.frameCount = frameCount;
        this.counter    = 0;
@@ -69,12 +69,14 @@
           
           $cast(ntr, tr);
           
+          /*
           if (ntr.data[4] == 1) $write("FL_OUT_CNTRL: EOP\n");
           else if (ntr.data[4] == 3) $write("FL_OUT_CNTRL: EOF\n");
           else begin
                  $write("FL_OUT_CNTRL: Unsupported control sequence!!!");
                  $stop;
                end
+          */     
         end     
 
         $cast(tr, fltr);
