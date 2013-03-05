@@ -1,2 +1,5 @@
 # ignore golden model
 golden_model/*
+
+#ignore testbench
+xexes/*
