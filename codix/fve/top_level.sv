@@ -17,9 +17,13 @@ module codix_ca_top;
 	import sv_codix_ca_env_pkg::*;
 	import sv_codix_ca_test_pkg::*;
 
+    // software version of verification environment
+//    if (FRAMEWORK == SW_FULL) begin
+
 	// Reset and clock signals
 	logic CLK = 1;
 	logic RST = 1;
+
 	// DUT instance
 	DUT dut( CLK, RST );
 
@@ -59,4 +63,24 @@ module codix_ca_top;
 		// start of the simulation
 		run_test( "codix_ca_test" );
 	end
+
+/*    end
+    // hw accelerated version
+    else if (FRAMEWORK == SW_HW) begin
+	// customize the default printer
+	initial begin
+		automatic ovm_table_printer printer = new;
+		printer.knobs.begin_elements = -1;
+		printer.knobs.value_width = -1;
+		printer.knobs.name_width = 53;
+		ovm_default_printer = printer;
+		$timeformat(-9, 3, " ns", 8);
+
+		// start of the simulation
+		run_test( "codix_ca_test" );
+	end
+
+    end
+*/
+
 endmodule: codix_ca_top
