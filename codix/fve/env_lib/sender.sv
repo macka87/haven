@@ -14,31 +14,34 @@
  * are received by 'transMbx'(Mailbox) property.
  *
  */
- class Sender extends ovm_object; 
+ class Sender extends ovm_component; 
  
     // Public Class Atributes 
-    string    inst;      //! Sender identification
+/*    string    inst;      //! Sender identification
     byte      id;        //! Sender ID number
     tTransMbx transMbx;  //! Transaction mailbox
     tTransMbx inputMbx;  //! Input controller's mailbox
-    InputCbs  cbs[$];    //! Sender callback list  
+    InputCbs  cbs[$];    //! Sender callback list  */
 
     // registration of component tools
-    `ovm_component_utils_begin( sorter )
-        `ovm_field_object( OVM_DEFAULT | OVM_NOCOMPARE | OVM_NOPRINT | OVM_NORECORD | OVM_NOPACK )
+    `ovm_component_utils_begin( Sender )
+//        `ovm_field_object( OVM_DEFAULT | OVM_NOCOMPARE | OVM_NOPRINT | OVM_NORECORD | OVM_NOPACK )
     `ovm_component_utils_end
 
     // Constructor - creates new instance of this class
     // \param inst     - driver instance name
     // \param transMbx - transaction mailbox   
-    function new( string name, ovm_component parent, string inst, byte id, tTransMbx transMbx, tTransMbx inputMbx );
-        super.new( name, parent );
+//    function new( string name, ovm_component parent, string inst, byte id, tTransMbx transMbx, tTransMbx inputMbx );
+    function new( string name, ovm_component parent);
+
+        super.new( name , parent);
 
         // Create mailbox
-        this.inst        = inst;      //! Store sender identifier
+/*        this.inst        = inst;      //! Store sender identifier
         this.id          = id;        //! Sender ID number
         this.transMbx    = transMbx;  //! Store pointer to mailbox
         this.inputMbx    = inputMbx;  //! Store pointer to mailbox 
+*/
 
     endfunction : new
 
@@ -47,16 +50,31 @@
         super.build();
     endfunction: build
 
-   /*! 
-    * Set Sender Callback - callback object into List 
-    */
-    virtual function void setCallbacks(InputCbs cbs);
-      this.cbs.push_back(cbs);
-    endfunction : setCallbacks 
+    task run ();
+        int fileid;
+
+
+        $write("som v senderi");
+
+        // load input program from xexe directory
+        fileid = $fopen("../xexes/sha.c.xexe.hw", "r");
+        if(fileid == 0) begin
+            $display("sender.sv - error: Cannot open the file.");
+        end
+
+        // loop over lines of input program
+        while(!$feof(fileid)) begin
+            string line;
+            if($fgets(line, fileid)) begin
+                $display(line);
+            end
+        end
+
+    endtask: run
     
-   /*! 
-    * Sends start control transaction to HW.    
-    */ 
+/*
+    // Sends start control transaction to HW.    
+     
     virtual task sendStart();
       NetCOPETransaction controlTrans = new();
       
@@ -81,9 +99,9 @@
       inputMbx.put(controlTrans);    // put transaction to mailbox  
     endtask : sendStart
     
-   /*! 
-    * Sends stop control transaction to HW.    
-    */ 
+    
+    // Sends stop control transaction to HW.    
+    
     task sendStop();
       NetCOPETransaction controlTrans = new();
       
@@ -109,9 +127,9 @@
       inputMbx.put(controlTrans);    // put transaction to mailbox  
     endtask : sendStop
     
-   /*! 
-    * Sends waitfor control transaction to HW.    
-    */ 
+    
+    // Sends waitfor control transaction to HW.    
+     
     task sendWait(int clocks);
       NetCOPETransaction controlTrans = new();
       logic [63:0] data = clocks;
@@ -141,9 +159,7 @@
       inputMbx.put(controlTrans);    // put transaction to mailbox  
     endtask : sendWait
     
-   /*! 
-    * Sends waitforever control transaction to HW.    
-    */
+    // Sends waitforever control transaction to HW.    
     task sendWaitForever();
       NetCOPETransaction controlTrans = new();
       
@@ -167,4 +183,6 @@
       //controlTrans.display("WAIT FOREVER CONTROL");
       inputMbx.put(controlTrans);    // put transaction to mailbox
     endtask : sendWaitForever
+
+*/
  endclass : Sender  

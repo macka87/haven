@@ -22,9 +22,9 @@ package sv_codix_ca_env_pkg;
       	`include "sorter.sv"
 	`include "sender.sv"
 	`include "env.sv"
-        `include "../seq_lib/netcope_transaction.sv"
-	`include "dpi/input_wrapper.sv"
-	`include "dpi/output_wrapper.sv"
-
+//        `include "../seq_lib/netcope_transaction.sv"
+//	`include "dpi/input_wrapper.sv"
+//	`include "dpi/output_wrapper.sv"       
+//	`include "dpi/dpi_wrapper_pkg.sv"
 
 endpackage
