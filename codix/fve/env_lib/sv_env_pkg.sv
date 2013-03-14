@@ -19,6 +19,12 @@ package sv_codix_ca_env_pkg;
 	`include "monitor.sv"
 	`include "subscriber.sv"
 	`include "scoreboard.sv"
+      	`include "sorter.sv"
+	`include "sender.sv"
 	`include "env.sv"
+        `include "../seq_lib/netcope_transaction.sv"
+	`include "dpi/input_wrapper.sv"
+	`include "dpi/output_wrapper.sv"
+
 
 endpackage

@@ -1,0 +1,38 @@
+=================================================================================
+===                Readme file - haven/codix/fve/env_lib/dpi/Readme
+=================================================================================
+== Project:        Hardware accelerated Functional Verification of Processor
+== Date:           09-03-2013 
+== Author:         Martin Funiak
+=================================================================================
+===                Directory with input and output wrappers:
+=================================================================================
+=== input_wrapper.sv
+=== output_wrapper.sv
+=== dpi_wrapper_pkg.sv
+=================================================================================
+===                OVM field macros
+
+   OVM_ALL_ON      Set all operations on (default).
+   OVM_DEFAULT     Use the default flag settings.
+   OVM_NOCOPY      Do not copy this field.
+   OVM_NOCOMPARE   Do not compare this field.
+   OVM_NOPRINT     Do not print this field.
+   OVM_NODEFPRINT  Do not print the field if it is the same as its
+   OVM_NOPACK      Do not pack or unpack this field.
+   OVM_PHYSICAL    Treat as a physical field.  Use physical setting in policy class for this field.
+   OVM_ABSTRACT    Treat as an abstract field.  Use the abstract setting in the policy class for this field.
+   OVM_READONLY    Do not allow setting of this field from the set_*_local methods.
+
+   A radix for printing and recording can be specified by OR.ing one of the
+   following constants in the FLAG argument
+
+   OVM_BIN         Print / record the field in binary (base-2).
+   OVM_DEC         Print / record the field in decimal (base-10).
+   OVM_UNSIGNED    Print / record the field in unsigned decimal (base-10).
+   OVM_OCT         Print / record the field in octal (base-8).
+   OVM_HEX         Print / record the field in hexidecimal (base-16).
+   OVM_STRING      Print / record the field in string format.
+   OVM_TIME        Print / record the field in time format.
+
+   Radix settings for integral types.  Hex is the default radix if none is specified.

@@ -36,6 +36,15 @@ class codix_ca_env extends ovm_env;
 	local codix_ca_scoreboard m_codix_ca_scoreboard;
 	local codix_ca_gm m_codix_ca_gm;
 
+
+        // signal distribution & merge
+        local Sender m_sender;
+        local Sorter m_sorter;
+
+        // input & output wrapper
+        local Input_Wrapper m_input_wrapper;
+        local Output_Wrapper m_output_wrapper;
+
 	// Constructor - creates new instance of this class
 	function new( string name, ovm_component parent );
 		super.new( name, parent );
@@ -58,6 +67,13 @@ class codix_ca_env extends ovm_env;
 		m_codix_ca_output_subscriber = new( "m_codix_ca_output_subscriber", this );
 		m_codix_ca_scoreboard = new( "m_codix_ca_scoreboard", this );
 		m_codix_ca_gm = new( "m_codix_ca_gm", this );
+
+                m_Sorter = new("m_Sorter", this);
+                m_Sender = new("m_Sender", this);
+
+                m_output_wrapper = new("m_output_wrapper", this);
+                m_input_wrapper  = new("m_input_wrapper", this);
+
 	endfunction: build
 
 	// Connect - connects ports of the child components so they can communicate
@@ -87,6 +103,12 @@ class codix_ca_env extends ovm_env;
 		m_codix_ca_output_monitor.analysis_export.connect( m_codix_ca_output_subscriber.analysis_export );
 		// golden model => scoreboard
 		m_codix_ca_gm.analysis_export.connect( m_codix_ca_scoreboard.m_golden_model_codix_ca_output_fifo.analysis_export );
+
+                // sender takes input data from xexes directory
+                // sender => input_wrapper
+                // output wrapper => sorter
+                // sorter => scoreboard
+
 	endfunction: connect
 
 endclass: codix_ca_env
