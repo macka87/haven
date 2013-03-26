@@ -1,47 +1,38 @@
-/******************************************************************************
- *         Hardware accelerated Functional Verification of Processor          *
- ******************************************************************************/
-/**
- *  \file   sorter.sv
- *  \date   09-03-2013
- *  \brief  Sender merge input signal from SW environment 
- */
+//  ---------------------------------------------------------
+//  Hardware accelerated Functional Verification of Processor
+//  ---------------------------------------------------------
+
+//  \file   sender.sv
+//  \date   09-03-2013
+//  \brief  Sender merge input signal from SW environment 
   
- /*!
- * This class is responsible for dividing FrameLink transactions to parts
- * and attaching NetCOPE protocol header to each part. Also creates control 
- * transactions (src_rdy information) with NetCOPE protocol header. Transactions
- * are received by 'transMbx'(Mailbox) property.
- *
- */
- class Sender extends ovm_component; 
+// This class is responsible for dividing FrameLink transactions to parts
+// and attaching NetCOPE protocol header to each part. Also creates control 
+// transactions (src_rdy information) with NetCOPE protocol header. Transactions
+// are received by 'transMbx'(Mailbox) property.
+class Sender extends ovm_component; 
  
     // Public Class Atributes 
-/*    string    inst;      //! Sender identification
-    byte      id;        //! Sender ID number
-    tTransMbx transMbx;  //! Transaction mailbox
-    tTransMbx inputMbx;  //! Input controller's mailbox
-    InputCbs  cbs[$];    //! Sender callback list  */
+    const int id;  // endpoint id
+    const int pDataWidth; //?
+
+    // put port
+    ovm_put_port#(NetCOPETransaction) pport;
 
     // registration of component tools
     `ovm_component_utils_begin( Sender )
-//        `ovm_field_object( OVM_DEFAULT | OVM_NOCOMPARE | OVM_NOPRINT | OVM_NORECORD | OVM_NOPACK )
     `ovm_component_utils_end
 
     // Constructor - creates new instance of this class
-    // \param inst     - driver instance name
-    // \param transMbx - transaction mailbox   
-//    function new( string name, ovm_component parent, string inst, byte id, tTransMbx transMbx, tTransMbx inputMbx );
     function new( string name, ovm_component parent);
-
         super.new( name , parent);
 
-        // Create mailbox
-/*        this.inst        = inst;      //! Store sender identifier
-        this.id          = id;        //! Sender ID number
-        this.transMbx    = transMbx;  //! Store pointer to mailbox
-        this.inputMbx    = inputMbx;  //! Store pointer to mailbox 
-*/
+        // port for connection with input wrapper
+        pport = new("pport", this);
+
+        // endpoint id
+        this.id = 25;
+        this.pDataWidth = 32;
 
     endfunction : new
 
@@ -50,29 +41,164 @@
         super.build();
     endfunction: build
 
+    // time-consuming task
     task run ();
-        int fileid;
+        `ovm_info( get_name(), $sformatf("##: som v senderi"), OVM_LOW);
 
+    endtask: run
 
-        $write("som v senderi");
+/*    //Sends transactions - takes transaction from mailbox, divides it to parts
+    //and adds NetCOPE protocol header to each part.     
+      
+    task sendTransactions(input int transCount);
+      FrameLinkTransaction transaction;
+      Transaction to;
+      int i=0;
+      
+      while (i < transCount) begin  
+        transMbx.get(to);                 //! Get transaction from mailbox 
+        
+        foreach (cbs[i])                  //! Call transaction postprocessing
+          cbs[i].post_tr(to, id);  
+          
+        $cast(transaction,to);   
+        //transaction.display(inst);        //! Display transaction
+        createNetCOPETrans(transaction);  //! Create NetCOPE transactions
+        i++;
+      end  
+    endtask : sendTransactions */
+    
+    // Create data and control NetCOPE transactions from input program 
+    task createNetCOPETrans();
+        int fd;                        // input file descriptor
+        int i;                         // line index
+        string input_program[int];     // associative array for input program
+
+        i = 0;
 
         // load input program from xexe directory
-        fileid = $fopen("../xexes/sha.c.xexe.hw", "r");
-        if(fileid == 0) begin
-            $display("sender.sv - error: Cannot open the file.");
+        fd = $fopen( "xexes/sha.c.xexe.hw", "r" );
+        if(fd == 0) begin
+            `ovm_error( get_name(), "'sender.sv': Cannot open input program file!\n" );
         end
 
         // loop over lines of input program
-        while(!$feof(fileid)) begin
+        while(!$feof(fd)) begin
             string line;
-            if($fgets(line, fileid)) begin
-                $display(line);
+            if($fgets(line, fd)) begin
+                // save line to associative array
+                input_program[i] = line;
+                i++;
+            end
+        end
+        
+        $fclose( fd );
+
+        // create transaction from loaded file with program
+        for(int i = 0; i < input_program.num; i++) begin
+            // last transaction
+            if(i == (input_program.num-1)) begin
+                createDataTransaction(input_program, 1, 1, i);
+                createControlTransaction(input_program, i);
+            end
+            // all transactions except last
+            else begin
+                createDataTransaction(input_program, 0, 1, i);
+                createControlTransaction(input_program, i);
             end
         end
 
-    endtask: run
+    endtask : createNetCOPETrans
     
-/*
+    
+   // Create NetCOPE data transaction from one part of FrameLink transaction.      
+   task createDataTransaction(input string input_program[int], 
+                               input bit lastPart,
+                               input bit allData,
+                               input int part);
+      
+      NetCOPETransaction dataTrans = new();
+      int size;
+      
+      // NetCOPE transaction settings
+      dataTrans.endpointID  = id;
+      dataTrans.transType   = 0;  // data transaction
+      dataTrans.ifcProtocol = 1;  // identifies FrameLink protocol
+      dataTrans.ifcInfo     = 2*allData + lastPart;  
+      
+      // NetCOPE transaction transported data  
+      size = input_program[part].len;
+      dataTrans.data    = new[size + 8];
+      
+      // NetCOPE header
+      dataTrans.data[0] = id;                   // endpointID
+      dataTrans.data[1] = 0;                    // endpointProtocol
+      dataTrans.data[2] = 0; 
+      dataTrans.data[3] = 0;
+      dataTrans.data[4] = 0;                    // transType
+      dataTrans.data[5] = 0;
+      dataTrans.data[6] = 1;                    // ifcProtocol
+      dataTrans.data[7] = 2*allData + lastPart; // ifcInfo
+      
+      // data
+      for (int i=0; i<size; i++)
+        dataTrans.data[8+i] = input_program[part][i];
+      
+      //dataTrans.display("DATA");
+      pport.put(dataTrans);    // send data transaction to input wrapper
+    endtask : createDataTransaction 
+     
+    //Create NetCOPE control transaction from FrameLink transaction.      
+    // \param tr - 
+    task createControlTransaction(input string tr[int],
+                                  input int part);
+      NetCOPETransaction controlTrans = new();
+      int size    = 1; // btDelay takes 1 Byte
+      int counter = 0;
+      
+      controlTrans.endpointID  = id;
+      controlTrans.transType   = 5;  // control src_rdy transaction
+      controlTrans.ifcProtocol = 1;  // no protocol
+      controlTrans.ifcInfo     = 0;  // no info
+      
+      if (tr[part].len%(pDataWidth/8) == 0) 
+        size += (tr[part].len/(pDataWidth/8)) -1;
+      else 
+        size += (tr[part].len/(pDataWidth/8));
+            
+      controlTrans.data    = new[size + 8];
+      
+      // NetCOPE header
+      controlTrans.data[0] = id;  // endpointID
+      controlTrans.data[1] = 0;   // endpointProtocol
+      controlTrans.data[2] = 0; 
+      controlTrans.data[3] = 0;
+      controlTrans.data[4] = 5;   // transType
+      controlTrans.data[5] = 0;
+      controlTrans.data[6] = 1;   // ifcProtocol
+      controlTrans.data[7] = 0;   // ifcInfo
+      
+      counter = 8;
+      
+      // data
+/*    if (tr.enBtDelay) controlTrans.data[counter] = tr.btDelay;
+      else controlTrans.data[counter] = 0;
+      
+      counter++;
+      
+      for (int j=0; j<size; j++) begin
+        if (tr.enItDelay) 
+          controlTrans.data[counter] = tr.itDelay[part][j];
+        else 
+          controlTrans.data[counter] = 0;  
+        counter++;
+      end*/
+                
+      controlTrans.display("CONTROL");
+      pport.put(controlTrans);   // send control transaction to input wrapper
+    endtask : createControlTransaction
+    
+
     // Sends start control transaction to HW.    
      
     virtual task sendStart();
@@ -95,11 +221,11 @@
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      //controlTrans.display("START CONTROL");
-      inputMbx.put(controlTrans);    // put transaction to mailbox  
+      controlTrans.display("START CONTROL");
+      pport.put(controlTrans);
     endtask : sendStart
     
-    
+ 
     // Sends stop control transaction to HW.    
     
     task sendStop();
@@ -123,8 +249,8 @@
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      //controlTrans.display("STOP CONTROL");
-      inputMbx.put(controlTrans);    // put transaction to mailbox  
+      controlTrans.display("STOP CONTROL");
+      pport.put(controlTrans);    // put transaction to mailbox  
     endtask : sendStop
     
     
@@ -155,8 +281,8 @@
         for(int j=0; j<8; j++)
           controlTrans.data[i+8][j] = data[i*8+j];
       
-      //controlTrans.display("WAIT FOR CONTROL");
-      inputMbx.put(controlTrans);    // put transaction to mailbox  
+      controlTrans.display("WAIT FOR CONTROL");
+      pport.put(controlTrans);    // put transaction to mailbox  
     endtask : sendWait
     
     // Sends waitforever control transaction to HW.    
@@ -180,9 +306,8 @@
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      //controlTrans.display("WAIT FOREVER CONTROL");
-      inputMbx.put(controlTrans);    // put transaction to mailbox
+      controlTrans.display("WAIT FOREVER CONTROL");
+      pport.put(controlTrans);    // put transaction to mailbox
     endtask : sendWaitForever
 
-*/
  endclass : Sender  

@@ -12,6 +12,7 @@ package sv_codix_ca_env_pkg;
 	import sv_codix_ca_param_pkg::*;
 	import sv_codix_ca_seq_pkg::*;
 	import sv_codix_ca_golden_model_pkg::*;
+        import sv_codix_ca_dpi_pkg::*;
 
 	`include "ovm_macros.svh"
 	`include "dut_if_wrapper.sv"
@@ -22,9 +23,5 @@ package sv_codix_ca_env_pkg;
       	`include "sorter.sv"
 	`include "sender.sv"
 	`include "env.sv"
-//        `include "../seq_lib/netcope_transaction.sv"
-//	`include "dpi/input_wrapper.sv"
-//	`include "dpi/output_wrapper.sv"       
-//	`include "dpi/dpi_wrapper_pkg.sv"
 
 endpackage

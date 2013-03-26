@@ -15,5 +15,6 @@ package sv_codix_ca_seq_pkg;
 	`include "transactions.sv"
 	`include "sequencer.sv"
 	`include "sequence.sv"
+	`include "netcope_transaction.sv"
 
 endpackage

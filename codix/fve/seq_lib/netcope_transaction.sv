@@ -26,20 +26,15 @@ class NetCOPETransaction extends ovm_sequence_item;
     // size of transported data
     int size = 0;
 
-    // registration of component tools
-    `ovm_component_utils_begin( NetCOPETransaction )
-    `ovm_component_utils_end
+    // registration of object
+    `ovm_object_utils_begin( NetCOPETransaction )
+    `ovm_object_utils_end
 
     // Constructor - creates new instance of this class
-    function new( string name, ovm_component parent );
-        super.new( name, parent );
+    function new( string name = "NetCOPE transaction instance" );
+        super.new( name );
 
     endfunction : new
-
-    // build - instantiates child components
-    function void build;
-        super.build();
-    endfunction: build
 
     // Function displays the current values of the transaction or data described
     // by this instance in a human-readable format on the standard output.

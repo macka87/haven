@@ -19,7 +19,6 @@ class OutputWrapper;
     // Public Class Atributes
     string    inst;      //! Output Wrapper identification
     bit       enabled;   //! Output Wrapper enabling
-    tTransMbx outputMbx; //! NetCOPE transactions mailbox
 
     // registration of component tools
     `ovm_component_utils_begin( OutputWrapper )
@@ -30,12 +29,11 @@ class OutputWrapper;
     // Constructor - creates Input Wrapper object  
     // \param inst     - Output Wrapper instance name
     // \param ouputMbx - transaction mailbox     
-    function new (string name, ovm_component parent, string inst, tTransMbx outputMbx);
+    function new (string name, ovm_component parent, string inst);
       super.new( name, parent );
 
       this.inst        = inst;      //! Store wrapper identifier
       this.enabled     = 0;         //! Output Wrapper is disabled by default
-      this.outputMbx   = outputMbx; //! Store pointer to mailbox
 
     endfunction: new
 
@@ -63,33 +61,30 @@ class OutputWrapper;
       int res;
       int unsigned size;   
       NetCOPETransaction ntr;
-            
-			while (enabled) begin 
+      while (enabled) begin 
         size = 0;
-				
-				ntr = new();
-			  ntr.data = new[4096];
-        
+        ntr = new();
+        ntr.data = new[4096];
         // we call C function (through DPI layer) for data transfer from hw
         res = c_receiveData(size, ntr.data);
-        
+
         if (res == 1) begin
            $error("RECEIVE DATA in output wrapper failed!!!"); 
            $finish();
-				end
+        end
         else begin
           if (size > 0) begin
             // store the right size of data
-						ntr.size = size;
-						//$write("received size: %d\n", size);
-            //ntr.display("OUTPUT NETCOPE TRANSACTION");
+            ntr.size = size;
+            $write("received size: %d\n", size);
+            ntr.display("OUTPUT NETCOPE TRANSACTION");
             // put received data to output mailbox
-            outputMbx.put(ntr);  
+            //outputMbx.put(ntr);  
           end
-					else begin
-						#10ns;
-					end
-				end  
+          else begin
+            #10ns;
+          end
+        end  
       end
     endtask : run 
  

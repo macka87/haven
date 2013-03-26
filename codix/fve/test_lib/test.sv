@@ -10,20 +10,27 @@
 // This class is OVM test for codix_ca
 class codix_ca_test extends ovm_test;
 
-	// registration of component tools
-	`ovm_component_utils( codix_ca_test )
+    // registration of component tools
+    `ovm_component_utils( codix_ca_test )
 
-	// member attribute with the verification environment
-	local codix_ca_env m_codix_ca_env;
-	// Constructor - creates new instance of this class
-	function new( string name, ovm_component parent );
-		super.new( name, parent );
-	endfunction : new
+    // member attribute with the verification environment
+    local codix_ca_env m_codix_ca_env;
+    local codix_sw_hw  codix_env;
 
-	// build - instantiates child components
-	function void build();
-		super.build();
-		m_codix_ca_env = codix_ca_env::type_id::create( "m_codix_ca_env", this );
-	endfunction: build
+    // Constructor - creates new instance of this class
+    function new( string name, ovm_component parent );
+        super.new( name, parent );
+    endfunction : new
+
+    // build - instantiates child components
+    function void build();
+        super.build();
+        if(VER_ENV == SW_FULL) begin
+            m_codix_ca_env = codix_ca_env::type_id::create( "m_codix_ca_env", this );
+        end
+        else if (VER_ENV == SW_HW) begin
+            codix_env = codix_sw_hw::type_id::create( "codix_env", this );
+        end
+    endfunction: build
 
 endclass: codix_ca_test

@@ -10,31 +10,33 @@
 // The topmost encapsulation level of the verification
 module codix_ca_top;
 
-	import ovm_pkg::*;
-	import sv_codix_ca_param_pkg::*;
-	import sv_codix_ca_seq_pkg::*;
-	import sv_codix_ca_golden_model_pkg::*;
-	import sv_codix_ca_env_pkg::*;
-	import sv_codix_ca_test_pkg::*;
+    import ovm_pkg::*;
+    import sv_codix_ca_param_pkg::*;
+    import sv_codix_ca_seq_pkg::*;
+    import sv_codix_ca_golden_model_pkg::*;
+    import sv_codix_ca_env_pkg::*;
+    import sv_codix_ca_test_pkg::*;
+    import sv_codix_ca_dpi_pkg::*;
+
+    // Reset and clock signals
+    logic CLK = 1;
+    logic RST = 1;
+
+        // DUT instance
+        DUT dut( CLK, RST );
 
     // software version of verification environment
-//    if (FRAMEWORK == SW_FULL) begin
+    if (VER_ENV == SW_FULL) begin
 
-	// Reset and clock signals
-	logic CLK = 1;
-	logic RST = 1;
 
-	// DUT instance
-	DUT dut( CLK, RST );
+        // clock generation
+        always #(CLK_PERIOD/2) CLK = ~CLK;
 
-	// clock generation
-	always #(CLK_PERIOD/2) CLK = ~CLK;
-
-	// reset at the start of the simulation
-	initial begin
-		RST = 0;
-		#(RESET_TIME);
-		RST = ~RST;
+        // reset at the start of the simulation
+        initial begin
+            RST = 0;
+            #(RESET_TIME);
+            RST = ~RST;
 	end
 
 	// customize the default printer
@@ -64,9 +66,10 @@ module codix_ca_top;
 		run_test( "codix_ca_test" );
 	end
 
-/*    end
+    end
+
     // hw accelerated version
-    else if (FRAMEWORK == SW_HW) begin
+    else if (VER_ENV == SW_HW) begin
 	// customize the default printer
 	initial begin
 		automatic ovm_table_printer printer = new;
@@ -81,6 +84,5 @@ module codix_ca_top;
 	end
 
     end
-*/
 
 endmodule: codix_ca_top

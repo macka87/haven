@@ -36,14 +36,6 @@ class codix_ca_env extends ovm_env;
 	local codix_ca_scoreboard m_codix_ca_scoreboard;
 	local codix_ca_gm m_codix_ca_gm;
 
-        // signal distribution & merge
-        local Sender m_sender;
-        //local Sorter m_sorter;
-
-        // input & output wrapper
-        //local Input_Wrapper m_input_wrapper;
-        //local Output_Wrapper m_output_wrapper;
-
 	// Constructor - creates new instance of this class
 	function new( string name, ovm_component parent );
 		super.new( name, parent );
@@ -53,7 +45,6 @@ class codix_ca_env extends ovm_env;
 	function void build;
 		super.build();
             
-//           if(FRAMEWORK == SW_FULL) begin
 		m_codix_ca_core_regs_monitor = new( "m_codix_ca_core_regs_monitor", this );
 		m_codix_ca_core_regs_subscriber = new( "m_codix_ca_core_regs_subscriber", this );
 		m_codix_ca_core_main_instr_hw_instr_hw_monitor = new( "m_codix_ca_core_main_instr_hw_instr_hw_monitor", this );
@@ -68,21 +59,13 @@ class codix_ca_env extends ovm_env;
 		m_codix_ca_output_subscriber = new( "m_codix_ca_output_subscriber", this );
 		m_codix_ca_scoreboard = new( "m_codix_ca_scoreboard", this );
 		m_codix_ca_gm = new( "m_codix_ca_gm", this );
-/*            end
-            else if (FRAMEWORK == SW_HW) begin
-                m_sender = new("m_Sender", this);
-                //m_sorter = new("m_Sorter", this);
-                //m_output_wrapper = new("m_output_wrapper", this);
-                //m_input_wrapper  = new("m_input_wrapper", this);
-            end
-*/
 
 	endfunction: build
 
 	// Connect - connects ports of the child components so they can communicate
 	function void connect();
 		super.connect();
-  //          if(FRAMEWORK == SW_FULL) begin
+
 		// monitor => subscriber
 		m_codix_ca_core_regs_monitor.analysis_export.connect( m_codix_ca_core_regs_subscriber.analysis_export );
 		// monitor => scoreboard
@@ -107,18 +90,52 @@ class codix_ca_env extends ovm_env;
 		m_codix_ca_output_monitor.analysis_export.connect( m_codix_ca_output_subscriber.analysis_export );
 		// golden model => scoreboard
 		m_codix_ca_gm.analysis_export.connect( m_codix_ca_scoreboard.m_golden_model_codix_ca_output_fifo.analysis_export );
-/*            end
-
-            else if(FRAMEWORK == SW_HW) begin
-
-                // sender takes input data from xexes directory
-                // sender => input_wrapper
-                //m_Sender.seq_item_port.connect( m_input_wrapper.seq_item_export );
-                // output wrapper => sorter
-                //m_output_wrapper.seq_item_port.connect( m_Sorter.seq_item_export );
-                // sorter => scoreboard
-            end*/
 
 	endfunction: connect
 
 endclass: codix_ca_env
+
+// This class represents the main parts of the verification environment.
+// for the environment in SW & HW
+class codix_sw_hw extends ovm_env;
+
+    // registration of component tools
+    `ovm_component_utils( codix_sw_hw )
+
+    // sender handle
+    local Sender sender_h;
+    //local Sorter sorter_h;
+    // input & output wrapper
+    local Input_Wrapper input_wrapper_h;
+    //local Output_Wrapper output_wrapper_h;
+
+    // Constructor - creates new instance of this class
+    function new( string name, ovm_component parent );
+        super.new( name, parent );
+    endfunction : new
+
+    // Build - instantiates child components
+    function void build;
+        super.build();
+
+        sender_h = new("sender_h", this);
+        input_wrapper_h = new("input_wrapper_h", this);
+        //sorter_h = new("sorter_h", this);
+        //output_wrapper_h = new("output_wrapper_h", this);
+        //input_wrapper_h  = new("input_wrapper_h", this);
+
+    endfunction: build
+
+    // Connect - connects ports of the child components so they can communicate
+    function void connect();
+        super.connect();
+        // sender takes input data from xexes directory
+        // sender => input_wrapper
+        sender_h.pport.connect( input_wrapper_h.pxport );
+        // output wrapper => sorter
+        //output_wrapper_h.seq_item_port.connect( sorter_h.seq_item_export );
+        // sorter => scoreboard
+    endfunction: connect
+
+endclass: codix_sw_hw
+

@@ -9,41 +9,28 @@
 
 package sv_codix_ca_param_pkg;
 
+    // Enumeration for verification environment type
+    // SW = software 
+    // SW_HW = software & hardware
+    typedef enum {SW_FULL,
+                  SW_HW
+                  } tEnv; 
 
-    /*
-     * Enumeration type for Framework type
-     * SW = software
-     * HW = hardware
-     */ 
-     typedef enum {SW_FULL,           
-                   SW_HW
-                  } tFramework; 
-
-
-  /*
-   * Enumeration type for Framework definition
-   * SW = software
-   * HW = hardware
-   * SW_FULL           
-   * HW_FULL           
-   */ 
-    parameter tFramework FRAMEWORK = SW_FULL;
+    parameter tEnv VER_ENV = SW_HW;
    
     // clocks and resets
-	parameter CLK_PERIOD = 10ns;
-	parameter RESET_TIME = CLK_PERIOD;
+    parameter CLK_PERIOD = 10ns;
+    parameter RESET_TIME = CLK_PERIOD;
 
-	// program specification
-	parameter TEST_NUMBER = 1;
-	parameter PROG_NUMBER = 5;
+    // program specification
+    parameter TEST_NUMBER = 1;
+    parameter PROG_NUMBER = 5;
 
-        // 
+    // halt checking limit (limit for detection of halt instruction)
+    parameter ITERATION_COUNT_LIMIT = 1000000;
 
-	// halt checking limit (limit for detection of halt instruction)
-	parameter ITERATION_COUNT_LIMIT = 1000000;
-
-	// test parameters
-	parameter TRANSACTION_COUNT = 10000;
-	parameter SEED = 372869151;
+    // test parameters
+    parameter TRANSACTION_COUNT = 10000;
+    parameter SEED = 372869151;
 
 endpackage
