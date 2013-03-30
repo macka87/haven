@@ -6,15 +6,14 @@
 //  \date   09-03-2013
 //  \brief  Sender merge input signal from SW environment 
   
-// This class is responsible for dividing FrameLink transactions to parts
-// and attaching NetCOPE protocol header to each part. Also creates control 
-// transactions (src_rdy information) with NetCOPE protocol header. Transactions
-// are received by 'transMbx'(Mailbox) property.
+// This class is responsible for loading input program and its encapsulation with
+// NetCOPE header. Then NetCOPE transaction are sent to input wrapper through
+// tlm_fifo
 class Sender extends ovm_component; 
  
     // Public Class Atributes 
-    const int id;  // endpoint id
-    const int pDataWidth; //?
+    const int id;         // endpoint id
+    const int pDataWidth; // protocol data width
 
     // put port
     ovm_put_port#(NetCOPETransaction) pport;
@@ -30,9 +29,8 @@ class Sender extends ovm_component;
         // port for connection with input wrapper
         pport = new("pport", this);
 
-        // endpoint id
-        this.id = 25;
-        this.pDataWidth = 32;
+        this.id = 25; // TODO: unique ID?
+        this.pDataWidth = 64;
 
     endfunction : new
 
@@ -45,10 +43,19 @@ class Sender extends ovm_component;
     task run ();
         `ovm_info( get_name(), $sformatf("##: som v senderi"), OVM_LOW);
 
+        // initialize connection
+        sendStart();
+
+        // send input program
+        createNetCOPETrans();
+
+        // end of connection
+        sendStop();
+
     endtask: run
 
 /*    //Sends transactions - takes transaction from mailbox, divides it to parts
-    //and adds NetCOPE protocol header to each part.     
+    //and adds NetCOPE protocol header to each part. 
       
     task sendTransactions(input int transCount);
       FrameLinkTransaction transaction;
@@ -68,7 +75,10 @@ class Sender extends ovm_component;
       end  
     endtask : sendTransactions */
     
-    // Create data and control NetCOPE transactions from input program 
+    // ========================================================================
+    // ==  Create NetCOPE transaction from input program by calling
+    // ==  functions createDataTransaction and createControlTransaction
+    // ========================================================================
     task createNetCOPETrans();
         int fd;                        // input file descriptor
         int i;                         // line index
@@ -111,11 +121,17 @@ class Sender extends ovm_component;
     endtask : createNetCOPETrans
     
     
-   // Create NetCOPE data transaction from one part of FrameLink transaction.      
-   task createDataTransaction(input string input_program[int], 
-                               input bit lastPart,
-                               input bit allData,
-                               input int part);
+    // ========================================================================
+    // ==  Create NetCOPE data transaction from input program
+    // \param input_program - associative array with input program
+    // \param lastPart      - last part data flag
+    // \param allData       - all data flag
+    // \param part          - index for associative array with input program
+    // ========================================================================
+    task createDataTransaction(input string input_program[int], 
+                              input bit lastPart,
+                              input bit allData,
+                              input int part);
       
       NetCOPETransaction dataTrans = new();
       int size;
@@ -148,8 +164,11 @@ class Sender extends ovm_component;
       pport.put(dataTrans);    // send data transaction to input wrapper
     endtask : createDataTransaction 
      
-    //Create NetCOPE control transaction from FrameLink transaction.      
-    // \param tr - 
+    // ========================================================================
+    // ==  Create NetCOPE control transaction
+    // \param tr - associative array with input program
+    // \param part - index into associative array with input program
+    // ========================================================================
     task createControlTransaction(input string tr[int],
                                   input int part);
       NetCOPETransaction controlTrans = new();
@@ -180,27 +199,23 @@ class Sender extends ovm_component;
       
       counter = 8;
       
-      // data
-/*    if (tr.enBtDelay) controlTrans.data[counter] = tr.btDelay;
-      else controlTrans.data[counter] = 0;
-      
+      // data[8]
+      controlTrans.data[counter] = 0;
       counter++;
       
       for (int j=0; j<size; j++) begin
-        if (tr.enItDelay) 
-          controlTrans.data[counter] = tr.itDelay[part][j];
-        else 
-          controlTrans.data[counter] = 0;  
+        controlTrans.data[counter] = 0;  
         counter++;
-      end*/
+      end
                 
       controlTrans.display("CONTROL");
       pport.put(controlTrans);   // send control transaction to input wrapper
     endtask : createControlTransaction
     
 
-    // Sends start control transaction to HW.    
-     
+    // ========================================================================
+    // ==  Sends start NetCOPE control transaction to HW
+    // ========================================================================
     virtual task sendStart();
       NetCOPETransaction controlTrans = new();
       
@@ -226,8 +241,9 @@ class Sender extends ovm_component;
     endtask : sendStart
     
  
-    // Sends stop control transaction to HW.    
-    
+    // ========================================================================
+    // ==  Sends stop NetCOPE control transaction to HW
+    // ========================================================================
     task sendStop();
       NetCOPETransaction controlTrans = new();
       

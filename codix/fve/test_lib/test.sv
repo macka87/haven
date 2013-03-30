@@ -25,12 +25,21 @@ class codix_ca_test extends ovm_test;
     // build - instantiates child components
     function void build();
         super.build();
+
+        // software version of verification environment
         if(VER_ENV == SW_FULL) begin
             m_codix_ca_env = codix_ca_env::type_id::create( "m_codix_ca_env", this );
         end
+
+        // hardware accelerated version
         else if (VER_ENV == SW_HW) begin
             codix_env = codix_sw_hw::type_id::create( "codix_env", this );
         end
+
     endfunction: build
+
+    task run();
+      `ovm_info( get_name(), $sformatf("## :: file :: test_lib/test.sv"), OVM_MEDIUM);
+    endtask : run
 
 endclass: codix_ca_test

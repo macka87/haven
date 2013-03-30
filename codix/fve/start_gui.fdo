@@ -13,18 +13,41 @@ vlib work
 
 # DUT compilation
 vcom -explicit -93 -cover sbce -work work ../vhdl/*.vhd
+
+# ====================================
 # Verification environment compilation
+# ===================================
 vlog -work work test_parameters.sv
 vlog -work work ifc.sv
+
+# sequence library
 vlog -work work +incdir+seq_lib/ seq_lib/sv_seq_pkg.sv
+
 # if golden model uses shared library, compile DPI package to control it
 if [file exists golden_model/libgm.so] {
 	vlog -work work +incdir+golden_model/ golden_model/codix_ia_dpi_pkg.sv
 }
+# golden model package
 vlog -work work +incdir+golden_model/ golden_model/sv_golden_model_pkg.sv
+
+# DPI-C for DMA transactions
+if [file exists env_lib/dpi/dpi_wrapper_pkg.so] {
+	vlog -work work +incdir+env_lib/dpi/ env_lib/dpi/dpi_wrapper_pkg.sv
+}
+
+# dpi environment library
+vlog -work work +incdir+env_lib/dpi/ env_lib/dpi/sv_dpi_pkg.sv
+
+# OVM environemtn library
 vlog -work work +incdir+env_lib/ env_lib/sv_env_pkg.sv
+
+# test library
 vlog -work work +incdir+test_lib/ test_lib/sv_test_pkg.sv
+
+# design under test module
 vlog -work work dut.sv
+
+# top level module
 vlog -work work top_level.sv
 
 # Find programs to run, first argument can represents one xexe program to run
@@ -44,7 +67,11 @@ set HDL_DUT "$DUT_MODULE/HDL_DUT_U"
 
 # Start of the simulation
 if [file exists golden_model/libgm.so] {
-	vsim -coverage -t 1ps -lib work $TOP_MODULE -sv_lib golden_model/libgm -keeploadedrestart
+	if [file exists env_lib/dpi/dpi_wrapper_pkg.so] {
+		vsim -coverage -t 1ps -lib work $TOP_MODULE -sv_lib golden_model/libgm -sv_lib env_lib/dpi/dpi_wrapper_pkg -keeploadedrestart
+        } else {
+		vsim -coverage -t 1ps -lib work $TOP_MODULE -sv_lib golden_model/libgm -keeploadedrestart
+        }
 } else {
 	vsim -coverage -t 1ps -lib work $TOP_MODULE
 }

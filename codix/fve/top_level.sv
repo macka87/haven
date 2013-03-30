@@ -79,6 +79,7 @@ module codix_ca_top;
 		ovm_default_printer = printer;
 		$timeformat(-9, 3, " ns", 8);
 
+                $write("## :: file :: toplevel.sv");
 		// start of the simulation
 		run_test( "codix_ca_test" );
 	end

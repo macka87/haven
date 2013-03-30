@@ -18,27 +18,23 @@ import dpi_wrapper_pkg::*;
 class InputWrapper extends ovm_component;
     
     // Public Class Atributes
-    string    inst;      //! Input Wrapper identification
     bit       enabled;   //! Input Wrapper enabling
     bit       busy;      //! Input Wrapper busy signal
  
     // registration of component tools
     `ovm_component_utils_begin( InputWrapper )
         // implements the data operations for an ovm_object based property
-        `ovm_field_object( OVM_DEFAULT | OVM_NOCOMPARE | OVM_NOPRINT | OVM_NORECORD | OVM_NOPACK )
+        //`ovm_field_object( OVM_DEFAULT | OVM_NOCOMPARE | OVM_NOPRINT | OVM_NORECORD | OVM_NOPACK )
     `ovm_component_utils_end
 
     // get port
     ovm_get_port#(NetCOPETransaction) gport;
        
     // Constructor - creates Input Wrapper object
-    // \param inst     - Input Wrapper instance name
-    // \param inputMbx - transaction mailbox
     function new (string name, ovm_component parent);
       super.new( name, parent );
-      pxport = new("pxport", this);
+      gport = new("gport", this);
 
-      this.inst        = inst;      //! Store wrapper identifier
       this.enabled     = 0;         //! Input Wrapper is disabled by default
       this.busy        = 0;
     endfunction: new
@@ -75,9 +71,8 @@ class InputWrapper extends ovm_component;
       NetCOPETransaction ntr;
       
     while (enabled) begin
-        pxport.get(ntr);
+        gport.get(ntr);
         ntr.display();
-        res = c_sendData(ntr.data);
         
         // data transfer to hardware through DMA channel
         res = c_sendData(ntr.data);

@@ -96,7 +96,7 @@ class codix_ca_env extends ovm_env;
 endclass: codix_ca_env
 
 // This class represents the main parts of the verification environment.
-// for the environment in SW & HW
+// environment in SW & HW
 class codix_sw_hw extends ovm_env;
 
     // registration of component tools
@@ -105,9 +105,13 @@ class codix_sw_hw extends ovm_env;
     // sender handle
     local Sender sender_h;
     //local Sorter sorter_h;
+
     // input & output wrapper
-    local Input_Wrapper input_wrapper_h;
-    //local Output_Wrapper output_wrapper_h;
+    local InputWrapper input_wrapper_h;
+    local OutputWrapper output_wrapper_h;
+
+    // connection between sender and input wrapper
+    tlm_fifo #(NetCOPETransaction) input_fifo_h;
 
     // Constructor - creates new instance of this class
     function new( string name, ovm_component parent );
@@ -120,9 +124,9 @@ class codix_sw_hw extends ovm_env;
 
         sender_h = new("sender_h", this);
         input_wrapper_h = new("input_wrapper_h", this);
+        output_wrapper_h = new("output_wrapper_h", this);
+        input_fifo_h = new("input_fifo_h", this);
         //sorter_h = new("sorter_h", this);
-        //output_wrapper_h = new("output_wrapper_h", this);
-        //input_wrapper_h  = new("input_wrapper_h", this);
 
     endfunction: build
 
@@ -130,11 +134,16 @@ class codix_sw_hw extends ovm_env;
     function void connect();
         super.connect();
         // sender takes input data from xexes directory
-        // sender => input_wrapper
-        sender_h.pport.connect( input_wrapper_h.pxport );
+        // sender.putport => tlm_fifo => input_wrapper.getport
+        sender_h.pport.connect( input_fifo_h.blocking_put_export );
+        input_wrapper_h.gport.connect( input_fifo_h.blocking_get_export );
+
         // output wrapper => sorter
         //output_wrapper_h.seq_item_port.connect( sorter_h.seq_item_export );
+
         // sorter => scoreboard
+        //sorter_h.seq_item_port.connect( );
+
     endfunction: connect
 
 endclass: codix_sw_hw

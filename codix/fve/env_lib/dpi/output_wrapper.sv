@@ -14,25 +14,21 @@
 // layer and sending them to SW part of the verification environment. Unit must
 // be enabled by "setEnable()" function call. Unit can be stoped by 
 // "setDisable()" function call.  
-class OutputWrapper;
+class OutputWrapper extends ovm_component;
 
     // Public Class Atributes
-    string    inst;      //! Output Wrapper identification
     bit       enabled;   //! Output Wrapper enabling
 
     // registration of component tools
     `ovm_component_utils_begin( OutputWrapper )
         // implements the data operations for an ovm_object based property
-        `ovm_field_object( OVM_DEFAULT | OVM_NOCOMPARE | OVM_NOPRINT | OVM_NORECORD | OVM_NOPACK )
+        //`ovm_field_object( OVM_DEFAULT | OVM_NOCOMPARE | OVM_NOPRINT | OVM_NORECORD | OVM_NOPACK )
     `ovm_component_utils_end
        
     // Constructor - creates Input Wrapper object  
-    // \param inst     - Output Wrapper instance name
-    // \param ouputMbx - transaction mailbox     
-    function new (string name, ovm_component parent, string inst);
+    function new (string name, ovm_component parent);
       super.new( name, parent );
 
-      this.inst        = inst;      //! Store wrapper identifier
       this.enabled     = 0;         //! Output Wrapper is disabled by default
 
     endfunction: new
@@ -57,7 +53,6 @@ class OutputWrapper;
 
     // Run Output Wrapper - receives transactions through DPI and sends them to SW.
     task run();
-      Transaction tr;
       int res;
       int unsigned size;   
       NetCOPETransaction ntr;

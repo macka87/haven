@@ -24,6 +24,7 @@ if [file exists golden_model/libgm.so] {
 vlog -work work +incdir+golden_model/ golden_model/sv_golden_model_pkg.sv
 vlog -work work +incdir+env_lib/ env_lib/sv_env_pkg.sv
 vlog -work work +incdir+test_lib/ test_lib/sv_test_pkg.sv
+vlog -work work +incdir+env_lib/dpi/ env_lib/dpi/sv_dpi_pkg.sv
 vlog -work work dut.sv
 vlog -work work top_level.sv
 
