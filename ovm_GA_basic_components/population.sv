@@ -1,17 +1,25 @@
 /* *****************************************************************************
  * Project Name: Software Framework for Functional Verification 
- * File Name:    Genetic Algorithm Population Class
- * Description: 
+ * File Name:    population.sv
+ * Description:  Genetic Algorithm Population Class
  * Author:       Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         14.6.2012 
+ * Date:         3.4.2013 
  * ************************************************************************** */
 
- class Population;
+/*!
+ * \brief Population
+ * 
+ * This class defines population and basic operations performed with population.
+ */
+
+ class Population extends ovm_component;
+ 
+    // registration of component tools
+    `ovm_object_utils(Population)
   
    /*
     * Public Class Atributes
     */
-    string       inst;
     int          populationSize;
     Chromosome   population[];
     int unsigned fitness;
@@ -33,18 +41,26 @@
     * Function allocates memory for new population and fill it with random
     * chromosomes.
     */
-    function new(string inst, int popSize, int unsigned maxMutations, 
+    function new(string name, ovm_component parent,
+                 int popSize, int unsigned maxMutations, 
                  selection_t selection = PROPORTIONATE);
-      this.inst         = inst;
+      super.new(name, parent);
       populationSize    = popSize;
       this.selection    = selection;
       this.maxMutations = maxMutations;
       fitness           = 0;
-
-      population = new[populationSize];
-      allsums    = new[populationSize];
-
-      if (selection == RANK) begin
+    endfunction : new
+    
+  /*! 
+   * Build - instanciates child components
+   */ 
+   function void build;
+     super.build();
+     
+     population = new[populationSize];
+     allsums    = new[populationSize];
+     
+     if (selection == RANK) begin
         real sum       = 0;
         int sumOfRanks = 0;
 
@@ -55,7 +71,28 @@
           allsums[i] = sum;
         end
       end
-    endfunction : new
+   endfunction: build 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
     
    /*!
     * Displays the current value of the population or data described by this
@@ -80,7 +117,7 @@
     * Fills up population with chromosomes randomly generated with respect to
     * chromosome blueprint parameter.
     */
-    virtual function void create(Chromosome chromBlueprint);
+    virtual function void create_chromosome(Chromosome chromBlueprint);
       // Randomize chromosome and insert it in population
       foreach (population[i]) begin  
         assert(chromBlueprint.randomize);
@@ -88,7 +125,7 @@
         //population[i].display("CHROMOSOME");
       end
 
-    endfunction : create
+    endfunction : create_chromosome
 
    /*!
     * Saves each chromosome in population to file

@@ -11,14 +11,17 @@ package sv_alu_seq_pkg;
 
   import ovm_pkg::*;
   import sv_alu_param_pkg::*;
+  import sv_basic_ga_pkg::*;
   
   `include "ovm_macros.svh"
-  `include "haven_sequence_item.sv"
+  `include "alu_chromosome.sv"
+  
+ /* `include "haven_sequence_item.sv"
   `include "haven_input_transaction.sv"
   `include "haven_output_transaction.sv"
   `include "alu_input_transaction.sv"
   `include "alu_output_transaction.sv"
   `include "alu_sequence.sv"
-  `include "alu_sequencer.sv"
+  `include "alu_sequencer.sv" */
   
 endpackage

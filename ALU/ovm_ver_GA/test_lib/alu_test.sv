@@ -1,10 +1,9 @@
 /* *****************************************************************************
- * Project Name: HAVEN
+ * Project Name: HAVEN - GA
  * File Name:    alu_test.sv
  * Description:  OVM Test for ALU
- * Authors:      Michaela Belesova <xbeles00@stud.fit.vutbr.cz>,
- *               Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         12.9.2012
+ * Authors:      Marcela Simkova <isimkova@fit.vutbr.cz> 
+ * Date:         2.4.2013
  * ************************************************************************** */
 
 /*!
@@ -20,6 +19,9 @@
 
    // reference to the verification enviroment
    AluEnv AluEnv_h;
+   
+   // Array of best chromosomes from every population
+   ALUChromosome chromosome_arr[];
 
   /*! 
    * Constructor - creates AluTest object  
@@ -37,6 +39,9 @@
    function void build;
      super.build();
      AluEnv_h = AluEnv::type_id::create("AluEnv_h", this);
+     
+     //! Create array of chromosomes
+     chromosome_arr = new[GENERATIONS];
    endfunction: build
 
   /*! 
@@ -45,10 +50,37 @@
    task run;
      string msg;
      
-     AluSequence seq;
+     /*AluSequence seq;
      seq = AluSequence::type_id::create("seq");
-     seq.start( AluEnv_h.AluSequencer_h);
+     seq.start( AluEnv_h.AluSequencer_h); */
      
+     // ------------------------------------------------------------------------
+     $write("\n\n########## GENETIC ALGORITHM ##########\n\n");
+     
+     //! Create initial population
+     //createOrLoadInitialPopulation(POPULATION_FILENAME, LOAD_POPULATION, POPULATION_SIZE, MAX_MUTATIONS);
+    
+     //! Evaluate initial population
+     //evaluateInitialPopulation();
+     
+     //! Run evolution
+     //for (int generation = 1; generation <= GENERATIONS; generation++) begin
+       
+       //! Create next generation and select best chromosome from initial population
+       //population.selectAndReplace(chromosome_arr[generation-1]);
+       //chromosome_arr[generation-1].display("BEST CHROMOSOME");
+       
+       //! Evaluate population
+       //evaluatePopulation(generation);
+     //end
+     
+     //! Save population
+     //population.save(POPULATION_FILENAME);
+    
+     //! Display best individuum from population
+     //population.getBestChromosomes(1, bestChrom);
+     //bestChrom[0].display("Best chromosome");
+    
    endtask: run
   
  endclass: AluTest

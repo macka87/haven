@@ -1,10 +1,9 @@
 /* *****************************************************************************
- * Project Name: HAVEN
+ * Project Name: HAVEN - GA
  * File Name:    top_level.sv
  * Description:  OVM Top Module of Verification Enviroment for ALU
- * Authors:      Michaela Belesova <xbeles00@stud.fit.vutbr.cz>,
- *               Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         18.9.2012
+ * Authors:      Marcela Simkova <isimkova@fit.vutbr.cz> 
+ * Date:         2.4.2013
  * ************************************************************************** */
 
 /*!

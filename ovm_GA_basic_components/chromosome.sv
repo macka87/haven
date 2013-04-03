@@ -1,44 +1,60 @@
 /* *****************************************************************************
- * Project Name: Software Framework for Functional Verification 
- * File Name:    Genetic Algorithm Chromosome Class
- * Description: 
+ * Project Name: HAVEN - GA
+ * File Name:    chromosome.sv
+ * Description:  Genetic Algorithm Chromosome Class
  * Author:       Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         14.6.2012 
+ * Date:         2.4.2013 
  * ************************************************************************** */
 
- class Chromosome;
+/*!
+ * \brief Chromosome
+ * 
+ * This class defines the structure of the chromosome and basic operations 
+ * performed with chromosomes.
+ */
+
+ class Chromosome extends ovm_sequence_item;
+  
+    // registration of component 
+    `ovm_object_utils(Chromosome)
   
    /*
-    * Public Class Atributes
+    * Local Class Atributes
     */
-    int          length;                 // length of chromosome
-    int          chromosome_parts;       // uniform parts of chromosome
-    rand byte unsigned chromosome[];     // chromosome
-    int unsigned fitness         = 0;    // fitness function
-    real         relativeFitness = 0;    // relative fitness function
+    local int          length;                 // length of chromosome
+    local int          chromosome_parts;       // uniform parts of chromosome
+    local int unsigned fitness         = 0;    // fitness function
+    local real         relativeFitness = 0;    // relative fitness function
+    
+    local rand byte unsigned chromosome[];     // chromosome
+
+   /*! 
+    * Constructor
+    *
+    * \param name - transaction instance name
+    */
+    function new (string name = "");
+      super.new(name);
+    endfunction: new
 
    /*
-    * Public Class Methods
-    */
-  
-   /*
-    * Displays the current value of the chromosome or data described by this
-    * instance in a human-readable format on the standard output. Each line of
-    * the output will be prefixed with the specified prefix. This method prints
-    * the value returned by the psdisplay() method.
-    */
-    virtual function void display(string prefix = "");
-    endfunction : display
-  
+    * It is recommended to use the following methods:
+    * copy();
+    * clone(); 
+    * print();
+    * compare();
+    */   
+    
    /*!
-    * Copies the current value of the object instance to the specified object
-    * instance. If no target object instance is specified, a new instance is
-    * allocated. Returns a reference to the target instance.
+    * Prints chromosome
     */
-    virtual function Chromosome copy(Chromosome to = null);
-      return null;
-    endfunction : copy
-
+    virtual function void print();
+    endfunction : print  
+  
+   /*
+    * Local Class Methods
+    *
+   
    /*!
     * Saves chromosome to file
     */
@@ -50,6 +66,13 @@
     */
     virtual function void load(string filename);
     endfunction : load
+    
+   /*!
+    * Read chromosome
+    */
+    function void getChromosomes(byte unsigned chromosome[]);
+      chromosome[] = this.chromosome[];
+    endfunction : getChromosomes 
 
    /*!
     * Returns fitness value of the object instance. 
@@ -87,5 +110,5 @@
       return relativeFitness;
     endfunction : getRelativeFitness
 
-  endclass : Chromosome
+ endclass : Chromosome
   
