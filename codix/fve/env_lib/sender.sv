@@ -81,10 +81,10 @@ class Sender extends ovm_component;
     // ========================================================================
     task createNetCOPETrans();
         int fd;                        // input file descriptor
-        int i;                         // line index
+        int index;                     // line index
         string input_program[int];     // associative array for input program
 
-        i = 0;
+        index = 0;
 
         // load input program from xexe directory
         fd = $fopen( "xexes/sha.c.xexe.hw", "r" );
@@ -97,17 +97,29 @@ class Sender extends ovm_component;
             string line;
             if($fgets(line, fd)) begin
                 // save line to associative array
-                input_program[i] = line;
-                i++;
+                input_program[index] = line;
+                index++;
             end
         end
         
         $fclose( fd );
 
+        $write( "\n\n\n" );
+        $write( "input program [number of lines] : " );
+
+        $write( input_program.num );
+        $write( "\n\n\n" );
+
+/*        for(int i = 0; i < input_program.num; i++) begin
+            $write(input_program[i]);
+        end
+
+
         // create transaction from loaded file with program
         for(int i = 0; i < input_program.num; i++) begin
             // last transaction
             if(i == (input_program.num-1)) begin
+               `ovm_info( get_name(), $sformatf("number of parts: %d", i), OVM_LOW);
                 createDataTransaction(input_program, 1, 1, i);
                 createControlTransaction(input_program, i);
             end
@@ -116,7 +128,7 @@ class Sender extends ovm_component;
                 createDataTransaction(input_program, 0, 1, i);
                 createControlTransaction(input_program, i);
             end
-        end
+        end*/
 
     endtask : createNetCOPETrans
     
@@ -137,7 +149,7 @@ class Sender extends ovm_component;
       int size;
       
       // NetCOPE transaction settings
-      dataTrans.endpointID  = id;
+      dataTrans.endpointID  = this.id;
       dataTrans.transType   = 0;  // data transaction
       dataTrans.ifcProtocol = 1;  // identifies FrameLink protocol
       dataTrans.ifcInfo     = 2*allData + lastPart;  
@@ -175,7 +187,7 @@ class Sender extends ovm_component;
       int size    = 1; // btDelay takes 1 Byte
       int counter = 0;
       
-      controlTrans.endpointID  = id;
+      controlTrans.endpointID  = this.id;
       controlTrans.transType   = 5;  // control src_rdy transaction
       controlTrans.ifcProtocol = 1;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -222,7 +234,7 @@ class Sender extends ovm_component;
       controlTrans.data    = new[8];
       
       // NetCOPE header
-      controlTrans.data[0] = id;  // endpointID
+      controlTrans.data[0] = this.id;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -250,7 +262,7 @@ class Sender extends ovm_component;
       controlTrans.data    = new[8];
       
       // NetCOPE header
-      controlTrans.data[0] = id;  // endpointID
+      controlTrans.data[0] = this.id;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;

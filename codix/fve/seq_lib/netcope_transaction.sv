@@ -64,7 +64,7 @@ class NetCOPETransaction extends ovm_sequence_item;
           $write("%x ",data[j]);
         end  
         
-        $write("\n");    
+        $write("\n---------------------------------------------------------\n\n");
     endfunction : display
 
 endclass: NetCOPETransaction
