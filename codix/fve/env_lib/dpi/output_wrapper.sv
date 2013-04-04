@@ -61,7 +61,7 @@ class OutputWrapper extends ovm_component;
         ntr = new();
         ntr.data = new[4096];
         // we call C function (through DPI layer) for data transfer from hw
-        res = c_receiveData(size, ntr.data);
+        /*res = c_receiveData(size, ntr.data);
 
         if (res == 1) begin
            $error("RECEIVE DATA in output wrapper failed!!!"); 
@@ -79,7 +79,7 @@ class OutputWrapper extends ovm_component;
           else begin
             #10ns;
           end
-        end  
+        end*/
 //      end
     endtask : run 
  
