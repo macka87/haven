@@ -39,7 +39,7 @@ class codix_ca_test extends ovm_test;
     endfunction: build
 
     task run();
-      `ovm_info( get_name(), $sformatf("## :: file :: test_lib/test.sv"), OVM_MEDIUM);
+      //`ovm_info( get_name(), $sformatf("## :: file :: test_lib/test.sv"), OVM_MEDIUM);
     endtask : run
 
 endclass: codix_ca_test

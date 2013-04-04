@@ -56,7 +56,7 @@ class OutputWrapper extends ovm_component;
       int res;
       int unsigned size;   
       NetCOPETransaction ntr;
-      while (enabled) begin 
+//      while (enabled) begin 
         size = 0;
         ntr = new();
         ntr.data = new[4096];
@@ -80,7 +80,7 @@ class OutputWrapper extends ovm_component;
             #10ns;
           end
         end  
-      end
+//      end
     endtask : run 
  
  endclass : OutputWrapper 

@@ -12,11 +12,20 @@ package sv_codix_ca_param_pkg;
     // Enumeration for verification environment type
     // SW = software 
     // SW_HW = software & hardware
-    typedef enum {SW_FULL,
-                  SW_HW
-                  } tEnv; 
+    typedef enum {
+                   SW_FULL,
+                   SW_HW
+                 } tEnv;
+
+    typedef enum { ALL,
+                   INFO,
+                   NONE
+                 } tDebug;
 
     parameter tEnv VER_ENV = SW_HW;
+
+    
+    parameter tDebug DEBUG_LEVEL = INFO;
    
     // clocks and resets
     parameter CLK_PERIOD = 10ns;

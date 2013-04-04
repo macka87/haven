@@ -69,19 +69,58 @@ class InputWrapper extends ovm_component;
     task run();
       int res;
       NetCOPETransaction ntr;
-      
-    while (enabled) begin
-        gport.get(ntr);
-        ntr.display();
-        
-        // data transfer to hardware through DMA channel
-        res = c_sendData(ntr.data);
-        if (res!=0) begin
-            $error("SEND DATA in input wrapper failed!!!");
-            $finish();
-        end	      
-        busy = 0;
+
+/*      res = c_openDMAChannel();
+      if(res != 0) begin
+        `ovm_error( get_name(), "Opening channel is not equal to 0!" );
       end
+
+      // Create wrapper subprocess
+      fork
+        run();
+      join_none;*/
+
+      // receiving of transactions
+      while(1) begin
+
+        // get port connected to sender.sv
+        gport.get(ntr);
+
+        // printout
+        if(DEBUG_LEVEL == ALL) begin
+          if(ntr.transType == 1) begin
+            ntr.display("InputWrapper: START TRANSACTION");
+          end
+          else if (ntr.transType == 0) begin
+            ntr.display("InputWrapper: DATA TRANSACTION");
+          end
+          else if (ntr.transType == 5) begin
+            ntr.display("InputWrapper: CONTROL TRANSACTION");
+          end
+          else if (ntr.transType == 4) begin
+            ntr.display("InputWrapper: STOP TRANSACTION");
+            break;
+          end
+          else begin
+            `ovm_error( get_name(), "Unknown transaction!\n" );
+          end
+        end
+
+      // while
+      end
+        
+/*      // data transfer to hardware through DMA channel
+      res = c_sendData(ntr.data);
+      if(res != 0) begin
+        `ovm_error( get_name(), "Send data failure!" );
+         $finish();
+      end
+
+      res = c_closeDMAChannel();
+      if(res != 0) begin
+        `ovm_error( get_name(), "Closing channel is not equal to 0!" );
+      end*/
+
     endtask : run 
- 
+
  endclass : InputWrapper 

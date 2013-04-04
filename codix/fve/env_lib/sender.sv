@@ -14,6 +14,8 @@ class Sender extends ovm_component;
     // Public Class Atributes 
     const int id;         // endpoint id
     const int pDataWidth; // protocol data width
+    int controlTrs;       // number of sent control transactions
+    int dataTrs;          // number of sent data transactions
 
     // put port
     ovm_put_port#(NetCOPETransaction) pport;
@@ -26,11 +28,13 @@ class Sender extends ovm_component;
     function new( string name, ovm_component parent);
         super.new( name , parent);
 
-        // port for connection with input wrapper
+        // put port for connection with input wrapper
         pport = new("pport", this);
 
-        this.id = 25; // TODO: unique ID?
+        this.id         = 21;
         this.pDataWidth = 64;
+        this.controlTrs = 0;
+        this.dataTrs  = 0;
 
     endfunction : new
 
@@ -41,8 +45,7 @@ class Sender extends ovm_component;
 
     // time-consuming task
     task run ();
-        `ovm_info( get_name(), $sformatf("##: som v senderi"), OVM_LOW);
-
+    
         // initialize connection
         sendStart();
 
@@ -52,6 +55,11 @@ class Sender extends ovm_component;
         // end of connection
         sendStop();
 
+        // debug printout
+        if(DEBUG_LEVEL == INFO || DEBUG_LEVEL == ALL) begin
+          `ovm_info( get_name(), $sformatf("\nINPUT\ncontrol transactions: %d\ndata transcations: %d\n", this.controlTrs, this.dataTrs), OVM_MEDIUM);
+        end
+ 
     endtask: run
 
 /*    //Sends transactions - takes transaction from mailbox, divides it to parts
@@ -104,22 +112,12 @@ class Sender extends ovm_component;
         
         $fclose( fd );
 
-        $write( "\n\n\n" );
-        $write( "input program [number of lines] : " );
-
-        $write( input_program.num );
-        $write( "\n\n\n" );
-
-/*        for(int i = 0; i < input_program.num; i++) begin
-            $write(input_program[i]);
-        end
-
-
         // create transaction from loaded file with program
-        for(int i = 0; i < input_program.num; i++) begin
+//        for(int i = 0; i < input_program.num; i++) begin
+        for(int i = 0; i < 100 ; i++) begin
+
             // last transaction
             if(i == (input_program.num-1)) begin
-               `ovm_info( get_name(), $sformatf("number of parts: %d", i), OVM_LOW);
                 createDataTransaction(input_program, 1, 1, i);
                 createControlTransaction(input_program, i);
             end
@@ -128,7 +126,7 @@ class Sender extends ovm_component;
                 createDataTransaction(input_program, 0, 1, i);
                 createControlTransaction(input_program, i);
             end
-        end*/
+        end
 
     endtask : createNetCOPETrans
     
@@ -149,7 +147,7 @@ class Sender extends ovm_component;
       int size;
       
       // NetCOPE transaction settings
-      dataTrans.endpointID  = this.id;
+      dataTrans.endpointID  = 21;
       dataTrans.transType   = 0;  // data transaction
       dataTrans.ifcProtocol = 1;  // identifies FrameLink protocol
       dataTrans.ifcInfo     = 2*allData + lastPart;  
@@ -159,7 +157,7 @@ class Sender extends ovm_component;
       dataTrans.data    = new[size + 8];
       
       // NetCOPE header
-      dataTrans.data[0] = id;                   // endpointID
+      dataTrans.data[0] = 21;                   // endpointID
       dataTrans.data[1] = 0;                    // endpointProtocol
       dataTrans.data[2] = 0; 
       dataTrans.data[3] = 0;
@@ -174,6 +172,8 @@ class Sender extends ovm_component;
       
       //dataTrans.display("DATA");
       pport.put(dataTrans);    // send data transaction to input wrapper
+      this.dataTrs++;
+
     endtask : createDataTransaction 
      
     // ========================================================================
@@ -185,9 +185,8 @@ class Sender extends ovm_component;
                                   input int part);
       NetCOPETransaction controlTrans = new();
       int size    = 1; // btDelay takes 1 Byte
-      int counter = 0;
       
-      controlTrans.endpointID  = this.id;
+      controlTrans.endpointID  = 21;
       controlTrans.transType   = 5;  // control src_rdy transaction
       controlTrans.ifcProtocol = 1;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -200,7 +199,7 @@ class Sender extends ovm_component;
       controlTrans.data    = new[size + 8];
       
       // NetCOPE header
-      controlTrans.data[0] = id;  // endpointID
+      controlTrans.data[0] = 21;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -209,19 +208,13 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 1;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      counter = 8;
-      
-      // data[8]
-      controlTrans.data[counter] = 0;
-      counter++;
-      
-      for (int j=0; j<size; j++) begin
-        controlTrans.data[counter] = 0;  
-        counter++;
+      for (int i=8 ; i<size; i++) begin
+        controlTrans.data[i] = 0;  
       end
-                
-      controlTrans.display("CONTROL");
+      //controlTrans.display("CONTROL");
       pport.put(controlTrans);   // send control transaction to input wrapper
+      this.controlTrs++;
+
     endtask : createControlTransaction
     
 
@@ -234,7 +227,7 @@ class Sender extends ovm_component;
       controlTrans.data    = new[8];
       
       // NetCOPE header
-      controlTrans.data[0] = this.id;  // endpointID
+      controlTrans.data[0] = 21;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -243,13 +236,15 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      controlTrans.endpointID  = id;
+      controlTrans.endpointID  = 21;
       controlTrans.transType   = 1;  // control start transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      controlTrans.display("START CONTROL");
+      //controlTrans.display("START CONTROL");
       pport.put(controlTrans);
+      this.controlTrs++;
+
     endtask : sendStart
     
  
@@ -262,7 +257,7 @@ class Sender extends ovm_component;
       controlTrans.data    = new[8];
       
       // NetCOPE header
-      controlTrans.data[0] = this.id;  // endpointID
+      controlTrans.data[0] = 21;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -271,14 +266,14 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      controlTrans.endpointID  = id;
-      controlTrans.endpointID  = 0;  // identifies driver protocol
+      controlTrans.endpointID  = 21;
       controlTrans.transType   = 4;  // control stop transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
       
-      controlTrans.display("STOP CONTROL");
-      pport.put(controlTrans);    // put transaction to mailbox  
+      //controlTrans.display("STOP CONTROL");
+      pport.put(controlTrans);    // put transaction to mailbox
+      this.controlTrs++;
     endtask : sendStop
     
     
@@ -291,7 +286,7 @@ class Sender extends ovm_component;
       controlTrans.data = new[16];
       
       // NetCOPE header
-      controlTrans.data[0] = id;  // endpointID
+      controlTrans.data[0] = 21;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -300,7 +295,7 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      controlTrans.endpointID  = id;
+      controlTrans.endpointID  = 21;
       controlTrans.transType   = 2;  // control wait transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -320,7 +315,7 @@ class Sender extends ovm_component;
       controlTrans.data = new[8];
       
       // NetCOPE header
-      controlTrans.data[0] = id;  // endpointID
+      controlTrans.data[0] = 21;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -329,7 +324,7 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      controlTrans.endpointID  = id;
+      controlTrans.endpointID  = 21;
       controlTrans.transType   = 3;  // control wait transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -338,4 +333,4 @@ class Sender extends ovm_component;
       pport.put(controlTrans);    // put transaction to mailbox
     endtask : sendWaitForever
 
- endclass : Sender  
+ endclass : Sender
