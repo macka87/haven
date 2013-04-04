@@ -12,29 +12,30 @@
     `ovm_object_utils(ALUChromosome)
   
    /*
-    * Public Class Atributes
+    * Local Class Atributes
     */
     
     //! Interface signals weights (every range or signal value has a weight)
-    rand byte unsigned operandA_ranges;        // num. of ranges for opA
-    rand byte unsigned operandB_ranges;        // num. of ranges for opB
-    rand byte unsigned operandMEM_ranges;      // num. of ranges for opMEM
-    rand byte unsigned operandIMM_ranges;      // num. of ranges for opIMM
-    rand byte unsigned delay_ranges;           // num. of ranges for delays
-    byte unsigned movi_values            = 3;  // num. of values for MOVI
-    byte unsigned operation_values       = 16; // num. of values for OPERATION
+    local rand byte unsigned operandA_ranges;    // num. of ranges for opA
+    local rand byte unsigned operandB_ranges;    // num. of ranges for opB
+    local rand byte unsigned operandMEM_ranges;  // num. of ranges for opMEM
+    local rand byte unsigned operandIMM_ranges;  // num. of ranges for opIMM
+    local rand byte unsigned delay_ranges;       // num. of ranges for delays
+    
+    local byte unsigned movi_values       = 3;   // num. of values for MOVI
+    local byte unsigned operation_values  = 16;  // num. of values for OPERATION
     
     //! Constants for generation (number of ranges for some interface signals)
-    byte unsigned delay_rangesMin        = 1;         
-    byte unsigned delay_rangesMax        = 4;    
-    byte unsigned operandA_rangesMin     = 1;
-    byte unsigned operandA_rangesMax     = 8;
-    byte unsigned operandB_rangesMin     = 1;
-    byte unsigned operandB_rangesMax     = 8;
-    byte unsigned operandMEM_rangesMin   = 1;
-    byte unsigned operandMEM_rangesMax   = 8;
-    byte unsigned operandIMM_rangesMin   = 1;
-    byte unsigned operandIMM_rangesMax   = 8;
+    local byte unsigned delay_rangesMin        = 1;         
+    local byte unsigned delay_rangesMax        = 4;    
+    local byte unsigned operandA_rangesMin     = 1;
+    local byte unsigned operandA_rangesMax     = 8;
+    local byte unsigned operandB_rangesMin     = 1;
+    local byte unsigned operandB_rangesMax     = 8;
+    local byte unsigned operandMEM_rangesMin   = 1;
+    local byte unsigned operandMEM_rangesMax   = 8;
+    local byte unsigned operandIMM_rangesMin   = 1;
+    local byte unsigned operandIMM_rangesMax   = 8;
     
     //! Constraints for randomized values 
     constraint chromosomeConst {
@@ -80,10 +81,10 @@
     * Creates a new object and allocate memory for chromosome array according 
     * to chromosomeLength parameter.
     */
-    function new(string name = "", int estimatedTime = 0);
+    function new(string name = "");
       super.new(name);
       
-      // structure of chromozome
+      // structure of chromosome
       this.length = operandA_rangesMax + operandB_rangesMax + 
                     operandMEM_rangesMax + operandIMM_rangesMax + 
                     delay_rangesMax + movi_values + operation_values;

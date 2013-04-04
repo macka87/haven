@@ -15,52 +15,72 @@
  class Population extends ovm_component;
  
     // registration of component tools
-    `ovm_object_utils(Population)
+    `ovm_component_utils(Population)
   
    /*
-    * Public Class Atributes
+    * Local Class Atributes
     */
-    int          populationSize;
-    Chromosome   population[];
-    int unsigned fitness;
-    selection_t  selection;
-    int unsigned maxMutations;
-
-   /*
-    * Private Class Atributes
-    */
-    real allsums[];
+    local int          populationSize;  // Size of a population
+    local Chromosome   population[];    // An array of chromosomes
+    local int unsigned fitness;         // Fitness function
+    local selection_t  selection;       // Selection type 
+    local int unsigned maxMutations;    // Maximum number of mutations
+    local real         allsums[];
     
    /*
     * Public Class Methods
     */
   
    /*!
-    * Creates a new instance of the population class with the specified
-    * instance name, size of population and maximal number of generations.
-    * Function allocates memory for new population and fill it with random
-    * chromosomes.
+    * Creates a new instance of the population class.
     */
-    function new(string name, ovm_component parent,
-                 int popSize, int unsigned maxMutations, 
-                 selection_t selection = PROPORTIONATE);
-      super.new(name, parent);
-      populationSize    = popSize;
-      this.selection    = selection;
-      this.maxMutations = maxMutations;
-      fitness           = 0;
+    function new(string name, ovm_component parent);
+      super.new(name, parent);  
     endfunction : new
     
-  /*! 
-   * Build - instanciates child components
-   */ 
-   function void build;
-     super.build();
+   /*! 
+    * Build - initialisation and configuration: setting the size of population
+    * and maximal number of generations. The memory is allocated for a new 
+    * population and fill it with random chromosomes. 
+    */
+    function void build;
+      string msg;
+      int sel;
      
-     population = new[populationSize];
-     allsums    = new[populationSize];
+      super.build();
      
-     if (selection == RANK) begin
+      // get configuration items
+      if (!get_config_int("populationSize", populationSize)) begin
+        $sformat(msg, "\"populationSize\" is not in the configuration database, using default value of %0d",populationSize);
+        ovm_report_warning("BUILD PHASE", msg);
+      end  
+     
+      if (!get_config_int("maxMutations", maxMutations)) begin
+        $sformat(msg, "\"maxMutations\" is not in the configuration database, using default value of %0d",populationSize);
+        ovm_report_warning("BUILD PHASE", msg);
+      end 
+     
+      if (!get_config_int("maxMutations", maxMutations)) begin
+        $sformat(msg, "\"maxMutations\" is not in the configuration database, using default value of %0d",populationSize);
+        ovm_report_warning("BUILD PHASE", msg);
+      end 
+     
+      if (!get_config_int("selection", sel)) begin
+        $cast(selection, sel);
+        $sformat(msg, "\"selection\" is not in the configuration database, using default value of %0d",populationSize);
+        ovm_report_warning("BUILD PHASE", msg);
+      end
+     
+      // instanciation
+      population = new[populationSize];
+      allsums    = new[populationSize];
+     
+      // initialisation
+      fitness    = 0;  
+      //selection = PROPORTIONATE;  
+     
+      // CO TOTO ROBI???
+      /*if (selection == RANK) begin
         real sum       = 0;
         int sumOfRanks = 0;
 
@@ -70,35 +90,17 @@
           sum += real'(i+1)/sumOfRanks;
           allsums[i] = sum;
         end
-      end
-   endfunction: build 
+      end*/
+    endfunction: build 
+
+   /*
+    * Local Class Methods
+    */
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-    
    /*!
     * Displays the current value of the population or data described by this
     * instance in a human-readable format on the standard output. Each line of
-    * the output will be prefixed with the specified prefix. This method prints
-    * the value returned by the psdisplay() method.
+    * the output will be prefixed with the specified prefix. 
     */
     virtual function void display(string prefix = "");
       if (prefix != "")
@@ -121,7 +123,8 @@
       // Randomize chromosome and insert it in population
       foreach (population[i]) begin  
         assert(chromBlueprint.randomize);
-        population[i] = chromBlueprint.copy();
+        //population[i] = chromBlueprint.copy();
+        population[i].do_copy(chromBlueprint);
         //population[i].display("CHROMOSOME");
       end
 
@@ -228,7 +231,7 @@
       best_chrom = bestParentsQue[0];
       
       for (int i=0; i < numOfParents; i++)
-        nextPopulation[i] = bestParentsQue[i].copy();
+        nextPopulation[i].copy(bestParentsQue[i]);
 
       // Compute relative fitness for each chromosome and all prefix sums for
       // Roulette Wheel selection
@@ -253,7 +256,7 @@
 //        $write("tmp = %f\n",tmp);
         index = allsums.find_first_index(s) with (s >= tmp);
 //        $write("index: %0d\n",index[0]);
-        nextPopulation[i] = population[index[0]].copy();
+        nextPopulation[i].copy(population[index[0]]);
       end
         
       // Crossover neighbour chromosomes

@@ -21,12 +21,12 @@
    /*
     * Local Class Atributes
     */
-    local int          length;                 // length of chromosome
-    local int          chromosome_parts;       // uniform parts of chromosome
-    local int unsigned fitness         = 0;    // fitness function
-    local real         relativeFitness = 0;    // relative fitness function
+    protected int      length;                 // length of chromosome
+    protected int      chromosome_parts;       // uniform parts of chromosome
+    protected int unsigned fitness     = 0;    // fitness function
+    protected real     relativeFitness = 0;    // relative fitness function
     
-    local rand byte unsigned chromosome[];     // chromosome
+    protected rand byte unsigned chromosome[]; // chromosome
 
    /*! 
     * Constructor
@@ -48,12 +48,12 @@
    /*!
     * Prints chromosome
     */
-    virtual function void print();
-    endfunction : print  
+    virtual function void display(string prefix = "");
+    endfunction : display  
   
    /*
     * Local Class Methods
-    *
+    */
    
    /*!
     * Saves chromosome to file
@@ -71,7 +71,7 @@
     * Read chromosome
     */
     function void getChromosomes(byte unsigned chromosome[]);
-      chromosome[] = this.chromosome[];
+      this.chromosome = chromosome;
     endfunction : getChromosomes 
 
    /*!
