@@ -114,7 +114,7 @@ class Sender extends ovm_component;
 
         // create transaction from loaded file with program
 //        for(int i = 0; i < input_program.num; i++) begin
-        for(int i = 0; i < 100 ; i++) begin
+        for(int i = 0; i < 10 ; i++) begin
 
             // last transaction
             if(i == (input_program.num-1)) begin

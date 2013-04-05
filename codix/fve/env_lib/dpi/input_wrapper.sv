@@ -70,15 +70,15 @@ class InputWrapper extends ovm_component;
       int res;
       NetCOPETransaction ntr;
 
-/*      res = c_openDMAChannel();
+      res = c_openDMAChannel();
       if(res != 0) begin
         `ovm_error( get_name(), "Opening channel is not equal to 0!" );
       end
 
       // Create wrapper subprocess
-      fork
-        run();
-      join_none;*/
+      //fork
+      //  run();
+      //join_none;
 
       // receiving of transactions
       while(1) begin
@@ -106,21 +106,21 @@ class InputWrapper extends ovm_component;
           end
         end
 
+        // data transfer to hardware through DMA channel
+        res = c_sendData(ntr.data);
+        if(res != 0) begin
+          `ovm_error( get_name(), "Send data failure!" );
+           $finish();
+        end
+
       // while
-      end
-        
-/*      // data transfer to hardware through DMA channel
-      res = c_sendData(ntr.data);
-      if(res != 0) begin
-        `ovm_error( get_name(), "Send data failure!" );
-         $finish();
       end
 
       res = c_closeDMAChannel();
       if(res != 0) begin
         `ovm_error( get_name(), "Closing channel is not equal to 0!" );
-      end*/
+      end
 
-    endtask : run 
+   endtask : run 
 
  endclass : InputWrapper 

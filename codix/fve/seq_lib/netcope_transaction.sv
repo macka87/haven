@@ -11,8 +11,6 @@
 // NetCOPETransaction class
 class NetCOPETransaction extends ovm_sequence_item;
 
-    // Public Class Atributes 
-
     // NetCOPE header
     byte endpointID       = 0;  //! hardware endpoint indentification
     byte endpointProtocol = 0;  //! hardware endpoint protocol
@@ -26,14 +24,13 @@ class NetCOPETransaction extends ovm_sequence_item;
     // size of transported data
     int size = 0;
 
-    // registration of object
+    // register fields with OVM?
     `ovm_object_utils_begin( NetCOPETransaction )
     `ovm_object_utils_end
 
     // Constructor - creates new instance of this class
-    function new( string name = "NetCOPE transaction instance" );
+    function new( string name = "NetCOPE_transaction_inst" );
         super.new( name );
-
     endfunction : new
 
     // Function displays the current values of the transaction or data described
