@@ -1,0 +1,20 @@
+# simulation script - include signals
+
+# Paths
+set PROGRAM_DRIVER_PATH       "/testbench/uut"
+set TB_BASE                   "/testbench"
+
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label reset $TB_BASE/reset
+add wave -noupdate -label base_clk $TB_BASE/clk
+
+blk_PROGRAM_DRIVER_IFC       "$PROGRAM_DRIVER_PATH"
+blk_PROGRAM_DRIVER_INTERNALS "$PROGRAM_DRIVER_PATH"
+
+restart -f
+run 400 ns

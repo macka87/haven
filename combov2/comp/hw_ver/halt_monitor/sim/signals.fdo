@@ -1,0 +1,8 @@
+# signals.fdo : Include file with signals
+
+proc blk_HALT_MONITOR_IFC { BASE } {
+
+   add_wave "-noupdate -label port_halt" $BASE/port_halt
+   add_wave "-noupdate -label HALT"   $BASE/HALT
+   add_wave "-noupdate -label RST_n"  $BASE/RST_n
+}

@@ -1,0 +1,16 @@
+# simulation script
+
+set FIRMWARE_BASE         "../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set PROGRAM_DRIVER_BASE   "$COMP_BASE/hw_ver/program_driver"
+
+set SIG_FILE              "$PROGRAM_DRIVER_BASE/sim/program_driver_sig.fdo"
+set TB_FILE               "$PROGRAM_DRIVER_BASE/sim/testbench.vhd"
+
+set COMPONENTS [list \
+                  [ list "PROGRAM_DRIVER" $PROGRAM_DRIVER_BASE "FULL" ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE

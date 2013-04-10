@@ -1,0 +1,20 @@
+# simulation script - include signals
+
+# Paths
+set MEMORY_MONITOR_PATH       "/testbench/uut"
+set TB_BASE                   "/testbench"
+
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label reset $TB_BASE/reset
+add wave -noupdate -label base_clk $TB_BASE/clk
+
+blk_MEMORY_MONITOR_IFC       "$MEMORY_MONITOR_PATH"
+blk_MEMORY_MONITOR_INTERNALS "$MEMORY_MONITOR_PATH"
+
+restart -f
+run 200 ns

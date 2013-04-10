@@ -58,6 +58,26 @@ architecture arch of verification_core is
 
    signal fl_hw_driver_output_ready : std_logic;
 
+   -- program driver - input - Framelink
+   signal program_driver_in_data      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+   signal program_driver_in_rem       : std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
+   signal program_driver_in_sof_n     : std_logic;
+   signal program_driver_in_sop_n     : std_logic;
+   signal program_driver_in_eop_n     : std_logic;
+   signal program_driver_in_eof_n     : std_logic;
+   signal program_driver_in_src_rdy_n : std_logic;
+   signal program_driver_in_dst_rdy_n : std_logic;
+
+
+   -- program driver - output - Codix interface
+   signal program_driver_out_dbg      : std_logic;
+   signal program_driver_out_d0       : std_logic_vector(31 downto 0);
+   signal program_driver_out_wa0      : std_logic_vector(18 downto 0);
+   signal program_driver_out_we0      : std_logic;
+   signal program_driver_out_wsc0     : std_logic_vector(2 downto 0);
+   signal program_driver_out_wsi0     : std_logic_vector(1 downto 0);
+
+
    -- FrameLink coverage checker input
    signal fl_cov_unit_rx_rem        : std_logic_vector(log2(DUT_DATA_WIDTH/8)-1 downto 0);
    signal fl_cov_unit_rx_sof_n      : std_logic;
@@ -282,6 +302,69 @@ begin
 
       OUTPUT_READY  => fl_hw_driver_output_ready
    );
+
+
+   -- TODO: mapping of inputs?
+
+   -- ------------------------------------------------------------------------
+   --              HW_SW_CODASIP - program driver
+   -- ------------------------------------------------------------------------
+   program_driver: entity work.PROGRAM_DRIVER
+   generic map(
+      -- FrameLink data width
+      IN_DATA_WIDTH   => ENV_DATA_WIDTH,
+      OUT_DATA_WIDTH  => DUT_DATA_WIDTH
+   )
+   port map(
+      CLK             => CLK,
+      RESET           => RESET,
+
+      --           input frame link interface
+      RX_DATA         => program_driver_in_data,
+      RX_REM          => program_driver_in_rem,
+      RX_SRC_RDY_N    => program_driver_in_src_rdy_n,
+      RX_DST_RDY_N    => program_driver_in_dst_rdy_n,
+      RX_SOP_N        => program_driver_in_sop_n,
+      RX_EOP_N        => program_driver_in_eop_n,
+      RX_SOF_N        => program_driver_in_sof_n,
+      RX_EOF_N        => program_driver_in_eof_n,
+      
+      --           output interface - codix - memory write
+      dbg_mode_mem    => program_driver_out_dbg,
+      D0              => program_driver_out_d0,
+      WA0             => program_driver_out_wa0,
+      WE0             => program_driver_out_we0,
+      WSC0            => program_driver_out_wsc0,
+      WSI0            => program_driver_out_wsi0
+   );
+
+   -- ------------------------------------------------------------------------
+   --              HW_SW_CODASIP - halt monitor
+   -- ------------------------------------------------------------------------
+--   halt_monitor: entity work.HALT_MONITOR
+--   generic map(
+--   )
+--   port map(
+--   );
+
+   -- ------------------------------------------------------------------------
+   --              HW_SW_CODASIP - memory monitor
+   -- ------------------------------------------------------------------------
+--   memory_monitor: entity work.MEMORY_MONITOR
+--   generic map(
+--   )
+--   port map(
+--   );
+  
+   -- ------------------------------------------------------------------------
+   --              HW_SW_CODASIP - portout monitor
+   -- ------------------------------------------------------------------------
+--   portout_monitor: entity work.PORTOUT_MONITOR
+--   generic map(
+--   )
+--   port map(
+--   );
+
 
    --
    fl_cov_unit_rx_rem                 <= dut_in_rem;

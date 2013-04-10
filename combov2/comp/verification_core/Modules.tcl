@@ -20,6 +20,13 @@ set RESET_GEN_BASE         "$COMP_BASE/hw_ver/reset_gen"
 set FL_BINDER_BASE         "$FL_BASE/flow/binder"
 set FL_COV_UNIT_BASE       "$COMP_BASE/hw_ver/fl_cov_unit"
 
+# HW_SW_CODASIP
+set PROGRAM_DRIVER_BASE    "$COMP_BASE/hw_ver/program_driver"
+#set HALT_MONITOR_BASE      "$COMP_BASE/hw_ver/halt_monitor"
+#set MEMORY_MONITOR_BASE    "$COMP_BASE/hw_ver/memory_monitor"
+#set PORTOUT_MONITOR_BASE   "$COMP_BASE/hw_ver/portout_monitor"
+
+
 set FL_FIFO_BASE           "$FL_BASE/storage/fifo"
 set HGEN_BASE              "$COMP_BASE/hgen"
 set ERRONEOUS_FL_FIFO_BASE "$COMP_BASE/erroneous_fl_fifo"
@@ -45,4 +52,11 @@ set COMPONENTS [list \
    [ list "FL_VAL_CHECKER"     $FL_VAL_CHECKER_BASE      "FULL"] \
    [ list "FL_OBSERVER"        $FL_OBSERVER_BASE         "FULL"] \
    [ list "FL_COV_UNIT"        $FL_COV_UNIT_BASE         "FULL"] \
+
+   [ list "PROGRAM_DRIVER"     $PROGRAM_DRIVER_BASE      "FULL"] \
+   [ list "MEMORY_MONITOR"     $MEMORY_MONITOR_BASE      "FULL"] \
+   [ list "HALT_MONITOR_BASE"  $HALT_MONITOR_BASE        "FULL"] \
+   [ list "PORTOUT_MONITOR_BASE" $PORTOUT_MONITOR_BASE   "FULL"] \
+   [ list "FL_ADDER_BASE"      $FL_ADDER_BASE            "FULL"] \
+
 ]

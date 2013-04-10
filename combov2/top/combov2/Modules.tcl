@@ -81,11 +81,11 @@ set STAT          "FULL"
 # There are several ARCHGRPs for the Verification Engine, see
 # comp/verification_engine/Modules.tcl
 #set VER_ENGINE    "HW_GEN"
-#set VER_ENGINE    "HW_GEN_CORE"
+set VER_ENGINE    "HW_GEN_CORE"
 #set VER_ENGINE    "HW_FULL"
 
 # This option is obsolete!!! Build HW_GEN_CORE instead!!!
-set VER_ENGINE    "CORE"
+#set VER_ENGINE    "CORE"
 
 # Base directories
 set PACODAG_BASE        "$COMP_BASE/pacodag"
