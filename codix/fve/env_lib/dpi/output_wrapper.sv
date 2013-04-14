@@ -21,10 +21,17 @@ class OutputWrapper extends ovm_component;
         // implements the data operations for an ovm_object based property
         //`ovm_field_object( OVM_DEFAULT | OVM_NOCOMPARE | OVM_NOPRINT | OVM_NORECORD | OVM_NOPACK )
     `ovm_component_utils_end
+
+    // synchronization get port
+    ovm_get_port#(syncT) syncport;
+
        
     // Constructor - creates Input Wrapper object  
     function new (string name, ovm_component parent);
       super.new( name, parent );
+
+      syncport = new("syncport", this);
+
     endfunction: new
 
     // build - instantiates child components
@@ -38,31 +45,81 @@ class OutputWrapper extends ovm_component;
       int res;
       int unsigned size; 
       NetCOPETransaction ntr;
+      syncT str;
+      byte unsigned temp[];            // temporary array
 
       size = 0;
       ntr = new();
-      ntr.data = new[4096];
 
-      // we call C function (through DPI layer) for data transfer from hw
-      res = c_receiveData(size, ntr.data);
+      // wait for input wrapper
+      syncport.get(str);
 
-      if (res == 1) begin
-        $error("RECEIVE DATA in output wrapper failed!!!"); 
-        $finish();
-      end
-      else begin
-        if (size > 0) begin
-          // store the right size of data
-          ntr.size = size;
-          $write("received size: %d\n", size);
-          ntr.display("OUTPUT NETCOPE TRANSACTION");
-          // put received data to output mailbox
-          // outputMbx.put(ntr);  
+      while(1) begin
+
+        temp = new[128];
+
+        // we call C function (through DPI layer) for data transfer from hw
+        res = c_receiveData(size, temp);
+
+        // data array with accurate size
+        ntr.data = new[size];
+
+        // copy data from temporary array to netcope transaction
+        for(int i = 0 ; i < size ; i++) begin
+          ntr.data[i] = temp[i];
+        end
+
+        // clear temporary array
+        temp.delete();
+
+        if (res == 1) begin
+          `ovm_error( get_name(), "Receive data in output wrapper failed!" );
         end
         else begin
-          #10ns;
+          if (size > 0) begin
+            // store the right size of data
+            ntr.size = size;
+            $write("received size: %d\n", size);
+
+            // printout
+            if(DEBUG_LEVEL == ALL) begin
+              if(ntr.transType == 1) begin
+                ntr.display("OutputWrapper: START TRANSACTION");
+              end
+              else if (ntr.transType == 0) begin
+                ntr.display("OutputWrapper: DATA TRANSACTION");
+              end
+              else if (ntr.transType == 5) begin
+                ntr.display("OutputWrapper: CONTROL TRANSACTION");
+              end
+              else if (ntr.transType == 4) begin
+                ntr.display("OutputWrapper: STOP TRANSACTION");
+                break;
+              end
+              else begin
+                `ovm_error( get_name(), "Unknown transaction!\n" );
+              end
+            end
+
+            break;
+
+            // put received data to output mailbox
+            // outputMbx.put(ntr);  
+
+          end
+          else begin
+            #10ns;
+          end
         end
-      end  
+
+      end
+
+      res = c_closeDMAChannel();
+      $write("CLOSING CHANNEL: %d\n",res); 
+      if(res != 0) begin
+        `ovm_error( get_name(), "Closing channel is not equal to 0!" );
+      end
+
 
     endtask : run 
  

@@ -1,0 +1,21 @@
+# signals.fdo : Include file with signals
+
+proc blk_PORTOUT_MONITOR_IFC { BASE } {
+
+      add wave -divider "Input"
+   add_wave "-noupdate -label port_error -hex"  $BASE/port_error
+   add_wave "-noupdate -label port_output -hex" $BASE/port_output
+   add_wave "-noupdate -label port_output_en"   $BASE/port_output_en
+
+      add wave -divider "Output"
+   add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+   add_wave "-noupdate -label TX_REM -hex" $BASE/TX_REM
+   add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+   add_wave "-noupdate -label TX_SOP_N" $BASE/TX_SOP_N
+   add_wave "-noupdate -label TX_EOP_N" $BASE/TX_EOP_
+   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_NN
+   add_wave "-noupdate -label TX_SOF_N" $BASE/TX_SOF_N
+   add_wave "-noupdate -label TX_EOF_N" $BASE/TX_EOF_N
+
+}

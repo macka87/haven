@@ -101,14 +101,14 @@ architecture arch of PROGRAM_DRIVER is
 -- ----------------------------------------------------------
 --                 FSM states
 -- ----------------------------------------------------------
-type state_type is (init_state, control_state, data_state, stop_state, transfer_state);
+type state_type is (init_state, end_state, data_state, data2_state, stop_state, sync1_state, sync2_state);
 
 -- ----------------------------------------------------------
 --                 constants
 -- ----------------------------------------------------------
-constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
-constant START_TYPE  :  std_logic_vector(7 downto 0) := X"01";
-constant STOP_TYPE   :  std_logic_vector(7 downto 0) := X"04";
+constant DATA_TYPE  : std_logic_vector(7 downto 0) := X"00";
+constant START_TYPE : std_logic_vector(7 downto 0) := X"01";
+constant STOP_TYPE  : std_logic_vector(7 downto 0) := X"04";
 
 -- ----------------------------------------------------------
 --                 signals
@@ -131,12 +131,14 @@ signal sig_out_dbg_mode  : std_logic;                                     -- deb
 signal sig_out_we        : std_logic;                                     -- write enable
 signal sig_out_sb_cnt    : std_logic_vector(2 downto 0);                  -- subblock count
 signal sig_out_sb_idx    : std_logic_vector(1 downto 0);                  -- subblock index
-signal sig_out_data_tmp  : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);   -- temporary data 32b
+signal sig_data_1half    : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal sig_data_2half    : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal sig_rem_1half     : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal sig_rem_2half     : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+
 signal sig_out_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);   -- data out 32b
 
 signal sig_out_dst_rdy_n : std_logic;
-
-signal data_ready          : std_logic;
 
 -- ----------------------------------------------------------
 --                 architecture body
@@ -168,8 +170,7 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, data_ready, RX_SOF_N,
-                                   sig_trans_type, RX_EOF_N, RX_SRC_RDY_N)
+   fsm_next_state_logic : process (state_reg, RX_SOF_N, sig_trans_type, RX_EOF_N, RX_SRC_RDY_N)
    begin
 
 
@@ -182,31 +183,19 @@ begin
      sig_out_sb_cnt     <= "100";      -- subblock count - 4
      sig_out_sb_idx     <= "00";       -- subblock index
 
-     sig_out_dst_rdy_n  <= '0';        -- destination ready signal
-
+     sig_out_dst_rdy_n  <= '1';        -- destination not ready
 
      case state_reg is
         
         -- init state
         when init_state =>
 
-          -- source and destination ready
-          if data_ready = '1' then
+          -- destination ready
+          sig_out_dst_rdy_n  <= '0';
 
-            -- start of frame and start of part
-            if ((RX_SOP_N nand RX_SOF_N) = '1') then
-              -- data transaction              
-              if sig_trans_type = DATA_TYPE then
-                state_next <= data_state;
-              -- stop state
-              elsif sig_trans_type = STOP_TYPE then
-                state_next <= stop_state;
-              -- control transaction
-              else
-                state_next <= control_state;
-              end if;
-            end if;
-          -- data not ready
+          -- SOF & SOP -> first part
+          if ((RX_SOP_N nand RX_SOF_N) = '1') then
+            state_next <= data_state;
           else 
             state_next <= init_state;
           end if;
@@ -216,54 +205,68 @@ begin
 
           -- destination not ready
           sig_out_dst_rdy_n <= '1';
-          -- enable address counter
-          sig_cnt_act       <= '1';
 
-          -- end of frame
+          -- end of frame && end of part
           if ((RX_EOP_N nand RX_EOF_N) = '1') then
+            state_next <= end_state;
 
-            state_next <= init_state;
           -- send data to processor memory
           else
-            -- first part of data - to D0 output
-            sig_out_data <= RX_DATA(63 downto 32);
-            -- second half of data - temporary register
-            sig_out_data_tmp <= RX_DATA(31 downto 0);
-            state_next <= transfer_state;
+            -- increment address
+            sig_cnt_act <= '1';
+
+            sig_out_data <= sig_data_1half;
+            state_next  <= sync1_state;
           end if;
+
+        -- sync state
+        when sync1_state =>
+          state_next <= data2_state;
 
         -- data trasaction transfer
-        when transfer_state =>
+        when data2_state =>
 
-          -- destination not ready
-          sig_out_dst_rdy_n <= '1';
-          -- enable address counter
-          sig_cnt_act       <= '1';
+          -- destination is ready
+          sig_out_dst_rdy_n <= '0';
 
-          -- second part of data - to D0 output
-          sig_out_data <= sig_out_data_tmp;
-          state_next   <= init_state;
+          -- increment address
+          sig_cnt_act <= '1';
 
-        -- control transactions
-        when control_state =>
-          -- end of frame
-          if (RX_EOP_N nand RX_EOF_N) = '1' then
-            state_next <= init_state; 
-          else
-            state_next <= control_state;
-          end if;
+          -- second half of data
+          sig_out_data <= sig_data_2half;
+        
+          state_next <= sync2_state;
 
+        -- sync state
+        when sync2_state =>
+          state_next <= data_state;
+
+        -- last part of data
+        when end_state =>
+
+          -- increment address
+          sig_cnt_act <= '1';
+
+          -- rem! TODO
+          sig_out_data <= sig_rem_1half;
+
+          state_next <= stop_state;
+
+        -- stop state - end of transfer
         when stop_state =>
           state_next <= stop_state;
 
      end case;      
   end process;
-  
+
   sig_trans_type <= RX_DATA(39 downto 32);
   RX_DST_RDY_N <= sig_out_dst_rdy_n;
 
-  -- source and destination are ready TODO: nor|nand?
-  data_ready   <= RX_SRC_RDY_N nor sig_out_dst_rdy_n;
+  sig_data_1half <= RX_DATA(31 downto 0);
+  sig_data_2half <= RX_DATA(63 downto 32);
+
+  sig_rem_1half  <= RX_DATA(31 downto 0);
+  sig_rem_2half  <= RX_DATA(63 downto 32);
 
   -- output processing
   dbg_mode_mem <= sig_out_dbg_mode;
@@ -272,7 +275,6 @@ begin
   WSC0         <= sig_out_sb_cnt;
   WSI0         <= sig_out_sb_idx;
   D0           <= sig_out_data;
-
 
 end architecture;
 

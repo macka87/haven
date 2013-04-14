@@ -1,0 +1,19 @@
+# simulation script - include signals
+
+# Paths
+set PORTOUT_MONITOR_PATH      "/testbench/uut"
+set TB_BASE                   "/testbench"
+
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label RESET $TB_BASE/reset
+add wave -noupdate -label CLK $TB_BASE/clk
+
+blk_PORTOUT_MONITOR_IFC       "$PORTOUT_MONITOR_PATH"
+
+restart -f
+run 200 ns

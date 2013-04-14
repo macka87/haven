@@ -2,14 +2,11 @@
 --  Hardware accelerated Functional Verification of Processor
 --  ---------------------------------------------------------
 
---  \file   program_driver.vhd
---  \date   27-03-2013
---  \brief  Program driver transform data received from SW part
---          and resends it to processor interface
-
---          processor (Codix) interface    - haven/codix/vhdl/codix_ca_t.vhd
---                                           haven/codix/fve/ifc.sv
---          frame link interface (example) - haven/combov2/comp/hw_ver/fl_hw_driver/fl_driver_ctrl/fl_driver_ctrl.vhd
+--  \file   memory_monitor.vhd
+--  \date   10-04-2013
+--  \brief  Memory monitor is activated by halt signal, then reads
+--          memory of processor through its interface and sends
+--          content of memory to SW part of verification environment
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -199,6 +196,11 @@ begin
 
           if HALT = '1' then
             state_next <= transfer_state;
+
+            -- set SOF & SOP
+            sig_tx_sof_n <= '0';
+            sig_tx_sop_n <= '0';
+
           else
             state_next <= init_state;
           end if;
@@ -207,7 +209,7 @@ begin
         when transfer_state =>
 
           -- enable address counter
-          sig_cnt_act       <= '1';
+          sig_cnt_act <= '1';
           
           -- output data = Q1 + Q2
           sig_tx_data <= sig_qdata_tmp;
@@ -220,7 +222,10 @@ begin
           end if;
 
 --          if sig_end_flag = '1' then
---            state_next <= stop_state;
+--            -- set EOP & EOF & REM!
+--            sig_tx_eop_n <= '0';
+--            sig_tx_eof_n <= '0';
+--            state_next <= stop_state;              
 --          end if;
 
         -- wait for destination ready signal

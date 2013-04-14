@@ -11,6 +11,15 @@
 === output_wrapper.sv
 === dpi_wrapper_pkg.sv
 =================================================================================
+===                OVM debug print
+=================================================================================
+
+`ovm_info("MYINFO1", $sformatf("val: %0d", val), OVM_LOW)
+`ovm_warning("MYWARN1", "This is a warning")
+`ovm_error("MYERR", "This is an error")
+`ovm_fatal("MYFATAL", "A fatal error has occurred")
+
+=================================================================================
 ===                OVM field macros
 
    OVM_ALL_ON      Set all operations on (default).

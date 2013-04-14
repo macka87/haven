@@ -107,10 +107,12 @@ begin
    begin
    
       wait for reset_time; 
+
+      wait for 50 ns;
+
       wait until rising_edge(clk);
 
-      -- data header - first part  
-      driver_in_data  <= X"0201000000000000"; 
+      driver_in_data  <= X"1111111122222222";
       driver_in_rem   <= "111";
       driver_in_sof_n <= '0';
       driver_in_eof_n <= '1';
@@ -118,10 +120,21 @@ begin
       driver_in_eop_n <= '1';
       driver_in_src_rdy_n <= '0';
 --      driver_in_dst_rdy_n <= '0';
-      
+
       wait until rising_edge(clk);
-      -- data - first part 
-      driver_in_data  <= X"1234567812345678"; 
+
+      driver_in_data  <= X"3333333344444444";
+      driver_in_rem   <= "111";
+      driver_in_sof_n <= '1';
+      driver_in_eof_n <= '1';
+      driver_in_sop_n <= '1';
+      driver_in_eop_n <= '1';
+      driver_in_src_rdy_n <= '0';
+--      driver_in_dst_rdy_n <= '0';
+
+      wait until rising_edge(clk);
+
+      driver_in_data  <= X"5555555566666666";
       driver_in_rem   <= "111";
       driver_in_sof_n <= '1';
       driver_in_eof_n <= '0';
@@ -129,40 +142,9 @@ begin
       driver_in_eop_n <= '0';
       driver_in_src_rdy_n <= '0';
 --      driver_in_dst_rdy_n <= '0';
-   
-      wait until rising_edge(clk);
-      -- data header - second part  
-      driver_in_data  <= X"0301000000000000"; 
-      driver_in_rem   <= "111";
-      driver_in_sof_n <= '0';
-      driver_in_eof_n <= '1';
-      driver_in_sop_n <= '0';
-      driver_in_eop_n <= '1';
-      driver_in_src_rdy_n <= '0';
---      driver_in_dst_rdy_n <= '0';
 
-      
---      SendWriteFile("./start.txt", RND, flCmd_0, 0);
---      SendWriteFile("./boggus.txt", RND, flCmd_0, 0);
---      SendWriteFile("./input.txt", RND, flCmd_0, 0);
-      
---      SendWriteFile("./input.txt", RND, flCmd_0, 0);
 
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
---      SendWriteFile("./small.txt", RND, flCmd_0, 0);
-
---      SendWriteFile("./stop.txt", RND, flCmd_0, 0);
+     wait;
       
   end process tb; 
    

@@ -147,7 +147,7 @@ class Sender extends ovm_component;
       int size;
       
       // NetCOPE transaction settings
-      dataTrans.endpointID  = 21;
+      dataTrans.endpointID  = 0;
       dataTrans.transType   = 0;  // data transaction
       dataTrans.ifcProtocol = 1;  // identifies FrameLink protocol
       dataTrans.ifcInfo     = 2*allData + lastPart;  
@@ -157,7 +157,7 @@ class Sender extends ovm_component;
       dataTrans.data    = new[size + 8];
       
       // NetCOPE header
-      dataTrans.data[0] = 21;                   // endpointID
+      dataTrans.data[0] = 0;                   // endpointID
       dataTrans.data[1] = 0;                    // endpointProtocol
       dataTrans.data[2] = 0; 
       dataTrans.data[3] = 0;
@@ -186,7 +186,7 @@ class Sender extends ovm_component;
       NetCOPETransaction controlTrans = new();
       int size    = 1; // btDelay takes 1 Byte
       
-      controlTrans.endpointID  = 21;
+      controlTrans.endpointID  = 0;
       controlTrans.transType   = 5;  // control src_rdy transaction
       controlTrans.ifcProtocol = 1;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -199,7 +199,7 @@ class Sender extends ovm_component;
       controlTrans.data    = new[size + 8];
       
       // NetCOPE header
-      controlTrans.data[0] = 21;  // endpointID
+      controlTrans.data[0] = 0;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -227,7 +227,7 @@ class Sender extends ovm_component;
       controlTrans.data    = new[8];
       
       // NetCOPE header
-      controlTrans.data[0] = 21;  // endpointID
+      controlTrans.data[0] = 0;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -236,7 +236,7 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      controlTrans.endpointID  = 21;
+      controlTrans.endpointID  = 0;
       controlTrans.transType   = 1;  // control start transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -257,7 +257,7 @@ class Sender extends ovm_component;
       controlTrans.data    = new[8];
       
       // NetCOPE header
-      controlTrans.data[0] = 21;  // endpointID
+      controlTrans.data[0] = 0;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -266,7 +266,7 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      controlTrans.endpointID  = 21;
+      controlTrans.endpointID  = 0;
       controlTrans.transType   = 4;  // control stop transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -286,7 +286,7 @@ class Sender extends ovm_component;
       controlTrans.data = new[16];
       
       // NetCOPE header
-      controlTrans.data[0] = 21;  // endpointID
+      controlTrans.data[0] = 0;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -295,7 +295,7 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      controlTrans.endpointID  = 21;
+      controlTrans.endpointID  = 0;
       controlTrans.transType   = 2;  // control wait transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info
@@ -315,7 +315,7 @@ class Sender extends ovm_component;
       controlTrans.data = new[8];
       
       // NetCOPE header
-      controlTrans.data[0] = 21;  // endpointID
+      controlTrans.data[0] = 0;  // endpointID
       controlTrans.data[1] = 0;   // endpointProtocol
       controlTrans.data[2] = 0; 
       controlTrans.data[3] = 0;
@@ -324,7 +324,7 @@ class Sender extends ovm_component;
       controlTrans.data[6] = 0;   // ifcProtocol
       controlTrans.data[7] = 0;   // ifcInfo
       
-      controlTrans.endpointID  = 21;
+      controlTrans.endpointID  = 0;
       controlTrans.transType   = 3;  // control wait transaction
       controlTrans.ifcProtocol = 0;  // no protocol
       controlTrans.ifcInfo     = 0;  // no info

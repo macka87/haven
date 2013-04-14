@@ -17,10 +17,6 @@ import dpi_wrapper_pkg::*;
 // stoped by "setDisable()" function call.  
 class InputWrapper extends ovm_component;
     
-    // Public Class Atributes
-    bit       enabled;   //! Input Wrapper enabling
-    bit       busy;      //! Input Wrapper busy signal
- 
     // registration of component tools
     `ovm_component_utils_begin( InputWrapper )
         // implements the data operations for an ovm_object based property
@@ -29,14 +25,17 @@ class InputWrapper extends ovm_component;
 
     // get port
     ovm_get_port#(NetCOPETransaction) gport;
+
+    // synchronization put port
+    ovm_put_port#(syncT) syncport;
        
     // Constructor - creates Input Wrapper object
     function new (string name, ovm_component parent);
       super.new( name, parent );
-      gport = new("gport", this);
 
-      this.enabled     = 0;         //! Input Wrapper is disabled by default
-      this.busy        = 0;
+      gport    = new("gport", this);
+      syncport = new("syncport", this);
+      
     endfunction: new
 
 
@@ -45,40 +44,24 @@ class InputWrapper extends ovm_component;
         super.build();
     endfunction: build
 
-    // Enable Input Wrapper - eable wrapper and runs wrapper process
-    virtual task setEnabled();
-      int res;
-      enabled = 1;                 //! Wrapper Enabling
-      res = c_openDMAChannel();    //! Open DMA Channel 
-      $write("OPENING CHANNEL (musi byt 0): %d\n",res);
-      fork
-        run();                     //! Creating wrapper subprocess
-      join_none;  
-    endtask : setEnabled
-        
-    
-    // Disable Input Wrapper
-    virtual task setDisabled();
-      int res;
-      enabled = 0;                 //! Disable Wrapper
-      res = c_closeDMAChannel();   //! Close DMA Channel
-      $write("CLOSING CHANNEL (musi byt 0): %d\n",res); 
-    endtask : setDisabled
-
     // Run Input Wrapper - receives transactions and sends them through DPI to HW
     task run();
       int res;
       NetCOPETransaction ntr;
+      syncT str;
+
+      str = new();
+      str.flag = 135;
 
       res = c_openDMAChannel();
+      $write("OPENING CHANNEL: %d\n",res);
+
       if(res != 0) begin
         `ovm_error( get_name(), "Opening channel is not equal to 0!" );
       end
 
-      // Create wrapper subprocess
-      //fork
-      //  run();
-      //join_none;
+      // enable output wrapper
+      syncport.put(str);
 
       // receiving of transactions
       while(1) begin
@@ -108,17 +91,20 @@ class InputWrapper extends ovm_component;
 
         // data transfer to hardware through DMA channel
         res = c_sendData(ntr.data);
+
+
         if(res != 0) begin
           `ovm_error( get_name(), "Send data failure!" );
-           $finish();
         end
 
       // while
       end
 
-      res = c_closeDMAChannel();
+
+      // data transfer to hardware through DMA channel - last stop transaction
+      res = c_sendData(ntr.data);
       if(res != 0) begin
-        `ovm_error( get_name(), "Closing channel is not equal to 0!" );
+        `ovm_error( get_name(), "Send data failure!" );
       end
 
    endtask : run 

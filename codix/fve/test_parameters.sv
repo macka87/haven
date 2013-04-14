@@ -25,7 +25,7 @@ package sv_codix_ca_param_pkg;
     parameter tEnv VER_ENV = SW_HW;
 
     
-    parameter tDebug DEBUG_LEVEL = INFO;
+    parameter tDebug DEBUG_LEVEL = ALL;
    
     // clocks and resets
     parameter CLK_PERIOD = 10ns;

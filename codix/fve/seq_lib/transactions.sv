@@ -223,3 +223,21 @@ class codix_ca_output_transaction extends ovm_sequence_item;
 
 endclass: codix_ca_output_transaction
 
+
+// class for synchronization transaction between components
+class syncT extends ovm_sequence_item;
+
+  int flag;
+
+  // registration of object tools
+  `ovm_object_utils_begin( syncT )
+    `ovm_field_int( flag, OVM_ALL_ON )
+  `ovm_object_utils_end
+
+  // constructor
+  function new( string name = "codix_sync_transaction" );
+    super.new( name );
+  endfunction : new
+
+endclass: syncT
+

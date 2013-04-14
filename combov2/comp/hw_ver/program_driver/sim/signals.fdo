@@ -33,5 +33,8 @@ proc blk_PROGRAM_DRIVER_INTERNALS { BASE } {
    add_wave "-noupdate -label sig_trans_type" $BASE/sig_trans_type
    add_wave "-noupdate -label sig_cnt_act"    $BASE/sig_cnt_act
    add_wave "-noupdate -label sig_cnt_addr"   $BASE/sig_cnt_addr
-   add_wave "-noupdate -label data_ready"     $BASE/data_ready
+   add_wave "-noupdate -label sig_out_data -hex"   $BASE/sig_out_data
+   add_wave "-noupdate -label sig_data_1half -hex" $BASE/sig_data_1half
+   add_wave "-noupdate -label sig_data_2half -hex" $BASE/sig_data_2half
+
 }

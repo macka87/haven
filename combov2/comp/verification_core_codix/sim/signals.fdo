@@ -1,0 +1,143 @@
+# signals.fdo : Include file with signals
+# Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
+
+view wave
+delete wave *
+
+proc blk_VER_CORE { BASE } {
+  add_wave "-noupdate -label CLK"    $BASE/CLK
+  add_wave "-noupdate -label RESET"  $BASE/RESET
+
+  add wave -divider "HW Input interface"
+  add_wave "-noupdate -label RX_DATA -hex" $BASE/RX_DATA
+  add_wave "-noupdate -label RX_REM  -hex" $BASE/RX_REM
+  add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
+  add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
+  add_wave "-noupdate -label RX_SOP_N"     $BASE/RX_SOP_N
+  add_wave "-noupdate -label RX_EOP_N"     $BASE/RX_EOP_N
+  add_wave "-noupdate -label RX_SOF_N"     $BASE/RX_SOF_N
+  add_wave "-noupdate -label RX_EOF_N"     $BASE/RX_EOF_N
+
+  add wave -divider "HW Output interface"
+  add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+  add_wave "-noupdate -label TX_REM  -hex" $BASE/TX_REM
+  add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+  add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+  add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
+  add_wave "-noupdate -label TX_EOP_N"     $BASE/TX_EOP_N
+  add_wave "-noupdate -label TX_SOF_N"     $BASE/TX_SOF_N
+  add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
+
+}
+
+proc blk_VER_CORE_DUT_IFC { BASE } {
+  add_wave "-noupdate -label clk_dut"          $BASE/clk_dut
+  add_wave "-noupdate -label reset_dut"        $BASE/reset_dut
+
+  add wave -divider "DUT Input ifc"
+
+  add wave -divider "DUT input - memory write"
+
+
+  add wave "-noupdate -label dut_in_dbg" $BASE/dut_in_dbg
+  add wave "-noupdate -label dut_in_d0 -hex" $BASE/dut_in_d0
+  add wave "-noupdate -label dut_in_wa0" $BASE/dut_in_wa0
+  add wave "-noupdate -label dut_in_we0" $BASE/dut_in_we0
+  add wave "-noupdate -label dut_in_wsc0" $BASE/dut_in_wsc0
+  add wave "-noupdate -label dut_in_wsi0" $BASE/dut_in_wsi0
+
+  add wave -divider "DUT input - memory read"
+
+  add wave "-noupdate -label dut_in_ra0 -hex" $BASE/dut_in_ra0
+  add wave "-noupdate -label dut_in_ra1 -hex" $BASE/dut_in_ra1
+  add wave "-noupdate -label dut_in_re0" $BASE/dut_in_re0
+  add wave "-noupdate -label dut_in_re1" $BASE/dut_in_re1
+  add wave "-noupdate -label dut_in_rsc0" $BASE/dut_in_rsc0
+  add wave "-noupdate -label dut_in_rsc1" $BASE/dut_in_rsc1
+  add wave "-noupdate -label dut_in_rsi0" $BASE/dut_in_rsi0
+  add wave "-noupdate -label dut_in_rsi1" $BASE/dut_in_rsi1
+
+  add_wave "-noupdate -label dut_in_data -hex" $BASE/dut_in_data
+  add_wave "-noupdate -label dut_in_rem  -hex" $BASE/dut_in_rem
+  add_wave "-noupdate -label dut_in_src_rdy_n" $BASE/dut_in_src_rdy_n
+  add_wave "-noupdate -label dut_in_dst_rdy_n" $BASE/dut_in_dst_rdy_n
+  add_wave "-noupdate -label dut_in_sop_n"     $BASE/dut_in_sop_n
+  add_wave "-noupdate -label dut_in_eop_n"     $BASE/dut_in_eop_n
+  add_wave "-noupdate -label dut_in_sof_n"     $BASE/dut_in_sof_n
+  add_wave "-noupdate -label dut_in_eof_n"     $BASE/dut_in_eof_n
+
+  add wave -divider "DUT Output ifc"
+
+  add wave "-noupdate -label dut_out_q0 -hex" $BASE/dut_out_q0
+  add wave "-noupdate -label dut_out_q1 -hex" $BASE/dut_out_q1
+  add wave "-noupdate -label dut_out_port_error -hex" $BASE/dut_out_port_error
+  add wave "-noupdate -label dut_out_port_halt" $BASE/dut_out_port_halt
+  add wave "-noupdate -label dut_out_port_output -hex" $BASE/dut_out_port_output
+  add wave "-noupdate -label dut_out_port_output_en" $BASE/dut_out_port_output_en
+
+}
+
+proc blk_VER_CORE_INTERNALS { BASE } {
+  add wave -divider "Misc"
+  add_wave "-noupdate -label reset_dut"     $BASE/reset_dut
+
+  add wave -divider "Clock Gate"
+  add_wave "-noupdate -label CLK_IN"        $BASE/clock_gate_i/CLK_IN
+  add_wave "-noupdate -label CLOCK_ENABLE"  $BASE/clock_gate_i/CLOCK_ENABLE
+  add_wave "-noupdate -label CLK_OUT"       $BASE/clock_gate_i/CLK_OUT
+}
+
+proc blk_PROGRAM_DRIVER { BASE } {
+  add wave -divider "PROGRAM DRIVER Input ifc"
+
+  add wave "-noupdate -label program_driver_in_data -hex" $BASE/program_driver_in_data
+  add wave "-noupdate -label program_driver_in_rem" $BASE/program_driver_in_rem
+  add wave "-noupdate -label program_driver_in_sof_n" $BASE/program_driver_in_sof_n
+  add wave "-noupdate -label program_driver_in_sop_n" $BASE/program_driver_in_sop_n
+  add wave "-noupdate -label program_driver_in_eop_n" $BASE/program_driver_in_eop_n
+  add wave "-noupdate -label program_driver_in_eof_n" $BASE/program_driver_in_eof_n
+  add wave "-noupdate -label program_driver_in_src_rdy_n" $BASE/program_driver_in_src_rdy_n
+  add wave "-noupdate -label program_driver_in_dst_rdy_n" $BASE/program_driver_in_dst_rdy_n
+
+  add wave -divider "PROGRAM DRIVER Output ifc"
+
+  add wave "noupdate -label program_driver_out_dbg" $BASE/program_driver_out_dbg
+  add wave "noupdate -label program_driver_out_d0 -hex" $BASE/program_driver_out_d0
+  add wave "noupdate -label program_driver_out_wa0 -hex" $BASE/program_driver_out_wa0
+  add wave "noupdate -label program_driver_out_we0" $BASE/program_driver_out_we0
+  add wave "noupdate -label program_driver_out_wsc0" $BASE/program_driver_out_wsc0
+  add wave "noupdate -label program_driver_out_wsi0" $BASE/program_driver_out_wsi0
+
+}
+
+proc blk_MEMORY_MONITOR { BASE } {
+  add wave -divider "MEMORY MONITOR Input ifc"
+
+  add wave "noupdate -label memory_monitor_in_halt" $BASE/memory_monitor_in_halt
+  add wave "noupdate -label memory_monitor_out_dbg" $BASE/memory_monitor_out_dbg
+  add wave "noupdate -label memory_monitor_in_q0 -hex" $BASE/memory_monitor_in_q0
+  add wave "noupdate -label memory_monitor_in_q1 -hex" $BASE/memory_monitor_in_q1
+  add wave "noupdate -label memory_monitor_out_ra0 -hex" $BASE/memory_monitor_out_ra0
+  add wave "noupdate -label memory_monitor_out_ra1 -hex" $BASE/memory_monitor_out_ra1
+  add wave "noupdate -label memory_monitor_out_re0" $BASE/memory_monitor_out_re0
+  add wave "noupdate -label memory_monitor_out_re1" $BASE/memory_monitor_out_re1
+  add wave "noupdate -label memory_monitor_out_rsc0" $BASE/memory_monitor_out_rsc0
+  add wave "noupdate -label memory_monitor_out_rsc1" $BASE/memory_monitor_out_rsc1
+  add wave "noupdate -label memory_monitor_out_rsi0" $BASE/memory_monitor_out_rsi0
+  add wave "noupdate -label memory_monitor_out_rsi1" $BASE/memory_monitor_out_rsi1
+
+
+  add wave -divider "MEMORY MONITOR Output ifc"
+
+  add wave "noupdate -label memory_monitor_out_data -hex" $BASE/memory_monitor_out_data
+  add wave "noupdate -label memory_monitor_out_rem" $BASE/memory_monitor_out_rem
+  add wave "noupdate -label memory_monitor_out_src_rdy_n" $BASE/memory_monitor_out_src_rdy_n
+  add wave "noupdate -label memory_monitor_in_dst_rdy_n" $BASE/memory_monitor_in_dst_rdy_n
+  add wave "noupdate -label memory_monitor_out_sop_n" $BASE/memory_monitor_out_sop_n
+  add wave "noupdate -label memory_monitor_out_sof_n" $BASE/memory_monitor_out_sof_n
+  add wave "noupdate -label memory_monitor_out_eop_n" $BASE/memory_monitor_out_eop_n
+  add wave "noupdate -label memory_monitor_out_eof_n" $BASE/memory_monitor_out_eof_n
+
+}
+
+
