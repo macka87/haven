@@ -158,7 +158,8 @@ begin
         when data_1half =>
 
           -- increment address
-          --cnt_addr <= cnt_addr + "0000000000000000100";
+          cnt_addr <= cnt_addr + "0000000000000000100";
+          report "signal cnt_addr is incremented at time " & time'image(now);
 
           -- write second half of data
           state_next <= data_2half;
