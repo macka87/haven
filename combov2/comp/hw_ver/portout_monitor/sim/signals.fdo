@@ -3,7 +3,6 @@
 proc blk_PORTOUT_MONITOR_IFC { BASE } {
 
       add wave -divider "Input"
-   add_wave "-noupdate -label port_error -hex"  $BASE/port_error
    add_wave "-noupdate -label port_output -hex" $BASE/port_output
    add_wave "-noupdate -label port_output_en"   $BASE/port_output_en
 
@@ -13,9 +12,15 @@ proc blk_PORTOUT_MONITOR_IFC { BASE } {
    add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
    add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
    add_wave "-noupdate -label TX_SOP_N" $BASE/TX_SOP_N
-   add_wave "-noupdate -label TX_EOP_N" $BASE/TX_EOP_
-   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_NN
+   add_wave "-noupdate -label TX_EOP_N" $BASE/TX_EOP_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
    add_wave "-noupdate -label TX_SOF_N" $BASE/TX_SOF_N
    add_wave "-noupdate -label TX_EOF_N" $BASE/TX_EOF_N
+
+      add wave -divider "Internals"
+   add_wave "-noupdate -label state_reg" $BASE/state_reg
+   add_wave "-noupdate -label state_next" $BASE/state_next
+   add_wave "-noupdate -label header_data" $BASE/header_data
+   add_wave "-noupdate -label header_rem" $BASE/header_rem
 
 }

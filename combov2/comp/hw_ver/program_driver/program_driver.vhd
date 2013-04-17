@@ -37,57 +37,24 @@ entity PROGRAM_DRIVER is
       --           R - receiver, T - transmitter
       --           input frame link interface
       RX_DATA        : in  std_logic_vector(IN_DATA_WIDTH-1 downto 0);
---      RX_REM         : in  std_logic_vector(log2(IN_DATA_WIDTH/8)-1 downto 0);
       RX_REM         : in  std_logic_vector(2 downto 0);
-
       RX_SRC_RDY_N   : in  std_logic;
       RX_DST_RDY_N   : out std_logic;
       RX_SOP_N       : in  std_logic;
       RX_EOP_N       : in  std_logic;
       RX_SOF_N       : in  std_logic;
       RX_EOF_N       : in  std_logic;
+
+      --           halt signal from processor
+      HALT           : in  std_logic;
       
       --           output interface - codix - memory write
-      --           dbg_mode_mem_* ports
       dbg_mode_mem      : out std_logic;
-      --dbg_mode_mem_D0   : in std_logic_vector(31 downto 0);
-      --dbg_mode_mem_Q0   : out std_logic_vector(31 downto 0);
-      --dbg_mode_mem_RA0  : in std_logic_vector(18 downto 0);
-      --dbg_mode_mem_RE0  : in std_logic;
-      --dbg_mode_mem_RSC0 : in std_logic_vector(2 downto 0);
-      --dbg_mode_mem_RSI0 : in std_logic_vector(1 downto 0);
-      --dbg_mode_mem_WA0  : in std_logic_vector(18 downto 0);
-      --dbg_mode_mem_WE0  : in std_logic;
-      --dbg_mode_mem_WSC0 : in std_logic_vector(2 downto 0);
-      --dbg_mode_mem_WSI0 : in std_logic_vector(1 downto 0);
-
-      --           memory interface
-      -- data 32b width
-      D0   : out std_logic_vector(31 downto 0);
-      --FR0  : out std_logic_vector(2 downto 0);
-      --FR1  : out std_logic_vector(2 downto 0);
-      --FW0  : out std_logic_vector(2 downto 0);
-      --Q0   : out std_logic_vector(31 downto 0);
-      --Q1   : out std_logic_vector(31 downto 0);
-      --RA0  : in std_logic_vector(18 downto 0);
-      --RA1  : in std_logic_vector(18 downto 0);
-      --RE0  : in std_logic;
-      --RE1  : in std_logic;
-      --RR0  : out std_logic_vector(2 downto 0);
-      --RR1  : out std_logic_vector(2 downto 0);
-      --RSC0 : in std_logic_vector(2 downto 0);
-      --RSC1 : in std_logic_vector(2 downto 0);
-      --RSI0 : in std_logic_vector(1 downto 0);
-      --RSI1 : in std_logic_vector(1 downto 0);
-      --RW0  : out std_logic_vector(2 downto 0);
-      -- address
-      WA0  : out std_logic_vector(18 downto 0);
-       -- write enable
-      WE0  : out std_logic;
-      -- write subblock count
-      WSC0 : out std_logic_vector(2 downto 0);
-      -- write subblock index
-      WSI0 : out std_logic_vector(1 downto 0)
+      dbg_mode_mem_D0   : out std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+      dbg_mode_mem_WA0  : out std_logic_vector(18 downto 0);
+      dbg_mode_mem_WE0  : out std_logic;
+      dbg_mode_mem_WSC0 : out std_logic_vector(2 downto 0);
+      dbg_mode_mem_WSI0 : out std_logic_vector(1 downto 0)
 
    );
    
@@ -101,7 +68,7 @@ architecture arch of PROGRAM_DRIVER is
 -- ----------------------------------------------------------
 --                 FSM states
 -- ----------------------------------------------------------
-type state_type is (init_state, end_state, data_state, data2_state, stop_state, sync1_state, sync2_state);
+type state_type is (init_state, data_1half, data_2half, stop_state);
 
 -- ----------------------------------------------------------
 --                 constants
@@ -116,46 +83,30 @@ constant STOP_TYPE  : std_logic_vector(7 downto 0) := X"04";
 
 -- FSM signals
 signal state_reg, state_next   : state_type;
+signal is_header, is_stop, is_half : std_logic;
 
 -- trasaction type
 signal sig_trans_type    : std_logic_vector(7 downto 0);
 
--- address counter active
-signal sig_cnt_act       : std_logic;
-
--- address counter register
-signal sig_cnt_addr      : std_logic_vector(18 downto 0);                 -- address 19b
-
--- output control
+-- output interface signals
+signal cnt_addr          : std_logic_vector(18 downto 0);                 -- address counter 19b
 signal sig_out_dbg_mode  : std_logic;                                     -- debug mode memory
 signal sig_out_we        : std_logic;                                     -- write enable
 signal sig_out_sb_cnt    : std_logic_vector(2 downto 0);                  -- subblock count
 signal sig_out_sb_idx    : std_logic_vector(1 downto 0);                  -- subblock index
-signal sig_data_1half    : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-signal sig_data_2half    : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-signal sig_rem_1half     : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-signal sig_rem_2half     : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-
-signal sig_out_data      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);   -- data out 32b
+signal sig_out_d0        : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);   -- data out 32b
+signal sig_half_out      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
 
 signal sig_out_dst_rdy_n : std_logic;
+
+signal output_reg        : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+
+signal data_ready : std_logic;
 
 -- ----------------------------------------------------------
 --                 architecture body
 -- ----------------------------------------------------------
 begin
-
-   -- address counter
-   address_counter : process (CLK, RESET)
-   begin
-      if CLK='1' and CLK'event then
-         if RESET='1' then
-            sig_cnt_addr <= (others=>'0');
-         elsif sig_cnt_act = '1' then
-            sig_cnt_addr <= sig_cnt_addr + 4;
-         end if;   
-      end if;   
-   end process;
 
    -- state logic
    fsm_state_logic : process (CLK)
@@ -170,111 +121,168 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, RX_SOF_N, sig_trans_type, RX_EOF_N, RX_SRC_RDY_N)
+   fsm_next_state_logic : process (state_reg, data_ready, RX_SOF_N, 
+                                   sig_trans_type, RX_EOF_N, RX_SRC_RDY_N)
+
    begin
-
-
      state_next         <= state_reg;   
 
-     sig_cnt_act        <= '0';
-
      sig_out_dbg_mode   <= '1';        -- memory debug mode port
-     sig_out_we         <= '1';        -- write enable
      sig_out_sb_cnt     <= "100";      -- subblock count - 4
      sig_out_sb_idx     <= "00";       -- subblock index
-
-     sig_out_dst_rdy_n  <= '1';        -- destination not ready
 
      case state_reg is
         
         -- init state
         when init_state =>
 
-          -- destination ready
-          sig_out_dst_rdy_n  <= '0';
+          -- address counter set to zero
+          cnt_addr <= (others => '0');
 
-          -- SOF & SOP -> first part
-          if ((RX_SOP_N nand RX_SOF_N) = '1') then
-            state_next <= data_state;
-          else 
+          -- src and dst ready, data transaction and active halt
+          if data_ready='1' then
+            if sig_trans_type=DATA_TYPE and HALT='1' then
+              -- write first half of data
+              state_next <= data_1half;
+            elsif sig_trans_type=STOP_TYPE then
+              state_next <= stop_state;
+            elsif sig_trans_type=START_TYPE then 
+              state_next <= init_state; 
+            end if;
+
+          else
             state_next <= init_state;
           end if;
 
-        -- data transaction processing state
-        when data_state =>
+        -- first half of data write to memory
+        when data_1half =>
 
-          -- destination not ready
-          sig_out_dst_rdy_n <= '1';
+          -- increment address
+          --cnt_addr <= cnt_addr + "0000000000000000100";
 
-          -- end of frame && end of part
-          if ((RX_EOP_N nand RX_EOF_N) = '1') then
-            state_next <= end_state;
-
-          -- send data to processor memory
-          else
-            -- increment address
-            sig_cnt_act <= '1';
-
-            sig_out_data <= sig_data_1half;
-            state_next  <= sync1_state;
-          end if;
-
-        -- sync state
-        when sync1_state =>
-          state_next <= data2_state;
+          -- write second half of data
+          state_next <= data_2half;
 
         -- data trasaction transfer
-        when data2_state =>
+        when data_2half =>
 
-          -- destination is ready
-          sig_out_dst_rdy_n <= '0';
+          -- end of data
+          if RX_EOF_N = '0' and data_ready = '1' then
+            if sig_trans_type = STOP_TYPE then
+              state_next <= stop_state;
+            else 
+              state_next <= init_state;
+            end if;
 
-          -- increment address
-          sig_cnt_act <= '1';
+          -- data ready - continue with transfer
+          elsif RX_EOP_N = '1' and data_ready = '1' then
+              -- increment address
+              --cnt_addr <= cnt_addr + 4;
 
-          -- second half of data
-          sig_out_data <= sig_data_2half;
-        
-          state_next <= sync2_state;
+              state_next <= data_1half;
 
-        -- sync state
-        when sync2_state =>
-          state_next <= data_state;
+          -- data not ready - wait
+          else
+              state_next <= data_2half;
+          end if;
 
-        -- last part of data
-        when end_state =>
-
-          -- increment address
-          sig_cnt_act <= '1';
-
-          -- rem! TODO
-          sig_out_data <= sig_rem_1half;
-
-          state_next <= stop_state;
-
-        -- stop state - end of transfer
-        when stop_state =>
-          state_next <= stop_state;
-
+        when stop_state => 
+          if sig_trans_type = START_TYPE then 
+            state_next <= init_state;
+          else 
+            state_next <= stop_state;
+          end if;
+          
      end case;      
   end process;
 
+  -- Moore output logic
+  moore_output : process (state_reg)
+  begin
+     -- default values
+     is_header    <= '0';
+     is_stop      <= '0'; -- ??
+     is_half      <= '0';
+      
+     case state_reg is
+        when init_state => is_header <= '1';
+        when data_1half => is_half   <= '1';
+        when stop_state => is_stop   <= '1';
+        when data_2half => is_half   <= '0';
+     end case;   
+  end process moore_output;
+
+   mux_we : process (is_header, is_half, RX_REM, data_ready, is_stop)
+   begin
+      sig_out_we <= '0';
+
+      -- data transfer
+      if    (is_half = '1' )                   then sig_out_we <= '1';
+
+      -- init state
+      elsif (is_header = '1')                  then sig_out_we <= '0';
+
+      -- do not write second half of input data when REM is 011
+      elsif (is_half = '0' and RX_REM = "011") then sig_out_we <= '0';
+
+      -- write enable when second half data is valid
+      elsif (is_half = '0' and RX_REM = "111") then sig_out_we <= '1';
+
+      -- stop transaction
+      elsif (is_stop = '1')                    then sig_out_we <= '0';
+
+      end if;
+
+   end process;
+
+   mux_dst_rdy : process (is_half, state_reg)
+   begin
+     -- first half of data - destination not ready
+     if    (is_half   = '1') then sig_out_dst_rdy_n <= '1';
+     elsif (is_half   = '0') then sig_out_dst_rdy_n <= '0';
+     elsif (is_header = '1') then sig_out_dst_rdy_n <= '0';
+     elsif (is_stop   = '1') then sig_out_dst_rdy_n <= '0';
+     end if;
+   end process mux_dst_rdy;
+
+   reg_half : process (CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then 
+            output_reg    <= X"00000000";
+         elsif (is_half = '1') then
+            output_reg <= RX_DATA(63 downto 32);
+         end if;
+      end if;
+   end process;
+
+   mux_half : process (is_half, RX_DATA, output_reg)
+   begin
+     if (is_half = '1') then sig_half_out <= RX_DATA(31 downto 0);
+     else                    sig_half_out <= output_reg;
+     end if;
+   end process;
+
+  mux_out : process (is_header, sig_half_out)
+  begin
+     if (is_header = '0') then sig_out_d0 <= sig_half_out;
+     else                      sig_out_d0 <= X"00000000";
+     end if;   
+  end process;
+
+--  sig_out_dst_rdy_n <= (is_header or is_stop) or (not is_half);
   sig_trans_type <= RX_DATA(39 downto 32);
   RX_DST_RDY_N <= sig_out_dst_rdy_n;
+  data_ready <= RX_SRC_RDY_N nor sig_out_dst_rdy_n;
 
-  sig_data_1half <= RX_DATA(31 downto 0);
-  sig_data_2half <= RX_DATA(63 downto 32);
-
-  sig_rem_1half  <= RX_DATA(31 downto 0);
-  sig_rem_2half  <= RX_DATA(63 downto 32);
-
+  -- 
   -- output processing
-  dbg_mode_mem <= sig_out_dbg_mode;
-  WE0          <= sig_out_we;
-  WA0          <= sig_cnt_addr;
-  WSC0         <= sig_out_sb_cnt;
-  WSI0         <= sig_out_sb_idx;
-  D0           <= sig_out_data;
+  dbg_mode_mem      <= sig_out_dbg_mode;
+  dbg_mode_mem_WE0  <= sig_out_we;
+  dbg_mode_mem_WA0  <= cnt_addr;
+  dbg_mode_mem_WSC0 <= sig_out_sb_cnt;
+  dbg_mode_mem_WSI0 <= sig_out_sb_idx;
+  dbg_mode_mem_D0   <= sig_out_d0;
 
 end architecture;
 

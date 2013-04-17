@@ -35,41 +35,15 @@ entity MEMORY_MONITOR is
       
       --           input interface - codix - memory read
       --           dbg_mode_mem_* ports
-      dbg_mode_mem   : out std_logic;
-      --dbg_mode_mem_D0   : in std_logic_vector(31 downto 0);
-      --dbg_mode_mem_Q0   : out std_logic_vector(31 downto 0);
-      --dbg_mode_mem_RA0  : in std_logic_vector(18 downto 0);
-      --dbg_mode_mem_RE0  : in std_logic;
-      --dbg_mode_mem_RSC0 : in std_logic_vector(2 downto 0);
-      --dbg_mode_mem_RSI0 : in std_logic_vector(1 downto 0);
-
-      --           memory interface
-      -- data 32b width
-      --FR0       : out std_logic_vector(2 downto 0);
-      --FR1       : out std_logic_vector(2 downto 0);
-      --FW0       : out std_logic_vector(2 downto 0);
-      --RR0       : out std_logic_vector(2 downto 0);
-      --RR1       : out std_logic_vector(2 downto 0);
-      --RW0       : out std_logic_vector(2 downto 0);
+      dbg_mode_mem      : out std_logic;
+      dbg_mode_mem_Q0   : in std_logic_vector(31 downto 0); -- data
+      dbg_mode_mem_RA0  : out std_logic_vector(18 downto 0);  -- address 19b
+      dbg_mode_mem_RE0  : out std_logic;                      -- read enable
+      dbg_mode_mem_RSC0 : out std_logic_vector(2 downto 0);   -- subblock count
+      dbg_mode_mem_RSI0 : out std_logic_vector(1 downto 0);   -- subblock index
 
       -- halt instruction detection
       HALT      : in std_logic;
-
-      -- two ports - memory read
-      Q0        : in  std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-      Q1        : in  std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-      -- address
-      RA0       : out std_logic_vector(18 downto 0);
-      RA1       : out std_logic_vector(18 downto 0);
-      -- read enable
-      RE0       : out std_logic;
-      RE1       : out std_logic;
-      -- read subblock count
-      RSC0      : out std_logic_vector(2 downto 0);
-      RSC1      : out std_logic_vector(2 downto 0);
-      -- read subblock index
-      RSI0      : out std_logic_vector(1 downto 0);
-      RSI1      : out std_logic_vector(1 downto 0);
 
       --           T - transmitter
       --           output frame link interface
@@ -94,7 +68,7 @@ architecture arch of MEMORY_MONITOR is
 -- ----------------------------------------------------------
 --                 FSM states
 -- ----------------------------------------------------------
-type state_type is (init_state, transfer_state, stop_state, wait_state);
+type state_type is (init_state, read_1half, read_2half);
 
 -- ----------------------------------------------------------
 --                 constants
@@ -103,6 +77,11 @@ constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
 constant START_TYPE  :  std_logic_vector(7 downto 0) := X"01";
 constant STOP_TYPE   :  std_logic_vector(7 downto 0) := X"04";
 
+constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := (others => '1');
+
+constant ENDPOINT_ID :  std_logic_vector(7 downto 0) := X"11"; --??
+constant PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"22"; --??
+
 -- ----------------------------------------------------------
 --                 signals
 -- ----------------------------------------------------------
@@ -110,23 +89,17 @@ constant STOP_TYPE   :  std_logic_vector(7 downto 0) := X"04";
 -- FSM signals
 signal state_reg, state_next : state_type;
 
--- address counter active
-signal sig_cnt_act   : std_logic;
 -- address counter register
-signal sig_cnt_addr0 : std_logic_vector(18 downto 0);
-signal sig_cnt_addr1 : std_logic_vector(18 downto 0);
+signal cnt_addr : std_logic_vector(18 downto 0);
 
 -- input control
 signal sig_dbg_mode  : std_logic;
 signal sig_re0       : std_logic;
-signal sig_re1       : std_logic;
 signal sig_rsc0      : std_logic_vector(2 downto 0);
-signal sig_rsc1      : std_logic_vector(2 downto 0);
 signal sig_rsi0      : std_logic_vector(1 downto 0);
-signal sig_rsi1      : std_logic_vector(1 downto 0);
-signal sig_qdata0    : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 signal sig_qdata1    : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-signal sig_qdata_tmp : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal sig_qdata2    : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal data_reg      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 
 -- output control
 signal sig_tx_data   : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
@@ -138,25 +111,23 @@ signal sig_tx_eop_n  : std_logic;
 signal sig_tx_sof_n  : std_logic;
 signal sig_tx_eof_n  : std_logic;
 
+signal header_data    : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+
+
 -- ----------------------------------------------------------
 --                 architecture body
 -- ----------------------------------------------------------
 begin
 
-   -- address counter
-   address_counter : process (CLK, RESET)
-   begin
-      if CLK='1' and CLK'event then
-         if RESET='1' then
-            sig_cnt_addr0 <= (others=>'0');
-            sig_cnt_addr1 <= std_logic_vector(to_unsigned(4, sig_cnt_addr1'length));
-
-         elsif sig_cnt_act = '1' then
-            sig_cnt_addr0 <= sig_cnt_addr0 + 8;
-            sig_cnt_addr1 <= sig_cnt_addr1 + 8;
-         end if; 
-      end if;
-   end process;
+   -- header
+   header_data(63 downto 56) <= X"00";
+   header_data(55 downto 48) <= X"00"; --?? tx_header_fifo_data
+   header_data(47 downto 40) <= X"00";
+   header_data(39 downto 32) <= DATA_TYPE;
+   header_data(31 downto 24) <= X"00";
+   header_data(23 downto 16) <= X"00";
+   header_data(15 downto  8) <= PROTOCOL_ID;
+   header_data( 7 downto  0) <= ENDPOINT_ID;
 
    -- state logic
    fsm_state_logic : process (CLK)
@@ -171,102 +142,130 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, Q0, Q1, HALT, TX_DST_RDY_N)
+   fsm_next_state_logic : process (state_reg, dbg_mode_mem_Q0, HALT, TX_DST_RDY_N)
    begin
-
 
      state_next         <= state_reg;
 
-     sig_cnt_act        <= '0';
-
      sig_dbg_mode    <= '1';        -- memory debug mode port
      sig_re0         <= '0';        -- read enable
-     sig_re1         <= '0';
      sig_rsc0        <= "100";      -- subblock count - 4
-     sig_rsc1        <= "100";
      sig_rsi0        <= "00";       -- subblock index
-     sig_rsi1        <= "00";
 
-     sig_tx_src_rdy_n <= '0';       -- source ready
+     -- TODO: initialize sig_tx_*
+
+     sig_tx_src_rdy_n <= '1';       -- source not ready
 
      case state_reg is
         
         -- init state
         when init_state =>
 
-          if HALT = '1' then
-            state_next <= transfer_state;
+          -- initialize address
+          cnt_addr <= (others => '0');
 
-            -- set SOF & SOP
-            sig_tx_sof_n <= '0';
-            sig_tx_sop_n <= '0';
+          if HALT = '1' and TX_DST_RDY_N = '1' then
+
+            -- header & SOF & SOP & source ready
+            sig_tx_data <= header_data;
+            sig_tx_rem  <= "111";
+            sig_tx_sof_n<= '0';
+            sig_tx_sop_n<= '0';
+            sig_tx_eof_n<= '1';
+            sig_tx_eop_n<= '1';
+            sig_tx_src_rdy_n<= '0';
+
+            -- read enable
+            sig_re0 <= '1';
+
+            state_next <= read_1half;
 
           else
             state_next <= init_state;
           end if;
 
-        -- data transfer - read memory and send to SW
-        when transfer_state =>
+        -- data transfer - read first half (32b) from memory
+        when read_1half =>
 
-          -- enable address counter
-          sig_cnt_act <= '1';
-          
-          -- output data = Q1 + Q2
-          sig_tx_data <= sig_qdata_tmp;
+          -- read enable
+          sig_re0 <= '1';
 
-          -- continue with data transfer
-          state_next <= transfer_state;
+          -- increment address
+          cnt_addr <= cnt_addr + 4;
 
-          if sig_tx_dst_rdy_n = '1' then
-            state_next <= wait_state;
-          end if;
+          -- read data
+          sig_qdata1 <= data_reg;
 
---          if sig_end_flag = '1' then
---            -- set EOP & EOF & REM!
---            sig_tx_eop_n <= '0';
---            sig_tx_eof_n <= '0';
---            state_next <= stop_state;              
---          end if;
+          -- end of memory address space
+          if cnt_addr >= MAX_ADDRESS then
+            sig_tx_data      <= sig_qdata1 & X"00000000";
+            sig_tx_eop_n     <= '0';
+            sig_tx_eof_n     <= '0';
+            sig_tx_src_rdy_n <= '0';
+            sig_tx_rem       <= "011";
 
-        -- wait for destination ready signal
-        when wait_state =>
-          if sig_tx_dst_rdy_n = '1' then
-            state_next <= wait_state;
+            state_next <= init_state;
+
+          -- continue with reading
           else
-            state_next <= transfer_state;
+
+            state_next <= read_2half;
+
           end if;
 
-        when stop_state =>
-          state_next <= stop_state;
+        when read_2half =>
+
+          -- increment address
+          cnt_addr <= cnt_addr + 4;
+
+          -- read data
+          sig_qdata2 <= data_reg;
+
+          -- write data 1half + 2half
+          sig_tx_data <= sig_qdata1 & sig_qdata2;
+
+          -- end of memory address space
+          if cnt_addr >= MAX_ADDRESS then
+
+            -- read enable
+            sig_re0 <= '1';
+
+            sig_tx_eop_n     <= '0';
+            sig_tx_eof_n     <= '0';
+            sig_tx_src_rdy_n <= '0';
+            sig_tx_rem       <= "111";
+            state_next <= init_state;
+
+          -- continue with reading
+          else
+            -- read enable
+            sig_re0 <= '1';
+
+            state_next <= read_1half;
+          end if;
 
      end case;
   end process;
   
   -- input processing
-  sig_qdata0 <= Q0;
-  sig_qdata1 <= Q1;
   sig_tx_dst_rdy_n <= TX_DST_RDY_N;
+  data_reg <= dbg_mode_mem_Q0;
 
   -- output processing
-  sig_qdata_tmp <= sig_qdata0 & sig_qdata1;
 
-  dbg_mode_mem <= sig_dbg_mode;
-  RA0 <= sig_cnt_addr0;
-  RA1 <= sig_cnt_addr1;
-  RE0 <= sig_re0;
-  RE1 <= sig_re1;
-  RSI0 <= sig_rsi0;
-  RSI1 <= sig_rsi1;
-  RSC0 <= sig_rsc0;
-  RSC1 <= sig_rsc1;
+  dbg_mode_mem      <= sig_dbg_mode;
+  dbg_mode_mem_RA0  <= cnt_addr;
+  dbg_mode_mem_RE0  <= sig_re0;
+  dbg_mode_mem_RSI0 <= sig_rsi0;
+  dbg_mode_mem_RSC0 <= sig_rsc0;
 
-  TX_DATA <= sig_tx_data;
-  TX_REM  <= sig_tx_rem;
+  TX_DATA      <= sig_tx_data;
+  TX_REM       <= sig_tx_rem;
   TX_SRC_RDY_N <= sig_tx_src_rdy_n;
-  TX_SOP_N <= sig_tx_sop_n;
-  TX_EOP_N <= sig_tx_eop_n;
-  TX_SOF_N <= sig_tx_sof_n;
-  TX_EOF_N <= sig_tx_eof_n;
+  TX_SOP_N     <= sig_tx_sop_n;
+  TX_EOP_N     <= sig_tx_eop_n;
+  TX_SOF_N     <= sig_tx_sof_n;
+  TX_EOF_N     <= sig_tx_eof_n;
 
 
 end architecture;

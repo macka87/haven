@@ -14,14 +14,18 @@ proc blk_PROGRAM_DRIVER_IFC { BASE } {
    add_wave "-noupdate -label RX_EOF_N    " $BASE/RX_EOF_N
    add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
    add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
+
+   add wave -divider "HALT"
+   add_wave "-noupdate -label HALT" $BASE/HALT
+
 	 
       add wave -divider "Output"
    add_wave "-noupdate -label dbg_mode "    $BASE/dbg_mode_mem
-   add_wave "-noupdate -label D0  -hex"     $BASE/D0
-   add_wave "-noupdate -label WA0 -hex"     $BASE/WA0
-   add_wave "-noupdate -label WE0"          $BASE/WE0
-   add_wave "-noupdate -label WSC0 -hex"    $BASE/WSC0
-   add_wave "-noupdate -label WSI0 -hex"    $BASE/WSI0
+   add_wave "-noupdate -label D0  -hex"     $BASE/dbg_mode_mem_D0
+   add_wave "-noupdate -label WA0 -hex"     $BASE/dbg_mode_mem_WA0
+   add_wave "-noupdate -label WE0"          $BASE/dbg_mode_mem_WE0
+   add_wave "-noupdate -label WSC0 -hex"    $BASE/dbg_mode_mem_WSC0
+   add_wave "-noupdate -label WSI0 -hex"    $BASE/dbg_mode_mem_WSI0
    
 }      
 
@@ -31,10 +35,15 @@ proc blk_PROGRAM_DRIVER_INTERNALS { BASE } {
    add_wave "-noupdate -label state_reg"      $BASE/state_reg
    add_wave "-noupdate -label state_next"     $BASE/state_next
    add_wave "-noupdate -label sig_trans_type" $BASE/sig_trans_type
-   add_wave "-noupdate -label sig_cnt_act"    $BASE/sig_cnt_act
-   add_wave "-noupdate -label sig_cnt_addr"   $BASE/sig_cnt_addr
-   add_wave "-noupdate -label sig_out_data -hex"   $BASE/sig_out_data
-   add_wave "-noupdate -label sig_data_1half -hex" $BASE/sig_data_1half
-   add_wave "-noupdate -label sig_data_2half -hex" $BASE/sig_data_2half
+   add_wave "-noupdate -label data_ready"     $BASE/data_ready
+   add_wave "-noupdate -label is_header"      $BASE/is_header
+   add_wave "-noupdate -label is_half"      $BASE/is_half
+   add_wave "-noupdate -label is_stop"      $BASE/is_stop
+
+   add_wave "-noupdate -label cnt_addr -hex"       $BASE/cnt_addr
+   add_wave "-noupdate -label sig_out_d0 -hex"   $BASE/sig_out_d0
+   add_wave "-noupdate -label output_reg -hex" $BASE/output_reg
+   add_wave "-noupdate -label half_out -hex"   $BASE/sig_half_out
+
 
 }

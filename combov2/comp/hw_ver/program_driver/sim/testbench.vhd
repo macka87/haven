@@ -41,6 +41,7 @@ architecture behavioral of testbench is
    signal driver_in_eop_n        : std_logic;
    signal driver_in_src_rdy_n    : std_logic;
    signal driver_in_dst_rdy_n    : std_logic;
+   signal driver_in_halt         : std_logic;
    
    -- UUT output signals
    signal driver_out_d0          : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
@@ -75,13 +76,15 @@ begin
          RX_EOF_N          => driver_in_eof_n,
          RX_SRC_RDY_N      => driver_in_src_rdy_n,
          RX_DST_RDY_N      => driver_in_dst_rdy_n,
+
+         HALT              => driver_in_halt,
          
-         D0                => driver_out_d0,
+         dbg_mode_mem_D0   => driver_out_d0,
          dbg_mode_mem      => driver_out_dbg_mode,
-         WA0               => driver_out_wa0,
-         WE0               => driver_out_we0,
-         WSC0              => driver_out_wsc0,
-         WSI0              => driver_out_wsi0
+         dbg_mode_mem_WA0  => driver_out_wa0,
+         dbg_mode_mem_WE0  => driver_out_we0,
+         dbg_mode_mem_WSC0 => driver_out_wsc0,
+         dbg_mode_mem_WSI0 => driver_out_wsi0
 
       );
 
@@ -108,41 +111,52 @@ begin
    
       wait for reset_time; 
 
-      wait for 50 ns;
 
       wait until rising_edge(clk);
 
-      driver_in_data  <= X"1111111122222222";
+      driver_in_halt <= '1';
+
+      -- start header
+      driver_in_data  <= X"0000000100000000";
+      driver_in_rem   <= "111";
+      driver_in_sof_n <= '0';
+      driver_in_eof_n <= '0';
+      driver_in_sop_n <= '0';
+      driver_in_eop_n <= '0';
+      driver_in_src_rdy_n <= '0';
+
+      wait until rising_edge(clk);
+
+      -- data packet -header
+      driver_in_data  <= X"0000000000000000";
       driver_in_rem   <= "111";
       driver_in_sof_n <= '0';
       driver_in_eof_n <= '1';
       driver_in_sop_n <= '0';
       driver_in_eop_n <= '1';
       driver_in_src_rdy_n <= '0';
---      driver_in_dst_rdy_n <= '0';
 
-      wait until rising_edge(clk);
+       wait until rising_edge(clk);
 
+      -- data packet - atea
       driver_in_data  <= X"3333333344444444";
-      driver_in_rem   <= "111";
-      driver_in_sof_n <= '1';
-      driver_in_eof_n <= '1';
-      driver_in_sop_n <= '1';
-      driver_in_eop_n <= '1';
-      driver_in_src_rdy_n <= '0';
---      driver_in_dst_rdy_n <= '0';
-
-      wait until rising_edge(clk);
-
-      driver_in_data  <= X"5555555566666666";
       driver_in_rem   <= "111";
       driver_in_sof_n <= '1';
       driver_in_eof_n <= '0';
       driver_in_sop_n <= '1';
       driver_in_eop_n <= '0';
       driver_in_src_rdy_n <= '0';
---      driver_in_dst_rdy_n <= '0';
+     
+      wait until rising_edge(clk);
 
+      -- stop header
+      driver_in_data  <= X"0000000400000000";
+      driver_in_rem   <= "111";
+      driver_in_sof_n <= '0';
+      driver_in_eof_n <= '0';
+      driver_in_sop_n <= '0';
+      driver_in_eop_n <= '0';
+      driver_in_src_rdy_n <= '0';
 
      wait;
       

@@ -32,7 +32,6 @@ architecture behavioral of testbench is
    signal clk                    : std_logic;
    signal reset                  : std_logic;
 
-   signal port_error   : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
    signal port_output  : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
    signal port_output_en : std_logic;
 
@@ -63,7 +62,6 @@ begin
          RESET        => reset,
 
          -- inputs
-         port_error     => port_error,
          port_output    => port_output,
          port_output_en => port_output_en,
 
@@ -99,13 +97,21 @@ begin
 
    begin
 
-      wait for 10 ns;
+      wait for reset_time;
+
+      TX_DST_RDY_N   <= '1';
+      port_output_en <= '0';
+
+      wait until rising_edge(clk);
    
       TX_DST_RDY_N   <= '0';
       port_output_en <= '1';
       port_output    <= X"22222222";
 
-      wait for 10 ns;
+      wait until rising_edge(clk);
+      port_output_en <= '0';
+
+      wait;
 
 --      report "signal xy is " & std_logic'image(xy) & " at time " & time'image(now);
 

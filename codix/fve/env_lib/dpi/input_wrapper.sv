@@ -48,10 +48,10 @@ class InputWrapper extends ovm_component;
     task run();
       int res;
       NetCOPETransaction ntr;
-      syncT str;
+      syncT sync_tr;
 
-      str = new();
-      str.flag = 135;
+      sync_tr = new();
+      // sync_tr.flag = 0; information that can be send to output wrapper - number of data transactions??
 
       res = c_openDMAChannel();
       $write("OPENING CHANNEL: %d\n",res);
@@ -61,7 +61,7 @@ class InputWrapper extends ovm_component;
       end
 
       // enable output wrapper
-      syncport.put(str);
+      syncport.put(sync_tr);
 
       // receiving of transactions
       while(1) begin

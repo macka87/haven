@@ -2,11 +2,11 @@
 --  Hardware accelerated Functional Verification of Processor
 --  ---------------------------------------------------------
 
---  \file   halt_monitor.vhd
---  \date   10-04-2013
---  \brief  Halt monitor monitors port_halt for detection of halt instruction
---          after detection of halt instruction holds processor in reset
---          and propagate information about halt instruction to other monitors
+--  \file   portout_monitor.vhd
+--  \date   15-04-2013
+--  \brief  Portout monitor monitors output interface of processor
+--          if portout_en signal is enabled 32b portout signal is
+--          send to SW part of verification environment (header + data)
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -30,7 +30,6 @@ entity PORTOUT_MONITOR is
 
       --           input interface - processor
       -- error detection? after halt?
-      port_error     : in std_logic_vector(IN_DATA_WIDTH-1 downto 0);
       port_output    : in std_logic_vector(IN_DATA_WIDTH-1 downto 0);
       port_output_en : in std_logic;
 
@@ -56,14 +55,16 @@ architecture arch of PORTOUT_MONITOR is
 -- ----------------------------------------------------------
 --                 FSM states
 -- ----------------------------------------------------------
-type state_type is (init_state, error_state, output_state, stop_state, wait_state);
+type state_type is (header_state, data_state, init_state);
 
 -- ----------------------------------------------------------
 --                 constants
 -- ----------------------------------------------------------
 constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
-constant START_TYPE  :  std_logic_vector(7 downto 0) := X"01";
-constant STOP_TYPE   :  std_logic_vector(7 downto 0) := X"04";
+constant ENDPOINT_ID :  std_logic_vector(7 downto 0) := X"11"; --??
+constant PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"22"; --??
+
+--constant START_TYPE  :  std_logic_vector(7 downto 0) := X"01";
 
 -- ----------------------------------------------------------
 --                 signals
@@ -71,10 +72,6 @@ constant STOP_TYPE   :  std_logic_vector(7 downto 0) := X"04";
 
 -- FSM signals
 signal state_reg, state_next : state_type;
-
--- input control
-signal sig_portout    : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-signal sig_error      : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 
 -- output control
 signal sig_tx_data    : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
@@ -86,11 +83,26 @@ signal sig_tx_eop_n   : std_logic;
 signal sig_tx_sof_n   : std_logic;
 signal sig_tx_eof_n   : std_logic;
 
+-- internals
+signal header_data    : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal header_rem     : std_logic_vector(2 downto 0);
 
 -- ----------------------------------------------------------
 --                 architecture body
 -- ----------------------------------------------------------
 begin
+
+   -- header
+   header_data(63 downto 56) <= X"00";
+   header_data(55 downto 48) <= X"00"; --?? tx_header_fifo_data
+   header_data(47 downto 40) <= X"00";
+   header_data(39 downto 32) <= DATA_TYPE;
+   header_data(31 downto 24) <= X"00";
+   header_data(23 downto 16) <= X"00";
+   header_data(15 downto  8) <= PROTOCOL_ID;
+   header_data( 7 downto  0) <= ENDPOINT_ID;
+   header_rem  <= (others => '1');
+
 
    -- state logic
    fsm_state_logic : process (CLK)
@@ -105,13 +117,22 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, port_output_en, TX_DST_RDY_N)
+   fsm_next_state_logic : process (state_reg, port_output_en, sig_tx_dst_rdy_n, header_data, port_output)
    begin
 
 
      state_next <= state_reg;
 
-     sig_tx_src_rdy_n <= '0';       -- source ready
+     sig_tx_src_rdy_n <= '1';       -- source not ready
+
+     sig_tx_data  <= X"0000000000000000";
+     sig_tx_rem   <= "000";
+     sig_tx_eof_n <= '1';
+     sig_tx_eop_n <= '1';
+     sig_tx_sof_n <= '1';
+     sig_tx_sop_n <= '1';
+
+    -- TODO default values??
 
      case state_reg is
         
@@ -119,50 +140,58 @@ begin
         when init_state =>
 
           if port_output_en = '1' then
-            state_next <= output_state;
---          elsif ?? then
---            state_next <= error_state;
+            state_next <= header_state;
           else
             state_next <= init_state;
           end if;
 
-        -- data transfer - portout
-        when output_state =>
+        -- data header transfer
+        when header_state =>
 
-          -- output data - portout
-          sig_tx_data(31 downto 0) <= sig_portout;
-
+          -- destination not ready
           if sig_tx_dst_rdy_n = '1' then
-            state_next <= wait_state;
-          else
+            state_next <= header_state;
+
+          -- destination ready
+          else 
+            -- header & SOF & SOP & source ready
+            sig_tx_data <= header_data;
+            sig_tx_rem  <= header_rem;
+            sig_tx_sof_n<= '0';
+            sig_tx_sop_n<= '0';
+            sig_tx_eof_n<= '1';
+            sig_tx_eop_n<= '1';
+            sig_tx_src_rdy_n<= '0';
+
+            state_next <= data_state;
+          end if;
+
+        -- data transaction transfer
+        when data_state =>
+          
+          -- destination not ready
+          if sig_tx_dst_rdy_n = '1' then
+            state_next <= data_state;
+
+          -- destination ready
+          else 
+            -- header & EOF & EOP & source ready
+            sig_tx_data <= port_output & X"00000000";
+            sig_tx_rem  <= header_rem;
+            sig_tx_sof_n<= '0';
+            sig_tx_sop_n<= '0';
+            sig_tx_eof_n<= '1';
+            sig_tx_eop_n<= '1';
+            sig_tx_src_rdy_n<= '0';
+
             state_next <= init_state;
           end if;
-
---          if ?? then
---            state_next <= stop_state;
---          end if;
-
-        -- wait for destination ready signal
-        when wait_state =>
-          if sig_tx_dst_rdy_n = '1' then
-            state_next <= wait_state;
-          else
-            state_next <= output_state;
-          end if;
-
-        when stop_state =>
-          state_next <= stop_state;
-
-        when error_state =>
-          state_next <= error_state;
-
+         
      end case;
   end process;
   
   -- input processing
   sig_tx_dst_rdy_n <= TX_DST_RDY_N;
-  sig_portout      <= port_output;
-  sig_error        <= port_error;
 
   -- output processing
   TX_DATA <= sig_tx_data;

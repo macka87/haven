@@ -32,18 +32,14 @@ architecture behavioral of testbench is
    signal clk                    : std_logic;
    signal reset                  : std_logic;
 
-   signal dbg_mode_mem : std_logic;
-   signal HALT         : std_logic;
-   signal Q0           : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-   signal Q1           : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-   signal RA0          : std_logic_vector(18 downto 0);
-   signal RA1          : std_logic_vector(18 downto 0);
-   signal RE0          : std_logic;
-   signal RE1          : std_logic;
-   signal RSC0         : std_logic_vector(2 downto 0);
-   signal RSC1         : std_logic_vector(2 downto 0);
-   signal RSI0         : std_logic_vector(1 downto 0);
-   signal RSI1         : std_logic_vector(1 downto 0);
+   signal dbg_mode_mem      : std_logic;
+   signal HALT              : std_logic;
+   signal dbg_mode_mem_Q0   : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+   signal dbg_mode_mem_RA0  : std_logic_vector(18 downto 0);
+   signal dbg_mode_mem_RE0  : std_logic;
+   signal dbg_mode_mem_RSC0 : std_logic_vector(2 downto 0);
+   signal dbg_mode_mem_RSI0 : std_logic_vector(1 downto 0);
+
    signal TX_DATA      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
    signal TX_REM       : std_logic_vector(2 downto 0);
    signal TX_SRC_RDY_N : std_logic;
@@ -64,25 +60,21 @@ begin
          OUT_DATA_WIDTH    => OUT_DATA_WIDTH
       )
       port map (
-         CLK          => clk,
-         RESET        => reset,
+         CLK               => clk,
+         RESET             => reset,
 
          -- inputs
-         Q0           => Q0,
-         Q1           => Q1,
-         TX_DST_RDY_N => TX_DST_RDY_N,
-         HALT         => HALT,
+         dbg_mode_mem_Q0   => dbg_mode_mem_Q0,
+         TX_DST_RDY_N      => TX_DST_RDY_N,
+         HALT              => HALT,
 
          -- outputs
-         dbg_mode_mem => dbg_mode_mem,
-         RA0          => RA0,
-         RA1          => RA1,
-         RE0          => RE0,
-         RE1          => RE1,
-         RSC0         => RSC0,
-         RSC1         => RSC1,
-         RSI0         => RSI0,
-         RSI1         => RSI1,
+         dbg_mode_mem      => dbg_mode_mem,
+         dbg_mode_mem_RA0  => dbg_mode_mem_RA0,
+         dbg_mode_mem_RE0  => dbg_mode_mem_RE0,
+         dbg_mode_mem_RSC0 => dbg_mode_mem_RSC0,
+         dbg_mode_mem_RSI0 => dbg_mode_mem_RSI0,
+
          TX_DATA      => TX_DATA,
          TX_REM       => TX_REM,
          TX_SRC_RDY_N => TX_SRC_RDY_N,
@@ -120,8 +112,7 @@ begin
       HALT         <= '1';
       TX_DST_RDY_N <= '0';
 
-      Q0           <= X"22222222";
-      Q1           <= X"11111111";
+      dbg_mode_mem_Q0           <= X"22222222";
 
 
   end process tb; 

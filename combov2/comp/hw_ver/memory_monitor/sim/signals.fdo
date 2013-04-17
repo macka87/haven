@@ -6,21 +6,17 @@ proc blk_MEMORY_MONITOR_IFC { BASE } {
    add_wave "-noupdate -label RESET"  $BASE/RESET
 
       add wave -divider "Input"
-   add_wave "-noupdate -label Q0 -hex" $BASE/Q0
-   add_wave "-noupdate -label Q1 -hex" $BASE/Q1
+   add_wave "-noupdate -label Q0 -hex" $BASE/dbg_mode_mem_Q0
    add_wave "-noupdate -label TX_DST_DRY_N" $BASE/TX_DST_RDY_N
    add_wave "-noupdate -label HALT" $BASE/HALT
 	 
       add wave -divider "Output"
    add_wave "-noupdate -label dbg_mode_mem" $BASE/dbg_mode_mem
-   add_wave "-noupdate -label RA0 -hex" $BASE/RA0
-   add_wave "-noupdate -label RA1 -hex" $BASE/RA1
-   add_wave "-noupdate -label RE0" $BASE/RE0
-   add_wave "-noupdate -label RE1" $BASE/RE1
-   add_wave "-noupdate -label RSC0 -hex" $BASE/RSC0
-   add_wave "-noupdate -label RSC1 -hex" $BASE/RSC1
-   add_wave "-noupdate -label RSI0 -hex" $BASE/RSI0
-   add_wave "-noupdate -label RSI1 -hex" $BASE/RSI1
+   add_wave "-noupdate -label RA0 -hex" $BASE/dbg_mode_mem_RA0
+   add_wave "-noupdate -label RE0" $BASE/dbg_mode_mem_RE0
+   add_wave "-noupdate -label RSC0 -hex" $BASE/dbg_mode_mem_RSC0
+   add_wave "-noupdate -label RSI0 -hex" $BASE/dbg_mode_mem_RSI0
+
    add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
    add_wave "-noupdate -label TX_REM -hex" $BASE/TX_REM
    add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
@@ -34,11 +30,13 @@ proc blk_MEMORY_MONITOR_IFC { BASE } {
 proc blk_MEMORY_MONITOR_INTERNALS { BASE } {
 
    add wave -divider "Internals"
-   add_wave "-noupdate -label sig_qdata_tmp -hex" $BASE/sig_qdata_tmp
+   add_wave "-noupdate -label sig_qdata1 -hex" $BASE/sig_qdata1
+   add_wave "-noupdate -label sig_qdata2 -hex" $BASE/sig_qdata2
+   add_wave "-noupdate -label data_reg -hex" $BASE/data_reg
+
+   add_wave "-noupdate -label header_data -hex" $BASE/header_data
    add_wave "-noupdate -label state_reg" $BASE/state_reg
    add_wave "-noupdate -label state_next" $BASE/state_next
-   add_wave "-noupdate -label sig_cnt_act" $BASE/sig_cnt_act
-   add_wave "-noupdate -label sig_cnt_addr0 -hex" $BASE/sig_cnt_addr0
-   add_wave "-noupdate -label sig_cnt_addr1 -hex" $BASE/sig_cnt_addr1
+   add_wave "-noupdate -label cnt_addr -hex" $BASE/cnt_addr
   
 }
