@@ -43,6 +43,7 @@ proc blk_PROGRAM_DRIVER_INTERNALS { BASE } {
    add_wave "-noupdate -label cnt_addr -hex"       $BASE/cnt_addr
    add_wave "-noupdate -label sig_out_d0 -hex"   $BASE/sig_out_d0
    add_wave "-noupdate -label output_reg -hex" $BASE/output_reg
+   add_wave "-noupdate -label eof_reg" $BASE/eof_reg
    add_wave "-noupdate -label half_out -hex"   $BASE/sig_half_out
 
 
