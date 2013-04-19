@@ -17,7 +17,11 @@
    import sv_alu_seq_pkg::*;
    import sv_alu_env_pkg::*;
   
-   // Includes  !! svh !!
-   //`include "alu_test.sv"
+   // Includes  
+   `include "alu_test_base.svh"
+   `include "alu_test_base.sv"
+   `include "alu_test.svh"
+   `include "alu_test.sv"
+   
 
  endpackage
