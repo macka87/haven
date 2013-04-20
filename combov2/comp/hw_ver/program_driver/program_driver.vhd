@@ -157,8 +157,15 @@ begin
           -- address counter signals
           cnt_addr_rst <= '0';
           cnt_addr_en <= '1';
+
+          if(RX_REM = "011") then
+            state_next <= stop_state;
+          elsif (RX_REM = "111") then
+            state_next <= data_2half;
+          end if;
+
           -- write second half of data
-          state_next <= data_2half;
+--          state_next <= data_2half;
 
         -- data trasaction transfer
         when data_2half =>

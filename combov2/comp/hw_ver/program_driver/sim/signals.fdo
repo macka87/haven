@@ -7,7 +7,7 @@ proc blk_PROGRAM_DRIVER_IFC { BASE } {
 
       add wave -divider "Input"
    add_wave "-noupdate -hex -label RX_DATA" $BASE/RX_DATA
-   add_wave "-noupdate -hex -label RX_REM " $BASE/RX_REM
+   add_wave "-noupdate -hex -label RX_REM -bin" $BASE/RX_REM
    add_wave "-noupdate -label RX_SOF_N    " $BASE/RX_SOF_N
    add_wave "-noupdate -label RX_SOP_N    " $BASE/RX_SOP_N
    add_wave "-noupdate -label RX_EOP_N    " $BASE/RX_EOP_N
@@ -22,7 +22,7 @@ proc blk_PROGRAM_DRIVER_IFC { BASE } {
       add wave -divider "Output"
    add_wave "-noupdate -label dbg_mode "    $BASE/dbg_mode_mem
    add_wave "-noupdate -label D0  -hex"     $BASE/dbg_mode_mem_D0
-   add_wave "-noupdate -label WA0 -hex"     $BASE/dbg_mode_mem_WA0
+   add_wave "-noupdate -label WA0 -dec"     $BASE/dbg_mode_mem_WA0
    add_wave "-noupdate -label WE0"          $BASE/dbg_mode_mem_WE0
    add_wave "-noupdate -label WSC0 -hex"    $BASE/dbg_mode_mem_WSC0
    add_wave "-noupdate -label WSI0 -hex"    $BASE/dbg_mode_mem_WSI0
@@ -40,8 +40,10 @@ proc blk_PROGRAM_DRIVER_INTERNALS { BASE } {
    add_wave "-noupdate -label is_half"      $BASE/is_half
    add_wave "-noupdate -label is_stop"      $BASE/is_stop
 
-   add_wave "-noupdate -label cnt_addr -hex"       $BASE/cnt_addr
+   add_wave "-noupdate -label cnt_addr -dec"       $BASE/cnt_addr
    add_wave "-noupdate -label sig_out_d0 -hex"   $BASE/sig_out_d0
+   add_wave "-noupdate -label sig_out_we"   $BASE/sig_out_we
+
    add_wave "-noupdate -label output_reg -hex" $BASE/output_reg
    add_wave "-noupdate -label eof_reg" $BASE/eof_reg
    add_wave "-noupdate -label half_out -hex"   $BASE/sig_half_out
