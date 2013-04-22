@@ -54,7 +54,7 @@
   
    //! UVM initial block
    initial begin
-     // virtual interface wrapping
+     // virtual interface wrapping - interfaces are put into the configuration database
      uvm_config_db #(virtual iAluIn)::set(null, "uvm_test_top", "AluIn_vif", dut_alu_in_if);
      uvm_config_db #(virtual iAluOut)::set(null, "uvm_test_top", "AluOut_vif", dut_alu_out_if);
 
