@@ -55,7 +55,7 @@ architecture arch of PORTOUT_MONITOR is
 -- ----------------------------------------------------------
 --                 FSM states
 -- ----------------------------------------------------------
-type state_type is (init_state, start_hdr_state, data_hdr_state, data_state, stop_hdr_state);
+type state_type is (init_state, data_hdr_state, data_state);
 
 -- ----------------------------------------------------------
 --                 constants
@@ -87,11 +87,11 @@ signal sig_tx_sof_n   : std_logic;
 signal sig_tx_eof_n   : std_logic;
 
 -- internals
-signal hdr_start      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
 signal hdr_data       : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
-signal hdr_stop       : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
+signal hdr_rem        : std_logic_vector(2 downto 0);
 
-signal hdr_rem     : std_logic_vector(2 downto 0);
+signal portout_reg    : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+signal portout_reg_en : std_logic;
 
 -- ----------------------------------------------------------
 --                 architecture body
@@ -101,26 +101,12 @@ begin
    -- all bits in headers are valid
    hdr_rem <= "111";
 
-   -- start header
-   hdr_start(63 downto 40) <= X"000000";
-   hdr_start(39 downto 32) <= START_TYPE;
-   hdr_start(31 downto 16) <= X"0000";
-   hdr_start(15 downto  8) <= PROTOCOL_ID;
-   hdr_start( 7 downto  0) <= ENDPOINT_ID;
-
    -- data header
    hdr_data(63 downto 40) <= X"000000";
    hdr_data(39 downto 32) <= DATA_TYPE;
    hdr_data(31 downto 16) <= X"0000";
    hdr_data(15 downto  8) <= PROTOCOL_ID;
    hdr_data( 7 downto  0) <= ENDPOINT_ID;
-
-   -- stop header
-   hdr_stop(63 downto 40) <= X"000000";
-   hdr_stop(39 downto 32) <= STOP_TYPE;
-   hdr_stop(31 downto 16) <= X"0000";
-   hdr_stop(15 downto  8) <= PROTOCOL_ID;
-   hdr_stop( 7 downto  0) <= ENDPOINT_ID;
 
    -- state logic
    fsm_state_logic : process (CLK)
@@ -132,6 +118,18 @@ begin
           state_reg <= state_next;
         end if;   
      end if;   
+   end process;
+
+   -- output register
+   reg_out : process (CLK)
+   begin
+      if (rising_edge(CLK)) then
+         if (RESET = '1') then
+            portout_reg <= (others => '0');
+         elsif (portout_reg_en = '1') then
+            portout_reg <= port_output;
+         end if;
+      end if;
    end process;
 
    -- next state logic
@@ -150,36 +148,23 @@ begin
      sig_tx_sof_n <= '1';
      sig_tx_sop_n <= '1';
 
+     -- portout register enable
+     portout_reg_en <= '0';
+
      case state_reg is
         
         -- init state
         when init_state =>
 
-          if port_output_en = '1' then
-            state_next <= start_hdr_state;
-          else
-            state_next <= init_state;
-          end if;
+          -- portout enable and destination ready
+          if port_output_en = '1' and sig_tx_dst_rdy_n = '0' then
 
-        -- start header transfer
-        when start_hdr_state =>
-
-          -- destination not ready
-          if sig_tx_dst_rdy_n = '1' then
-            state_next <= start_hdr_state;
-
-          -- destination ready
-          else 
-            -- header & SOF & SOP & source ready
-            sig_tx_data <= hdr_start;
-            sig_tx_rem  <= hdr_rem;
-            sig_tx_sof_n<= '0';
-            sig_tx_sop_n<= '0';
-            sig_tx_eof_n<= '0';
-            sig_tx_eop_n<= '0';
-            sig_tx_src_rdy_n<= '0';
+            -- portout register enable
+            portout_reg_en <= '1';
 
             state_next <= data_hdr_state;
+          else
+            state_next <= init_state;
           end if;
 
         -- data header transfer
@@ -191,7 +176,7 @@ begin
 
           -- destination ready
           else 
-            -- header & SOF & SOP & source ready
+            -- data header & SOF & SOP & source ready
             sig_tx_data <= hdr_data;
             sig_tx_rem  <= hdr_rem;
             sig_tx_sof_n<= '0';
@@ -206,6 +191,9 @@ begin
 
         -- data transaction transfer
         when data_state =>
+
+          -- portout register enable
+          portout_reg_en <= '1';
           
           -- destination not ready
           if sig_tx_dst_rdy_n = '1' then
@@ -214,7 +202,7 @@ begin
           -- destination ready
           else 
             -- header & EOF & EOP & source ready
-            sig_tx_data <= X"00000000" & port_output;
+            sig_tx_data <= X"00000000" & portout_reg;
             sig_tx_rem  <= "011";
             sig_tx_sof_n<= '1';
             sig_tx_sop_n<= '1';
@@ -222,30 +210,9 @@ begin
             sig_tx_eop_n<= '0';
             sig_tx_src_rdy_n<= '0';
 
-            state_next <= stop_hdr_state;
-          end if;
-
-        -- stop header transfer
-        when stop_hdr_state =>
-
-          -- destination not ready
-          if sig_tx_dst_rdy_n = '1' then
-            state_next <= stop_hdr_state;
-
-          -- destination ready
-          else 
-            -- header & EOF & EOP & source ready
-            sig_tx_data <= hdr_stop;
-            sig_tx_rem  <= hdr_rem;
-            sig_tx_sof_n<= '0';
-            sig_tx_sop_n<= '0';
-            sig_tx_eof_n<= '0';
-            sig_tx_eop_n<= '0';
-            sig_tx_src_rdy_n <= '0';
-
             state_next <= init_state;
           end if;
-        
+
      end case;
   end process;
   

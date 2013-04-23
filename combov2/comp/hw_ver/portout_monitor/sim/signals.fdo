@@ -20,5 +20,7 @@ proc blk_PORTOUT_MONITOR_IFC { BASE } {
       add wave -divider "Internals"
    add_wave "-noupdate -label state_reg" $BASE/state_reg
    add_wave "-noupdate -label state_next" $BASE/state_next
+   add_wave "-noupdate -label portout_reg -hex" $BASE/portout_reg
+   add_wave "-noupdate -label portout_reg_en" $BASE/portout_reg_en
 
 }

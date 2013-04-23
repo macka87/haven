@@ -32,14 +32,11 @@ architecture behavioral of testbench is
    signal clk                    : std_logic;
    signal reset                  : std_logic;
 
-   signal dbg_mode_mem      : std_logic;
    signal HALT              : std_logic;
    signal DONE              : std_logic;
-   signal dbg_mode_mem_Q0   : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
-   signal dbg_mode_mem_RA0  : std_logic_vector(18 downto 0);
-   signal dbg_mode_mem_RE0  : std_logic;
-   signal dbg_mode_mem_RSC0 : std_logic_vector(2 downto 0);
-   signal dbg_mode_mem_RSI0 : std_logic_vector(1 downto 0);
+   signal dbg_mode_regs_Q0  : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
+   signal dbg_mode_regs_RA0 : std_logic_vector(4 downto 0);
+   signal dbg_mode_regs_RE0 : std_logic;
 
    signal TX_DATA      : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
    signal TX_REM       : std_logic_vector(2 downto 0);
@@ -55,7 +52,7 @@ architecture behavioral of testbench is
 -- ----------------------------------------------------------------------------
 begin
 
-   uut: entity work.MEMORY_MONITOR
+   uut: entity work.REGISTER_MONITOR
       generic map (
          IN_DATA_WIDTH     => IN_DATA_WIDTH,
          OUT_DATA_WIDTH    => OUT_DATA_WIDTH
@@ -65,17 +62,14 @@ begin
          RESET             => reset,
 
          -- inputs
-         dbg_mode_mem_Q0   => dbg_mode_mem_Q0,
+         dbg_mode_regs_Q0   => dbg_mode_regs_Q0,
          TX_DST_RDY_N      => TX_DST_RDY_N,
          HALT              => HALT,
          DONE              => DONE,
 
          -- outputs
-         dbg_mode_mem      => dbg_mode_mem,
-         dbg_mode_mem_RA0  => dbg_mode_mem_RA0,
-         dbg_mode_mem_RE0  => dbg_mode_mem_RE0,
-         dbg_mode_mem_RSC0 => dbg_mode_mem_RSC0,
-         dbg_mode_mem_RSI0 => dbg_mode_mem_RSI0,
+         dbg_mode_regs_RA0  => dbg_mode_regs_RA0,
+         dbg_mode_regs_RE0  => dbg_mode_regs_RE0,
 
          TX_DATA      => TX_DATA,
          TX_REM       => TX_REM,
@@ -114,24 +108,18 @@ begin
       HALT         <= '1';
       TX_DST_RDY_N <= '0';
 
-      wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
-      dbg_mode_mem_Q0 <= X"11111111";
+      wait until rising_edge(clk) and dbg_mode_regs_RE0 = '1';
+      dbg_mode_regs_Q0 <= X"11111111";
 
-      wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
-      dbg_mode_mem_Q0 <= X"22222222";
+      wait until rising_edge(clk) and dbg_mode_regs_RE0 = '1';
+      dbg_mode_regs_Q0 <= X"22222222";
       HALT <= '0';
 
-      wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
-      dbg_mode_mem_Q0 <= X"33333333";
+      wait until rising_edge(clk) and dbg_mode_regs_RE0 = '1';
+      dbg_mode_regs_Q0 <= X"33333333";
 
-      wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
-      dbg_mode_mem_Q0 <= X"44444444";
-
-      wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
-      dbg_mode_mem_Q0 <= X"55555555";
-
---      wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
---      dbg_mode_mem_Q0 <= X"66666666";
+      wait until rising_edge(clk) and dbg_mode_regs_RE0 = '1';
+      dbg_mode_regs_Q0 <= X"44444444";
 
   end process tb; 
    

@@ -108,6 +108,16 @@ begin
       port_output_en <= '1';
       port_output    <= X"22222222";
 
+      wait until rising_edge(clk) and TX_SRC_RDY_N = '0';
+      port_output_en <= '0';
+
+      wait until rising_edge(clk) and TX_SRC_RDY_N = '0';
+
+      -- data again
+      TX_DST_RDY_N   <= '0';
+      port_output_en <= '1';
+      port_output    <= X"33333333";
+
       wait until rising_edge(clk);
       port_output_en <= '0';
 

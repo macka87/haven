@@ -1,17 +1,14 @@
 # signals.fdo : Include file with signals
 
-proc blk_MEMORY_MONITOR_IFC { BASE } {
+proc blk_REGISTER_MONITOR_IFC { BASE } {
 
    add_wave "-noupdate -label HALT" $BASE/HALT
    add_wave "-noupdate -label DONE" $BASE/DONE  
 
-      add wave -divider "Memory interface - IN"
-   add_wave "-noupdate -label data_Q0 -hex" $BASE/dbg_mode_mem_Q0
-   add_wave "-noupdate -label dbg_mode_mem" $BASE/dbg_mode_mem
-   add_wave "-noupdate -label RA0 -dec" $BASE/dbg_mode_mem_RA0
-   add_wave "-noupdate -label RE0" $BASE/dbg_mode_mem_RE0
-   add_wave "-noupdate -label RSC0 -dec" $BASE/dbg_mode_mem_RSC0
-   add_wave "-noupdate -label RSI0 -dec" $BASE/dbg_mode_mem_RSI0
+      add wave -divider "RF interface - IN"
+   add_wave "-noupdate -label data_Q0 -hex" $BASE/dbg_mode_regs_Q0
+   add_wave "-noupdate -label RA0 -dec" $BASE/dbg_mode_regs_RA0
+   add_wave "-noupdate -label RE0" $BASE/dbg_mode_regs_RE0
 
       add wave -divider "Framelink interface - OUT"
    add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
@@ -25,7 +22,7 @@ proc blk_MEMORY_MONITOR_IFC { BASE } {
   
 }      
 
-proc blk_MEMORY_MONITOR_INTERNALS { BASE } {
+proc blk_REGISTER_MONITOR_INTERNALS { BASE } {
 
    add wave -divider "Internals"
    add_wave "-noupdate -label state_reg" $BASE/state_reg

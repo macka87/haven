@@ -1,0 +1,20 @@
+# simulation script - include signals
+
+# Paths
+set FL_BINDER_PATH            "/testbench/uut"
+set TB_BASE                   "/testbench"
+
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label reset $TB_BASE/reset
+add wave -noupdate -label base_clk $TB_BASE/clk
+
+blk_FL_BINDER_IFC       "$FL_BINDER_PATH"
+blk_FL_BINDER_INTERNALS "$FL_BINDER_PATH"
+
+restart -f
+run 400 ns

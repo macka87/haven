@@ -2,11 +2,11 @@
 --  Hardware accelerated Functional Verification of Processor
 --  ---------------------------------------------------------
 
---  \file   memory_monitor.vhd
---  \date   10-04-2013
---  \brief  Memory monitor is activated by halt signal, then reads
---          memory of processor through its interface and sends
---          content of memory to SW part of verification environment
+--  \file   register_monitor.vhd
+--  \date   22-04-2013
+--  \brief  Register monitor is activated by halt signal, then reads
+--          register file of processor through its interface and sends
+--          its content to SW part of verification environment
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -19,7 +19,7 @@ use ieee.numeric_std.all;
 -- ==========================================================================
 --                              ENTITY DECLARATION
 -- ==========================================================================
-entity MEMORY_MONITOR is
+entity REGISTER_MONITOR is
 
    generic
    (
@@ -36,13 +36,10 @@ entity MEMORY_MONITOR is
       HALT      : in std_logic;
       
       --           input interface - codix - memory read
-      --           dbg_mode_mem_* ports
-      dbg_mode_mem      : out std_logic;
-      dbg_mode_mem_Q0   : in std_logic_vector(31 downto 0); -- data
-      dbg_mode_mem_RA0  : out std_logic_vector(18 downto 0);  -- address 19b
-      dbg_mode_mem_RE0  : out std_logic;                      -- read enable
-      dbg_mode_mem_RSC0 : out std_logic_vector(2 downto 0);   -- subblock count
-      dbg_mode_mem_RSI0 : out std_logic_vector(1 downto 0);   -- subblock index
+      dbg_mode_regs      : out std_logic;
+      dbg_mode_regs_Q0   : in  std_logic_vector(31 downto 0); -- data
+      dbg_mode_regs_RA0  : out std_logic_vector(4 downto 0);  -- address 5b
+      dbg_mode_regs_RE0  : out std_logic;                     -- read enable
 
       --           T - transmitter
       --           output frame link interface
@@ -65,7 +62,7 @@ end entity;
 -- ----------------------------------------------------------
 --                 architecture
 -- ----------------------------------------------------------
-architecture arch of MEMORY_MONITOR is
+architecture arch of REGISTER_MONITOR is
 
 -- ----------------------------------------------------------
 --                 FSM states
@@ -77,20 +74,9 @@ type state_type is (init_state, read_1half, read_2half);
 -- ----------------------------------------------------------
 constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
 
---constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := (others => '1');
+--constant MAX_ADDRESS :  std_logic_vector(4 downto 0) := (others => '1');
 
--- 12
---constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000001100";
-
--- 16
---constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000010000";
-
--- 20
-constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000010100";
-
--- 24
---constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000011000";
-
+constant MAX_ADDRESS :  std_logic_vector(4 downto 0) := "00100";
 
 constant ENDPOINT_ID :  std_logic_vector(7 downto 0) := X"11"; --??
 constant PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"22"; --??
@@ -103,15 +89,12 @@ constant PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"22"; --??
 signal state_reg, state_next : state_type;
 
 -- address counter register
-signal cnt_addr          : std_logic_vector(18 downto 0);     -- address counter 19b
+signal cnt_addr          : std_logic_vector(4 downto 0);     -- address counter 5b
 signal cnt_addr_en       : std_logic;      
 signal cnt_addr_rst      : std_logic;      
 
 -- input control
-signal sig_dbg_mode  : std_logic;
 signal sig_re0       : std_logic;
-signal sig_rsc0      : std_logic_vector(2 downto 0);
-signal sig_rsi0      : std_logic_vector(1 downto 0);
 
 signal input_reg     : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
 
@@ -162,18 +145,14 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, dbg_mode_mem_Q0, HALT, TX_DST_RDY_N)
+   fsm_next_state_logic : process (state_reg, dbg_mode_regs_Q0, HALT, TX_DST_RDY_N)
    begin
 
-     state_next         <= state_reg;
+     state_next    <= state_reg;
 
-     sig_dbg_mode    <= '1';        -- memory debug mode port
-     sig_re0         <= '0';        -- read enable
-     sig_rsc0        <= "100";      -- subblock count - 4
-     sig_rsi0        <= "00";       -- subblock index
---     sig_tx_src_rdy_n <= '1';       -- source not ready
-
-     is_done        <= '0';
+     sig_re0       <= '0';        -- read enable
+     dbg_mode_regs <= '1';
+     is_done       <= '0';
 
      case state_reg is
         
@@ -193,7 +172,6 @@ begin
             sig_tx_sop_n<= '0';
             sig_tx_eof_n<= '1';
             sig_tx_eop_n<= '1';
---            sig_tx_src_rdy_n<= '0';
 
             -- read enable
             sig_re0 <= '1';
@@ -204,7 +182,7 @@ begin
             state_next <= init_state;
           end if;
 
-        -- data transfer - read first half (32b) from memory
+        -- data transfer - read first half (32b) from register file
         when read_1half =>
 
           -- read enable
@@ -216,13 +194,12 @@ begin
 
           -- end of memory address space
           if cnt_addr >= MAX_ADDRESS then
-            sig_tx_data      <= X"00000000" & dbg_mode_mem_Q0;
+            sig_tx_data      <= X"00000000" & dbg_mode_regs_Q0;
             sig_tx_rem       <= "011";
             sig_tx_sof_n     <= '1';
             sig_tx_sop_n     <= '1';
             sig_tx_eof_n     <= '0';
             sig_tx_eop_n     <= '0';
---            sig_tx_src_rdy_n <= '0';
 
             is_done   <= '1';
             state_next <= init_state;
@@ -234,7 +211,6 @@ begin
             sig_tx_sop_n     <= '1';
             sig_tx_eof_n     <= '1';
             sig_tx_eop_n     <= '1';
---            sig_tx_src_rdy_n <= '0';
 
             state_next <= read_2half;
 
@@ -250,7 +226,7 @@ begin
           cnt_addr_en <= '1';
 
           -- write data 1half + 2half
-          sig_tx_data <= dbg_mode_mem_Q0 & input_reg;
+          sig_tx_data <= dbg_mode_regs_Q0 & input_reg;
 
           -- end of memory address space
           if cnt_addr >= MAX_ADDRESS then
@@ -260,7 +236,6 @@ begin
             sig_tx_sop_n     <= '1';
             sig_tx_eof_n     <= '0';
             sig_tx_eop_n     <= '0';
---            sig_tx_src_rdy_n <= '0';
 
             is_done   <= '1';
             state_next <= init_state;
@@ -272,7 +247,6 @@ begin
             sig_tx_sop_n     <= '1';
             sig_tx_eof_n     <= '1';
             sig_tx_eop_n     <= '1';
---            sig_tx_src_rdy_n <= '0';
 
             state_next <= read_1half;
           end if;
@@ -298,9 +272,9 @@ begin
   begin
      if (rising_edge(CLK)) then
         if (RESET = '1' or cnt_addr_rst = '1') then 
-           cnt_addr <= "0000000000000000100";
+           cnt_addr <= "00001";
         elsif (cnt_addr_en = '1') then
-           cnt_addr <= cnt_addr + 4;
+           cnt_addr <= cnt_addr + 1;
         end if;
      end if;
   end process;
@@ -312,7 +286,7 @@ begin
            input_reg <= (others => '0'); --??
         elsif (is_half = '1') then
            -- input data
-           input_reg <= dbg_mode_mem_Q0;
+           input_reg <= dbg_mode_regs_Q0;
         end if;
      end if;
   end process;
@@ -343,11 +317,8 @@ begin
 
   -- output processing
 
-  dbg_mode_mem      <= sig_dbg_mode;
-  dbg_mode_mem_RA0  <= cnt_addr;
-  dbg_mode_mem_RE0  <= sig_re0;
-  dbg_mode_mem_RSI0 <= sig_rsi0;
-  dbg_mode_mem_RSC0 <= sig_rsc0;
+  dbg_mode_regs_RA0  <= cnt_addr;
+  dbg_mode_regs_RE0  <= sig_re0;
 
   TX_DATA      <= sig_tx_data;
   TX_REM       <= sig_tx_rem;

@@ -1,0 +1,16 @@
+# simulation script
+
+set FIRMWARE_BASE         "../../../.."
+set COMP_BASE             "$FIRMWARE_BASE/comp"
+set REGISTER_MONITOR_BASE "$COMP_BASE/hw_ver/register_monitor"
+
+set SIG_FILE              "$REGISTER_MONITOR_BASE/sim/register_monitor_sig.fdo"
+set TB_FILE               "$REGISTER_MONITOR_BASE/sim/testbench.vhd"
+
+set COMPONENTS [list \
+                  [ list "REGISTER_MONITOR" $REGISTER_MONITOR_BASE "FULL" ] \
+               ]
+
+source "$FIRMWARE_BASE/build/Modelsim.inc.fdo"
+
+source $SIG_FILE

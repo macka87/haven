@@ -1,0 +1,20 @@
+# simulation script - include signals
+
+# Paths
+set REGISTER_MONITOR_PATH     "/testbench/uut"
+set TB_BASE                   "/testbench"
+
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add wave -noupdate -label reset $TB_BASE/reset
+add wave -noupdate -label base_clk $TB_BASE/clk
+
+blk_REGISTER_MONITOR_IFC       "$REGISTER_MONITOR_PATH"
+blk_REGISTER_MONITOR_INTERNALS "$REGISTER_MONITOR_PATH"
+
+restart -f
+run 200 ns

@@ -1,0 +1,60 @@
+# signals.fdo : Include file with signals
+
+proc blk_FL_BINDER_IFC { BASE } {
+
+   add_wave "-noupdate -label HALT"     $BASE/HALT
+   add_wave "-noupdate -label mem_done" $BASE/MEM_DONE
+   add_wave "-noupdate -label reg_done" $BASE/REGS_DONE
+
+      add wave -divider "IN - portout monitor"
+   add_wave "-noupdate -label PM_RX_DATA -hex" $BASE/PM_RX_DATA
+   add_wave "-noupdate -label PM_RX_REM -bin"  $BASE/PM_RX_REM
+   add_wave "-noupdate -label PM_RX_SRC_RDY_N" $BASE/PM_RX_SRC_RDY_N
+   add_wave "-noupdate -label PM_RX_DST_RDY_N" $BASE/PM_RX_DST_RDY_N
+   add_wave "-noupdate -label PM_RX_SOP_N"     $BASE/PM_RX_SOP_N
+   add_wave "-noupdate -label PM_RX_EOP_N"     $BASE/PM_RX_EOP_N
+   add_wave "-noupdate -label PM_RX_SOF_N"     $BASE/PM_RX_SOF_N
+   add_wave "-noupdate -label PM_RX_EOF_N"     $BASE/PM_RX_EOF_N
+
+      add wave -divider "IN - register monitor"
+   add_wave "-noupdate -label RM_RX_DATA -hex" $BASE/RM_RX_DATA
+   add_wave "-noupdate -label RM_RX_REM -bin"  $BASE/RM_RX_REM
+   add_wave "-noupdate -label RM_RX_SRC_RDY_N" $BASE/RM_RX_SRC_RDY_N
+   add_wave "-noupdate -label RM_RX_DST_RDY_N" $BASE/RM_RX_DST_RDY_N
+   add_wave "-noupdate -label RM_RX_SOP_N"     $BASE/RM_RX_SOP_N
+   add_wave "-noupdate -label RM_RX_EOP_N"     $BASE/RM_RX_EOP_N
+   add_wave "-noupdate -label RM_RX_SOF_N"     $BASE/RM_RX_SOF_N
+   add_wave "-noupdate -label RM_RX_EOF_N"     $BASE/RM_RX_EOF_N
+
+      add wave -divider "IN - memory monitor"
+   add_wave "-noupdate -label MM_RX_DATA -hex" $BASE/MM_RX_DATA
+   add_wave "-noupdate -label MM_RX_REM -bin"  $BASE/MM_RX_REM
+   add_wave "-noupdate -label MM_RX_SRC_RDY_N" $BASE/MM_RX_SRC_RDY_N
+   add_wave "-noupdate -label MM_RX_DST_RDY_N" $BASE/MM_RX_DST_RDY_N
+   add_wave "-noupdate -label MM_RX_SOP_N"     $BASE/MM_RX_SOP_N
+   add_wave "-noupdate -label MM_RX_EOP_N"     $BASE/MM_RX_EOP_N
+   add_wave "-noupdate -label MM_RX_SOF_N"     $BASE/MM_RX_SOF_N
+   add_wave "-noupdate -label MM_RX_EOF_N"     $BASE/MM_RX_EOF_N
+
+      add wave -divider "Framelink - OUT"
+   add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+   add_wave "-noupdate -label TX_REM -bin"  $BASE/TX_REM
+   add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+   add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
+   add_wave "-noupdate -label TX_EOP_N"     $BASE/TX_EOP_N
+   add_wave "-noupdate -label TX_SOF_N"     $BASE/TX_SOF_N
+   add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
+  
+}      
+
+proc blk_FL_BINDER_INTERNALS { BASE } {
+
+      add wave -divider "Internals"
+   add_wave "-noupdate -label state_reg"    $BASE/state_reg
+   add_wave "-noupdate -label state_next"   $BASE/state_next
+   add_wave "-noupdate -label transfer_portout"   $BASE/transfer_portout
+   add_wave "-noupdate -label transfer_registers"   $BASE/transfer_registers
+   add_wave "-noupdate -label transfer_memory"   $BASE/transfer_memory
+
+}
