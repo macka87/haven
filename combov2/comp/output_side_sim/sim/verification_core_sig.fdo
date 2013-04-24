@@ -1,0 +1,57 @@
+# verification_core_sig.fdo : Include file with signals
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id: frame_meter_sig.fdo 1333 2008-02-14 22:20:10Z korcek $
+#
+
+# Paths
+set TB_PATH                  "/testbench"
+set VERIFICATION_CORE_PATH   "/testbench/uut"
+
+# include signals
+source      "signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add_wave "-noupdate -label RESET -color yellow"  $TB_PATH/reset
+add_wave "-noupdate -label CLK   -color yellow"  $TB_PATH/clk
+
+add wave -divider "****************************"
+add wave -divider "ENV INTERFACE" 
+add wave -divider "****************************"
+blk_VER_CORE              $VERIFICATION_CORE_PATH
+
+add wave -divider "****************************"
+add wave -divider "INTERNALS" 
+add wave -divider "****************************"
+blk_VER_CORE_INTERNALS    $VERIFICATION_CORE_PATH
+
+add wave -divider "****************************"
+add wave -divider "HALT MONITOR" 
+add wave -divider "****************************"
+blk_HALT_MONITOR          $VERIFICATION_CORE_PATH
+
+add wave -divider "****************************"
+add wave -divider "PORTOUT MONITOR" 
+add wave -divider "****************************"
+blk_PORTOUT_MONITOR       $VERIFICATION_CORE_PATH
+
+add wave -divider "****************************"
+add wave -divider "REGISTER MONITOR" 
+add wave -divider "****************************"
+blk_REGISTER_MONITOR      $VERIFICATION_CORE_PATH
+
+add wave -divider "****************************"
+add wave -divider "MEMORY MONITOR" 
+add wave -divider "****************************"
+blk_MEMORY_MONITOR        $VERIFICATION_CORE_PATH
+
+add wave -divider "****************************"
+add wave -divider "FL BINDER" 
+add wave -divider "****************************"
+blk_FL_BINDER             $VERIFICATION_CORE_PATH
+
+restart -f
+run 5 us

@@ -1,0 +1,161 @@
+# signals.fdo : Include file with signals
+# Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
+
+view wave
+delete wave *
+
+proc blk_VER_CORE { BASE } {
+  add_wave "-noupdate -label CLK"    $BASE/CLK
+  add_wave "-noupdate -label RESET"  $BASE/RESET
+
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label dbg_mode_mem" $BASE/dbg_mode_mem 
+  add_wave "-noupdate -label dbg_mode_mem_Q0 -hex" $BASE/dbg_mode_mem_Q0
+  add_wave "-noupdate -label dbg_mode_mem_RA0 -dec" $BASE/dbg_mode_mem_RA0 
+  add_wave "-noupdate -label dbg_mode_mem_RE0" $BASE/dbg_mode_mem_RE0
+  add_wave "-noupdate -label dbg_mode_mem_RSC0 -dec" $BASE/dbg_mode_mem_RSC0
+  add_wave "-noupdate -label dbg_mode_mem_RSI0 -dec" $BASE/dbg_mode_mem_RSI0
+  add_wave "-noupdate -label dbg_mode_regs" $BASE/dbg_mode_regs
+  add_wave "-noupdate -label dbg_mode_regs_Q0 -hex" $BASE/dbg_mode_regs_Q0 
+  add_wave "-noupdate -label dbg_mode_regs_RA0 -dec" $BASE/dbg_mode_regs_RA0
+  add_wave "-noupdate -label dbg_mode_regs_RE0" $BASE/dbg_mode_regs_RE0
+  add_wave "-noupdate -label port_halt" $BASE/port_halt
+  add_wave "-noupdate -label port_output -hex" $BASE/port_output
+  add_wave "-noupdate -label port_output_en" $BASE/port_output_en
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+  add_wave "-noupdate -label TX_REM  -bin" $BASE/TX_REM
+  add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+  add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+  add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
+  add_wave "-noupdate -label TX_EOP_N"     $BASE/TX_EOP_N
+  add_wave "-noupdate -label TX_SOF_N"     $BASE/TX_SOF_N
+  add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
+
+}
+
+proc blk_VER_CORE_INTERNALS { BASE } {
+  add wave -divider "clk"
+}
+
+proc blk_HALT_MONITOR { BASE } {
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label halt_monitor_in_halt" $BASE/halt_monitor_in_halt
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label halt_monitor_out_halt" $BASE/halt_monitor_out_halt
+  add_wave "-noupdate -label halt_monitor_out_rst_n" $BASE/halt_monitor_out_rst_n
+
+}
+
+proc blk_PORTOUT_MONITOR { BASE } {
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label portout_monitor_in_port_output -hex" $BASE/portout_monitor_in_port_output
+  add_wave "-noupdate -label portout_monitor_in_port_output_en" $BASE/portout_monitor_in_port_output_en
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label portout_monitor_out_data -hex" $BASE/portout_monitor_out_data
+  add_wave "-noupdate -label portout_monitor_out_rem -bin" $BASE/portout_monitor_out_rem
+  add_wave "-noupdate -label portout_monitor_out_src_rdy_n" $BASE/portout_monitor_out_src_rdy_n
+  add_wave "-noupdate -label portout_monitor_in_dst_rdy_n" $BASE/portout_monitor_in_dst_rdy_n
+  add_wave "-noupdate -label portout_monitor_out_sop_n" $BASE/portout_monitor_out_sop_n
+  add_wave "-noupdate -label portout_monitor_out_sof_n" $BASE/portout_monitor_out_sof_n
+  add_wave "-noupdate -label portout_monitor_out_eop_n" $BASE/portout_monitor_out_eop_n
+  add_wave "-noupdate -label portout_monitor_out_eof_n" $BASE/portout_monitor_out_eof_n
+
+}
+
+proc blk_REGISTER_MONITOR { BASE } {
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label register_monitor_in_halt" $BASE/register_monitor_in_halt
+  add_wave "-noupdate -label register_monitor_out_dbg" $BASE/register_monitor_out_dbg
+  add_wave "-noupdate -label register_monitor_in_q0 -hex" $BASE/register_monitor_in_q0
+  add_wave "-noupdate -label register_monitor_out_ra0 -dec" $BASE/register_monitor_out_ra0
+  add_wave "-noupdate -label register_monitor_out_re0" $BASE/register_monitor_out_re0
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label register_monitor_out_done" $BASE/register_monitor_out_done
+  add_wave "-noupdate -label register_monitor_out_data -hex" $BASE/register_monitor_out_data
+  add_wave "-noupdate -label register_monitor_out_rem -bin" $BASE/register_monitor_out_rem
+  add_wave "-noupdate -label register_monitor_out_src_rdy_n" $BASE/register_monitor_out_src_rdy_n
+  add_wave "-noupdate -label register_monitor_in_dst_rdy_n" $BASE/register_monitor_in_dst_rdy_n
+  add_wave "-noupdate -label register_monitor_out_sop_n" $BASE/register_monitor_out_sop_n
+  add_wave "-noupdate -label register_monitor_out_sof_n" $BASE/register_monitor_out_sof_n
+  add_wave "-noupdate -label register_monitor_out_eop_n" $BASE/register_monitor_out_eop_n
+  add_wave "-noupdate -label register_monitor_out_eof_n" $BASE/register_monitor_out_eof_n
+
+}
+
+proc blk_MEMORY_MONITOR { BASE } {
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label memory_monitor_in_halt" $BASE/memory_monitor_in_halt
+  add_wave "-noupdate -label memory_monitor_out_dbg" $BASE/memory_monitor_out_dbg
+  add_wave "-noupdate -label memory_monitor_in_q0 -hex" $BASE/memory_monitor_in_q0
+  add_wave "-noupdate -label memory_monitor_out_ra0 -dec" $BASE/memory_monitor_out_ra0
+  add_wave "-noupdate -label memory_monitor_out_re0" $BASE/memory_monitor_out_re0
+  add_wave "-noupdate -label memory_monitor_out_rsc0" $BASE/memory_monitor_out_rsc0
+  add_wave "-noupdate -label memory_monitor_out_rsi0" $BASE/memory_monitor_out_rsi0
+
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label memory_monitor_out_done" $BASE/memory_monitor_out_done
+  add_wave "-noupdate -label memory_monitor_out_data -hex" $BASE/memory_monitor_out_data
+  add_wave "-noupdate -label memory_monitor_out_rem -bin" $BASE/memory_monitor_out_rem
+  add_wave "-noupdate -label memory_monitor_out_src_rdy_n" $BASE/memory_monitor_out_src_rdy_n
+  add_wave "-noupdate -label memory_monitor_in_dst_rdy_n" $BASE/memory_monitor_in_dst_rdy_n
+  add_wave "-noupdate -label memory_monitor_out_sop_n" $BASE/memory_monitor_out_sop_n
+  add_wave "-noupdate -label memory_monitor_out_sof_n" $BASE/memory_monitor_out_sof_n
+  add_wave "-noupdate -label memory_monitor_out_eop_n" $BASE/memory_monitor_out_eop_n
+  add_wave "-noupdate -label memory_monitor_out_eof_n" $BASE/memory_monitor_out_eof_n
+
+}
+
+proc blk_FL_BINDER { BASE } {
+  add_wave "-noupdate -label CLK"    $BASE/CLK
+  add_wave "-noupdate -label RESET"  $BASE/RESET
+
+  add wave -divider "Input interfaces"
+  add wave -divider "Input portout monitor ifc"
+  add_wave "-noupdate -label fl_binder_in_pm_data -hex" $BASE/fl_binder_in_pm_data
+  add_wave "-noupdate -label fl_binder_in_pm_rem" $BASE/fl_binder_in_pm_rem
+  add_wave "-noupdate -label fl_binder_in_pm_src_rdy_n" $BASE/fl_binder_in_pm_src_rdy_n
+  add_wave "-noupdate -label fl_binder_out_pm_dst_rdy_n" $BASE/fl_binder_out_pm_dst_rdy_n
+  add_wave "-noupdate -label fl_binder_in_pm_sop_n" $BASE/fl_binder_in_pm_sop_n
+  add_wave "-noupdate -label fl_binder_in_pm_eop_n" $BASE/fl_binder_in_pm_eop_n
+  add_wave "-noupdate -label fl_binder_in_pm_sof_n" $BASE/fl_binder_in_pm_sof_n
+  add_wave "-noupdate -label fl_binder_in_pm_eof_n" $BASE/fl_binder_in_pm_eof_n
+
+  add wave -divider "Input register monitor ifc"
+  add_wave "-noupdate -label fl_binder_in_rm_data -hex" $BASE/fl_binder_in_rm_data
+  add_wave "-noupdate -label fl_binder_in_rm_rem" $BASE/fl_binder_in_rm_rem
+  add_wave "-noupdate -label fl_binder_in_rm_src_rdy_n" $BASE/fl_binder_in_rm_src_rdy_n
+  add_wave "-noupdate -label fl_binder_out_rm_dst_rdy_n" $BASE/fl_binder_out_rm_dst_rdy_n
+  add_wave "-noupdate -label fl_binder_in_rm_sop_n" $BASE/fl_binder_in_rm_sop_n
+  add_wave "-noupdate -label fl_binder_in_rm_eop_n" $BASE/fl_binder_in_rm_eop_n
+  add_wave "-noupdate -label fl_binder_in_rm_sof_n" $BASE/fl_binder_in_rm_sof_n
+  add_wave "-noupdate -label fl_binder_in_rm_eof_n" $BASE/fl_binder_in_rm_eof_n
+
+  add wave -divider "Input memory monitor ifc"
+  add_wave "-noupdate -label fl_binder_in_mm_data -hex" $BASE/fl_binder_in_mm_data
+  add_wave "-noupdate -label fl_binder_in_mm_rem" $BASE/fl_binder_in_mm_rem
+  add_wave "-noupdate -label fl_binder_in_mm_src_rdy_n" $BASE/fl_binder_in_mm_src_rdy_n
+  add_wave "-noupdate -label fl_binder_out_mm_dst_rdy_n" $BASE/fl_binder_out_mm_dst_rdy_n
+  add_wave "-noupdate -label fl_binder_in_mm_sop_n" $BASE/fl_binder_in_mm_sop_n
+  add_wave "-noupdate -label fl_binder_in_mm_eop_n" $BASE/fl_binder_in_mm_eop_n
+  add_wave "-noupdate -label fl_binder_in_mm_sof_n" $BASE/fl_binder_in_mm_sof_n
+  add_wave "-noupdate -label fl_binder_in_mm_eof_n" $BASE/fl_binder_in_mm_eof_n
+
+
+  add wave -divider "Output interface - fl"
+  add_wave "-noupdate -label fl_binder_out_data -hex" $BASE/fl_binder_out_data
+  add_wave "-noupdate -label fl_binder_out_rem" $BASE/fl_binder_out_rem
+  add_wave "-noupdate -label fl_binder_out_src_rdy_n" $BASE/fl_binder_out_src_rdy_n
+  add_wave "-noupdate -label fl_binder_in_dst_rdy_n" $BASE/fl_binder_in_dst_rdy_n
+  add_wave "-noupdate -label fl_binder_out_sop_n" $BASE/fl_binder_out_sop_n
+  add_wave "-noupdate -label fl_binder_out_eop_n" $BASE/fl_binder_out_eop_n
+  add_wave "-noupdate -label fl_binder_out_sof_n" $BASE/fl_binder_out_sof_n
+  add_wave "-noupdate -label fl_binder_out_eof_n" $BASE/fl_binder_out_eof_n
+
+}
+
