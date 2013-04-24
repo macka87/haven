@@ -159,21 +159,45 @@ begin
       MEM_DONE        <= '0';
       TX_DST_RDY_N    <= '0';
 
+      -- portout monitor sends data
+      -- data header (SOF & SOP)
       wait until rising_edge(clk);
-      PM_RX_DATA      <= X"1111111111111111";
+      PM_RX_DATA      <= X"0000000000000000";
       PM_RX_REM       <= "111";
       PM_RX_SRC_RDY_N <= '0';
-      PM_RX_SOP_N     <= '1';
+      PM_RX_SOP_N     <= '0';
       PM_RX_EOP_N     <= '1';
-      PM_RX_SOF_N     <= '1';
+      PM_RX_SOF_N     <= '0';
       PM_RX_EOF_N     <= '1';
+
+      -- data (EOF & EOP)
+      wait until rising_edge(clk);
+      PM_RX_DATA      <= X"0000000011111111";
+      PM_RX_REM       <= "011";
+      PM_RX_SRC_RDY_N <= '0';
+      PM_RX_SOP_N     <= '1';
+      PM_RX_EOP_N     <= '0';
+      PM_RX_SOF_N     <= '1';
+      PM_RX_EOF_N     <= '0';
 
 --      wait until rising_edge(clk);
 --      PM_RX_SRC_RDY_N <= '1';
       HALT            <= '1';
 
+      -- register monitor
+      -- data header (SOF & SOP)
       wait until rising_edge(clk);
-      RM_RX_DATA      <= X"2222222222222222";
+      RM_RX_DATA      <= X"0000000000000000";
+      RM_RX_REM       <= "111";
+      RM_RX_SRC_RDY_N <= '0';
+      RM_RX_SOP_N     <= '0';
+      RM_RX_EOP_N     <= '1';
+      RM_RX_SOF_N     <= '0';
+      RM_RX_EOF_N     <= '1';
+
+      -- data
+      wait until rising_edge(clk);
+      RM_RX_DATA      <= X"2121212121212121";
       RM_RX_REM       <= "111";
       RM_RX_SRC_RDY_N <= '0';
       RM_RX_SOP_N     <= '1';
@@ -181,19 +205,82 @@ begin
       RM_RX_SOF_N     <= '1';
       RM_RX_EOF_N     <= '1';
 
+      -- data
+      wait until rising_edge(clk);
+      RM_RX_DATA      <= X"3131313131313131";
+      RM_RX_REM       <= "111";
+      RM_RX_SRC_RDY_N <= '0';
+      RM_RX_SOP_N     <= '1';
+      RM_RX_EOP_N     <= '1';
+      RM_RX_SOF_N     <= '1';
+      RM_RX_EOF_N     <= '1';
+
+      -- data (EOF & EOP)
+      wait until rising_edge(clk);
+      RM_RX_DATA      <= X"4141414141414141";
+      RM_RX_REM       <= "111";
+      RM_RX_SRC_RDY_N <= '0';
+      RM_RX_SOP_N     <= '1';
+      RM_RX_EOP_N     <= '0';
+      RM_RX_SOF_N     <= '1';
+      RM_RX_EOF_N     <= '0';
+
 --      wait until rising_edge(clk);
 --      RM_RX_SRC_RDY_N <= '1';
       HALT            <= '0';
       REGS_DONE       <= '1';
 
+      -- memory monitor
+      -- data header (SOF & SOP)
       wait until rising_edge(clk);
-      MM_RX_DATA      <= X"3333333333333333";
+      MM_RX_DATA      <= X"0000000000000000";
+      MM_RX_REM       <= "111";
+      MM_RX_SRC_RDY_N <= '0';
+      MM_RX_SOP_N     <= '0';
+      MM_RX_EOP_N     <= '1';
+      MM_RX_SOF_N     <= '0';
+      MM_RX_EOF_N     <= '1';
+
+      -- data
+      wait until rising_edge(clk);
+      MM_RX_DATA      <= X"9090909090909090";
       MM_RX_REM       <= "111";
       MM_RX_SRC_RDY_N <= '0';
       MM_RX_SOP_N     <= '1';
       MM_RX_EOP_N     <= '1';
       MM_RX_SOF_N     <= '1';
       MM_RX_EOF_N     <= '1';
+
+      -- data
+      wait until rising_edge(clk);
+      MM_RX_DATA      <= X"9191919191919191";
+      MM_RX_REM       <= "111";
+      MM_RX_SRC_RDY_N <= '0';
+      MM_RX_SOP_N     <= '1';
+      MM_RX_EOP_N     <= '1';
+      MM_RX_SOF_N     <= '1';
+      MM_RX_EOF_N     <= '1';
+
+      -- data
+      wait until rising_edge(clk);
+      MM_RX_DATA      <= X"9292929292929292";
+      MM_RX_REM       <= "111";
+      MM_RX_SRC_RDY_N <= '0';
+      MM_RX_SOP_N     <= '1';
+      MM_RX_EOP_N     <= '1';
+      MM_RX_SOF_N     <= '1';
+      MM_RX_EOF_N     <= '1';
+
+      -- data (EOF & EOP)
+      wait until rising_edge(clk);
+      MM_RX_DATA      <= X"9393939393939393";
+      MM_RX_REM       <= "111";
+      MM_RX_SRC_RDY_N <= '0';
+      MM_RX_SOP_N     <= '1';
+      MM_RX_EOP_N     <= '0';
+      MM_RX_SOF_N     <= '1';
+      MM_RX_EOF_N     <= '0';
+
 
 --      wait until rising_edge(clk);
 --      MM_RX_SRC_RDY_N <= '1';

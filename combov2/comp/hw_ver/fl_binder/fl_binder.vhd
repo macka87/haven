@@ -105,11 +105,6 @@ type state_type is (state_portout, state_regs, state_mem);
 -- FSM signals
 signal state_reg, state_next : state_type;
 
--- control signals
-signal transfer_portout   : std_logic;
-signal transfer_registers : std_logic;
-signal transfer_memory    : std_logic;
-
 -- ----------------------------------------------------------
 --                 architecture body
 -- ----------------------------------------------------------
@@ -128,9 +123,9 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, HALT, MEM_DONE, REGS_DONE, 
-                                   PM_RX_SRC_RDY_N, RM_RX_SRC_RDY_N, 
-                                   MM_RX_SRC_RDY_N, TX_DST_RDY_N)
+   fsm_next_state_logic : process (state_reg, HALT, MEM_DONE, REGS_DONE, PM_RX_SRC_RDY_N, 
+                                   RM_RX_SRC_RDY_N, MM_RX_SRC_RDY_N, TX_DST_RDY_N,
+                                   PM_RX_DATA, RM_RX_DATA, MM_RX_DATA)
    begin
 
      state_next         <= state_reg;
@@ -181,6 +176,8 @@ begin
           -- source and destination ready
           if RM_RX_SRC_RDY_N = '0' and TX_DST_RDY_N = '0' then
 
+            --report "in state regs at time " & time'image(now);
+
             -- connect portout monitor to output interface
             TX_DATA      <= RM_RX_DATA;
             TX_REM       <= RM_RX_REM;
@@ -214,6 +211,7 @@ begin
             TX_SOP_N     <= MM_RX_SOP_N;
             TX_SOF_N     <= MM_RX_SOF_N;
             TX_EOP_N     <= MM_RX_EOP_N;
+            TX_EOF_N     <= MM_RX_EOF_N;
 
           end if;
       
