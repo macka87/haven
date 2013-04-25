@@ -31,7 +31,7 @@
 #
 
 # top level entity
-set TOP_LEVEL_ENT "MEMORY_MONITOR"
+set TOP_LEVEL_ENT "REGISTER_MONITOR"
 
 # specify vhdl_design directory
 set FIRMWARE_BASE  "../../../.."
@@ -47,7 +47,7 @@ set SYNTH_FLAGS(OUTPUT) "comp"
 set SYNTH_FLAGS(FPGA)   "xc5vlx155t"
 
 # list of sub-components
-set COMPONENTS [list  [list "MEMORY_MONITOR"   $MY_COMP_BASE    "FULL"]]
+set COMPONENTS [list  [list "REGISTER_MONITOR"   $MY_COMP_BASE    "FULL"]]
 
 
 set HIERARCHY(COMPONENTS)  $COMPONENTS

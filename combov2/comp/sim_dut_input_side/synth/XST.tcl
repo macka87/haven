@@ -31,11 +31,11 @@
 #
 
 # top level entity
-set TOP_LEVEL_ENT "FL_BINDER"
+set TOP_LEVEL_ENT "VERIFICATION_CORE"
 
 # specify vhdl_design directory
-set FIRMWARE_BASE  "../../../.."
-set BASE           "../../../.."
+set FIRMWARE_BASE  "../../.."
+set BASE           "../../.."
 
 set MY_COMP_BASE       ".."
 
@@ -47,7 +47,7 @@ set SYNTH_FLAGS(OUTPUT) "comp"
 set SYNTH_FLAGS(FPGA)   "xc5vlx155t"
 
 # list of sub-components
-set COMPONENTS [list  [list "FL_BINDER"   $MY_COMP_BASE    "FULL"]]
+set COMPONENTS [list  [list "VERIFICATION_CORE"   $MY_COMP_BASE    "FULL"]]
 
 
 set HIERARCHY(COMPONENTS)  $COMPONENTS

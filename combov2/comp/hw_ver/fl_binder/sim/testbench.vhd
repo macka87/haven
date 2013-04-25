@@ -180,8 +180,15 @@ begin
       PM_RX_SOF_N     <= '1';
       PM_RX_EOF_N     <= '0';
 
---      wait until rising_edge(clk);
---      PM_RX_SRC_RDY_N <= '1';
+
+      wait until rising_edge(clk);
+      PM_RX_SRC_RDY_N <= '1';
+
+      -- wait - nothing happens
+      wait until rising_edge(clk);
+      wait until rising_edge(clk);
+
+      -- halt signal from processor
       HALT            <= '1';
 
       -- register monitor
@@ -225,8 +232,7 @@ begin
       RM_RX_SOF_N     <= '1';
       RM_RX_EOF_N     <= '0';
 
---      wait until rising_edge(clk);
---      RM_RX_SRC_RDY_N <= '1';
+      -- transfer of register file finished
       HALT            <= '0';
       REGS_DONE       <= '1';
 
@@ -281,9 +287,7 @@ begin
       MM_RX_SOF_N     <= '1';
       MM_RX_EOF_N     <= '0';
 
-
---      wait until rising_edge(clk);
---      MM_RX_SRC_RDY_N <= '1';
+      -- transfer of memory finished
       REGS_DONE       <= '0';
       MEM_DONE        <= '1';
 

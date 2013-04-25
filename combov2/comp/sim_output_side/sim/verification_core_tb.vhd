@@ -25,9 +25,9 @@ architecture test of testbench is
    --                                Constants
    -- ------------------------------------------------------------------------
 
-   -- data width
-   constant FL_DATA_WIDTH      : integer := 64;
-   constant CODIX_DATA_WIDTH   : integer := 32; 
+   -- data width of the verification core
+   constant FL_DATA_WIDTH    : integer := 64;
+   constant CODIX_DATA_WIDTH : integer := 32;
 
    -- duration of reset
    constant RESET_TIME  : time := 100 ns;
@@ -42,15 +42,27 @@ architecture test of testbench is
    signal clk           : std_logic;
    signal reset         : std_logic;
 
-   -- input FrameLink
-   signal rx_data       : std_logic_vector(FL_DATA_WIDTH-1 downto 0);
-   signal rx_rem        : std_logic_vector(2 downto 0);
-   signal rx_sof_n      : std_logic;
-   signal rx_eof_n      : std_logic;
-   signal rx_sop_n      : std_logic;
-   signal rx_eop_n      : std_logic;
-   signal rx_src_rdy_n  : std_logic;
-   signal rx_dst_rdy_n  : std_logic;
+   -- input interface - codix
+   signal dbg_mode_mem      : std_logic;
+   signal dbg_mode_mem_D0   : std_logic_vector(31 downto 0); --?? open?
+   signal dbg_mode_mem_Q0   : std_logic_vector(31 downto 0);
+   signal dbg_mode_mem_RA0  : std_logic_vector(18 downto 0);
+   signal dbg_mode_mem_RE0  : std_logic;
+   signal dbg_mode_mem_RSC0 : std_logic_vector(2 downto 0);
+   signal dbg_mode_mem_RSI0 : std_logic_vector(1 downto 0);
+   signal dbg_mode_mem_WA0  : std_logic_vector(18 downto 0); --?? open
+   signal dbg_mode_mem_WE0  : std_logic;                     --?? open
+   signal dbg_mode_mem_WSC0 : std_logic_vector(2 downto 0);  --?? open
+   signal dbg_mode_mem_WSI0 : std_logic_vector(1 downto 0);  --?? open
+   signal dbg_mode_regs     : std_logic;
+   signal dbg_mode_regs_Q0  : std_logic_vector(31 downto 0);
+   signal dbg_mode_regs_RA0 : std_logic_vector(4 downto 0);
+   signal dbg_mode_regs_RE0 : std_logic;
+   signal irq               : std_logic;                     --?? open?
+   signal port_error        : std_logic_vector(31 downto 0); --?? open?
+   signal port_halt         : std_logic;
+   signal port_output       : std_logic_vector(31 downto 0);
+   signal port_output_en    : std_logic;
 
    -- output FrameLink
    signal tx_data       : std_logic_vector(FL_DATA_WIDTH-1 downto 0);
@@ -71,24 +83,34 @@ begin
    generic map(
       -- data width 
       FL_DATA_WIDTH      => FL_DATA_WIDTH,
-      CODIX_DATA_WIDTH   => CODIX_DATA_WIDTH,
-      -- the CORE_TYPE generic specifies the verified unit in the core
-      CORE_TYPE          => core_fifo
+      CODIX_DATA_WIDTH   => CODIX_DATA_WIDTH
    )
    port map(
       CLK            => clk,
       RESET          => reset,
 
       -- input interface
-      RX_DATA        => rx_data,
-      RX_REM         => rx_rem,
-      RX_SOF_N       => rx_sof_n,
-      RX_EOF_N       => rx_eof_n,
-      RX_SOP_N       => rx_sop_n,
-      RX_EOP_N       => rx_eop_n,
-      RX_SRC_RDY_N   => rx_src_rdy_n,
-      RX_DST_RDY_N   => rx_dst_rdy_n,
-
+      dbg_mode_mem      => dbg_mode_mem,
+      dbg_mode_mem_D0   => dbg_mode_mem_D0,
+      dbg_mode_mem_Q0   => dbg_mode_mem_Q0,
+      dbg_mode_mem_RA0  => dbg_mode_mem_RA0,
+      dbg_mode_mem_RE0  => dbg_mode_mem_RE0,
+      dbg_mode_mem_RSC0 => dbg_mode_mem_RSC0,
+      dbg_mode_mem_RSI0 => dbg_mode_mem_RSI0,
+      dbg_mode_mem_WA0  => dbg_mode_mem_WA0,
+      dbg_mode_mem_WE0  => dbg_mode_mem_WE0,
+      dbg_mode_mem_WSC0 => dbg_mode_mem_WSC0,
+      dbg_mode_mem_WSI0 => dbg_mode_mem_WSI0,
+      dbg_mode_regs     => dbg_mode_regs,
+      dbg_mode_regs_Q0  => dbg_mode_regs_Q0,
+      dbg_mode_regs_RA0 => dbg_mode_regs_RA0,
+      dbg_mode_regs_RE0 => dbg_mode_regs_RE0,
+      irq               => irq,
+      port_error        => port_error,
+      port_halt         => port_halt,
+      port_output       => port_output,
+      port_output_en    => port_output_en,
+ 
       -- output interface
       TX_DATA        => tx_data,
       TX_REM         => tx_rem,
@@ -98,13 +120,13 @@ begin
       TX_EOP_N       => tx_eop_n,
       TX_SRC_RDY_N   => tx_src_rdy_n,
       TX_DST_RDY_N   => tx_dst_rdy_n
-
-   );
+      
+   ); 
 
    -- -------------------------------------------------------------------------
    --                           CLOCKs & RESETs
    -- -------------------------------------------------------------------------
-   resetp : process
+   resetp: process
    begin
       reset <= '1', '0' after RESET_TIME;
       wait;
@@ -126,7 +148,7 @@ begin
 
       wait for RESET_TIME;
 
-      report "========== start of verification core simulation ==========";
+      report "output side simulation:";
 
       wait;
    end process;

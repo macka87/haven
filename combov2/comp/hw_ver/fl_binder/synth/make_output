@@ -1,0 +1,382 @@
+tclsh XST.tcl
+-----------------------------------------------------------------------
+            Project run script generated to file XST.xst.
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+                 Generating list of source files...
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+                              FL_BINDER
+-----------------------------------------------------------------------
+file /home/xfunia00/haven/combov2/comp/hw_ver/fl_binder/fl_binder.vhd added
+-----------------------------------------------------------------------
+           List of source files generated to file XST.prj.
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+                              FL_BINDER
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+                Constraints generated to file XST.xcf
+-----------------------------------------------------------------------
+rm -f -fr xst/
+mkdir xst
+mkdir xst/projnav.tmp
+xst -ifn XST.xst
+Release 13.2 - xst O.61xd (lin64)
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to ./xst/projnav.tmp
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.05 secs
+ 
+--> 
+Parameter xsthdpdir set to ./xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.05 secs
+ 
+--> 
+
+Reading constraint file XST.xcf.
+XCF parsing done.
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+	9.1) Device utilization summary
+	9.2) Partition Resource Summary
+	9.3) TIMING REPORT
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "XST.prj"
+Synthesis Constraint File          : XST.xcf
+
+---- Target Parameters
+Output File Name                   : "comp"
+Output Format                      : NGC
+Target Device                      : xc5vlx155t-1-ff1136
+
+---- Source Options
+Top Module Name                    : FL_BINDER
+Generics, Parameters               : { BUILD_TIME=1366928416 BUILD_UID=714}
+
+---- Target Options
+Add IO Buffers                     : Yes
+Pack IO Registers into IOBs        : auto
+
+---- General Options
+RTL Output                         : YES
+Optimization Goal                  : Speed
+Optimization Effort                : 2
+Bus Delimiter                      : ()
+
+---- Other Options
+hdl_compilation_order              : user
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling vhdl file "/home/xfunia00/haven/combov2/comp/hw_ver/fl_binder/fl_binder.vhd" in Library work.
+Entity <FL_BINDER> compiled.
+Entity <FL_BINDER> (Architecture <arch>) compiled.
+
+Reading constraint file XST.xcf.
+XCF parsing done.
+
+=========================================================================
+*                     Design Hierarchy Analysis                         *
+=========================================================================
+Analyzing hierarchy for entity <FL_BINDER> in library <work> (architecture <arch>) with generics.
+	BUILD_TIME = 1366928416
+	BUILD_UID = 714
+	DATA_WIDTH = 64
+
+
+=========================================================================
+*                            HDL Analysis                               *
+=========================================================================
+Analyzing generic Entity <FL_BINDER> in library <work> (Architecture <arch>).
+	BUILD_TIME = 1366928416
+	BUILD_UID = 714
+	DATA_WIDTH = 64
+ Set property "PERIOD = 8.000ns" for signal <CLK> in unit <FL_BINDER>.
+WARNING:Xst:819 - "/home/xfunia00/haven/combov2/comp/hw_ver/fl_binder/fl_binder.vhd" line 126: One or more signals are missing in the process sensitivity list. To enable synthesis of FPGA/CPLD hardware, XST will assume that all necessary signals are present in the sensitivity list. Please note that the result of the synthesis may differ from the initial design specification. The missing signals are:
+   <PM_RX_REM>, <PM_RX_SOP_N>, <PM_RX_SOF_N>, <PM_RX_EOP_N>, <PM_RX_EOF_N>, <RM_RX_REM>, <RM_RX_SOP_N>, <RM_RX_SOF_N>, <RM_RX_EOP_N>, <RM_RX_EOF_N>, <MM_RX_REM>, <MM_RX_SOP_N>, <MM_RX_SOF_N>, <MM_RX_EOP_N>, <MM_RX_EOF_N>
+Entity <FL_BINDER> analyzed. Unit <FL_BINDER> generated.
+
+
+=========================================================================
+*                           HDL Synthesis                               *
+=========================================================================
+
+Performing bidirectional port resolution...
+
+Synthesizing Unit <FL_BINDER>.
+    Related source file is "/home/xfunia00/haven/combov2/comp/hw_ver/fl_binder/fl_binder.vhd".
+    Found finite state machine <FSM_0> for signal <state_reg>.
+    -----------------------------------------------------------------------
+    | States             | 3                                              |
+    | Transitions        | 6                                              |
+    | Inputs             | 3                                              |
+    | Outputs            | 3                                              |
+    | Clock              | CLK                       (rising_edge)        |
+    | Reset              | RESET                     (positive)           |
+    | Reset type         | synchronous                                    |
+    | Reset State        | state_portout                                  |
+    | Power Up State     | state_portout                                  |
+    | Encoding           | automatic                                      |
+    | Implementation     | automatic                                      |
+    -----------------------------------------------------------------------
+WARNING:Xst:737 - Found 1-bit latch for signal <MM_RX_DST_RDY_N>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+WARNING:Xst:737 - Found 1-bit latch for signal <PM_RX_DST_RDY_N>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+WARNING:Xst:737 - Found 1-bit latch for signal <RM_RX_DST_RDY_N>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+WARNING:Xst:737 - Found 1-bit latch for signal <TX_EOP_N>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+INFO:Xst:2371 - HDL ADVISOR - Logic functions respectively driving the data and gate enable inputs of this latch share common terms. This situation will potentially lead to setup/hold violations and, as a result, to simulation problems. This situation may come from an incomplete case statement (all selector values are not covered). You should carefully review if it was in your intentions to describe such a latch.
+WARNING:Xst:737 - Found 1-bit latch for signal <TX_EOF_N>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+INFO:Xst:2371 - HDL ADVISOR - Logic functions respectively driving the data and gate enable inputs of this latch share common terms. This situation will potentially lead to setup/hold violations and, as a result, to simulation problems. This situation may come from an incomplete case statement (all selector values are not covered). You should carefully review if it was in your intentions to describe such a latch.
+WARNING:Xst:737 - Found 3-bit latch for signal <TX_REM>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+INFO:Xst:2371 - HDL ADVISOR - Logic functions respectively driving the data and gate enable inputs of this latch share common terms. This situation will potentially lead to setup/hold violations and, as a result, to simulation problems. This situation may come from an incomplete case statement (all selector values are not covered). You should carefully review if it was in your intentions to describe such a latch.
+WARNING:Xst:737 - Found 1-bit latch for signal <TX_SOP_N>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+INFO:Xst:2371 - HDL ADVISOR - Logic functions respectively driving the data and gate enable inputs of this latch share common terms. This situation will potentially lead to setup/hold violations and, as a result, to simulation problems. This situation may come from an incomplete case statement (all selector values are not covered). You should carefully review if it was in your intentions to describe such a latch.
+WARNING:Xst:737 - Found 1-bit latch for signal <TX_SOF_N>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+INFO:Xst:2371 - HDL ADVISOR - Logic functions respectively driving the data and gate enable inputs of this latch share common terms. This situation will potentially lead to setup/hold violations and, as a result, to simulation problems. This situation may come from an incomplete case statement (all selector values are not covered). You should carefully review if it was in your intentions to describe such a latch.
+WARNING:Xst:737 - Found 64-bit latch for signal <TX_DATA>. Latches may be generated from incomplete case or if statements. We do not recommend the use of latches in FPGA/CPLD designs, as they may lead to timing problems.
+INFO:Xst:2371 - HDL ADVISOR - Logic functions respectively driving the data and gate enable inputs of this latch share common terms. This situation will potentially lead to setup/hold violations and, as a result, to simulation problems. This situation may come from an incomplete case statement (all selector values are not covered). You should carefully review if it was in your intentions to describe such a latch.
+    Summary:
+	inferred   1 Finite State Machine(s).
+Unit <FL_BINDER> synthesized.
+
+
+=========================================================================
+HDL Synthesis Report
+
+Macro Statistics
+# Latches                                              : 9
+ 1-bit latch                                           : 7
+ 3-bit latch                                           : 1
+ 64-bit latch                                          : 1
+
+=========================================================================
+
+=========================================================================
+*                       Advanced HDL Synthesis                          *
+=========================================================================
+
+Analyzing FSM <FSM_0> for best encoding.
+Optimizing FSM <state_reg/FSM> on signal <state_reg[1:2]> with user encoding.
+---------------------------
+ State         | Encoding
+---------------------------
+ state_portout | 00
+ state_regs    | 01
+ state_mem     | 10
+---------------------------
+
+=========================================================================
+Advanced HDL Synthesis Report
+
+Macro Statistics
+# FSMs                                                 : 1
+# Latches                                              : 9
+ 1-bit latch                                           : 7
+ 3-bit latch                                           : 1
+ 64-bit latch                                          : 1
+
+=========================================================================
+
+=========================================================================
+*                         Low Level Synthesis                           *
+=========================================================================
+
+Optimizing unit <FL_BINDER> ...
+
+Mapping all equations...
+WARNING:Xst:1577 - Converting constraint on signal CLK: 'PERIOD=8.000ns' to XCF style constraint
+       NET CLK PERIOD = 8.000000 ns HIGH 50 %
+Annotating constraints using XCF file 'XST.xcf'
+XCF parsing done.
+Building and optimizing final netlist ...
+
+Final Macro Processing ...
+
+=========================================================================
+Final Register Report
+
+Macro Statistics
+# Registers                                            : 2
+ Flip-Flops                                            : 2
+
+=========================================================================
+
+=========================================================================
+*                           Partition Report                            *
+=========================================================================
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+=========================================================================
+*                            Final Report                               *
+=========================================================================
+Final Results
+RTL Top Level Output File Name     : comp.ngr
+Top Level Output File Name         : comp
+Output Format                      : NGC
+Optimization Goal                  : Speed
+Keep Hierarchy                     : no
+
+Design Statistics
+# IOs                              : 297
+
+Cell Usage :
+# BELS                             : 79
+#      LUT2                        : 1
+#      LUT3                        : 2
+#      LUT4                        : 3
+#      LUT5                        : 1
+#      LUT6                        : 72
+# FlipFlops/Latches                : 76
+#      FDR                         : 2
+#      LD                          : 3
+#      LD_1                        : 71
+# Clock Buffers                    : 2
+#      BUFG                        : 1
+#      BUFGP                       : 1
+# IO Buffers                       : 296
+#      IBUF                        : 221
+#      OBUF                        : 75
+=========================================================================
+
+Device utilization summary:
+---------------------------
+
+Selected Device : 5vlx155tff1136-1 
+
+
+Slice Logic Utilization: 
+ Number of Slice Registers:               2  out of  97280     0%  
+ Number of Slice LUTs:                   79  out of  97280     0%  
+    Number used as Logic:                79  out of  97280     0%  
+
+Slice Logic Distribution: 
+ Number of LUT Flip Flop pairs used:     79
+   Number with an unused Flip Flop:      77  out of     79    97%  
+   Number with an unused LUT:             0  out of     79     0%  
+   Number of fully used LUT-FF pairs:     2  out of     79     2%  
+   Number of unique control sets:         5
+
+IO Utilization: 
+ Number of IOs:                         297
+ Number of bonded IOBs:                 297  out of    640    46%  
+    IOB Flip Flops/Latches:              74
+
+Specific Feature Utilization:
+ Number of BUFG/BUFGCTRLs:                2  out of     32     6%  
+
+---------------------------
+Partition Resource Summary:
+---------------------------
+
+  No Partitions were found in this design.
+
+---------------------------
+
+
+=========================================================================
+TIMING REPORT
+
+NOTE: THESE TIMING NUMBERS ARE ONLY A SYNTHESIS ESTIMATE.
+      FOR ACCURATE TIMING INFORMATION PLEASE REFER TO THE TRACE REPORT
+      GENERATED AFTER PLACE-and-ROUTE.
+
+Clock Information:
+------------------
+-----------------------------------------------+-------------------------+-------+
+Clock Signal                                   | Clock buffer(FF name)   | Load  |
+-----------------------------------------------+-------------------------+-------+
+CLK                                            | BUFGP                   | 2     |
+TX_EOP_N_or00001(TX_EOP_N_or00001:O)           | BUFG(*)(TX_SOF_N)       | 71    |
+state_reg_FSM_FFd2                             | NONE(RM_RX_DST_RDY_N)   | 1     |
+state_reg_cmp_eq0001(state_reg_FSM_FFd2-In11:O)| NONE(*)(PM_RX_DST_RDY_N)| 1     |
+state_reg_FSM_FFd1                             | NONE(MM_RX_DST_RDY_N)   | 1     |
+-----------------------------------------------+-------------------------+-------+
+(*) These 2 clock signal(s) are generated by combinatorial logic,
+and XST is not able to identify which are the primary clock signals.
+Please use the CLOCK_SIGNAL constraint to specify the clock signal(s) generated by combinatorial logic.
+INFO:Xst:2169 - HDL ADVISOR - Some clock signals were not automatically buffered by XST with BUFG/BUFR resources. Please use the buffer_type constraint in order to insert these buffers to the clock signals to help prevent skew problems.
+
+Asynchronous Control Signals Information:
+----------------------------------------
+No asynchronous control signals found in this design
+
+Timing Summary:
+---------------
+Speed Grade: -1
+
+   Minimum period: 1.392ns (Maximum Frequency: 718.391MHz)
+   Minimum input arrival time before clock: 2.797ns
+   Maximum output required time after clock: 4.364ns
+   Maximum combinational path delay: 4.421ns
+
+=========================================================================
+Timing constraint: NET CLK PERIOD = 8 nS HIGH 4 nS
+  Clock period: 1.392ns (frequency: 718.391MHz)
+  Total number of paths / destination ports: 4 / 2
+  Number of failed paths / ports: 0 (0.00%) / 0 (0.00%)
+-------------------------------------------------------------------------
+Slack:                  6.626ns
+  Source:               state_reg_FSM_FFd2 (FF)
+  Destination:          state_reg_FSM_FFd2 (FF)
+  Data Path Delay:      1.392ns (Levels of Logic = 1)
+  Source Clock:         CLK rising at 0.000ns
+  Destination Clock:    CLK rising at 8.000ns
+
+  Data Path: state_reg_FSM_FFd2 (FF) to state_reg_FSM_FFd2 (FF)
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FDR:C->Q              8   0.471   0.827  state_reg_FSM_FFd2 (state_reg_FSM_FFd2)
+     LUT4:I0->O            1   0.094   0.000  state_reg_FSM_FFd2-In1 (state_reg_FSM_FFd2-In)
+     FDR:D                    -0.018          state_reg_FSM_FFd2
+    ----------------------------------------
+    Total                      1.392ns (0.565ns logic, 0.827ns route)
+                                       (40.6% logic, 59.4% route)
+
+=========================================================================
+
+
+Total REAL time to Xst completion: 7.00 secs
+Total CPU time to Xst completion: 6.57 secs
+ 
+--> 
+
+
+Total memory usage is 433760 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :   11 (   0 filtered)
+Number of infos    :    7 (   0 filtered)
+

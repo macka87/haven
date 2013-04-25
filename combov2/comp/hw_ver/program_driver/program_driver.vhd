@@ -123,7 +123,8 @@ begin
 
    -- next state logic
    fsm_next_state_logic : process (state_reg, data_ready, RX_SOF_N, 
-                                   sig_trans_type, RX_EOF_N, RX_SRC_RDY_N, cnt_addr)
+                                   sig_trans_type, RX_EOF_N, RX_SRC_RDY_N, cnt_addr,
+                                   HALT, RX_REM, eof_reg)
 
    begin
      state_next         <= state_reg;   
@@ -233,7 +234,7 @@ begin
       end if;
    end process;
 
-   mux_dst_rdy : process (is_half, state_reg)
+   mux_dst_rdy : process (is_half, state_reg, is_header, is_stop)
    begin
      -- first half of data - destination not ready
      if    (is_header = '1') then sig_out_dst_rdy_n <= '0';

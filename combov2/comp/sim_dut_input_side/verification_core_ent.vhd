@@ -39,15 +39,10 @@ entity verification_core is
       RX_SRC_RDY_N       :  in std_logic;
       RX_DST_RDY_N       : out std_logic;
 
-      -- output interface - framelink
-      TX_DATA            : out std_logic_vector(FL_DATA_WIDTH-1 downto 0);
-      TX_REM             : out std_logic_vector(2 downto 0);
-      TX_SOF_N           : out std_logic;
-      TX_EOF_N           : out std_logic;
-      TX_SOP_N           : out std_logic;
-      TX_EOP_N           : out std_logic;
-      TX_SRC_RDY_N       : out std_logic;
-      TX_DST_RDY_N       :  in std_logic
-
+      -- output interface - dut - codix
+      port_error         : out std_logic_vector(31 downto 0);
+      port_halt          : out std_logic;
+      port_output        : out std_logic_vector(31 downto 0);
+      port_output_en     : out std_logic
    );
 end entity;

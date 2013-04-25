@@ -52,15 +52,11 @@ architecture test of testbench is
    signal rx_src_rdy_n  : std_logic;
    signal rx_dst_rdy_n  : std_logic;
 
-   -- output FrameLink
-   signal tx_data       : std_logic_vector(FL_DATA_WIDTH-1 downto 0);
-   signal tx_rem        : std_logic_vector(2 downto 0);
-   signal tx_sof_n      : std_logic;
-   signal tx_eof_n      : std_logic;
-   signal tx_sop_n      : std_logic;
-   signal tx_eop_n      : std_logic;
-   signal tx_src_rdy_n  : std_logic;
-   signal tx_dst_rdy_n  : std_logic;
+   -- output Codix interface
+   signal port_error     : std_logic_vector(31 downto 0);
+   signal port_halt      : std_logic;
+   signal port_output    : std_logic_vector(31 downto 0);
+   signal port_output_en : std_logic;
 
 begin
 
@@ -90,14 +86,10 @@ begin
       RX_DST_RDY_N   => rx_dst_rdy_n,
 
       -- output interface
-      TX_DATA        => tx_data,
-      TX_REM         => tx_rem,
-      TX_SOF_N       => tx_sof_n,
-      TX_EOF_N       => tx_eof_n,
-      TX_SOP_N       => tx_sop_n,
-      TX_EOP_N       => tx_eop_n,
-      TX_SRC_RDY_N   => tx_src_rdy_n,
-      TX_DST_RDY_N   => tx_dst_rdy_n
+      port_error     => port_error,
+      port_halt      => port_halt,
+      port_output    => port_output,
+      port_output_en => port_output_en
 
    );
 

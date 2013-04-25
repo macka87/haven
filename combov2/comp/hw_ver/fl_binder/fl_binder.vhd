@@ -124,8 +124,11 @@ begin
 
    -- next state logic
    fsm_next_state_logic : process (state_reg, HALT, MEM_DONE, REGS_DONE, PM_RX_SRC_RDY_N, 
-                                   RM_RX_SRC_RDY_N, MM_RX_SRC_RDY_N, TX_DST_RDY_N,
-                                   PM_RX_DATA, RM_RX_DATA, MM_RX_DATA)
+                                   RM_RX_SRC_RDY_N, MM_RX_SRC_RDY_N, TX_DST_RDY_N,PM_RX_DATA,
+                                   RM_RX_DATA, MM_RX_DATA, PM_RX_REM, PM_RX_SOP_N, PM_RX_SOF_N, 
+                                   PM_RX_EOP_N, PM_RX_EOF_N, RM_RX_REM, RM_RX_SOP_N, RM_RX_SOF_N, 
+                                   RM_RX_EOP_N, RM_RX_EOF_N, MM_RX_REM, MM_RX_SOP_N, MM_RX_SOF_N, 
+                                   MM_RX_EOP_N, MM_RX_EOF_N)
    begin
 
      state_next         <= state_reg;

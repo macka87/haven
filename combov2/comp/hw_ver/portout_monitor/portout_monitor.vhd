@@ -133,7 +133,8 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, port_output_en, sig_tx_dst_rdy_n, port_output)
+   fsm_next_state_logic : process (state_reg, port_output_en, sig_tx_dst_rdy_n,
+                                   port_output, hdr_data, portout_reg)
    begin
 
 

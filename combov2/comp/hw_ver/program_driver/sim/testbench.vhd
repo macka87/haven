@@ -147,8 +147,7 @@ begin
       driver_in_eop_n <= '1';
       driver_in_src_rdy_n <= '0';
 
-      wait until rising_edge(clk);
-      wait until rising_edge(clk);
+      wait until rising_edge(clk) and driver_in_dst_rdy_n = '0';
 
       -- data packet - data
       driver_in_data  <= X"5555555566666666";
@@ -205,12 +204,11 @@ begin
       driver_in_eop_n <= '1';
       driver_in_src_rdy_n <= '0';
 
-      wait until rising_edge(clk);
-      wait until rising_edge(clk);
+      wait until rising_edge(clk) and driver_in_dst_rdy_n = '0';
 
       -- data packet - data
       driver_in_data  <= X"7777777788888888";
-      driver_in_rem   <= "011";
+      driver_in_rem   <= "111";
       driver_in_sof_n <= '1';
       driver_in_eof_n <= '0';
       driver_in_sop_n <= '1';

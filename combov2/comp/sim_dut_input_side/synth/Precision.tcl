@@ -1,6 +1,6 @@
-# XST.tcl: XST tcl script to compile specified module
-# Copyright (C) 2009 CESNET
-# Author: Vlastimil Kosar <xkosar02@stud.fit.vutbr.cz>
+# Precision.tcl: Precision tcl script to compile specified module
+# Copyright (C) 2007 CESNET
+# Author: Jiri Tobola <tobola@liberouter.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -31,42 +31,34 @@
 #
 
 # top level entity
-set TOP_LEVEL_ENT "FL_BINDER"
+set TOP_LEVEL_ENT   "HGEN"
 
 # specify vhdl_design directory
-set FIRMWARE_BASE  "../../../.."
-set BASE           "../../../.."
+set FIRMWARE_BASE   "../../.."
+set BASE            "../../.."
 
-set MY_COMP_BASE       ".."
+set HGEN_BASE       ".."
 
 # synthesis variables
-# (MODULE must be set to the name of toplevel component)
 set SYNTH_FLAGS(MODULE) $TOP_LEVEL_ENT
 set SYNTH_FLAGS(OUTPUT) "comp"
-#set SYNTH_FLAGS(FPGA)   "xc2vp50"
 set SYNTH_FLAGS(FPGA)   "xc5vlx155t"
 
 # list of sub-components
-set COMPONENTS [list  [list "FL_BINDER"   $MY_COMP_BASE    "FULL"]]
+set COMPONENTS [list  \
+    [list "HGEN"   $HGEN_BASE  "FULL"] \
+]
 
 
 set HIERARCHY(COMPONENTS)  $COMPONENTS
-#set HIERARCHY(TOP_LEVEL)   "top_level.vhd"
 
 proc SetTopAttribConstr { } {
-   global TOP_LEVEL_ENT
-   set CONSTR [list \
-                  "BEGIN MODEL \"$TOP_LEVEL_ENT\"" \
-                  "NET \"CLK\" PERIOD = 125MHz HIGH 50%;" \
-                  "END;"\
-   ]
-   return $CONSTR
+       # PLX clock
+       create_clock -period 8 CLK
 }
 
-# Run global precision tcl script to include general functions
-source $BASE/build/XST.inc.tcl
+# run global precision tcl script to synthesize module design
+puts "Running global precision tcl script"
+source $BASE/build/Precision.inc.tcl
 
-# In fact, XST tcl script only generates XST script named XST.xst.
 SynthesizeProject SYNTH_FLAGS HIERARCHY
-
-# Now Makefile will call 'xst -ifn XST.xst' to perform the synthesis.

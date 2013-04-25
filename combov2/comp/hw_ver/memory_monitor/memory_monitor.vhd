@@ -162,7 +162,8 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, dbg_mode_mem_Q0, HALT, TX_DST_RDY_N)
+   fsm_next_state_logic : process (state_reg, dbg_mode_mem_Q0, HALT, TX_DST_RDY_N,
+                                   hdr_data, cnt_addr, input_reg)
    begin
 
      state_next         <= state_reg;

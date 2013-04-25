@@ -8,19 +8,24 @@ proc blk_VER_CORE { BASE } {
   add_wave "-noupdate -label CLK"    $BASE/CLK
   add_wave "-noupdate -label RESET"  $BASE/RESET
 
-  add wave -divider "HW Input interface"
-  add_wave "-noupdate -label RX_DATA -hex" $BASE/RX_DATA
-  add_wave "-noupdate -label RX_REM  -hex" $BASE/RX_REM
-  add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
-  add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
-  add_wave "-noupdate -label RX_SOP_N"     $BASE/RX_SOP_N
-  add_wave "-noupdate -label RX_EOP_N"     $BASE/RX_EOP_N
-  add_wave "-noupdate -label RX_SOF_N"     $BASE/RX_SOF_N
-  add_wave "-noupdate -label RX_EOF_N"     $BASE/RX_EOF_N
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label dbg_mode_mem" $BASE/dbg_mode_mem 
+  add_wave "-noupdate -label dbg_mode_mem_Q0 -hex" $BASE/dbg_mode_mem_Q0
+  add_wave "-noupdate -label dbg_mode_mem_RA0 -dec" $BASE/dbg_mode_mem_RA0 
+  add_wave "-noupdate -label dbg_mode_mem_RE0" $BASE/dbg_mode_mem_RE0
+  add_wave "-noupdate -label dbg_mode_mem_RSC0 -dec" $BASE/dbg_mode_mem_RSC0
+  add_wave "-noupdate -label dbg_mode_mem_RSI0 -dec" $BASE/dbg_mode_mem_RSI0
+  add_wave "-noupdate -label dbg_mode_regs" $BASE/dbg_mode_regs
+  add_wave "-noupdate -label dbg_mode_regs_Q0 -hex" $BASE/dbg_mode_regs_Q0 
+  add_wave "-noupdate -label dbg_mode_regs_RA0 -dec" $BASE/dbg_mode_regs_RA0
+  add_wave "-noupdate -label dbg_mode_regs_RE0" $BASE/dbg_mode_regs_RE0
+  add_wave "-noupdate -label port_halt" $BASE/port_halt
+  add_wave "-noupdate -label port_output -hex" $BASE/port_output
+  add_wave "-noupdate -label port_output_en" $BASE/port_output_en
 
-  add wave -divider "HW Output interface"
+  add wave -divider "Output interface"
   add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
-  add_wave "-noupdate -label TX_REM  -hex" $BASE/TX_REM
+  add_wave "-noupdate -label TX_REM  -bin" $BASE/TX_REM
   add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
   add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
   add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
@@ -30,65 +35,8 @@ proc blk_VER_CORE { BASE } {
 
 }
 
-proc blk_VER_CORE_DUT_IFC { BASE } {
-#  add_wave "-noupdate -label clk_dut"          $BASE/clk_dut
-#  add_wave "-noupdate -label reset_dut"        $BASE/reset_dut
-
-  add wave -divider "DUT Input ifc"
-
-  add wave -divider "DUT input - memory write"
-
-
-  add_wave "-noupdate -label dut_in_dbg" $BASE/dut_in_mem_dbg
-  add_wave "-noupdate -label dut_in_d0 -hex" $BASE/dut_in_mem_d0
-  add_wave "-noupdate -label dut_in_wa0" $BASE/dut_in_mem_wa0
-  add_wave "-noupdate -label dut_in_we0" $BASE/dut_in_mem_we0
-  add_wave "-noupdate -label dut_in_wsc0" $BASE/dut_in_mem_wsc0
-  add_wave "-noupdate -label dut_in_wsi0" $BASE/dut_in_mem_wsi0
-
-  add wave -divider "DUT input - memory read"
-
-  add_wave "-noupdate -label dut_in_ra0 -hex" $BASE/dut_in_mem_ra0
-  add_wave "-noupdate -label dut_in_re0" $BASE/dut_in_mem_re0
-  add_wave "-noupdate -label dut_in_rsc0" $BASE/dut_in_mem_rsc0
-  add_wave "-noupdate -label dut_in_rsi0" $BASE/dut_in_mem_rsi0
-
-  add wave -divider "DUT Output ifc"
-
-  add_wave "-noupdate -label dut_out_mem_q0 -hex" $BASE/dut_out_mem_q0
-  add_wave "-noupdate -label dut_out_regs_q0 -hex" $BASE/dut_out_regs_q0
-  add_wave "-noupdate -label dut_out_port_error -hex" $BASE/dut_out_port_error
-  add_wave "-noupdate -label dut_out_port_halt" $BASE/dut_out_port_halt
-  add_wave "-noupdate -label dut_out_port_output -hex" $BASE/dut_out_port_output
-  add_wave "-noupdate -label dut_out_port_output_en" $BASE/dut_out_port_output_en
-
-}
-
 proc blk_VER_CORE_INTERNALS { BASE } {
-  add wave -divider "Clock Gate"
-}
-
-proc blk_PROGRAM_DRIVER { BASE } {
-  add wave -divider "PROGRAM DRIVER Input ifc"
-
-  add_wave "-noupdate -label program_driver_in_data -hex" $BASE/program_driver_in_data
-  add_wave "-noupdate -label program_driver_in_rem" $BASE/program_driver_in_rem
-  add_wave "-noupdate -label program_driver_in_sof_n" $BASE/program_driver_in_sof_n
-  add_wave "-noupdate -label program_driver_in_sop_n" $BASE/program_driver_in_sop_n
-  add_wave "-noupdate -label program_driver_in_eop_n" $BASE/program_driver_in_eop_n
-  add_wave "-noupdate -label program_driver_in_eof_n" $BASE/program_driver_in_eof_n
-  add_wave "-noupdate -label program_driver_in_src_rdy_n" $BASE/program_driver_in_src_rdy_n
-  add_wave "-noupdate -label program_driver_in_dst_rdy_n" $BASE/program_driver_in_dst_rdy_n
-
-  add wave -divider "PROGRAM DRIVER Output ifc"
-
-  add_wave "-noupdate -label program_driver_out_dbg" $BASE/program_driver_out_dbg
-  add_wave "-noupdate -label program_driver_out_d0 -hex" $BASE/program_driver_out_d0
-  add_wave "-noupdate -label program_driver_out_wa0 -hex" $BASE/program_driver_out_wa0
-  add_wave "-noupdate -label program_driver_out_we0" $BASE/program_driver_out_we0
-  add_wave "-noupdate -label program_driver_out_wsc0" $BASE/program_driver_out_wsc0
-  add_wave "-noupdate -label program_driver_out_wsi0" $BASE/program_driver_out_wsi0
-
+  add wave -divider "clk"
 }
 
 proc blk_HALT_MONITOR { BASE } {
@@ -164,6 +112,9 @@ proc blk_MEMORY_MONITOR { BASE } {
 }
 
 proc blk_FL_BINDER { BASE } {
+  add_wave "-noupdate -label CLK"    $BASE/CLK
+  add_wave "-noupdate -label RESET"  $BASE/RESET
+
   add wave -divider "Input interfaces"
   add wave -divider "Input portout monitor ifc"
   add_wave "-noupdate -label fl_binder_in_pm_data -hex" $BASE/fl_binder_in_pm_data
