@@ -44,6 +44,7 @@ architecture arch of verification_core is
 
    -- program driver - control signals   
    signal program_driver_in_halt      : std_logic;
+   signal program_driver_out_rst_n    : std_logic;
 
    -- program driver - output - Codix interface
    signal program_driver_out_dbg      : std_logic;
@@ -76,6 +77,10 @@ architecture arch of verification_core is
 
    -- DUT - Codix port for interrupt request
    signal dut_in_irq      : std_logic;
+
+   -- DUT reset
+   signal dut_in_rst_n    : std_logic;
+   signal dut_in_clk      : std_logic;
 
    -- DUT - Codix output interface
    signal dut_out_mem_q0         : std_logic_vector(CODIX_DATA_WIDTH-1 downto 0);
@@ -129,6 +134,7 @@ begin
       RX_SRC_RDY_N  => program_driver_in_src_rdy_n,
       RX_DST_RDY_N  => program_driver_in_dst_rdy_n,
       HALT          => program_driver_in_halt,
+      OUT_RST_N     => program_driver_out_rst_n,
 
       -- output interface
       dbg_mode_mem      => program_driver_out_dbg,
@@ -144,8 +150,8 @@ begin
    -- ------------------------------------------------------------------------
    dut_codix_i: entity work.codix_ca_t
    port map (
-      CLK               => CLK,    -- clk for memory??
-      RST               => RESET,  -- TODO - active in 0!
+      CLK               => CLK,
+      RST               => dut_in_rst_n,
 
       dbg_mode_mem      => dut_in_mem_dbg,
       dbg_mode_mem_D0   => dut_in_mem_d0,
@@ -181,6 +187,7 @@ begin
    dut_in_mem_we0  <= program_driver_out_we0;
    dut_in_mem_wsc0 <= program_driver_out_wsc0;
    dut_in_mem_wsi0 <= program_driver_out_wsi0;
+   dut_in_rst_n    <= program_driver_out_rst_n;
 
    -- ------------------------------------------------------------------------
    --                          Mapping of outputs
@@ -190,31 +197,5 @@ begin
    port_halt      <= dut_out_port_halt;
    port_output    <= dut_out_port_output;
    port_output_en <= dut_out_port_output_en;
-
-   -- ------------------------------------------------------------------------
-   --                              Clock gate
-   -- ------------------------------------------------------------------------
-
---   clock_gate_i: entity work.clock_gate
---   port map (
---      CLK_IN        => CLK,
---      CLOCK_ENABLE  => clock_enable,
---      CLK_OUT       => clk_dut
---   );
-
-   -- ------------------------------------------------------------------------
-   --                              Reset gen
-   -- ------------------------------------------------------------------------
-
---   reset_gen_i: entity work.reset_gen
---   generic map (
---      RESET_TIME    => 5
---   )
---   port map (
---      RX_CLK        => CLK,
---      RESET         => RESET,
---      TX_CLK        => clk_dut,
---      RESET_OUT     => reset_dut
---   );
 
 end architecture;

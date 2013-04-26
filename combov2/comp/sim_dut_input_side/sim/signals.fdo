@@ -31,6 +31,7 @@ proc blk_VER_CORE_DUT_IFC { BASE } {
 #  add_wave "-noupdate -label reset_dut"        $BASE/reset_dut
 
   add wave -divider "DUT Input ifc"
+  add_wave "-noupdate -label dut_in_rst_n" $BASE/dut_in_rst_n
 
   add wave -divider "DUT input - memory write"
 
@@ -77,6 +78,7 @@ proc blk_PROGRAM_DRIVER { BASE } {
 
   add wave -divider "PROGRAM DRIVER Output ifc"
 
+  add_wave "-noupdate -label program_driver_out_rst_n" $BASE/program_driver_out_rst_n
   add_wave "-noupdate -label program_driver_out_dbg" $BASE/program_driver_out_dbg
   add_wave "-noupdate -label program_driver_out_d0 -hex" $BASE/program_driver_out_d0
   add_wave "-noupdate -label program_driver_out_wa0 -hex" $BASE/program_driver_out_wa0
