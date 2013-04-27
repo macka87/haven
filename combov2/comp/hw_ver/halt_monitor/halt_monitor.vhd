@@ -50,6 +50,9 @@ begin
          elsif port_halt = '1' then
             HALT  <= '1';
             RST_n <= '0';
+         elsif port_halt = '0' then
+            HALT  <= '0';
+            RST_n <= '1';
          end if;
       end if;
 

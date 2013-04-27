@@ -1,0 +1,25 @@
+Sat Apr 27 07:08:13 PM CEST 2013
+Trace back: invalid command name "::.main_pane.wave.interior.cs.body.pw.wf.sig_dlg.nb.canvas.notebook.cs.page1.cs.radix_frame.radix.lwchildsite.efchildsite.popup.list"
+    while executing
+"::.main_pane.wave.interior.cs.body.pw.wf.sig_dlg.nb.canvas.notebook.cs.page1.cs.radix_frame.radix.lwchildsite.efchildsite.popup.list _makeSelection"
+    (in namespace inscope "::iwidgets::Scrolledlistbox" script line 1)
+    invoked from within
+"namespace inscope ::iwidgets::Scrolledlistbox {::.main_pane.wave.interior.cs.body.pw.wf.sig_dlg.nb.canvas.notebook.cs.page1.cs.radix_frame.radix.lwchi..."
+    (command bound to event)
+  <2: ::tkerror {invalid command name "::.main_pane.wave.interior.cs.body.pw.wf.sig_dlg.nb.canvas.notebook.cs.page1.cs.radix_frame.radix.lwchildsite.efchildsite.popup.list"}
+  <1: ::bgerror {invalid command name "::.main_pane.wave.interior.cs.body.pw.wf.sig_dlg.nb.canvas.notebook.cs.page1.cs.radix_frame.radix.lwchildsite.efchildsite.popup.list"}
+Sat Apr 27 10:47:58 PM CEST 2013
+Trace back: scratch: empty index list.
+    while executing
+"$SourceTree scratch put $sel_list"
+    (procedure "Wave::SignalDropHandler" line 62)
+    invoked from within
+"Wave::SignalDropHandler .main_pane.wave.interior.cs.body.pw.wf.grid.row0,wave.data 51 100 {} {}"
+    ("eval" body line 1)
+    invoked from within
+"eval [concat [list $vsimPriv(DragDrop_DropHandler,$w) $w $x $y [Utf2External $d] $config_list] $args]"
+    (procedure "DND_Drop" line 13)
+    invoked from within
+"DND_Drop .main_pane.wave.interior.cs.body.pw.wf.grid.row0,wave.data 51 100 [::dnd::ConvertToBinary {}]"
+  <2: ::tkerror {scratch: empty index list.}
+  <1: ::bgerror {scratch: empty index list.}

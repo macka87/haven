@@ -72,14 +72,16 @@ type state_type is (init_state, read_1half, read_2half);
 -- ----------------------------------------------------------
 --                 constants
 -- ----------------------------------------------------------
-constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
+constant DATA_TYPE   : std_logic_vector(7 downto 0) := X"00";
 
 --constant MAX_ADDRESS :  std_logic_vector(4 downto 0) := (others => '1');
 
-constant MAX_ADDRESS :  std_logic_vector(4 downto 0) := "00100";
+constant MAX_ADDRESS : std_logic_vector(4 downto 0) := "11111";
 
-constant ENDPOINT_ID :  std_logic_vector(7 downto 0) := X"11"; --??
-constant PROTOCOL_ID :  std_logic_vector(7 downto 0) := X"22"; --??
+-- register monitor endpoint is 8'h02
+constant ENDPOINT_ID : std_logic_vector(7 downto 0) := X"02";
+constant PROTOCOL_ID : std_logic_vector(7 downto 0) := X"00"; -- TODO: 00 ~ no protocol
+                                                              --       01 ~ framelink
 
 -- ----------------------------------------------------------
 --                 signals
@@ -273,7 +275,7 @@ begin
   begin
      if (rising_edge(CLK)) then
         if (RESET = '1' or cnt_addr_rst = '1') then 
-           cnt_addr <= "00001";
+           cnt_addr <= "00000";
         elsif (cnt_addr_en = '1') then
            cnt_addr <= cnt_addr + 1;
         end if;

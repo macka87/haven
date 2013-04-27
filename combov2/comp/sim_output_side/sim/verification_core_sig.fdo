@@ -54,4 +54,4 @@ add wave -divider "****************************"
 blk_FL_BINDER             $VERIFICATION_CORE_PATH
 
 restart -f
-run 5 us
+run 2000 us

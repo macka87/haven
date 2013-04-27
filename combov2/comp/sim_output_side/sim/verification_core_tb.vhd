@@ -6,6 +6,8 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_textio.all;
+use std.textio.all;
 
 library work;
 use work.math_pack.all;
@@ -44,22 +46,15 @@ architecture test of testbench is
 
    -- input interface - codix
    signal dbg_mode_mem      : std_logic;
-   signal dbg_mode_mem_D0   : std_logic_vector(31 downto 0); --?? open?
    signal dbg_mode_mem_Q0   : std_logic_vector(31 downto 0);
    signal dbg_mode_mem_RA0  : std_logic_vector(18 downto 0);
    signal dbg_mode_mem_RE0  : std_logic;
    signal dbg_mode_mem_RSC0 : std_logic_vector(2 downto 0);
    signal dbg_mode_mem_RSI0 : std_logic_vector(1 downto 0);
-   signal dbg_mode_mem_WA0  : std_logic_vector(18 downto 0); --?? open
-   signal dbg_mode_mem_WE0  : std_logic;                     --?? open
-   signal dbg_mode_mem_WSC0 : std_logic_vector(2 downto 0);  --?? open
-   signal dbg_mode_mem_WSI0 : std_logic_vector(1 downto 0);  --?? open
    signal dbg_mode_regs     : std_logic;
    signal dbg_mode_regs_Q0  : std_logic_vector(31 downto 0);
    signal dbg_mode_regs_RA0 : std_logic_vector(4 downto 0);
    signal dbg_mode_regs_RE0 : std_logic;
-   signal irq               : std_logic;                     --?? open?
-   signal port_error        : std_logic_vector(31 downto 0); --?? open?
    signal port_halt         : std_logic;
    signal port_output       : std_logic_vector(31 downto 0);
    signal port_output_en    : std_logic;
@@ -91,22 +86,15 @@ begin
 
       -- input interface
       dbg_mode_mem      => dbg_mode_mem,
-      dbg_mode_mem_D0   => dbg_mode_mem_D0,
       dbg_mode_mem_Q0   => dbg_mode_mem_Q0,
       dbg_mode_mem_RA0  => dbg_mode_mem_RA0,
       dbg_mode_mem_RE0  => dbg_mode_mem_RE0,
       dbg_mode_mem_RSC0 => dbg_mode_mem_RSC0,
       dbg_mode_mem_RSI0 => dbg_mode_mem_RSI0,
-      dbg_mode_mem_WA0  => dbg_mode_mem_WA0,
-      dbg_mode_mem_WE0  => dbg_mode_mem_WE0,
-      dbg_mode_mem_WSC0 => dbg_mode_mem_WSC0,
-      dbg_mode_mem_WSI0 => dbg_mode_mem_WSI0,
       dbg_mode_regs     => dbg_mode_regs,
       dbg_mode_regs_Q0  => dbg_mode_regs_Q0,
       dbg_mode_regs_RA0 => dbg_mode_regs_RA0,
       dbg_mode_regs_RE0 => dbg_mode_regs_RE0,
-      irq               => irq,
-      port_error        => port_error,
       port_halt         => port_halt,
       port_output       => port_output,
       port_output_en    => port_output_en,
@@ -144,14 +132,67 @@ begin
    --                                 Test
    -- -----------------------------------------------------------------------
    tb : process
+      file mem_content : text open READ_MODE is "input/mem_content";
+      file reg_content : text open READ_MODE is "input/reg_content";
+
+      variable my_input_line : line;
+      variable my_input_slv  : std_logic_vector(31 downto 0);
+
    begin
+
+
+      -- initialization
+      dbg_mode_mem_Q0   <= X"00000000";
+      dbg_mode_regs_Q0  <= X"00000000";
+      port_halt         <= '0';
+      port_output       <= X"00000000";
+      port_output_en    <= '0'; 
+
+      tx_dst_rdy_n <= '0';     
 
       wait for RESET_TIME;
 
-      report "output side simulation:";
+      report "========== start of output simulation ==========";
+
+      -- nothing happens - DUT computation
+      wait until rising_edge(clk);
+
+      -- portout information
+      wait until rising_edge(clk);
+
+      port_output_en <= '1';
+      port_output <= X"AABBCCDD";
+
+      -- halt signal
+      wait until rising_edge(clk);
+      port_output_en <= '0';
+      port_halt <= '1';
+
+      -- register file transfer - loop
+      -- ================ loop ==================
+      while not endfile(reg_content) loop
+        readline(reg_content, my_input_line);
+        read(my_input_line, my_input_slv);
+        dbg_mode_regs_Q0 <= my_input_slv;
+        wait until rising_edge(clk) and dbg_mode_regs_RE0 = '1';
+      end loop;
+      -- ============= end of loop ===============
+
+--      port_halt <= '0';
+
+      -- memory content transfer - loop
+      -- ================ loop ==================
+      while not endfile(mem_content) loop
+        wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
+        readline(mem_content, my_input_line);
+        read(my_input_line, my_input_slv);
+        dbg_mode_mem_Q0 <= my_input_slv;
+      end loop;
+      -- ============= end of loop ===============
+      
+      report "========== end of output simulation ==========";
 
       wait;
    end process;
-
 
 end architecture;

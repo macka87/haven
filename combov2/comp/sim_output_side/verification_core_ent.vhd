@@ -30,22 +30,15 @@ entity verification_core is
 
       -- input interface - Codix processor
       dbg_mode_mem      : out std_logic;
-      dbg_mode_mem_D0   : out std_logic_vector(31 downto 0); --?? open?
       dbg_mode_mem_Q0   : in  std_logic_vector(31 downto 0);
       dbg_mode_mem_RA0  : out std_logic_vector(18 downto 0);
       dbg_mode_mem_RE0  : out std_logic;
       dbg_mode_mem_RSC0 : out std_logic_vector(2 downto 0);
       dbg_mode_mem_RSI0 : out std_logic_vector(1 downto 0);
-      dbg_mode_mem_WA0  : out std_logic_vector(18 downto 0); --?? open
-      dbg_mode_mem_WE0  : out std_logic;                     --?? open
-      dbg_mode_mem_WSC0 : out std_logic_vector(2 downto 0);  --?? open
-      dbg_mode_mem_WSI0 : out std_logic_vector(1 downto 0);  --?? open
       dbg_mode_regs     : out std_logic;
       dbg_mode_regs_Q0  : in  std_logic_vector(31 downto 0);
       dbg_mode_regs_RA0 : out std_logic_vector(4 downto 0);
       dbg_mode_regs_RE0 : out std_logic;
-      irq               : out std_logic;                     --?? open?
-      port_error        : in  std_logic_vector(31 downto 0); --?? open?
       port_halt         : in  std_logic;
       port_output       : in  std_logic_vector(31 downto 0);
       port_output_en    : in  std_logic;

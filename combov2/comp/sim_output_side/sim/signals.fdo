@@ -11,13 +11,13 @@ proc blk_VER_CORE { BASE } {
   add wave -divider "Input interface"
   add_wave "-noupdate -label dbg_mode_mem" $BASE/dbg_mode_mem 
   add_wave "-noupdate -label dbg_mode_mem_Q0 -hex" $BASE/dbg_mode_mem_Q0
-  add_wave "-noupdate -label dbg_mode_mem_RA0 -dec" $BASE/dbg_mode_mem_RA0 
+  add_wave "-noupdate -label dbg_mode_mem_RA0 -hex" $BASE/dbg_mode_mem_RA0 
   add_wave "-noupdate -label dbg_mode_mem_RE0" $BASE/dbg_mode_mem_RE0
-  add_wave "-noupdate -label dbg_mode_mem_RSC0 -dec" $BASE/dbg_mode_mem_RSC0
-  add_wave "-noupdate -label dbg_mode_mem_RSI0 -dec" $BASE/dbg_mode_mem_RSI0
+  add_wave "-noupdate -label dbg_mode_mem_RSC0 -bin" $BASE/dbg_mode_mem_RSC0
+  add_wave "-noupdate -label dbg_mode_mem_RSI0 -bin" $BASE/dbg_mode_mem_RSI0
   add_wave "-noupdate -label dbg_mode_regs" $BASE/dbg_mode_regs
   add_wave "-noupdate -label dbg_mode_regs_Q0 -hex" $BASE/dbg_mode_regs_Q0 
-  add_wave "-noupdate -label dbg_mode_regs_RA0 -dec" $BASE/dbg_mode_regs_RA0
+  add_wave "-noupdate -label dbg_mode_regs_RA0 -hex" $BASE/dbg_mode_regs_RA0
   add_wave "-noupdate -label dbg_mode_regs_RE0" $BASE/dbg_mode_regs_RE0
   add_wave "-noupdate -label port_halt" $BASE/port_halt
   add_wave "-noupdate -label port_output -hex" $BASE/port_output
@@ -71,7 +71,7 @@ proc blk_REGISTER_MONITOR { BASE } {
   add_wave "-noupdate -label register_monitor_in_halt" $BASE/register_monitor_in_halt
   add_wave "-noupdate -label register_monitor_out_dbg" $BASE/register_monitor_out_dbg
   add_wave "-noupdate -label register_monitor_in_q0 -hex" $BASE/register_monitor_in_q0
-  add_wave "-noupdate -label register_monitor_out_ra0 -dec" $BASE/register_monitor_out_ra0
+  add_wave "-noupdate -label register_monitor_out_ra0 -hex" $BASE/register_monitor_out_ra0
   add_wave "-noupdate -label register_monitor_out_re0" $BASE/register_monitor_out_re0
 
   add wave -divider "Output interface"
@@ -92,7 +92,7 @@ proc blk_MEMORY_MONITOR { BASE } {
   add_wave "-noupdate -label memory_monitor_in_halt" $BASE/memory_monitor_in_halt
   add_wave "-noupdate -label memory_monitor_out_dbg" $BASE/memory_monitor_out_dbg
   add_wave "-noupdate -label memory_monitor_in_q0 -hex" $BASE/memory_monitor_in_q0
-  add_wave "-noupdate -label memory_monitor_out_ra0 -dec" $BASE/memory_monitor_out_ra0
+  add_wave "-noupdate -label memory_monitor_out_ra0 -hex" $BASE/memory_monitor_out_ra0
   add_wave "-noupdate -label memory_monitor_out_re0" $BASE/memory_monitor_out_re0
   add_wave "-noupdate -label memory_monitor_out_rsc0" $BASE/memory_monitor_out_rsc0
   add_wave "-noupdate -label memory_monitor_out_rsi0" $BASE/memory_monitor_out_rsi0

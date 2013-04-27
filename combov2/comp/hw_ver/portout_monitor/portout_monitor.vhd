@@ -64,10 +64,10 @@ constant DATA_TYPE   : std_logic_vector(7 downto 0) := X"00";
 constant START_TYPE  : std_logic_vector(7 downto 0) := X"01";
 constant STOP_TYPE   : std_logic_vector(7 downto 0) := X"04";
 
-constant ENDPOINT_ID : std_logic_vector(7 downto 0) := X"11"; --??
-constant PROTOCOL_ID : std_logic_vector(7 downto 0) := X"22"; --??
-
---constant START_TYPE  :  std_logic_vector(7 downto 0) := X"01";
+-- portout monitor endpoint id is 8'h01
+constant ENDPOINT_ID : std_logic_vector(7 downto 0) := X"01";
+constant PROTOCOL_ID : std_logic_vector(7 downto 0) := X"00"; -- TODO: 00 ~ no protocol
+                                                              --       01 ~ framelink
 
 -- ----------------------------------------------------------
 --                 signals

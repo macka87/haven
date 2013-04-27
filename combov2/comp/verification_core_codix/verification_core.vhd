@@ -552,30 +552,4 @@ begin
    TX_SRC_RDY_N           <= fl_binder_out_src_rdy_n;
    fl_binder_in_dst_rdy_n <= TX_DST_RDY_N;
 
-   -- ------------------------------------------------------------------------
-   --                              Clock gate
-   -- ------------------------------------------------------------------------
-
---   clock_gate_i: entity work.clock_gate
---   port map (
---      CLK_IN        => CLK,
---      CLOCK_ENABLE  => clock_enable,
---      CLK_OUT       => clk_dut
---   );
-
-   -- ------------------------------------------------------------------------
-   --                              Reset gen
-   -- ------------------------------------------------------------------------
-
---   reset_gen_i: entity work.reset_gen
---   generic map (
---      RESET_TIME    => 5
---   )
---   port map (
---      RX_CLK        => CLK,
---      RESET         => RESET,
---      TX_CLK        => clk_dut,
---      RESET_OUT     => reset_dut
---   );
-
 end architecture;
