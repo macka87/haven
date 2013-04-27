@@ -51,7 +51,8 @@ class InputWrapper extends ovm_component;
       syncT sync_tr;
 
       sync_tr = new();
-      // sync_tr.flag = 0; information that can be send to output wrapper - number of data transactions??
+
+      // sync_tr.flag = 0; information that can be send to output wrapper ??
 
       res = c_openDMAChannel();
       $write("OPENING CHANNEL: %d\n",res);
@@ -91,8 +92,6 @@ class InputWrapper extends ovm_component;
 
         // data transfer to hardware through DMA channel
         res = c_sendData(ntr.data);
-
-
         if(res != 0) begin
           `ovm_error( get_name(), "Send data failure!" );
         end

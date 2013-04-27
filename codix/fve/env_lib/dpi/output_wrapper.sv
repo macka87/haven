@@ -54,7 +54,7 @@ class OutputWrapper extends ovm_component;
       // wait for input wrapper
       syncport.get(str);
 
-      while(1) begin
+/*      while(1) begin
 
         temp = new[128];
 
@@ -104,7 +104,7 @@ class OutputWrapper extends ovm_component;
             break;
 
             // put received data to output mailbox
-            // outputMbx.put(ntr);  
+            // .put(ntr);  
 
           end
           else begin
@@ -112,7 +112,7 @@ class OutputWrapper extends ovm_component;
           end
         end
 
-      end
+      end*/
 
       res = c_closeDMAChannel();
       $write("CLOSING CHANNEL: %d\n",res); 

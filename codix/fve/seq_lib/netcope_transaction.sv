@@ -59,7 +59,7 @@ class NetCOPETransaction extends ovm_sequence_item;
       
         for (int j=0; j < data.size; j++) begin
 //        for (int j=0; j < size; j++) begin 
-          $write("%x ",data[j]);
+          $write("%h ",data[j]);
         end  
         
         $write("\n---------------------------------------------------------\n\n");
