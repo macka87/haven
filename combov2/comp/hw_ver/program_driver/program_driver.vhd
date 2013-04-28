@@ -43,8 +43,8 @@ entity PROGRAM_DRIVER is
       RX_SOF_N       : in  std_logic;
       RX_EOF_N       : in  std_logic;
 
-      -- halt signal from processor
-      HALT           : in  std_logic;
+      -- indication of memory monitor work done
+      MEM_DONE       : in  std_logic;
 
       -- reset signal for processor
       OUT_RST_N      : out std_logic;
@@ -128,7 +128,7 @@ begin
    -- next state logic
    fsm_next_state_logic : process (state_reg, data_ready, RX_SOF_N, 
                                    sig_trans_type, RX_EOF_N, RX_SRC_RDY_N, cnt_addr,
-                                   HALT, RX_REM, eof_reg)
+                                   MEM_DONE, RX_REM, eof_reg)
 
    begin
      state_next         <= state_reg;   
@@ -147,7 +147,6 @@ begin
           cnt_addr_en <= '0';
           
           if (data_ready='1') then
---            if (sig_trans_type=DATA_TYPE and HALT='1') then TODO switch back!
             if (sig_trans_type=DATA_TYPE) then
               state_next <= data_1half;
             elsif (sig_trans_type=STOP_TYPE) then
@@ -205,8 +204,10 @@ begin
           cnt_addr_en <= '0';
 
           sig_out_rst_n <= '1';
+          sig_out_dbg_mode <= '0';
         
-          if (sig_trans_type = START_TYPE) then 
+          -- back to init state after memory monitor work done
+          if MEM_DONE = '1' then 
             state_next <= init_state;
           else 
             state_next <= stop_state;
@@ -260,7 +261,7 @@ begin
             output_reg    <= (others => '0');
             eof_reg <= '1';
          elsif (is_half = '1') then
-            output_reg <= RX_DATA(63 downto 32);
+            output_reg <= RX_DATA(31 downto 0);
             eof_reg <= RX_EOF_N;
          end if;
       end if;
@@ -270,7 +271,7 @@ begin
    begin
       if (rising_edge(CLK)) then
          if (RESET = '1' or cnt_addr_rst = '1') then 
-            cnt_addr <= "0000000000000000100";
+            cnt_addr <= "0000000000000000000";
          elsif (cnt_addr_en = '1') then
             cnt_addr <= cnt_addr + 4;
          end if;
@@ -279,7 +280,7 @@ begin
 
    mux_half : process (is_half, RX_DATA, output_reg)
    begin
-     if (is_half = '1') then sig_half_out <= RX_DATA(31 downto 0);
+     if (is_half = '1') then sig_half_out <= RX_DATA(63 downto 32);
      else                    sig_half_out <= output_reg;
      end if;
    end process;

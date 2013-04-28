@@ -2,7 +2,7 @@
 
 proc blk_MEMORY_MONITOR_IFC { BASE } {
 
-   add_wave "-noupdate -label HALT" $BASE/HALT
+   add_wave "-noupdate -label REGS_DONE" $BASE/REGS_DONE
    add_wave "-noupdate -label DONE" $BASE/DONE  
 
       add wave -divider "Memory interface - IN"

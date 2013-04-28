@@ -32,8 +32,8 @@ entity MEMORY_MONITOR is
       CLK            : in  std_logic;
       RESET          : in  std_logic;
 
-      -- halt instruction detection
-      HALT      : in std_logic;
+      -- start trigger
+      REGS_DONE      : in std_logic;
       
       --           input interface - codix - memory read
       --           dbg_mode_mem_* ports
@@ -164,7 +164,7 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, dbg_mode_mem_Q0, HALT, TX_DST_RDY_N,
+   fsm_next_state_logic : process (state_reg, dbg_mode_mem_Q0, REGS_DONE, TX_DST_RDY_N,
                                    hdr_data, cnt_addr, input_reg)
    begin
 
@@ -187,7 +187,7 @@ begin
           cnt_addr_rst <= '1';
           cnt_addr_en <= '0';
 
-          if HALT = '1' and TX_DST_RDY_N = '0' then
+          if REGS_DONE = '1' and TX_DST_RDY_N = '0' then
 
             -- start header & SOF & SOP & EOP & EOF & source ready
             sig_tx_data <= hdr_data;

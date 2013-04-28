@@ -175,10 +175,9 @@ begin
         read(my_input_line, my_input_slv);
         dbg_mode_regs_Q0 <= my_input_slv;
         wait until rising_edge(clk) and dbg_mode_regs_RE0 = '1';
+        port_halt <= '0';
       end loop;
       -- ============= end of loop ===============
-
---      port_halt <= '0';
 
       -- memory content transfer - loop
       -- ================ loop ==================

@@ -33,7 +33,7 @@ architecture behavioral of testbench is
    signal reset                  : std_logic;
 
    signal dbg_mode_mem      : std_logic;
-   signal HALT              : std_logic;
+   signal REGS_DONE         : std_logic;
    signal DONE              : std_logic;
    signal dbg_mode_mem_Q0   : std_logic_vector(IN_DATA_WIDTH-1 downto 0);
    signal dbg_mode_mem_RA0  : std_logic_vector(18 downto 0);
@@ -67,7 +67,7 @@ begin
          -- inputs
          dbg_mode_mem_Q0   => dbg_mode_mem_Q0,
          TX_DST_RDY_N      => TX_DST_RDY_N,
-         HALT              => HALT,
+         REGS_DONE         => REGS_DONE,
          DONE              => DONE,
 
          -- outputs
@@ -111,7 +111,7 @@ begin
       wait for reset_time; 
       wait until rising_edge(clk);
 
-      HALT         <= '1';
+      REGS_DONE    <= '1';
       TX_DST_RDY_N <= '0';
 
       wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
@@ -119,7 +119,7 @@ begin
 
       wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
       dbg_mode_mem_Q0 <= X"22222222";
-      HALT <= '0';
+      REGS_DONE <= '0';
 
       wait until rising_edge(clk) and dbg_mode_mem_RE0 = '1';
       dbg_mode_mem_Q0 <= X"33333333";

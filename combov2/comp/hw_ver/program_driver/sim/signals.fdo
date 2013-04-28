@@ -16,7 +16,7 @@ proc blk_PROGRAM_DRIVER_IFC { BASE } {
    add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
 
    add wave -divider "HALT"
-   add_wave "-noupdate -label HALT" $BASE/HALT
+   add_wave "-noupdate -label MEM_DONE" $BASE/MEM_DONE
 
 	 
       add wave -divider "Output"

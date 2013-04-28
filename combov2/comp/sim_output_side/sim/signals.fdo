@@ -89,7 +89,7 @@ proc blk_REGISTER_MONITOR { BASE } {
 
 proc blk_MEMORY_MONITOR { BASE } {
   add wave -divider "Input interface"
-  add_wave "-noupdate -label memory_monitor_in_halt" $BASE/memory_monitor_in_halt
+  add_wave "-noupdate -label memory_monitor_in_regs_done" $BASE/memory_monitor_in_regs_done
   add_wave "-noupdate -label memory_monitor_out_dbg" $BASE/memory_monitor_out_dbg
   add_wave "-noupdate -label memory_monitor_in_q0 -hex" $BASE/memory_monitor_in_q0
   add_wave "-noupdate -label memory_monitor_out_ra0 -hex" $BASE/memory_monitor_out_ra0

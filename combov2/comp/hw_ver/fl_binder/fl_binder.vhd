@@ -131,7 +131,11 @@ begin
                                    MM_RX_EOP_N, MM_RX_EOF_N)
    begin
 
-     state_next         <= state_reg;
+     state_next <= state_reg;
+
+     PM_RX_DST_RDY_N <= '0';
+     RM_RX_DST_RDY_N <= '0';
+     MM_RX_DST_RDY_N <= '0';
 
      case state_reg is
         

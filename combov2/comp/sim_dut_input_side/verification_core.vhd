@@ -43,7 +43,7 @@ architecture arch of verification_core is
    signal program_driver_in_dst_rdy_n : std_logic;
 
    -- program driver - control signals   
-   signal program_driver_in_halt      : std_logic;
+   signal program_driver_in_mem_done  : std_logic;
    signal program_driver_out_rst_n    : std_logic;
 
    -- program driver - output - Codix interface
@@ -133,7 +133,7 @@ begin
       RX_EOF_N      => program_driver_in_eof_n,
       RX_SRC_RDY_N  => program_driver_in_src_rdy_n,
       RX_DST_RDY_N  => program_driver_in_dst_rdy_n,
-      HALT          => program_driver_in_halt,
+      MEM_DONE      => program_driver_in_mem_done,
       OUT_RST_N     => program_driver_out_rst_n,
 
       -- output interface

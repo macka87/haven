@@ -39,4 +39,4 @@ add wave -divider "****************************"
 blk_PROGRAM_DRIVER        $VERIFICATION_CORE_PATH
 
 restart -f
-run 1600 us
+run 3200 us

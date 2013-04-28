@@ -41,7 +41,7 @@ architecture behavioral of testbench is
    signal driver_in_eop_n        : std_logic;
    signal driver_in_src_rdy_n    : std_logic;
    signal driver_in_dst_rdy_n    : std_logic;
-   signal driver_in_halt         : std_logic;
+   signal driver_in_mem_done     : std_logic;
    
    -- UUT output signals
    signal driver_out_rst_n       : std_logic;
@@ -78,7 +78,7 @@ begin
          RX_SRC_RDY_N      => driver_in_src_rdy_n,
          RX_DST_RDY_N      => driver_in_dst_rdy_n,
 
-         HALT              => driver_in_halt,
+         MEM_DONE          => driver_in_mem_done,
          OUT_RST_N         => driver_out_rst_n,
          
          dbg_mode_mem_D0   => driver_out_d0,
@@ -113,11 +113,10 @@ begin
    
       wait for reset_time; 
 
+      driver_in_mem_done <= '0';
       driver_in_src_rdy_n <= '0';
 
       wait until rising_edge(clk) and driver_in_dst_rdy_n = '0';
-
-      driver_in_halt <= '1';
 
       -- start header
       driver_in_data  <= X"0000000100000000";
@@ -172,6 +171,67 @@ begin
       driver_in_sop_n <= '0';
       driver_in_eop_n <= '0';
       driver_in_src_rdy_n <= '0';
+
+      wait until rising_edge(clk);
+
+      driver_in_mem_done <= '1'; 
+
+      wait until rising_edge(clk) and driver_in_dst_rdy_n = '0';
+
+      -- start header
+      driver_in_data  <= X"0000000100000000";
+      driver_in_rem   <= "111";
+      driver_in_sof_n <= '0';
+      driver_in_eof_n <= '0';
+      driver_in_sop_n <= '0';
+      driver_in_eop_n <= '0';
+      driver_in_src_rdy_n <= '0';
+
+      wait until rising_edge(clk) and driver_in_dst_rdy_n = '0';
+
+      -- data packet -header
+      driver_in_data  <= X"0000000000000000";
+      driver_in_rem   <= "111";
+      driver_in_sof_n <= '0';
+      driver_in_eof_n <= '1';
+      driver_in_sop_n <= '0';
+      driver_in_eop_n <= '1';
+      driver_in_src_rdy_n <= '0';
+
+      wait until rising_edge(clk) and driver_in_dst_rdy_n = '0';
+
+      -- data packet - data
+      driver_in_data  <= X"3333333344444444";
+      driver_in_rem   <= "111";
+      driver_in_sof_n <= '1';
+      driver_in_eof_n <= '1';
+      driver_in_sop_n <= '1';
+      driver_in_eop_n <= '1';
+      driver_in_src_rdy_n <= '0';
+
+      wait until rising_edge(clk) and driver_in_dst_rdy_n = '0';
+
+      -- data packet - data
+      driver_in_data  <= X"5555555566666666";
+      driver_in_rem   <= "111";
+      driver_in_sof_n <= '1';
+      driver_in_eof_n <= '0';
+      driver_in_sop_n <= '1';
+      driver_in_eop_n <= '0';
+      driver_in_src_rdy_n <= '0';
+
+     
+      wait until rising_edge(clk);
+
+      -- stop header
+      driver_in_data  <= X"0000000400000000";
+      driver_in_rem   <= "111";
+      driver_in_sof_n <= '0';
+      driver_in_eof_n <= '0';
+      driver_in_sop_n <= '0';
+      driver_in_eop_n <= '0';
+      driver_in_src_rdy_n <= '0';
+
 
      wait;
       

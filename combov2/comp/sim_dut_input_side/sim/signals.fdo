@@ -75,6 +75,7 @@ proc blk_PROGRAM_DRIVER { BASE } {
   add_wave "-noupdate -label program_driver_in_eof_n" $BASE/program_driver_in_eof_n
   add_wave "-noupdate -label program_driver_in_src_rdy_n" $BASE/program_driver_in_src_rdy_n
   add_wave "-noupdate -label program_driver_in_dst_rdy_n" $BASE/program_driver_in_dst_rdy_n
+  add_wave "-noupdate -label program_driver_in_mem_done" $BASE/program_driver_in_mem_done
 
   add wave -divider "PROGRAM DRIVER Output ifc"
 

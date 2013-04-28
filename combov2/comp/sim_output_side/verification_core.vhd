@@ -32,7 +32,7 @@ architecture arch of verification_core is
    -- =======================================================================
 
    -- memory monitor - input - Codix interface
-   signal memory_monitor_in_halt  : std_logic;
+   signal memory_monitor_in_regs_done  : std_logic;
    signal memory_monitor_out_dbg  : std_logic;
    signal memory_monitor_in_q0    : std_logic_vector(CODIX_DATA_WIDTH-1 downto 0);
    signal memory_monitor_out_ra0  : std_logic_vector(18 downto 0);
@@ -220,7 +220,7 @@ begin
          -- inputs
          dbg_mode_mem_Q0   => memory_monitor_in_q0,
          TX_DST_RDY_N      => memory_monitor_in_dst_rdy_n,
-         HALT              => memory_monitor_in_halt,
+         REGS_DONE         => memory_monitor_in_regs_done,
 
          -- outputs
          dbg_mode_mem      => memory_monitor_out_dbg,
@@ -369,7 +369,6 @@ begin
 
    -- halt monitor to other monitors
    register_monitor_in_halt <= halt_monitor_out_halt;
-   memory_monitor_in_halt   <= halt_monitor_out_halt;
    fl_binder_in_halt        <= halt_monitor_out_halt;
 
    -- portout monitor to fl_binder
@@ -392,6 +391,9 @@ begin
    fl_binder_in_rm_sof_n     <= register_monitor_out_sof_n;
    fl_binder_in_rm_eof_n     <= register_monitor_out_eof_n;
    fl_binder_in_regs_done    <= register_monitor_out_done;
+
+   -- register monitor to memory monitor
+   memory_monitor_in_regs_done <= register_monitor_out_done;
 
    -- memory monitor to fl_binder
    fl_binder_in_mm_data      <= memory_monitor_out_data;
