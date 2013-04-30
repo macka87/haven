@@ -39,4 +39,8 @@ add wave -divider "****************************"
 blk_PROGRAM_DRIVER        $VERIFICATION_CORE_PATH
 
 restart -f
-run 3200 us
+
+# memory loading        - 666 us
+# processor computation - program sha.c.xexe (118 us)
+# halt                  - 784 us
+run 784 us

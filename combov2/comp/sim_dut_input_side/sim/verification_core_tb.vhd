@@ -54,11 +54,25 @@ architecture test of testbench is
    signal rx_src_rdy_n  : std_logic;
    signal rx_dst_rdy_n  : std_logic;
 
+   signal dut_in_out_rst_n : std_logic;
+
    -- output Codix interface
    signal port_error     : std_logic_vector(31 downto 0);
    signal port_halt      : std_logic;
    signal port_output    : std_logic_vector(31 downto 0);
    signal port_output_en : std_logic;
+
+   -- Reverse function to change bit-order inside byte.
+   function reverse( src: std_logic_vector ) return std_logic_vector is
+     variable result: std_logic_vector( src'range );
+     alias r_src: std_logic_vector( src'reverse_range ) is src;
+     begin
+       for ii in r_src'range loop
+         result(ii) := r_src(ii);
+        end loop;
+       return result;
+   end function;
+
 
 begin
 
@@ -86,6 +100,8 @@ begin
       RX_EOP_N       => rx_eop_n,
       RX_SRC_RDY_N   => rx_src_rdy_n,
       RX_DST_RDY_N   => rx_dst_rdy_n,
+
+      DUT_RST_N   => dut_in_out_rst_n,
 
       -- output interface
       port_error     => port_error,
@@ -128,6 +144,8 @@ begin
 
       wait for RESET_TIME;
 
+      dut_in_out_rst_n <= '1';
+
       report "========== start of core simulation ==========";
 
       wait until rising_edge(clk) and RX_DST_RDY_N = '0';
@@ -160,7 +178,8 @@ begin
         readline(my_input, my_input_line);
         read(my_input_line, my_input_slv);
         -- data packet - data
-        RX_DATA <= my_input_slv;
+        RX_DATA <= reverse(my_input_slv(39 downto 32)) & reverse(my_input_slv(47 downto 40)) & reverse(my_input_slv(55 downto 48)) & reverse(my_input_slv(63 downto 56)) & reverse(my_input_slv(7 downto 0)) & reverse(my_input_slv(15 downto 8)) & reverse(my_input_slv(23 downto 16)) & reverse(my_input_slv(31 downto 24));
+
         RX_REM  <= "111";
         RX_SOF_N <= '1';
         RX_EOF_N <= '1';
@@ -192,6 +211,11 @@ begin
       RX_SOP_N <= '0';
       RX_EOP_N <= '0';
       RX_SRC_RDY_N <= '0';
+
+      wait until rising_edge(port_halt);
+
+      wait until CLK'event;
+      dut_in_out_rst_n <= '0';
 
       report "========== end of core simulation ==========";
 

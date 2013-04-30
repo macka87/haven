@@ -33,8 +33,16 @@ proc blk_VER_CORE_DUT_IFC { BASE } {
   add wave -divider "DUT Input ifc"
   add_wave "-noupdate -label dut_in_rst_n" $BASE/dut_in_rst_n
 
-  add wave -divider "DUT input - memory write"
+  add wave -divider "DUT input - memory content"
+  add_wave "-noupdate -label instr_dec_id_instr" $BASE/dut_codix_i/core/main_instr_hw_instr_hw/id_instr_Q0
+  add_wave "-noupdate -label instr_invalid_instr" $BASE/dut_codix_i/core/main_instr_hw_instr_hw/invalid_instruction
 
+  add_wave "-noupdate -label dut_memory_0" $BASE/dut_codix_i/mem/memory_0
+  add_wave "-noupdate -label dut_memory_1" $BASE/dut_codix_i/mem/memory_1
+  add_wave "-noupdate -label dut_memory_2" $BASE/dut_codix_i/mem/memory_2
+  add_wave "-noupdate -label dut_memory_3" $BASE/dut_codix_i/mem/memory_3
+
+  add wave -divider "DUT input - memory write"
   add_wave "-noupdate -label dut_in_dbg" $BASE/dut_in_mem_dbg
   add_wave "-noupdate -label dut_in_d0 -hex" $BASE/dut_in_mem_d0
   add_wave "-noupdate -label dut_in_wa0" $BASE/dut_in_mem_wa0
@@ -43,14 +51,12 @@ proc blk_VER_CORE_DUT_IFC { BASE } {
   add_wave "-noupdate -label dut_in_wsi0" $BASE/dut_in_mem_wsi0
 
   add wave -divider "DUT input - memory read"
-
   add_wave "-noupdate -label dut_in_ra0 -hex" $BASE/dut_in_mem_ra0
   add_wave "-noupdate -label dut_in_re0" $BASE/dut_in_mem_re0
   add_wave "-noupdate -label dut_in_rsc0" $BASE/dut_in_mem_rsc0
   add_wave "-noupdate -label dut_in_rsi0" $BASE/dut_in_mem_rsi0
 
   add wave -divider "DUT Output ifc"
-
   add_wave "-noupdate -label dut_out_mem_q0 -hex" $BASE/dut_out_mem_q0
   add_wave "-noupdate -label dut_out_regs_q0 -hex" $BASE/dut_out_regs_q0
   add_wave "-noupdate -label dut_out_port_error -hex" $BASE/dut_out_port_error

@@ -39,6 +39,8 @@ entity verification_core is
       RX_SRC_RDY_N       :  in std_logic;
       RX_DST_RDY_N       : out std_logic;
 
+      DUT_RST_N          :  in std_logic;
+
       -- output interface - dut - codix
       port_error         : out std_logic_vector(31 downto 0);
       port_halt          : out std_logic;

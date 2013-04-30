@@ -21,6 +21,7 @@ architecture arch of verification_core is
 -- ==========================================================================
 --                                      TYPES
 -- ==========================================================================
+   type codix_memory_type is array (0 to 131071) of std_logic_vector(0 to 7);
 
 -- ==========================================================================
 --                                    CONSTANTS
@@ -56,6 +57,12 @@ architecture arch of verification_core is
 
    -- =======================================================================
 
+   -- DUT - memory signals
+   signal dut_memory_0 : codix_memory_type;
+   signal dut_memory_1 : codix_memory_type;
+   signal dut_memory_2 : codix_memory_type;
+   signal dut_memory_3 : codix_memory_type;
+
    -- DUT - Codix input interface - write to memory
    signal dut_in_mem_dbg  : std_logic;
    signal dut_in_mem_d0   : std_logic_vector(CODIX_DATA_WIDTH-1 downto 0);
@@ -78,8 +85,11 @@ architecture arch of verification_core is
    -- DUT - Codix port for interrupt request
    signal dut_in_irq      : std_logic;
 
-   -- DUT reset
-   signal dut_in_rst_n    : std_logic;
+   -- DUT reset from program driver
+   signal dut_in_rst_n : std_logic;
+   -- DUT reset from outside
+   signal dut_in_rst_n_OUT : std_logic;
+
    signal dut_in_clk      : std_logic;
 
    -- DUT - Codix output interface
@@ -109,6 +119,7 @@ begin
    program_driver_in_eof_n     <= RX_EOF_N;
    program_driver_in_src_rdy_n <= RX_SRC_RDY_N;
    RX_DST_RDY_N  <= program_driver_in_dst_rdy_n;
+   dut_in_rst_n_OUT <= DUT_RST_N ;
 
    -- ------------------------------------------------------------------------
    --              HW_SW_CODASIP - program driver
@@ -187,7 +198,7 @@ begin
    dut_in_mem_we0  <= program_driver_out_we0;
    dut_in_mem_wsc0 <= program_driver_out_wsc0;
    dut_in_mem_wsi0 <= program_driver_out_wsi0;
-   dut_in_rst_n    <= program_driver_out_rst_n;
+   dut_in_rst_n    <= program_driver_out_rst_n and dut_in_rst_n_OUT;
 
    -- ------------------------------------------------------------------------
    --                          Mapping of outputs
