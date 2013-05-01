@@ -44,7 +44,7 @@ architecture behavioral of testbench is
    signal driver_in_mem_done     : std_logic;
    
    -- UUT output signals
-   signal driver_out_rst_n       : std_logic;
+   signal driver_out_done        : std_logic;
    signal driver_out_d0          : std_logic_vector(OUT_DATA_WIDTH-1 downto 0);
    signal driver_out_dbg_mode    : std_logic;
    signal driver_out_wa0         : std_logic_vector(18 downto 0);
@@ -79,7 +79,7 @@ begin
          RX_DST_RDY_N      => driver_in_dst_rdy_n,
 
          MEM_DONE          => driver_in_mem_done,
-         OUT_RST_N         => driver_out_rst_n,
+         DONE              => driver_out_done,
          
          dbg_mode_mem_D0   => driver_out_d0,
          dbg_mode_mem      => driver_out_dbg_mode,

@@ -154,7 +154,7 @@ begin
      state_next    <= state_reg;
 
      sig_re0       <= '0';        -- read enable
-     dbg_mode_regs <= '1';
+     dbg_mode_regs <= '0';
      is_done       <= '0';
 
      case state_reg is
@@ -166,7 +166,7 @@ begin
           cnt_addr_rst <= '1';
           cnt_addr_en <= '0';
 
-          if HALT = '1' and TX_DST_RDY_N = '0' then
+          if rising_edge(HALT) and TX_DST_RDY_N = '0' then
 
             -- start header & SOF & SOP & EOP & EOF & source ready
             sig_tx_data <= hdr_data;
@@ -178,6 +178,7 @@ begin
 
             -- read enable
             sig_re0 <= '1';
+            dbg_mode_regs <= '1';
 
             state_next <= read_1half;
 
@@ -190,6 +191,7 @@ begin
 
           -- read enable
           sig_re0 <= '1';
+          dbg_mode_regs <= '1';
 
           -- address counter signals - increment address
           cnt_addr_rst <= '0';
@@ -223,6 +225,7 @@ begin
 
           --read enable
           sig_re0 <= '1';
+          dbg_mode_regs <= '1';
 
           -- address counter signals - increment address
           cnt_addr_rst <= '0';

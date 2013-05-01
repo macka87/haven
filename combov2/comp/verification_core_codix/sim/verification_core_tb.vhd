@@ -6,12 +6,10 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.std_logic_textio.all;
+use std.textio.all;
 
 library work;
-use work.math_pack.all;
-use work.fl_sim_oper.all;
-use work.fl_bfm_pkg.all;
-use work.fl_bfm_rdy_pkg.all;
 
 -- HAVEN constants
 use work.haven_const.all;
@@ -61,6 +59,17 @@ architecture test of testbench is
    signal tx_eop_n      : std_logic;
    signal tx_src_rdy_n  : std_logic;
    signal tx_dst_rdy_n  : std_logic;
+
+   -- Reverse function to change bit-order inside byte.
+   function reverse( src: std_logic_vector ) return std_logic_vector is
+     variable result: std_logic_vector( src'range );
+     alias r_src: std_logic_vector( src'reverse_range ) is src;
+     begin
+       for ii in r_src'range loop
+         result(ii) := r_src(ii);
+        end loop;
+       return result;
+   end function;
 
 begin
 
@@ -122,13 +131,86 @@ begin
    --                                 Test
    -- -----------------------------------------------------------------------
    tb : process
+
+      file my_input : text open READ_MODE is "input/input_program";
+      variable my_line : line;
+      variable my_input_line : line;
+      variable my_input_slv  : std_logic_vector(63 downto 0);
+
    begin
+
+      tx_dst_rdy_n <= '0';
 
       wait for RESET_TIME;
 
-      report "========== start of verification core simulation ==========";
+      report "========== start of core simulation ==========";
+
+      wait until rising_edge(clk) and RX_DST_RDY_N = '0';
+
+      -- start header
+      RX_DATA <= X"0000000100000000";
+      RX_REM  <= "111";
+      RX_SOF_N <= '0';
+      RX_EOF_N <= '0';
+      RX_SOP_N <= '0';
+      RX_EOP_N <= '0';
+      RX_SRC_RDY_N <= '0';
+
+      wait until rising_edge(clk) and RX_DST_RDY_N = '0';
+
+      -- data packet - header
+      RX_DATA <= X"0000000000000000";
+      RX_REM  <= "111";
+      RX_SOF_N <= '0';
+      RX_EOF_N <= '1';
+      RX_SOP_N <= '0';
+      RX_EOP_N <= '1';
+      RX_SRC_RDY_N <= '0';
+
+      -- ================ loop ==================
+      while not endfile(my_input) loop
+
+        wait until rising_edge(clk) and RX_DST_RDY_N = '0';
+
+        readline(my_input, my_input_line);
+        read(my_input_line, my_input_slv);
+        -- data packet - data
+        RX_DATA <= reverse(my_input_slv(39 downto 32)) & reverse(my_input_slv(47 downto 40)) & reverse(my_input_slv(55 downto 48)) & reverse(my_input_slv(63 downto 56)) & reverse(my_input_slv(7 downto 0)) & reverse(my_input_slv(15 downto 8)) & reverse(my_input_slv(23 downto 16)) & reverse(my_input_slv(31 downto 24));
+
+        RX_REM  <= "111";
+        RX_SOF_N <= '1';
+        RX_EOF_N <= '1';
+        RX_SOP_N <= '1';
+        RX_EOP_N <= '1';
+        RX_SRC_RDY_N <= '0';
+
+      end loop;
+      -- ============= end of loop ===============
+      
+      wait until rising_edge(clk) and RX_DST_RDY_N = '0';
+
+      -- data packet last line
+      RX_DATA <= X"0000000000000000";
+      RX_REM  <= "111";
+      RX_SOF_N <= '1';
+      RX_EOF_N <= '0';
+      RX_SOP_N <= '1';
+      RX_EOP_N <= '0';
+      RX_SRC_RDY_N <= '0';
+
+      wait until rising_edge(clk) and RX_DST_RDY_N = '0';
+
+      -- stop header
+      RX_DATA <= X"0000000400000000";
+      RX_REM  <= "111";
+      RX_SOF_N <= '0';
+      RX_EOF_N <= '0';
+      RX_SOP_N <= '0';
+      RX_EOP_N <= '0';
+      RX_SRC_RDY_N <= '0';
 
       wait;
+
    end process;
 
 

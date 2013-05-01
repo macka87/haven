@@ -13,6 +13,7 @@ set TB_FILE          "verification_core_tb.vhd"
 set COMPONENTS [list \
                   [ list "VERIFICATION_CORE"       ".."                 "FULL"   ] \
                   [ list "FL_SIM"               $FL_SIM_BASE            "FULL"   ] \
+
                ]
 
 set PACKAGES "$FL_SIM_BASE/fl_sim_oper.vhd"

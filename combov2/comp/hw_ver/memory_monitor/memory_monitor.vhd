@@ -77,7 +77,7 @@ type state_type is (init_state, read_1half, read_2half);
 -- ----------------------------------------------------------
 constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
 
-constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := (others => '1');
+constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "1111111111111111100";
 
 -- 12
 --constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000001100";
@@ -170,7 +170,7 @@ begin
 
      state_next         <= state_reg;
 
-     sig_dbg_mode    <= '1';        -- memory debug mode port
+     sig_dbg_mode    <= '0';        -- memory debug mode port
      sig_re0         <= '0';        -- read enable
      sig_rsc0        <= "100";      -- subblock count - 4
      sig_rsi0        <= "00";       -- subblock index
@@ -200,6 +200,7 @@ begin
 
             -- read enable
             sig_re0 <= '1';
+            sig_dbg_mode <= '1';
 
             state_next <= read_1half;
 
@@ -212,6 +213,7 @@ begin
 
           -- read enable
           sig_re0 <= '1';
+          sig_dbg_mode <= '1';
 
           -- address counter signals - increment address
           cnt_addr_rst <= '0';
@@ -265,6 +267,7 @@ begin
             sig_tx_eop_n     <= '0';
 --            sig_tx_src_rdy_n <= '0';
 
+            sig_dbg_mode <= '0';
             is_done   <= '1';
             state_next <= init_state;
 
@@ -276,6 +279,7 @@ begin
             sig_tx_eof_n     <= '1';
             sig_tx_eop_n     <= '1';
 --            sig_tx_src_rdy_n <= '0';
+            sig_dbg_mode <= '1';
 
             state_next <= read_1half;
           end if;

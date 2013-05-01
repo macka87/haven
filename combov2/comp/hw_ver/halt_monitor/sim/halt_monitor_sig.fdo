@@ -16,4 +16,4 @@ add wave -noupdate -label CLK $TB_BASE/clk
 blk_HALT_MONITOR_IFC       "$HALT_MONITOR_PATH"
 
 restart -f
-run 200 ns
+run 300 ns

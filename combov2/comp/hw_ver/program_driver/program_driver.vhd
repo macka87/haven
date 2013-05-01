@@ -46,8 +46,8 @@ entity PROGRAM_DRIVER is
       -- indication of memory monitor work done
       MEM_DONE       : in  std_logic;
 
-      -- reset signal for processor
-      OUT_RST_N      : out std_logic;
+      -- indication of program driver work done
+      DONE           : out std_logic;
       
       -- output interface - codix - memory write
       dbg_mode_mem      : out std_logic;
@@ -94,7 +94,7 @@ signal cnt_addr_en       : std_logic;
 signal cnt_addr_rst      : std_logic;      
 
 -- output interface signals
-signal sig_out_rst_n     : std_logic;                                     -- rst for processor
+signal sig_out_done      : std_logic;                                     -- rst for processor
 signal sig_out_dbg_mode  : std_logic;                                     -- debug mode memory
 signal sig_out_we        : std_logic;                                     -- write enable
 signal sig_out_sb_cnt    : std_logic_vector(2 downto 0);                  -- subblock count
@@ -133,7 +133,7 @@ begin
    begin
      state_next         <= state_reg;   
 
-     sig_out_rst_n      <= '0';
+     sig_out_done       <= '0';
      sig_out_dbg_mode   <= '1';        -- memory debug mode port
      sig_out_sb_cnt     <= "100";      -- subblock count - 4
      sig_out_sb_idx     <= "00";       -- subblock index
@@ -203,11 +203,13 @@ begin
           cnt_addr_rst <= '0';
           cnt_addr_en <= '0';
 
-          sig_out_rst_n <= '1';
+          sig_out_done     <= '1';
           sig_out_dbg_mode <= '0';
         
           -- back to init state after memory monitor work done
-          if MEM_DONE = '1' then 
+          if(sig_trans_type = STOP_TYPE) then
+            state_next <= stop_state;
+          elsif MEM_DONE = '1' then 
             state_next <= init_state;
           else 
             state_next <= stop_state;
@@ -298,7 +300,7 @@ begin
   data_ready <= RX_SRC_RDY_N nor sig_out_dst_rdy_n;
 
   -- output processing
-  OUT_RST_N         <= sig_out_rst_n;
+  DONE              <= sig_out_done;
   dbg_mode_mem      <= sig_out_dbg_mode;
   dbg_mode_mem_WE0  <= sig_out_we;
   dbg_mode_mem_WA0  <= cnt_addr;

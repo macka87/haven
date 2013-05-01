@@ -29,7 +29,9 @@ architecture behavioral of testbench is
    signal reset        : std_logic;
    
    -- UUT input signals
-   signal port_halt    : std_logic;   
+   signal port_halt    : std_logic;
+   signal driver_done  : std_logic;   
+
 
    -- UUT output signals
    signal RST_n        : std_logic;
@@ -45,11 +47,12 @@ begin
    -- -------------------------------------------------------------------------
    uut: entity work.HALT_MONITOR
       port map (
-         CLK       => clk,
-         RESET     => reset,
-         port_halt => port_halt,
-         RST_n     => RST_n, 
-         HALT      => HALT
+         CLK         => clk,
+         RESET       => reset,
+         port_halt   => port_halt,
+         RST_n       => RST_n, 
+         HALT        => HALT,
+         DRIVER_DONE => driver_done
       );
 
    -- CLK generator
@@ -73,15 +76,20 @@ begin
 
    begin
    
-      port_halt <= '0';
+      port_halt   <= '0';
+      driver_done <= '0';
 
-      wait for 50 ns;
+      -- program driver finished loading memory
+      wait for 40 ns;
+      driver_done <= '1';
 
+      -- processor finished computation
+      wait for 40 ns;
       port_halt <= '1';
 
-      wait for 50 ns;
+--      report "signal HALT is " & std_logic'image(HALT) & " at time " & time'image(now);
 
-      report "signal HALT is " & std_logic'image(HALT) & " at time " & time'image(now);
+      wait;
 
   end process tb; 
    

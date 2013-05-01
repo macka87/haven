@@ -7,9 +7,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
--- math package
---use work.math_pack.all; --??
-
 -- HAVEN constants
 use work.haven_const.all;
 
@@ -43,7 +40,8 @@ architecture arch of verification_core is
    signal program_driver_in_dst_rdy_n : std_logic;
 
    -- program driver - control signals   
-   signal program_driver_in_halt      : std_logic;
+   signal program_driver_in_mem_done  : std_logic;
+   signal program_driver_out_done     : std_logic;
 
    -- program driver - output - Codix interface
    signal program_driver_out_dbg      : std_logic;
@@ -77,6 +75,9 @@ architecture arch of verification_core is
    -- DUT - Codix port for interrupt request
    signal dut_in_irq      : std_logic;
 
+   -- DUT reset
+   signal dut_in_rst_n : std_logic;
+
    -- DUT - Codix output interface
    signal dut_out_mem_q0         : std_logic_vector(CODIX_DATA_WIDTH-1 downto 0);
    signal dut_out_regs_q0        : std_logic_vector(CODIX_DATA_WIDTH-1 downto 0);
@@ -89,6 +90,7 @@ architecture arch of verification_core is
 
    -- halt monitor - input - Codix halt signal
    signal halt_monitor_in_halt   : std_logic;
+   signal halt_monitor_in_driver_done : std_logic;
 
    -- halt monitor - output - halt propagation and RST signal connected to Codix
    signal halt_monitor_out_halt  : std_logic;
@@ -143,8 +145,9 @@ architecture arch of verification_core is
    signal memory_monitor_out_rsc0 : std_logic_vector(2 downto 0);
    signal memory_monitor_out_rsi0 : std_logic_vector(1 downto 0);
 
-   -- memory monitor - output control signal
+   -- memory monitor - control signal
    signal memory_monitor_out_done : std_logic;
+   signal memory_monitor_in_regs_done : std_logic;
 
    -- memory monitor - output - FL interface
    signal memory_monitor_out_data : std_logic_vector(FL_DATA_WIDTH-1 downto 0);
@@ -223,6 +226,7 @@ begin
    program_driver_in_eof_n     <= RX_EOF_N;
    program_driver_in_src_rdy_n <= RX_SRC_RDY_N;
    RX_DST_RDY_N  <= program_driver_in_dst_rdy_n;
+   
 
    -- ------------------------------------------------------------------------
    --              HW_SW_CODASIP - program driver
@@ -247,7 +251,8 @@ begin
       RX_EOF_N      => program_driver_in_eof_n,
       RX_SRC_RDY_N  => program_driver_in_src_rdy_n,
       RX_DST_RDY_N  => program_driver_in_dst_rdy_n,
-      HALT          => program_driver_in_halt,
+
+      MEM_DONE      => program_driver_in_mem_done,
 
       -- output interface
       dbg_mode_mem      => program_driver_out_dbg,
@@ -255,7 +260,9 @@ begin
       dbg_mode_mem_WA0  => program_driver_out_wa0,
       dbg_mode_mem_WE0  => program_driver_out_we0,
       dbg_mode_mem_WSC0 => program_driver_out_wsc0,
-      dbg_mode_mem_WSI0 => program_driver_out_wsi0
+      dbg_mode_mem_WSI0 => program_driver_out_wsi0,
+
+      DONE              => program_driver_out_done
    );
 
    -- ------------------------------------------------------------------------
@@ -263,8 +270,8 @@ begin
    -- ------------------------------------------------------------------------
    dut_codix_i: entity work.codix_ca_t
    port map (
-      CLK               => CLK,    -- clk for memory??
-      RST               => RESET,  -- TODO - active in 0!
+      CLK               => CLK,
+      RST               => dut_in_rst_n,
 
       dbg_mode_mem      => dut_in_mem_dbg,
       dbg_mode_mem_D0   => dut_in_mem_d0,
@@ -278,6 +285,7 @@ begin
       dbg_mode_mem_RSI0 => dut_in_mem_rsi0,
       dbg_mode_mem_RSC0 => dut_in_mem_rsc0,
       dbg_mode_regs     => dut_in_regs_dbg,
+      dbg_mode_regs_Q0  => dut_out_regs_q0,
       dbg_mode_regs_RA0 => dut_in_regs_ra0,
       dbg_mode_regs_RE0 => dut_in_regs_re0,
       irq               => dut_in_irq,
@@ -296,9 +304,11 @@ begin
       CLK       => CLK,
       RESET     => RESET,
 
-      port_halt => halt_monitor_in_halt,
-      HALT      => halt_monitor_out_halt,
-      RST_n     => halt_monitor_out_rst_n 
+      DRIVER_DONE => halt_monitor_in_driver_done,
+      port_halt   => halt_monitor_in_halt,
+
+      HALT        => halt_monitor_out_halt,
+      RST_n       => halt_monitor_out_rst_n 
    );
 
    -- ------------------------------------------------------------------------
@@ -383,7 +393,7 @@ begin
       -- inputs
       dbg_mode_mem_Q0   => memory_monitor_in_q0,
       TX_DST_RDY_N      => memory_monitor_in_dst_rdy_n,
-      HALT              => memory_monitor_in_halt,
+      REGS_DONE         => memory_monitor_in_regs_done,
 
       -- outputs
       dbg_mode_mem      => memory_monitor_out_dbg,
@@ -463,15 +473,19 @@ begin
    -- ------------------------------------------------------------------------
    --                          connection of components
    -- ------------------------------------------------------------------------
+   program_driver_in_mem_done <= memory_monitor_out_done;
 
    -- =====  dut input signal mapping =====
    -- program driver -> dut
-   dut_in_mem_dbg  <= program_driver_out_dbg; -- TODO! & memory_monitor_out_dbg;
+   dut_in_mem_dbg  <= program_driver_out_dbg or memory_monitor_out_dbg;
    dut_in_mem_d0   <= program_driver_out_d0;
    dut_in_mem_wa0  <= program_driver_out_wa0;
    dut_in_mem_we0  <= program_driver_out_we0;
    dut_in_mem_wsc0 <= program_driver_out_wsc0;
    dut_in_mem_wsi0 <= program_driver_out_wsi0;
+
+   -- dut reset - from halt monitor and program driver
+   dut_in_rst_n    <= halt_monitor_out_rst_n;
 
    -- memory monitor -> dut
    dut_in_mem_ra0  <= memory_monitor_out_ra0;
@@ -497,16 +511,18 @@ begin
    register_monitor_in_q0 <= dut_out_regs_q0;
 
    -- dut -> memory monitor
-   memory_monitor_in_halt <= dut_out_port_halt;
    memory_monitor_in_q0   <= dut_out_mem_q0;
 
-   -- halt monitor connection
---   dut_in_rst             <= halt_monitor_out_rst_n; TODO!!
+   -- done signals
+   halt_monitor_in_driver_done <= program_driver_out_done;
+   memory_monitor_in_regs_done <= register_monitor_out_done;
 
    -- halt monitor to other monitors
    register_monitor_in_halt <= halt_monitor_out_halt;
-   memory_monitor_in_halt   <= halt_monitor_out_halt;
    fl_binder_in_halt        <= halt_monitor_out_halt;
+
+   fl_binder_in_regs_done   <= register_monitor_out_done;
+   fl_binder_in_mem_done    <= memory_monitor_out_done;
 
    -- portout monitor to fl_binder
    fl_binder_in_pm_data      <= portout_monitor_out_data;

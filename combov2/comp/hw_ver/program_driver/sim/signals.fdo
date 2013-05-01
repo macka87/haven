@@ -20,7 +20,7 @@ proc blk_PROGRAM_DRIVER_IFC { BASE } {
 
 	 
       add wave -divider "Output"
-   add_wave "-noupdate -label OUT_RST_N "    $BASE/OUT_RST_N
+   add_wave "-noupdate -label DONE "    $BASE/DONE
    add_wave "-noupdate -label dbg_mode "    $BASE/dbg_mode_mem
    add_wave "-noupdate -label D0  -hex"     $BASE/dbg_mode_mem_D0
    add_wave "-noupdate -label WA0 -dec"     $BASE/dbg_mode_mem_WA0
