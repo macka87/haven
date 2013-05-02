@@ -144,13 +144,12 @@ begin
 
           -- src and dst signals connection
           PM_RX_DST_RDY_N <= TX_DST_RDY_N;
+          TX_SRC_RDY_N <= PM_RX_SRC_RDY_N;
 
           -- next state based on control signals
           if HALT = '1' then
-            TX_SRC_RDY_N <= '1';
             state_next <= state_regs;
           else
-            TX_SRC_RDY_N <= PM_RX_SRC_RDY_N;
             state_next <= state_portout;
           end if;
 
@@ -171,13 +170,14 @@ begin
         when state_regs =>
 
           -- src and dst signals connection
-          TX_SRC_RDY_N <= RM_RX_SRC_RDY_N;
           RM_RX_DST_RDY_N <= TX_DST_RDY_N;
 
           -- next state based on control signals
           if REGS_DONE = '1' then
+            TX_SRC_RDY_N <= '1';
             state_next <= state_mem;
           else
+            TX_SRC_RDY_N <= RM_RX_SRC_RDY_N;
             state_next <= state_regs;
           end if;
 
@@ -186,7 +186,7 @@ begin
 
             --report "in state regs at time " & time'image(now);
 
-            -- connect portout monitor to output interface
+            -- connect register monitor to output interface
             TX_DATA      <= RM_RX_DATA;
             TX_REM       <= RM_RX_REM;
             TX_SOP_N     <= RM_RX_SOP_N;

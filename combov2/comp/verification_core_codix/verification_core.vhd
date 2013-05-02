@@ -519,7 +519,7 @@ begin
 
    -- halt monitor to other monitors
    register_monitor_in_halt <= halt_monitor_out_halt;
-   fl_binder_in_halt        <= halt_monitor_out_halt;
+   fl_binder_in_halt        <= dut_out_port_halt;
 
    fl_binder_in_regs_done   <= register_monitor_out_done;
    fl_binder_in_mem_done    <= memory_monitor_out_done;

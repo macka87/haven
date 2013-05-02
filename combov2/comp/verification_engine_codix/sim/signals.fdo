@@ -1,0 +1,30 @@
+# signals.fdo : Include file with signals
+# Author(s): Ondrej Lengal <ilengal@fit.vutbr.cz>
+
+view wave
+delete wave *
+
+proc blk_VER_ENGINE { BASE } {
+  add_wave "-noupdate -label CLK"    $BASE/CLK
+  add_wave "-noupdate -label RESET"  $BASE/RESET
+  add wave -divider "Input interface"
+  add_wave "-noupdate -label RX_DATA -hex" $BASE/RX_DATA
+  add_wave "-noupdate -label RX_REM  -hex" $BASE/RX_REM
+  add_wave "-noupdate -label RX_SOP_N"     $BASE/RX_SOP_N
+  add_wave "-noupdate -label RX_EOP_N"     $BASE/RX_EOP_N
+  add_wave "-noupdate -label RX_SOF_N"     $BASE/RX_SOF_N
+  add_wave "-noupdate -label RX_EOF_N"     $BASE/RX_EOF_N
+  add_wave "-noupdate -label RX_SRC_RDY_N" $BASE/RX_SRC_RDY_N
+  add_wave "-noupdate -label RX_DST_RDY_N" $BASE/RX_DST_RDY_N
+
+  add wave -divider "Output interface"
+  add_wave "-noupdate -label TX_DATA -hex" $BASE/TX_DATA
+  add_wave "-noupdate -label TX_REM  -hex" $BASE/TX_REM
+  add_wave "-noupdate -label TX_SOP_N"     $BASE/TX_SOP_N
+  add_wave "-noupdate -label TX_EOP_N"     $BASE/TX_EOP_N
+  add_wave "-noupdate -label TX_SOF_N"     $BASE/TX_SOF_N
+  add_wave "-noupdate -label TX_EOF_N"     $BASE/TX_EOF_N
+  add_wave "-noupdate -label TX_SRC_RDY_N" $BASE/TX_SRC_RDY_N
+  add_wave "-noupdate -label TX_DST_RDY_N" $BASE/TX_DST_RDY_N
+
+}

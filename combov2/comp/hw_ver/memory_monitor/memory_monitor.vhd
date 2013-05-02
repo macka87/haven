@@ -70,7 +70,7 @@ architecture arch of MEMORY_MONITOR is
 -- ----------------------------------------------------------
 --                 FSM states
 -- ----------------------------------------------------------
-type state_type is (init_state, read_1half, read_2half);
+type state_type is (init_state, send_hdr, read_1half, read_2half);
 
 -- ----------------------------------------------------------
 --                 constants
@@ -187,7 +187,18 @@ begin
           cnt_addr_rst <= '1';
           cnt_addr_en <= '0';
 
-          if REGS_DONE = '1' and TX_DST_RDY_N = '0' then
+          if REGS_DONE = '1' then
+            state_next <= send_hdr;
+          else
+            state_next <= init_state;
+          end if;
+
+        when send_hdr =>
+          -- address counter signals
+          cnt_addr_rst <= '1';
+          cnt_addr_en <= '0';
+
+          if TX_DST_RDY_N = '0' then
 
             -- start header & SOF & SOP & EOP & EOF & source ready
             sig_tx_data <= hdr_data;
@@ -196,7 +207,6 @@ begin
             sig_tx_sop_n<= '0';
             sig_tx_eof_n<= '1';
             sig_tx_eop_n<= '1';
---            sig_tx_src_rdy_n<= '0';
 
             -- read enable
             sig_re0 <= '1';
@@ -205,7 +215,7 @@ begin
             state_next <= read_1half;
 
           else
-            state_next <= init_state;
+            state_next <= send_hdr;
           end if;
 
         -- data transfer - read first half (32b) from memory
@@ -295,7 +305,8 @@ begin
      is_half      <= '0';
       
      case state_reg is
-        when init_state => is_header <= '1';
+        when init_state => is_header <= '0';
+        when send_hdr   => is_header <= '1';
         when read_1half => is_half   <= '1';
         when read_2half => is_half   <= '0';
      end case;   

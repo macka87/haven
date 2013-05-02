@@ -1,0 +1,35 @@
+# verification_core_sig.fdo : Include file with signals
+# Author: Ondrej Lengal <ilengal@fit.vutbr.cz>
+#
+# $Id: frame_meter_sig.fdo 1333 2008-02-14 22:20:10Z korcek $
+#
+
+# Paths
+set TB_PATH                    "/testbench"
+set VERIFICATION_ENGINE_PATH   "$TB_PATH/uut"
+set VER_CORE_PATH              "$VERIFICATION_ENGINE_PATH/ver_core_i"
+
+# include signals
+source      "signals.fdo"
+source      "../../verification_core_codix/sim/signals.fdo"
+#source      "../../hw_ver/fl_adapter/sim/signals.fdo"
+
+exec make
+view wave
+delete wave *
+
+add_wave "-noupdate -label RESET -color yellow"  $TB_PATH/reset
+add_wave "-noupdate -label CLK   -color yellow"  $TB_PATH/clk
+
+add wave -divider "****************************"
+add wave -divider "INTERFACE" 
+add wave -divider "****************************"
+blk_VER_ENGINE              $VERIFICATION_ENGINE_PATH
+
+add wave -divider "****************************"
+add wave -divider "DUT INTERFACE" 
+add wave -divider "****************************"
+blk_VER_CORE_DUT_IFC        $VER_CORE_PATH
+
+restart -f
+run 2096 us
