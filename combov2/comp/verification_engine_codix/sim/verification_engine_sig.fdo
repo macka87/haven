@@ -12,7 +12,6 @@ set VER_CORE_PATH              "$VERIFICATION_ENGINE_PATH/ver_core_i"
 # include signals
 source      "signals.fdo"
 source      "../../verification_core_codix/sim/signals.fdo"
-#source      "../../hw_ver/fl_adapter/sim/signals.fdo"
 
 exec make
 view wave

@@ -14,7 +14,7 @@ class codix_ca_test extends ovm_test;
     `ovm_component_utils( codix_ca_test )
 
     // member attribute with the verification environment
-    // local codix_ca_env m_codix_ca_env;
+    local codix_ca_env m_codix_ca_env;
     local codix_sw_hw  codix_env;
 
     // Constructor - creates new instance of this class
@@ -27,14 +27,14 @@ class codix_ca_test extends ovm_test;
         super.build();
 
         // software version of verification environment
-        //if(VER_ENV == SW_FULL) begin
-        //    m_codix_ca_env = codix_ca_env::type_id::create( "m_codix_ca_env", this );
-        //end
+        if(VER_ENV == SW_FULL) begin
+            m_codix_ca_env = codix_ca_env::type_id::create( "m_codix_ca_env", this );
+        end
 
         // hardware accelerated version
-        //else if (VER_ENV == SW_HW) begin
+        else if (VER_ENV == SW_HW) begin
             codix_env = codix_sw_hw::type_id::create( "codix_env", this );
-        //end
+        end
 
     endfunction: build
 
