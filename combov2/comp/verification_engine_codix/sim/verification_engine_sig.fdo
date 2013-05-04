@@ -31,4 +31,4 @@ add wave -divider "****************************"
 blk_VER_CORE_DUT_IFC        $VER_CORE_PATH
 
 restart -f
-run 2096 us
+run 4096 us

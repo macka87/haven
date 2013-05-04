@@ -22,7 +22,7 @@ entity verification_core is
       CODIX_DATA_WIDTH   : integer := 32; 
 
       -- the CORE_TYPE generic specifies the verified unit in the core
-      CORE_TYPE          : core_type := core_fifo  --??
+      CORE_TYPE          : core_type := codasip_codix
    );
    port
    (

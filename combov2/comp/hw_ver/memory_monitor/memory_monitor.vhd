@@ -87,10 +87,7 @@ constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "1111111111111111100";
 
 -- 20
 --constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000010100";
-
--- 24
---constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000011000";
-
+--constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000010000000100";
 
 -- memory monitor endpoint is 8'h03
 constant ENDPOINT_ID : std_logic_vector(7 downto 0) := X"03";
@@ -174,7 +171,6 @@ begin
      sig_re0         <= '0';        -- read enable
      sig_rsc0        <= "100";      -- subblock count - 4
      sig_rsi0        <= "00";       -- subblock index
---     sig_tx_src_rdy_n <= '1';       -- source not ready
 
      is_done        <= '0';
 
@@ -237,9 +233,9 @@ begin
             sig_tx_sop_n     <= '1';
             sig_tx_eof_n     <= '0';
             sig_tx_eop_n     <= '0';
---            sig_tx_src_rdy_n <= '0';
 
             is_done   <= '1';
+
             state_next <= init_state;
 
           -- continue with reading
@@ -249,16 +245,15 @@ begin
             sig_tx_sop_n     <= '1';
             sig_tx_eof_n     <= '1';
             sig_tx_eop_n     <= '1';
---            sig_tx_src_rdy_n <= '0';
 
             state_next <= read_2half;
-
           end if;
 
         when read_2half =>
 
           --read enable
           sig_re0 <= '1';
+          sig_dbg_mode <= '1';
 
           -- address counter signals - increment address
           cnt_addr_rst <= '0';
@@ -275,10 +270,9 @@ begin
             sig_tx_sop_n     <= '1';
             sig_tx_eof_n     <= '0';
             sig_tx_eop_n     <= '0';
---            sig_tx_src_rdy_n <= '0';
 
-            sig_dbg_mode <= '0';
-            is_done   <= '1';
+            is_done          <= '1';
+
             state_next <= init_state;
 
           -- continue with reading
@@ -288,8 +282,6 @@ begin
             sig_tx_sop_n     <= '1';
             sig_tx_eof_n     <= '1';
             sig_tx_eop_n     <= '1';
---            sig_tx_src_rdy_n <= '0';
-            sig_dbg_mode <= '1';
 
             state_next <= read_1half;
           end if;
@@ -335,15 +327,15 @@ begin
      end if;
   end process;
 
-  done_register : process (CLK)
+  done_register : process (CLK, is_done)
   begin
      if (rising_edge(CLK)) then
         if (RESET = '1') then
-            DONE <= '0';
+           DONE <= '0';
         elsif (is_done = '1') then
-            DONE <= '1';
+           DONE <= '1';
         elsif (is_done = '0') then
-            DONE <= '0';
+           DONE <= '0';
         end if;
      end if;
   end process;

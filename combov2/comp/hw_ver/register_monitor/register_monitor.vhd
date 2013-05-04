@@ -67,7 +67,7 @@ architecture arch of REGISTER_MONITOR is
 -- ----------------------------------------------------------
 --                 FSM states
 -- ----------------------------------------------------------
-type state_type is (init_state, read_1half, read_2half);
+type state_type is (init_state, read_1half, read_2half, send_hdr);
 
 -- ----------------------------------------------------------
 --                 constants
@@ -147,26 +147,35 @@ begin
    end process;
 
    -- next state logic
-   fsm_next_state_logic : process (state_reg, dbg_mode_regs_Q0, HALT, TX_DST_RDY_N,
-                                   hdr_data, cnt_addr, input_reg)
+   fsm_next_state_logic : process (state_reg, dbg_mode_regs_Q0, HALT, TX_DST_RDY_N,hdr_data, cnt_addr, input_reg)
+
    begin
 
      state_next    <= state_reg;
-
      sig_re0       <= '0';        -- read enable
      dbg_mode_regs <= '0';
      is_done       <= '0';
 
      case state_reg is
-        
+
         -- init state
         when init_state =>
-
           -- address counter signals
           cnt_addr_rst <= '1';
           cnt_addr_en <= '0';
 
-          if rising_edge(HALT) and TX_DST_RDY_N = '0' then
+          if HALT = '1' then
+            state_next <= send_hdr;
+          else
+            state_next <= init_state;
+          end if;
+
+        when send_hdr =>
+          -- address counter signals
+          cnt_addr_rst <= '1';
+          cnt_addr_en <= '0';
+
+          if TX_DST_RDY_N = '0' then
 
             -- start header & SOF & SOP & EOP & EOF & source ready
             sig_tx_data <= hdr_data;
@@ -179,11 +188,11 @@ begin
             -- read enable
             sig_re0 <= '1';
             dbg_mode_regs <= '1';
-
             state_next <= read_1half;
 
+            state_next <= read_1half;
           else
-            state_next <= init_state;
+            state_next <= send_hdr;
           end if;
 
         -- data transfer - read first half (32b) from register file
@@ -268,7 +277,8 @@ begin
      is_half      <= '0';
       
      case state_reg is
-        when init_state => is_header <= '1';
+        when init_state => is_header <= '0';
+        when send_hdr   => is_header <= '1';
         when read_1half => is_half   <= '1';
         when read_2half => is_half   <= '0';
      end case;   

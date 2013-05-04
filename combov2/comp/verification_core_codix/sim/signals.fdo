@@ -33,13 +33,13 @@ proc blk_VER_CORE { BASE } {
 proc blk_VER_CORE_DUT_IFC { BASE } {
 
   add wave -divider "DUT - controls"
-  add_wave "-noupdate -label instr_id -hex" $BASE/dut_codix_i/core/main_instr_hw_instr_hw/id_instr_Q0
-  add_wave "-noupdate -label invalid_instr" $BASE/dut_codix_i/core/main_instr_hw_instr_hw/invalid_instruction
+  add_wave "-noupdate -label instr_id -hex" $BASE/gen_dut_codix/dut_codix_i/core/main_instr_hw_instr_hw/id_instr_Q0
+  add_wave "-noupdate -label invalid_instr" $BASE/gen_dut_codix/dut_codix_i/core/main_instr_hw_instr_hw/invalid_instruction
 
-#  add_wave "-noupdate -label dut_memory_0 -hex" $BASE/dut_codix_i/mem/memory_0
-#  add_wave "-noupdate -label dut_memory_1 -hex" $BASE/dut_codix_i/mem/memory_1
-#  add_wave "-noupdate -label dut_memory_2 -hex" $BASE/dut_codix_i/mem/memory_2
-#  add_wave "-noupdate -label dut_memory_3 -hex" $BASE/dut_codix_i/mem/memory_3
+#  add_wave "-noupdate -label dut_memory_0 -hex" $BASE/gen_dut_codix/dut_codix_i/mem/memory_0
+#  add_wave "-noupdate -label dut_memory_1 -hex" $BASE/gen_dut_codix/dut_codix_i/mem/memory_1
+#  add_wave "-noupdate -label dut_memory_2 -hex" $BASE/gen_dut_codix/dut_codix_i/mem/memory_2
+#  add_wave "-noupdate -label dut_memory_3 -hex" $BASE/gen_dut_codix/dut_codix_i/mem/memory_3
   add_wave "-noupdate -label dut_in_rst_n" $BASE/dut_in_rst_n
 
   add wave -divider "DUT in - mem write"

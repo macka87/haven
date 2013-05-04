@@ -200,13 +200,14 @@ begin
         when state_mem =>
 
           -- src and dst signals connection
-          TX_SRC_RDY_N <= MM_RX_SRC_RDY_N;
           MM_RX_DST_RDY_N <= TX_DST_RDY_N;
 
           -- next state based on control signals
           if MEM_DONE = '1' then
+            TX_SRC_RDY_N <= '1';
             state_next <= state_portout;
           else
+            TX_SRC_RDY_N <= MM_RX_SRC_RDY_N;
             state_next <= state_mem;
           end if;
 

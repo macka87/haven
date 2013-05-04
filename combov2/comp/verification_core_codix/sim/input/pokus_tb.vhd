@@ -82,7 +82,7 @@ begin
       FL_DATA_WIDTH      => FL_DATA_WIDTH,
       CODIX_DATA_WIDTH   => CODIX_DATA_WIDTH,
       -- the CORE_TYPE generic specifies the verified unit in the core
-      CORE_TYPE          => codasip_codix
+      CORE_TYPE          => core_fifo
    )
    port map(
       CLK            => clk,
@@ -132,82 +132,31 @@ begin
    -- -----------------------------------------------------------------------
    tb : process
 
-      file my_input : text open READ_MODE is "input/input_program";
-      variable my_line : line;
+      file my_input          : text open READ_MODE is "input/input_program_short";
+      variable my_line       : line;
       variable my_input_line : line;
       variable my_input_slv  : std_logic_vector(63 downto 0);
+      variable temp_vect     : std_logic_vector(63 downto 0);
 
    begin
 
-      tx_dst_rdy_n <= '0';
-
       wait for RESET_TIME;
-
-      report "========== start of core simulation ==========";
-
-      wait until rising_edge(clk) and RX_DST_RDY_N = '0';
-
-      -- start header
-      RX_DATA <= X"0000000100000000";
-      RX_REM  <= "111";
-      RX_SOF_N <= '0';
-      RX_EOF_N <= '0';
-      RX_SOP_N <= '0';
-      RX_EOP_N <= '0';
-      RX_SRC_RDY_N <= '0';
-
-      wait until rising_edge(clk) and RX_DST_RDY_N = '0';
-
-      -- data packet - header
-      RX_DATA <= X"0000000000000000";
-      RX_REM  <= "111";
-      RX_SOF_N <= '0';
-      RX_EOF_N <= '1';
-      RX_SOP_N <= '0';
-      RX_EOP_N <= '1';
-      RX_SRC_RDY_N <= '0';
 
       -- ================ loop ==================
       while not endfile(my_input) loop
 
-        wait until rising_edge(clk) and RX_DST_RDY_N = '0';
+        wait until rising_edge(clk);
 
         readline(my_input, my_input_line);
         read(my_input_line, my_input_slv);
-        -- data packet - data
-        RX_DATA <= reverse(my_input_slv(39 downto 32)) & reverse(my_input_slv(47 downto 40)) & reverse(my_input_slv(55 downto 48)) & reverse(my_input_slv(63 downto 56)) & reverse(my_input_slv(7 downto 0)) & reverse(my_input_slv(15 downto 8)) & reverse(my_input_slv(23 downto 16)) & reverse(my_input_slv(31 downto 24));
 
-        RX_REM  <= "111";
-        RX_SOF_N <= '1';
-        RX_EOF_N <= '1';
-        RX_SOP_N <= '1';
-        RX_EOP_N <= '1';
-        RX_SRC_RDY_N <= '0';
+        -- data packet - data
+        temp_vect := reverse(my_input_slv(39 downto 32)) & reverse(my_input_slv(47 downto 40)) & reverse(my_input_slv(55 downto 48)) & reverse(my_input_slv(63 downto 56)) & reverse(my_input_slv(7 downto 0)) & reverse(my_input_slv(15 downto 8)) & reverse(my_input_slv(23 downto 16)) & reverse(my_input_slv(31 downto 24));
+
+        write(my_line, temp_vect);
+        writeline(OUTPUT, my_line);
 
       end loop;
-      -- ============= end of loop ===============
-      
-      wait until rising_edge(clk) and RX_DST_RDY_N = '0';
-
-      -- data packet last line
-      RX_DATA <= X"0000000000000000";
-      RX_REM  <= "111";
-      RX_SOF_N <= '1';
-      RX_EOF_N <= '0';
-      RX_SOP_N <= '1';
-      RX_EOP_N <= '0';
-      RX_SRC_RDY_N <= '0';
-
-      wait until rising_edge(clk) and RX_DST_RDY_N = '0';
-
-      -- stop header
-      RX_DATA <= X"0000000400000000";
-      RX_REM  <= "111";
-      RX_SOF_N <= '0';
-      RX_EOF_N <= '0';
-      RX_SOP_N <= '0';
-      RX_EOP_N <= '0';
-      RX_SRC_RDY_N <= '0';
 
       wait;
 

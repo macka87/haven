@@ -150,7 +150,7 @@ begin
    generic map(
       DATA_WIDTH  => FRAME_WIDTH,
       USE_BRAMS   => true,
-      ITEMS       => 1024,
+      ITEMS       => 65536,
       PARTS       => 1
    )
    port map (

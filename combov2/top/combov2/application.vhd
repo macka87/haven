@@ -32,6 +32,9 @@ architecture full of APPLICATION is
    -- verification core data width
    constant VER_CORE_DATA_WIDTH  : integer := 64;
 
+   constant FL_DATA_WIDTH        : integer := 64;
+   constant CODIX_DATA_WIDTH     : integer := 32;
+
    -- -------------------------------------------------------------------------
    --                                  Signals
    -- -------------------------------------------------------------------------
@@ -57,8 +60,8 @@ architecture full of APPLICATION is
    signal fl_output_dst_rdy_n  : std_logic;
 
    -- verification core input FrameLink
-   signal fl_ver_in_data       : std_logic_vector(VER_CORE_DATA_WIDTH-1 downto 0);
-   signal fl_ver_in_rem        : std_logic_vector(log2(VER_CORE_DATA_WIDTH/8)-1 downto 0);
+   signal fl_ver_in_data       : std_logic_vector(FL_DATA_WIDTH-1 downto 0);
+   signal fl_ver_in_rem        : std_logic_vector(log2(FL_DATA_WIDTH/8)-1 downto 0);
    signal fl_ver_in_sof_n      : std_logic;
    signal fl_ver_in_eof_n      : std_logic;
    signal fl_ver_in_sop_n      : std_logic;
@@ -67,8 +70,8 @@ architecture full of APPLICATION is
    signal fl_ver_in_dst_rdy_n  : std_logic;
 
    -- verification core output FrameLink
-   signal fl_ver_out_data      : std_logic_vector(VER_CORE_DATA_WIDTH-1 downto 0);
-   signal fl_ver_out_rem       : std_logic_vector(log2(VER_CORE_DATA_WIDTH/8)-1 downto 0);
+   signal fl_ver_out_data      : std_logic_vector(FL_DATA_WIDTH-1 downto 0);
+   signal fl_ver_out_rem       : std_logic_vector(log2(FL_DATA_WIDTH/8)-1 downto 0);
    signal fl_ver_out_sof_n     : std_logic;
    signal fl_ver_out_eof_n     : std_logic;
    signal fl_ver_out_sop_n     : std_logic;
@@ -169,7 +172,8 @@ begin
    ver_engine_i: entity work.verification_engine
    generic map(
       -- frame data width in bits
-      DATA_WIDTH     => VER_CORE_DATA_WIDTH
+      FL_DATA_WIDTH     => FL_DATA_WIDTH,
+      CODIX_DATA_WIDTH  => CODIX_DATA_WIDTH
    )
    port map(
       CLK           => CLK,
@@ -193,17 +197,17 @@ begin
       TX_EOP_N      => fl_ver_out_eop_n,
       TX_EOF_N      => fl_ver_out_eof_n,
       TX_SRC_RDY_N  => fl_ver_out_src_rdy_n, 
-      TX_DST_RDY_N  => fl_ver_out_dst_rdy_n, 
+      TX_DST_RDY_N  => fl_ver_out_dst_rdy_n 
 
       -- MI32 interface
-      MI32_DWR      => mi_ver_dwr,
-      MI32_ADDR     => mi_ver_addr,
-      MI32_RD       => mi_ver_rd,
-      MI32_WR       => mi_ver_wr,
-      MI32_BE       => mi_ver_be,
-      MI32_DRD      => mi_ver_drd,
-      MI32_ARDY     => mi_ver_ardy,
-      MI32_DRDY     => mi_ver_drdy
+--      MI32_DWR      => mi_ver_dwr,
+--      MI32_ADDR     => mi_ver_addr,
+--      MI32_RD       => mi_ver_rd,
+--      MI32_WR       => mi_ver_wr,
+--      MI32_BE       => mi_ver_be,
+--      MI32_DRD      => mi_ver_drd,
+--      MI32_ARDY     => mi_ver_ardy,
+--      MI32_DRDY     => mi_ver_drdy
    );
 
 

@@ -56,7 +56,8 @@ class NetCOPETransaction extends ovm_sequence_item;
         $write("ifcProtocol: %x\n",ifcProtocol);
         $write("ifcInfo: %x\n",ifcInfo);
         $write("\n");
-      
+        $write("data size: %d\n",data.size);
+     
         for (int j=0; j < data.size; j++) begin
 //        for (int j=0; j < size; j++) begin 
           $write("%h ",data[j]);

@@ -11,6 +11,11 @@ set FL_BASE                "$COMP_BASE/fl_tools"
 
 set FL_ADDER_BASE          "$FL_BASE/edit/netcope_adder"
 set VER_CORE_BASE          "$COMP_BASE/verification_core_codix"
+set FL_RAND_GEN_BASE       "$COMP_BASE/hw_ver/fl_rand_gen"
+set FL_COM_UNIT_BASE       "$COMP_BASE/hw_ver/fl_command_unit"
+set FL_SCOREBOARD_BASE     "$COMP_BASE/hw_ver/fl_hw_scoreboard"
+set FL_FILTER_BASE         "$COMP_BASE/hw_ver/fl_filter"
+set FL_WATCH_BASE          "$COMP_BASE/fl_tools/debug/watch"
 
 # Source files
 set MOD "$MOD $ENTITY_BASE/verification_engine_ent.vhd"
@@ -23,11 +28,11 @@ set COMPONENTS [list \
 ##############################################################################
 # The CORE architecture contains:
 #
-#   * drivers
+#   * driver
 #   * DUT
-#   * monitors
-#   * fl binder
-#   * fl adder
+#   * monitor
+#   * assertion checker at the output interface
+#   * signal observer
 ##############################################################################
 if { $ARCHGRP == "CORE" } {
   set MOD "$MOD $ENTITY_BASE/verification_engine_core.vhd"
@@ -38,7 +43,7 @@ if { $ARCHGRP == "CORE" } {
 }
 
 ##############################################################################
-# The HW_SW_CODASIP architecture contains:
+# The CODIX architecture contains:
 #
 #   * program driver
 #   * DUT (Codix)
@@ -47,20 +52,16 @@ if { $ARCHGRP == "CORE" } {
 #   * portout monitor
 #   * fl binder
 ##############################################################################
-if { $ARCHGRP == "HW_SW_CODASIP" } {
+if { $ARCHGRP == "CODIX" } {
 
   # Source the HAVEN package
   set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
 
+  # verification core codix + netcope adder
   set MOD "$MOD $ENTITY_BASE/verification_engine_core.vhd"
 
    set COMPONENTS [concat $COMPONENTS [list \
-     [ list "PROGRAM_DRIVER"       $PROGRAM_DRIVER_BASE  "FULL"] \
-     [ list "MEMORY_MONITOR"       $MEMORY_MONITOR_BASE  "FULL"] \
-     [ list "HALT_MONITOR_BASE"    $HALT_MONITOR_BASE    "FULL"] \
-     [ list "PORTOUT_MONITOR_BASE" $PORTOUT_MONITOR_BASE "FULL"] \
-     [ list "FL_ADDER_BASE"        $FL_ADDER_BASE        "FULL"] \
-
+     [ list "VER_CORE"             $VER_CORE_BASE        "FULL"] \
    ]]
 }
 

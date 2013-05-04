@@ -10,6 +10,9 @@ use ieee.std_logic_1164.all;
 -- math package
 use work.math_pack.all;
 
+-- HAVEN constants
+use work.haven_const.all;
+
 -- ==========================================================================
 --                           ARCHITECTURE DESCRIPTION
 -- ==========================================================================
@@ -116,7 +119,9 @@ begin
    generic map(
       -- data width
       FL_DATA_WIDTH    => FL_DATA_WIDTH,
-      CODIX_DATA_WIDTH => CODIX_DATA_WIDTH
+      CODIX_DATA_WIDTH => CODIX_DATA_WIDTH,
+      -- type of the core
+      CORE_TYPE    => VER_CORE0_TYPE
    )
    port map(
       -- input clock domain

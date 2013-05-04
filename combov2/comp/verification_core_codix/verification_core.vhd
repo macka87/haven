@@ -268,32 +268,35 @@ begin
    -- ------------------------------------------------------------------------
    --              DUT - CODIX
    -- ------------------------------------------------------------------------
-   dut_codix_i: entity work.codix_ca_t
-   port map (
-      CLK               => CLK,
-      RST               => dut_in_rst_n,
+   gen_dut_codix: if (CORE_TYPE = codasip_codix) generate
+      dut_codix_i: entity work.codix_ca_t
+      port map (
+         CLK               => CLK,
+         RST               => dut_in_rst_n,
 
-      dbg_mode_mem      => dut_in_mem_dbg,
-      dbg_mode_mem_D0   => dut_in_mem_d0,
-      dbg_mode_mem_WA0  => dut_in_mem_wa0,
-      dbg_mode_mem_WE0  => dut_in_mem_we0,
-      dbg_mode_mem_WSC0 => dut_in_mem_wsc0,
-      dbg_mode_mem_WSI0 => dut_in_mem_wsi0,
-      dbg_mode_mem_Q0   => dut_out_mem_q0,
-      dbg_mode_mem_RA0  => dut_in_mem_ra0,
-      dbg_mode_mem_RE0  => dut_in_mem_re0,
-      dbg_mode_mem_RSI0 => dut_in_mem_rsi0,
-      dbg_mode_mem_RSC0 => dut_in_mem_rsc0,
-      dbg_mode_regs     => dut_in_regs_dbg,
-      dbg_mode_regs_Q0  => dut_out_regs_q0,
-      dbg_mode_regs_RA0 => dut_in_regs_ra0,
-      dbg_mode_regs_RE0 => dut_in_regs_re0,
-      irq               => dut_in_irq,
+         dbg_mode_mem      => dut_in_mem_dbg,
+         dbg_mode_mem_D0   => dut_in_mem_d0,
+         dbg_mode_mem_WA0  => dut_in_mem_wa0,
+         dbg_mode_mem_WE0  => dut_in_mem_we0,
+         dbg_mode_mem_WSC0 => dut_in_mem_wsc0,
+         dbg_mode_mem_WSI0 => dut_in_mem_wsi0,
+         dbg_mode_mem_Q0   => dut_out_mem_q0,
+         dbg_mode_mem_RA0  => dut_in_mem_ra0,
+         dbg_mode_mem_RE0  => dut_in_mem_re0,
+         dbg_mode_mem_RSI0 => dut_in_mem_rsi0,
+         dbg_mode_mem_RSC0 => dut_in_mem_rsc0,
+         dbg_mode_regs     => dut_in_regs_dbg,
+         dbg_mode_regs_Q0  => dut_out_regs_q0,
+         dbg_mode_regs_RA0 => dut_in_regs_ra0,
+         dbg_mode_regs_RE0 => dut_in_regs_re0,
+         irq               => dut_in_irq,
 
-      port_halt         => dut_out_port_halt,
-      port_output       => dut_out_port_output,
-      port_output_en    => dut_out_port_output_en
-   );
+         port_halt         => dut_out_port_halt,
+         port_output       => dut_out_port_output,
+         port_output_en    => dut_out_port_output_en
+      );
+
+   end generate;
 
    -- ------------------------------------------------------------------------
    --              HW_SW_CODASIP - halt monitor
@@ -518,7 +521,7 @@ begin
    memory_monitor_in_regs_done <= register_monitor_out_done;
 
    -- halt monitor to other monitors
-   register_monitor_in_halt <= halt_monitor_out_halt;
+   register_monitor_in_halt <= dut_out_port_halt; --halt_monitor_out_halt;
    fl_binder_in_halt        <= dut_out_port_halt;
 
    fl_binder_in_regs_done   <= register_monitor_out_done;

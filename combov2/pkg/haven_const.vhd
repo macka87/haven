@@ -24,10 +24,14 @@ package haven_const is
    --------------------------------------------------------------------------
 
    type core_type is (core_fifo, core_err_fifo, core_hgen_1x, core_hgen_2x,
-      core_hgen_4x, core_hgen_8x, core_hgen_16x);
+      core_hgen_4x, core_hgen_8x, core_hgen_16x, codasip_codix);
 
-   constant VER_CORE0_TYPE    : core_type := core_fifo;
-   constant VER_CORE1_TYPE    : core_type := core_fifo;
+   --
+   -- verification engine -> haven/combov2/comp/verification_engine_codix
+   -- verification core   -> haven/combov2/comp/verification_core_codix
+   --
+   constant VER_CORE0_TYPE    : core_type := codasip_codix;
+   constant VER_CORE1_TYPE    : core_type := codasip_codix;
 
    -- parameters of VERIFICATION_COREs
    constant VER_CORE0_USE_OBSERVERS   : boolean := false;

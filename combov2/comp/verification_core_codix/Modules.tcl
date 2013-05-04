@@ -1,8 +1,8 @@
 # Modules.tcl: Local include Modules tcl script
 
 # Set paths
-set FIRMWARE_BASE          "../../../"
-set COMP_BASE              "$FIRMWARE_BASE/comp"
+set COMP_BASE              "$ENTITY_BASE/.."
+set FIRMWARE_BASE          "$COMP_BASE/.."
 set FL_BASE                "$COMP_BASE/fl_tools"
 
 # HW_SW_CODASIP verification environment architecture
@@ -14,7 +14,7 @@ set MEMORY_MONITOR_BASE    "$COMP_BASE/hw_ver/memory_monitor"
 set FL_BINDER_BASE         "$COMP_BASE/hw_ver/fl_binder"
 
 # DUT - codix
-set CODIX_BASE             "../../../../codix/vhdl"
+set CODIX_BASE             "$FIRMWARE_BASE/../codix/vhdl"
 
 # Source the HAVEN package
 set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"

@@ -83,9 +83,10 @@ set STAT          "FULL"
 #set VER_ENGINE    "HW_GEN"
 #set VER_ENGINE    "HW_GEN_CORE"
 #set VER_ENGINE    "HW_FULL"
-
 # This option is obsolete!!! Build HW_GEN_CORE instead!!!
-set VER_ENGINE    "CORE"
+#set VER_ENGINE    "CORE"
+
+set VER_ENGINE    "CODIX"
 
 # Base directories
 set PACODAG_BASE        "$COMP_BASE/pacodag"

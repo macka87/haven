@@ -79,10 +79,13 @@ class Sender extends ovm_component;
 
         // loop over lines of input program
         while(!$feof(fd)) begin
-            string line;
-            if($fgets(line, fd)) begin
-                // save line to associative array
-                input_program[index] = line;
+            string l;
+            string lr;
+            if($fgets(l, fd)) begin
+                // reverse because processor use big endian memory
+                lr = {l[31],l[30],l[29],l[28],l[27],l[26],l[25],l[24],l[23],l[22],l[21],l[20],l[19],l[18],l[17],l[16],l[15],l[14],l[13],l[12],l[11],l[10],l[9],l[8],l[7],l[6],l[5],l[4],l[3],l[2],l[1],l[0]};
+                // save line to associative array*/
+                input_program[index] = lr;
                 index++;
             end
         end
