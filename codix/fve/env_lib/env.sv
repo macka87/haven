@@ -104,7 +104,7 @@ class codix_sw_hw extends ovm_env;
 
     // sender handle
     local Sender sender_h;
-    //local Sorter sorter_h;
+    local Sorter sorter_h;
 
     // input & output wrapper
     local InputWrapper input_wrapper_h;
@@ -115,6 +115,13 @@ class codix_sw_hw extends ovm_env;
 
     // connection between input and output wrapper
     tlm_fifo #(syncT) sync_fifo_h;
+
+    // connection between sorter and output wrapper
+    tlm_fifo #(NetCOPETransaction) output_fifo_h;
+
+    // connection between sorter and output wrapper
+    tlm_fifo #(syncT) sync_fifo_stop_h;
+
 
     // Constructor - creates new instance of this class
     function new( string name, ovm_component parent );
@@ -127,11 +134,13 @@ class codix_sw_hw extends ovm_env;
 
         input_fifo_h = new("input_fifo_h", this);
         sync_fifo_h = new("sync_fifo_h", this);
+        output_fifo_h = new("output_fifo_h", this);
+        sync_fifo_stop_h = new("sync_fifo_stop_h", this);
 
         sender_h = new("sender_h", this);
         input_wrapper_h = new("input_wrapper_h", this);
         output_wrapper_h = new("output_wrapper_h", this);
-        //sorter_h = new("sorter_h", this);
+        sorter_h = new("sorter_h", this);
 
     endfunction: build
 
@@ -148,7 +157,12 @@ class codix_sw_hw extends ovm_env;
         output_wrapper_h.syncport.connect ( sync_fifo_h.blocking_get_export );
 
         // output wrapper => sorter
-        //output_wrapper_h.seq_item_port.connect( sorter_h.seq_item_export );
+        output_wrapper_h.pport.connect( output_fifo_h.blocking_put_export );
+        sorter_h.gport.connect( output_fifo_h.blocking_get_export );
+
+        // sorter synchronization to outputwrapper
+        sorter_h.syncport.connect( sync_fifo_stop_h.blocking_put_export );
+        output_wrapper_h.syncport_sorter.connect( sync_fifo_stop_h.blocking_get_export );
 
         // sorter => scoreboard
         //sorter_h.seq_item_port.connect( );

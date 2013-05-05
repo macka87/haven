@@ -136,88 +136,13 @@ class Sender extends ovm_component;
       if(lastPart == 1) begin
           // odd number of lines - last data transaction with half of data
           if(input_program.num%2 == 1) begin
-              size = NetCOPE_hdr_size+data_size/2;
-          end
-      end
-      // all parts except last
-      else begin
-          size = NetCOPE_hdr_size+data_size;
-      end
-
-      // NetCOPE transaction settings
-      dataTrans.endpointID  = 0;
-      dataTrans.transType   = 0;  // data transaction
-      dataTrans.ifcProtocol = 1;  // identifies FrameLink protocol
-      dataTrans.ifcInfo     = 2*allData + lastPart;  
-      
-      // NetCOPE transaction transported data  
-      dataTrans.data = new[size];
-      
-      // NetCOPE header
-      dataTrans.data[0] = 0;                    // endpointID
-      dataTrans.data[1] = 0;                    // endpointProtocol
-      dataTrans.data[2] = 0; 
-      dataTrans.data[3] = 0;
-      dataTrans.data[4] = 0;                    // transType
-      dataTrans.data[5] = 0;
-      dataTrans.data[6] = 1;                    // ifcProtocol
-      dataTrans.data[7] = 2*allData + lastPart; // ifcInfo
-      
-
-      // data
-      for (int i=8; i<size ; i++) begin
-        octet = input_program[part+second_half].substr(start_pos, end_pos);
-        dataTrans.data[i] = octet.atobin;
-
-        // second half of data flag
-        if(i == 11) begin
-            second_half = 1;
-            // init positions
-            start_pos = 0;
-            end_pos = 7;
-            continue;
-        end
-
-        start_pos += 8;
-        end_pos += 8;
-      end
-
-      //dataTrans.display("DATA");
-      pport.put(dataTrans);    // send data transaction to input wrapper
-      this.dataTrs++;
-
-    endtask : createDataTransaction
-    
-/*    // ========================================================================
-    // ==  Create NetCOPE data transaction from input program
-    // \param input_program - associative array with input program
-    // \param lastPart      - last part data flag
-    // \param allData       - all data flag
-    // \param part          - index for associative array with input program
-    // ========================================================================
-    task createDataTransaction(input string input_program[int], 
-                               input bit lastPart,
-                               input bit allData,
-                               input int part);
-      
-      NetCOPETransaction dataTrans = new();
-
-      const int data_size = 8;
-      int size;
-      int second_half = 0;
-      int start_pos = 0;
-      int end_pos = 7;
-      string octet;
-
-      // last part of data
-      if(lastPart == 1) begin
-          // odd number of lines - last data transaction with half of data
-          if(input_program.num%2 == 1) begin
+              //size = NetCOPE_hdr_size+data_size/2;
               size = data_size/2;
           end
       end
       // all parts except last
       else begin
+          //size = NetCOPE_hdr_size+data_size;
           size = data_size;
       end
 
@@ -231,7 +156,7 @@ class Sender extends ovm_component;
       dataTrans.data = new[size];
       
       // data
-      for (int i=0; i<size ; i++) begin
+/*      for (int i=0; i<size ; i++) begin
         octet = input_program[part+second_half].substr(start_pos, end_pos);
         dataTrans.data[i] = octet.atobin;
 
@@ -248,12 +173,29 @@ class Sender extends ovm_component;
         end_pos += 8;
       end
 
+      // half size
+      if (size == data_size/2) begin
+        for(int i = size ; i<data_size ; i++) begin
+          dataTrans.data[i] = 0;
+        end
+      end*/
+
+      dataTrans.data[0] = 1;
+      dataTrans.data[1] = 2;
+      dataTrans.data[2] = 3;
+      dataTrans.data[3] = 4;
+      dataTrans.data[4] = 5;
+      dataTrans.data[5] = 6;
+      dataTrans.data[6] = 7;
+      dataTrans.data[7] = 8;
+
       //dataTrans.display("DATA");
+
       pport.put(dataTrans);    // send data transaction to input wrapper
       this.dataTrs++;
 
-    endtask : createDataTransaction*/ 
-     
+    endtask : createDataTransaction
+    
     // ========================================================================
     // ==  Create NetCOPE control transaction
     // \param tr - associative array with input program

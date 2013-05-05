@@ -102,13 +102,13 @@ int c_sendData(const svOpenArrayHandle inhwpkt){
 	fprintf(stderr, "\n#\n\n");
 
   // prepare packet for transfer to hardware    
-//  test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, pktSize, &len);  
+  test_data = szedata_prepare_packet(sze, NULL, 0, auxPkt, pktSize, &len);  
 
   // szewrite - send data to hardware
-//  ret = szedata_try_write_next(sze, test_data, len, ifc);
-//	if (ret){
-//		return EXIT_FAILURE;
-//	}
+  ret = szedata_try_write_next(sze, test_data, len, ifc);
+	if (ret){
+		return EXIT_FAILURE;
+	}
   return EXIT_SUCCESS;
 }  
 

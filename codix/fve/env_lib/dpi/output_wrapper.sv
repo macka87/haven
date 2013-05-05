@@ -25,12 +25,23 @@ class OutputWrapper extends ovm_component;
     // synchronization get port
     ovm_get_port#(syncT) syncport;
 
+    // get port
+    ovm_put_port#(NetCOPETransaction) pport;
+
+    // synchronization get port
+    ovm_get_port#(syncT) syncport_sorter;
+
+
        
     // Constructor - creates Input Wrapper object  
     function new (string name, ovm_component parent);
       super.new( name, parent );
 
-      syncport = new("syncport", this);
+      syncport        = new("syncport", this);
+
+      pport           = new("pport", this);
+      syncport_sorter = new("syncport_sorter", this);
+
 
     endfunction: new
 
@@ -46,6 +57,8 @@ class OutputWrapper extends ovm_component;
       int unsigned size; 
       NetCOPETransaction ntr;
       syncT str;
+      syncT stop_tr;
+
       byte unsigned temp[];            // temporary array
 
       size = 0;
@@ -54,7 +67,7 @@ class OutputWrapper extends ovm_component;
       // wait for input wrapper
       syncport.get(str);
 
-/*      while(1) begin
+      while(1) begin
 
         temp = new[128];
 
@@ -101,10 +114,15 @@ class OutputWrapper extends ovm_component;
               end
             end
 
-            break;
+            // end waiting for data
+            syncport_sorter.get(stop_tr);
+            if (stop_tr.flag) begin
+              $write("OutputWrapper finish\n");
+              break;
+            end
 
-            // put received data to output mailbox
-            // .put(ntr);  
+            // send received data to sorter
+            pport.put(ntr);
 
           end
           else begin
@@ -112,7 +130,7 @@ class OutputWrapper extends ovm_component;
           end
         end
 
-      end*/
+      end
 
       res = c_closeDMAChannel();
       $write("CLOSING CHANNEL: %d\n",res); 
