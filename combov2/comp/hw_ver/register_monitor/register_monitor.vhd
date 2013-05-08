@@ -186,8 +186,8 @@ begin
             sig_tx_eop_n<= '1';
 
             -- read enable
-            sig_re0 <= '1';
-            dbg_mode_regs <= '1';
+            sig_re0 <= '0';
+            dbg_mode_regs <= '0';
             state_next <= read_1half;
 
             state_next <= read_1half;

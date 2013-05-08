@@ -77,7 +77,7 @@ type state_type is (init_state, send_hdr, read_1half, read_2half);
 -- ----------------------------------------------------------
 constant DATA_TYPE   :  std_logic_vector(7 downto 0) := X"00";
 
-constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "1111111111111111100";
+--constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "1111111111111111100";
 
 -- 12
 --constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000001100";
@@ -86,7 +86,7 @@ constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "1111111111111111100";
 --constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000010000";
 
 -- 20
---constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000010100";
+constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000000000010100";
 --constant MAX_ADDRESS :  std_logic_vector(18 downto 0) := "0000000010000000100";
 
 -- memory monitor endpoint is 8'h03
@@ -205,8 +205,8 @@ begin
             sig_tx_eop_n<= '1';
 
             -- read enable
-            sig_re0 <= '1';
-            sig_dbg_mode <= '1';
+            sig_re0 <= '0';
+            sig_dbg_mode <= '0';
 
             state_next <= read_1half;
 
