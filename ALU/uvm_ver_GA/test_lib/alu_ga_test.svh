@@ -21,8 +21,6 @@
    * Data Members
    */
    // Configuration objects
-   ChromosomeConfig         chromosome_cfg;
-   AluChromosomeConfig      alu_chromosome_cfg;
    ChromosomeSequenceConfig chromosome_sequence_cfg;
    
   /*! 
@@ -40,8 +38,6 @@
    
    // Other methods
    extern task main_phase(uvm_phase phase);
-   extern function void configure_chromosome(ChromosomeConfig chromosome_cfg);
-   extern function void configure_alu_chromosome(AluChromosomeConfig alu_chromosome_cfg);
    extern function void configure_chromosome_sequence(ChromosomeSequenceConfig chromosome_sequence_cfg);
    extern task createOrLoadInitialPopulation();
    

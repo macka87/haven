@@ -43,9 +43,7 @@
    byte unsigned operandMEM_rangesMin;
    byte unsigned operandMEM_rangesMax;
    byte unsigned operandIMM_rangesMin;
-   byte unsigned operandIMM_rangesMax;
-   
-   AluChromosomeConfig  alu_chromosome_cfg;   // configuration object
+   byte unsigned operandIMM_rangesMax;     
    
    //! Constraints for randomized values 
    constraint chromosomeConst {
@@ -88,8 +86,9 @@
 
    // Standard UVM methods
    extern function new(string name = "AluChromosome");
+   extern function void do_copy(uvm_object rhs);
    extern function void print(string name);
-   
+      
    // Own UVM methods
    extern function void evaluate(int coveredBins);
 

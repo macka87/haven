@@ -15,8 +15,6 @@
    typedef enum {PROPORTIONATE, RANK} selection_t;
 
    // Includes
-   `include "chromosome_config.svh"
-   `include "chromosome_config.sv"
    `include "chromosome.svh"
    `include "chromosome.sv"
    `include "population.svh"

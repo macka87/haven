@@ -28,8 +28,6 @@
    real         relativeFitness;    // relative fitness function
    rand byte unsigned chromosome[]; // chromosome
    
-   ChromosomeConfig  chromosome_cfg;          // configuration object
-
   /*!
    * Methods
    */

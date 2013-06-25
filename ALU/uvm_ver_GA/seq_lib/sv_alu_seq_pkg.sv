@@ -17,8 +17,6 @@
    import sv_basic_ga_pkg::*;
   
    // Includes
-   `include "alu_chromosome_config.svh"
-   `include "alu_chromosome_config.sv" 
    `include "chromosome_sequence_config.svh" 
    `include "chromosome_sequence_config.sv" 
    `include "alu_chromosome.svh"

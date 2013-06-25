@@ -12,13 +12,6 @@
  */
  function Chromosome::new(string name = "Chromosome");
    super.new(name);
-   
-   // check configuration for Chromosome
-   //if (!uvm_config_db #(ChromosomeConfig)::get(this, "", "ChromosomeConfig", chromosome_cfg)) 
-   //  `uvm_error("MYERR", "ChromosomeConfig doesn't exist!"); 
-     
-   //? kde sa pouziju udaje z konfiguracie? v body??  
-     
  endfunction: new  
   
 

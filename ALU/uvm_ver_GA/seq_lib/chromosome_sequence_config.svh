@@ -21,9 +21,28 @@
    * Data Members
    */  
    
-   int          populationSize = 10;    // Size of a population
-   selection_t  selection      = RANK;  // Selection type 
-   int unsigned maxMutations   = 20;    // Maximum number of mutations
+   // POPULATION PARAMETERS
+   int          populationSize  = 10;   // Size of a population
+   selection_t  selection       = RANK; // Selection type 
+   int unsigned maxMutations    = 20;   // Maximum number of mutations
+   
+   // CHROMOSOME PARAMETERS
+   int unsigned fitness         = 0;    // fitness function
+   real         relativeFitness = 0;    // relative fitness function
+   
+   // ALU CHROMOSOME PARAMETERS
+   byte unsigned movi_values           = 3;   // num. of values for MOVI
+   byte unsigned operation_values      = 16;  // num. of values for OPERATION
+   byte unsigned delay_rangesMin       = 1;         
+   byte unsigned delay_rangesMax       = 4;
+   byte unsigned operandA_rangesMin    = 1;
+   byte unsigned operandA_rangesMax    = 8;
+   byte unsigned operandB_rangesMin    = 1;
+   byte unsigned operandB_rangesMax    = 8;  
+   byte unsigned operandMEM_rangesMin  = 1;
+   byte unsigned operandMEM_rangesMax  = 8;  
+   byte unsigned operandIMM_rangesMin  = 1;
+   byte unsigned operandIMM_rangesMax  = 8;
        
   /*!
    * Methods

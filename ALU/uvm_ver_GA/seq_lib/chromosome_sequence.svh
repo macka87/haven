@@ -40,6 +40,10 @@
    extern task post_body();   
    
    // Own UVM methods
+   extern task configurePopulation(ChromosomeSequenceConfig chrom_seq_cfg);
+   extern task configureAluChromosome(AluChromosome alu_chromosome, ChromosomeSequenceConfig chrom_seq_cfg);
+   
+   
    /*extern function void print(string prefix = "");
    extern function void create_chromosome(Chromosome chromBlueprint);
    extern function void save(string fname);
