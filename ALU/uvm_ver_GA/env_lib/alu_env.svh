@@ -19,10 +19,14 @@
    
   /*! 
    * Data Members
-   */  
-   
-   AluAgent                alu_agent;
+   */ 
    AluEnvConfig            alu_env_cfg;
+   
+  
+  /*! 
+   * Component Members
+   */  
+   AluAgent                alu_agent;
    //AluFuncCoverageMonitor  alu_func_cov_monitor;
    //AluScoreboard           alu_scoreboard;
    

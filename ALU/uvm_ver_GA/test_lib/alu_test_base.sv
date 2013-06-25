@@ -47,7 +47,6 @@
    // databazy cez: uvm_config_db #(alu_agent_cfg)::set(this, "*", "alu_agent_cfg", alu_agent_cfg);  
    
    // CREATE THE ALU VERIFICATION ENVIRONMENT
-   
    alu_env = AluEnv::type_id::create("alu_env", this);
    
  endfunction: build_phase

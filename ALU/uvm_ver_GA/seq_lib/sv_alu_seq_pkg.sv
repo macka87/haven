@@ -14,16 +14,16 @@
   
    // Package imports
    import sv_alu_param_pkg::*;
-   //import sv_basic_ga_pkg::*;
+   import sv_basic_ga_pkg::*;
   
-   // Includes  !! svh !!
-   /*`include "alu_chromosome.sv"
-   `include "haven_sequence_item.sv"
-   `include "haven_input_transaction.sv"
-   `include "haven_output_transaction.sv"
-   `include "alu_input_transaction.sv"
-   `include "alu_output_transaction.sv"
-   `include "alu_sequence.sv"
-   `include "alu_sequencer.sv" */
-  
+   // Includes
+   `include "alu_chromosome_config.svh"
+   `include "alu_chromosome_config.sv" 
+   `include "chromosome_sequence_config.svh" 
+   `include "chromosome_sequence_config.sv" 
+   `include "alu_chromosome.svh"
+   `include "alu_chromosome.sv"
+   `include "chromosome_sequence.svh"
+   `include "chromosome_sequence.sv"
+   
  endpackage

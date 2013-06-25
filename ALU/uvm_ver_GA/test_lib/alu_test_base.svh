@@ -27,6 +27,7 @@
    
    // The environment class
    AluEnv          alu_env;
+   
    // Configuration objects
    AluEnvConfig    alu_env_cfg;
    AluAgentConfig  alu_agent_cfg;   

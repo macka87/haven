@@ -59,8 +59,8 @@
      uvm_config_db #(virtual iAluOut)::set(null, "uvm_test_top", "AluOut_vif", dut_alu_out_if);
 
      // start running of the test 
-     run_test();
-     $finish;
+     run_test("AluGATest");
+     $stop;
    end
    
    //! Clock and Reset initial blocks

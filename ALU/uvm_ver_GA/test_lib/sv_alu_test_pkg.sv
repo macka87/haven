@@ -14,14 +14,15 @@
    
    // Package imports
    import sv_alu_param_pkg::*;
+   import sv_basic_ga_pkg::*;
    import sv_alu_seq_pkg::*;
    import sv_alu_env_pkg::*;
   
    // Includes  
    `include "alu_test_base.svh"
    `include "alu_test_base.sv"
-   `include "alu_test.svh"
-   `include "alu_test.sv"
+   `include "alu_ga_test.svh"
+   `include "alu_ga_test.sv"
    
 
  endpackage
