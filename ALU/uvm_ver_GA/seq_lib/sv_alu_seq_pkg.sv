@@ -21,7 +21,17 @@
    `include "chromosome_sequence_config.sv" 
    `include "alu_chromosome.svh"
    `include "alu_chromosome.sv"
+   `include "alu_input_transaction.svh"
+   `include "alu_input_transaction.sv"
+   `include "alu_ga_input_transaction.svh"
+   `include "alu_ga_input_transaction.sv"
+   `include "transaction_sequence_config.svh" 
+   `include "transaction_sequence_config.sv" 
+   `include "transaction_sequence.svh"
+   `include "transaction_sequence.sv"
    `include "chromosome_sequence.svh"
    `include "chromosome_sequence.sv"
+   `include "transaction_sequencer.svh"
+   `include "transaction_sequencer.sv"
    
  endpackage

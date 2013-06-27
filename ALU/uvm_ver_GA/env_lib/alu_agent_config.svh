@@ -28,6 +28,7 @@
    uvm_active_passive_enum active = UVM_ACTIVE;
    bit has_functional_coverage    = 0;
    bit has_scoreboard             = 0;
+   int trans_count                = 10;
    
   /*!
    * Methods

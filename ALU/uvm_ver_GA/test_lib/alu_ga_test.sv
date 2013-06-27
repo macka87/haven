@@ -95,10 +95,21 @@
  *  Create or load initial population.   !!! LOAD BUDE IMPLEMENTOVANY NESKOR !!!
  */  
  task AluGATest::createOrLoadInitialPopulation();
-   ChromosomeSequence chrom_seq;  // sequence of chromosomes
+   ChromosomeSequence  chr_seq;    // sequence of chromosomes
+   TransactionSequence trans_seq;  // sequence of transactions
  
-   chrom_seq = ChromosomeSequence::type_id::create("chrom_seq");
-   chrom_seq.start(population_sequencer);
+   chr_seq = ChromosomeSequence::type_id::create("chr_seq");
+   trans_seq = TransactionSequence::type_id::create("trans_seq");
+   
+   // connect sequences to their sequencers
+   chr_seq.pop_sequencer = population_sequencer;
+   trans_seq.pop_sequencer = population_sequencer;
+   
+   // start the sequences
+   fork
+     chr_seq.start(population_sequencer);
+     trans_seq.start(alu_env.alu_agent.trans_sequencer);
+   join_none  
     
  endtask : createOrLoadInitialPopulation
  

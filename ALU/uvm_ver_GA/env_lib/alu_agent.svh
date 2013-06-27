@@ -21,16 +21,17 @@
    * Data Members
    */  
    
-   AluAgentConfig  alu_agent_cfg; 
+   AluAgentConfig  alu_agent_cfg;
+   TransactionSequenceConfig transaction_sequence_cfg;
    
   /*!
    * Component Members
    */  
    
-   // uvm_analysis_port #(alu_seq_item) ap;
-   // budu nasledovat dalsie komponenty  
+   uvm_analysis_port #(AluInputTransaction) ap;
    
-   
+   TransactionSequencer  trans_sequencer;
+   AluDriver             alu_driver; 
    
   /*!
    * Methods
@@ -40,5 +41,8 @@
    extern function new(string name = "AluAgent", uvm_component parent = null);
    extern function void build_phase(uvm_phase phase);
    extern function void connect_phase(uvm_phase phase);
+   
+   // Own UVM methods
+   extern function void configure_transaction_sequence(TransactionSequenceConfig transaction_sequence_cfg);
    
  endclass: AluAgent

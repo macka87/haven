@@ -42,9 +42,7 @@
      
    // the ALU agent configuration is saved in the configuration object of the 
    // ALU environment
-   alu_env_cfg.alu_agent_cfg = alu_agent_cfg;  
-   // da sa to aj inak, konfiguracia alu_agent_cfg bude zasa ulozena do konfig.
-   // databazy cez: uvm_config_db #(alu_agent_cfg)::set(this, "*", "alu_agent_cfg", alu_agent_cfg);  
+   uvm_config_db #(AluAgentConfig)::set(this, "*", "AluAgentConfig", alu_agent_cfg);  
    
    // CREATE THE ALU VERIFICATION ENVIRONMENT
    alu_env = AluEnv::type_id::create("alu_env", this);
@@ -69,6 +67,7 @@
  function void AluTestBase::configure_alu_agent(AluAgentConfig cfg);
    cfg.active                  = UVM_ACTIVE;
    cfg.has_functional_coverage = 1;
-   cfg.has_scoreboard      = 1;
+   cfg.has_scoreboard          = 1;
+   cfg.trans_count             = 3;
  endfunction: configure_alu_agent    
  

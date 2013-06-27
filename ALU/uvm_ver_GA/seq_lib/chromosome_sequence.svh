@@ -29,6 +29,12 @@
    local real         allsums[];
    
    ChromosomeSequenceConfig   chrom_seq_cfg;  // configuration object
+   
+  /*! 
+   * Component Members   
+   */                
+   
+   Population pop_sequencer;
      
   /*!
    * Methods
@@ -37,8 +43,7 @@
    // Standard UVM methods
    extern function new(string name = "ChromosomeSequence");
    extern task body();  
-   extern task post_body();   
-   
+      
    // Own UVM methods
    extern task configurePopulation(ChromosomeSequenceConfig chrom_seq_cfg);
    extern task configureAluChromosome(AluChromosome alu_chromosome, ChromosomeSequenceConfig chrom_seq_cfg);

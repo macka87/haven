@@ -19,10 +19,12 @@
  * Body - implements behavior of the transaction
  */ 
  task ChromosomeSequence::body;
-   AluChromosome alu_chromosome;
-   AluChromosome alu_chromosome_c;
-   int trans_count = 0;
+   AluChromosome       alu_chromosome;     // ALU Chromosome
+   AluChromosome       alu_chromosome_c;   // ALU Chromosome clone
+   TransactionSequence trans_sequence;     // Transaction Sequence
+   int chr_count = 0;
    
+   $write("ChromosomeSequence::body\n");
    
    // check configuration for Chromosome Sequence
    if (!uvm_config_db #(ChromosomeSequenceConfig)::get(null, get_full_name(), "ChromosomeSequenceConfig", chrom_seq_cfg)) 
@@ -38,26 +40,26 @@
    configureAluChromosome(alu_chromosome, chrom_seq_cfg);
      
    // generate Chromosomes in Population
-   while (trans_count < populationSize) begin
-         
+   while (chr_count < populationSize) begin
+     
+     // >>>>> CLONE ALU CHROMOSOME >>>>>    
      assert($cast(alu_chromosome_c, alu_chromosome.clone));
-     
-     // start_item(alu_chromosome_c);
-     // finish_item(alu_chromosome_c);
-     
      uvm_report_info("BODY PHASE", alu_chromosome_c.convert2string());
      
-     // RANDOM GENERATION OF CHROMOSOME
+     start_item(alu_chromosome_c);
+     
+     // >>>>> RANDOM GENERATION OF CHROMOSOME >>>>>
      assert(alu_chromosome_c.randomize());     
      
-     // PRINT CHROMOSOME
-     alu_chromosome_c.print("ALU Chromosome");    
+     // >>>>> PRINT CHROMOSOME >>>>>
+     alu_chromosome_c.print("ChromosomeSequence: ALU Chromosome");  
      
+     // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
+     finish_item(alu_chromosome_c);
+       
      // TU BY SOM ICH MALA ULOZIT DO POLA ABY SA S NIMI DALO PRACOVAT
      
-     // NEZAVISLE BY SA MALI POSIELAT DO DALSIEHO SEQUENCERA
-        
-     trans_count++; 
+     chr_count++; 
    end
  endtask: body
  
@@ -96,13 +98,3 @@
                            alu_chromosome.delay_rangesMax + alu_chromosome.movi_values + 
                            alu_chromosome.operation_values;
  endtask: configureAluChromosome 
- 
- 
-   
-/*! 
- * Post-body - implements closing of output file with transactions
- */ 
- task ChromosomeSequence::post_body;
-   uvm_report_info("SCOREBOARD", ":\n\nVERIFICATION ENDED CORRECTLY :)\n\n");
-   $stop();
- endtask : post_body

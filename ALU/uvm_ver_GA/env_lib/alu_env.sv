@@ -19,6 +19,7 @@
  * Build - environment configuration
  */ 
  function void AluEnv::build_phase(uvm_phase phase);
+   alu_agent = AluAgent::type_id::create("alu_agent", this);
  endfunction: build_phase
  
  
