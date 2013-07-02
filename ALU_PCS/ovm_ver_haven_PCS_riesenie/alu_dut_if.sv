@@ -42,6 +42,18 @@
                   input  IMM,
                   input  MEM
                  );
+                 
+   // property: if (MULT and ACT and ALU_RDY), after 1 cycle !ALU_RDY and after 10 cycles ALU_RDY   
+   property alurdy_mult;
+      @(posedge CLK) 
+      disable iff (RST)
+      if (ACT && ALU_RDY && (OP == 2)) 
+        (ACT && ALU_RDY && (OP == 2)) ##1 (!ALU_RDY) ##9 (ALU_RDY);     
+   endproperty
+   
+   assert property (alurdy_mult)
+     else $error("ALU_RDY after MULT doesnt work!\n");
+          
   
  endinterface : iAluIn
  
