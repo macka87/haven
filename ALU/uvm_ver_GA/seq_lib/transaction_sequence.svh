@@ -22,13 +22,14 @@
    */ 
    
    int trans_count;
+   int populationSize;
    TransactionSequenceConfig transaction_sequence_cfg; 
    
   /*! 
    * Component Members
    */ 
    Population pop_sequencer;
-   
+    
 
   /*!
    * Methods

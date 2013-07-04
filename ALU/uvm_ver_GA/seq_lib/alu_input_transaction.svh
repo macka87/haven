@@ -36,7 +36,9 @@
    rand byte btDelay;                    // between transactions delay
 
    //! Constraints for randomized values 
-   constraint c_movi { movi >= 0; movi < 4; }  
+   constraint c_movi { 
+     movi inside {[0:2]};
+   }    
   
   /*!
    * Methods
@@ -45,6 +47,7 @@
    // Standard UVM methods
    extern function new(string name = "AluInputTransaction");
    extern function void print(string name);
+   extern function void do_copy(uvm_object rhs);
       
    // Own UVM methods
    //extern function void fwrite(int fileDescr);

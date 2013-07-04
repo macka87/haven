@@ -25,8 +25,8 @@
    // reference to the input virtual interface
    virtual iAluIn dut_alu_in_if;
    
-   // analysis port 
-   uvm_analysis_port #(AluInputTransaction) aport_alu_in_if;
+   // agent configuration
+   AluAgentConfig alu_agent_cfg;
    
   /*!
    * Methods
@@ -36,5 +36,9 @@
    extern function new(string name = "AluDriver", uvm_component parent = null);
    extern function void build_phase(uvm_phase phase);
    extern function void connect_phase(uvm_phase phase); 
+   extern task run_phase(uvm_phase phase); 
+   
+   // Own UVM methods
+   extern task waitForAluRdy();
    
  endclass: AluDriver

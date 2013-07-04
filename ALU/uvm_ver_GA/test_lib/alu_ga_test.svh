@@ -26,8 +26,9 @@
   /*! 
    * Component Members
    */ 
-   Population population_sequencer; 
-
+   Population          population_sequencer; 
+   TransactionSequence trans_seq;  // sequence of transactions
+   
    /*!
    * Methods
    */
@@ -35,7 +36,7 @@
    // Standard UVM methods
    extern function new(string name = "AluGATest", uvm_component parent = null);
    extern function void build_phase(uvm_phase phase);
-   
+      
    // Other methods
    extern task main_phase(uvm_phase phase);
    extern function void configure_chromosome_sequence(ChromosomeSequenceConfig chromosome_sequence_cfg);

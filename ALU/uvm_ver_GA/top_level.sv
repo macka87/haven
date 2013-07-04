@@ -35,7 +35,7 @@
 
    VHDL_DUT_U (
      .CLK            (CLK),
-     .RST            (dut_alu_in_if.RST),
+     .RST            (RST),
 	   .ACT            (dut_alu_in_if.ACT),
      
      // Input interface

@@ -29,6 +29,7 @@
    bit has_functional_coverage    = 0;
    bit has_scoreboard             = 0;
    int trans_count                = 10;
+   int populationSize             = 10;
    
   /*!
    * Methods

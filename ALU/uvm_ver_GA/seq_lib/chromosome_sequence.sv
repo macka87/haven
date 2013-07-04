@@ -52,7 +52,7 @@
      assert(alu_chromosome_c.randomize());     
      
      // >>>>> PRINT CHROMOSOME >>>>>
-     alu_chromosome_c.print("ChromosomeSequence: ALU Chromosome");  
+     //alu_chromosome_c.print("ChromosomeSequence: ALU Chromosome");  
      
      // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
      finish_item(alu_chromosome_c);

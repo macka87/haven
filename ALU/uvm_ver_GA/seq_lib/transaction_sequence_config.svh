@@ -22,7 +22,8 @@
    */  
    
    // TRANSACTION PARAMETERS
-   int trans_count = 10;
+   int trans_count     = 10;
+   int populationSize  = 10;   // Size of a population
        
   /*!
    * Methods

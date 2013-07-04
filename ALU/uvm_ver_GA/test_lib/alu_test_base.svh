@@ -11,7 +11,6 @@
  * 
  * This class represents the general UVM test specification for ALU.
  */
- 
  class AluTestBase extends uvm_test;
     
    //! UVM Factory Registration Macro

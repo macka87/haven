@@ -33,7 +33,7 @@
    // put configuration into the configuration space
    uvm_config_db #(TransactionSequenceConfig)::set(this, "*", "TransactionSequenceConfig", transaction_sequence_cfg);  
      
-   // create components
+   // >>>>> CREATE COMPONENTS >>>>>
    trans_sequencer = TransactionSequencer::type_id::create("TransactionSequencer", this);
    alu_driver = AluDriver::type_id::create("AluDriver", this); 
     
@@ -45,8 +45,18 @@
  * Connect - interconnection of Agent components.
  */  
  function void AluAgent::connect_phase(uvm_phase phase);
-   alu_driver.seq_item_port.connect(trans_sequencer.seq_item_export); 
+   // TLM connection
+   alu_driver.seq_item_port.connect(trans_sequencer.seq_item_export);
  endfunction: connect_phase
+ 
+ 
+/*! 
+ * end_of_elaboration_phase
+ */  
+ function void AluAgent::end_of_elaboration_phase(uvm_phase phase);
+   // TLM connection
+   alu_driver.seq_item_port.debug_connected_to();
+ endfunction: end_of_elaboration_phase
  
  
 
@@ -54,5 +64,6 @@
  * Configure Transaction Sequence.
  */   
  function void AluAgent::configure_transaction_sequence(TransactionSequenceConfig transaction_sequence_cfg);
-   transaction_sequence_cfg.trans_count = alu_agent_cfg.trans_count;
+   transaction_sequence_cfg.trans_count     = alu_agent_cfg.trans_count;
+   transaction_sequence_cfg.populationSize  = alu_agent_cfg.populationSize;    // Size of a population
  endfunction: configure_transaction_sequence

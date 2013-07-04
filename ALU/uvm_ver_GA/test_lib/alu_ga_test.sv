@@ -39,14 +39,16 @@
    population_sequencer = Population::type_id::create("population_sequencer", this);
    
  endfunction: build_phase
-
-
+ 
+ 
 
 /*! 
  * Main - Stimuli are generated and applied to the DUT
  */     
  task AluGATest::main_phase(uvm_phase phase);
    string msg;
+    
+   phase.raise_objection(this); 
       
    // ------------------------------------------------------------------------
    $write("\n\n########## GENETIC ALGORITHM ##########\n\n");
@@ -61,7 +63,7 @@
    seq.start( AluEnv_h.AluSequencer_h); */
      
    // ------------------------------------------------------------------------
-   $write("\n\n########## GENETIC ALGORITHM ##########\n\n");
+   //$write("\n\n########## GENETIC ALGORITHM ##########\n\n");
      
    //! Create initial population
    //createOrLoadInitialPopulation(POPULATION_FILENAME, LOAD_POPULATION, POPULATION_SIZE, MAX_MUTATIONS);
@@ -86,6 +88,8 @@
    //! Display best individuum from population
    //population.getBestChromosomes(1, bestChrom);
    //bestChrom[0].display("Best chromosome");
+   
+   phase.drop_objection(this); 
     
  endtask: main_phase
  
@@ -109,7 +113,7 @@
    fork
      chr_seq.start(population_sequencer);
      trans_seq.start(alu_env.alu_agent.trans_sequencer);
-   join_none  
+   join 
     
  endtask : createOrLoadInitialPopulation
  
@@ -121,9 +125,9 @@
  function void AluGATest::configure_chromosome_sequence(ChromosomeSequenceConfig chromosome_sequence_cfg);
    
    // POPULATION parameters
-   chromosome_sequence_cfg.populationSize  = 3;    // Size of a population
-   chromosome_sequence_cfg.selection       = RANK; // Selection type 
-   chromosome_sequence_cfg.maxMutations    = 20;   // Maximum number of mutations   
+   chromosome_sequence_cfg.populationSize  = POPULATION_SIZE; // Size of a population
+   chromosome_sequence_cfg.selection       = RANK;            // Selection type 
+   chromosome_sequence_cfg.maxMutations    = MAX_MUTATIONS;   // Maximum number of mutations   
    
    // CHROMOSOME parameters
    chromosome_sequence_cfg.fitness         = 0;    // fitness function
@@ -132,15 +136,15 @@
    // ALU CHROMOSOME parameters 
    chromosome_sequence_cfg.movi_values           = 3;   // num. of values for MOVI
    chromosome_sequence_cfg.operation_values      = 16;  // num. of values for OPERATION
-   chromosome_sequence_cfg.delay_rangesMin       = 1;         
-   chromosome_sequence_cfg.delay_rangesMax       = 4;
-   chromosome_sequence_cfg.operandA_rangesMin    = 1;
-   chromosome_sequence_cfg.operandA_rangesMax    = 8;
-   chromosome_sequence_cfg.operandB_rangesMin    = 1;
-   chromosome_sequence_cfg.operandB_rangesMax    = 8;  
-   chromosome_sequence_cfg.operandMEM_rangesMin  = 1;
-   chromosome_sequence_cfg.operandMEM_rangesMax  = 8;  
-   chromosome_sequence_cfg.operandIMM_rangesMin  = 1;
-   chromosome_sequence_cfg.operandIMM_rangesMax  = 8; 
+   chromosome_sequence_cfg.delay_rangesMin       = DELAY_RANGES_MIN;         
+   chromosome_sequence_cfg.delay_rangesMax       = DELAY_RANGES_MAX;
+   chromosome_sequence_cfg.operandA_rangesMin    = OPERAND_A_RANGES_MIN;
+   chromosome_sequence_cfg.operandA_rangesMax    = OPERAND_A_RANGES_MAX;
+   chromosome_sequence_cfg.operandB_rangesMin    = OPERAND_B_RANGES_MIN;
+   chromosome_sequence_cfg.operandB_rangesMax    = OPERAND_B_RANGES_MAX;  
+   chromosome_sequence_cfg.operandMEM_rangesMin  = OPERAND_MEM_RANGES_MIN;
+   chromosome_sequence_cfg.operandMEM_rangesMax  = OPERAND_MEM_RANGES_MAX;  
+   chromosome_sequence_cfg.operandIMM_rangesMin  = OPERAND_IMM_RANGES_MIN;
+   chromosome_sequence_cfg.operandIMM_rangesMax  = OPERAND_IMM_RANGES_MAX; 
    
  endfunction: configure_chromosome_sequence

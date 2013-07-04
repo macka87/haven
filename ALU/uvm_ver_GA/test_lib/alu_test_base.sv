@@ -55,8 +55,8 @@
  * Configure the ALU verification environment.
  */  
  function void AluTestBase::configure_env(AluEnvConfig cfg);
-   cfg.has_functional_coverage = 1;
-   cfg.has_alu_scoreboard      = 1;
+   cfg.has_functional_coverage = HAS_FUNCTIONAL_COVERAGE;
+   cfg.has_alu_scoreboard      = HAS_ALU_SCOREBOARD;
  endfunction: configure_env
 
 
@@ -66,8 +66,9 @@
  */  
  function void AluTestBase::configure_alu_agent(AluAgentConfig cfg);
    cfg.active                  = UVM_ACTIVE;
-   cfg.has_functional_coverage = 1;
-   cfg.has_scoreboard          = 1;
-   cfg.trans_count             = 3;
+   cfg.has_functional_coverage = HAS_FUNCTIONAL_COVERAGE;
+   cfg.has_scoreboard          = HAS_ALU_SCOREBOARD;
+   cfg.trans_count             = TRANS_COUNT_PER_CHROM;
+   cfg.populationSize          = POPULATION_SIZE;
  endfunction: configure_alu_agent    
  

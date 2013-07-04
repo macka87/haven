@@ -21,10 +21,10 @@
  task TransactionSequence::body;
    Chromosome            chr;
    AluChromosome         alu_chr;
-   AluGAInputTransaction alu_in_trans;
+   AluGAInputTransaction alu_ga_in_trans, alu_ga_in_trans_c;
+   AluInputTransaction   alu_in_trans, alu_in_trans_c;
    int                   cnt = 0;
-   
-    $write("TransactionSequence::body\n");
+   int                   chr_cnt = 0;
    
    // check configuration for Transaction Sequence
    if (!uvm_config_db #(TransactionSequenceConfig)::get(null, get_full_name(), "TransactionSequenceConfig", transaction_sequence_cfg)) 
@@ -33,27 +33,33 @@
    // configure Sequence of Transactions 
    configureSequence(transaction_sequence_cfg); 
      
-   forever begin
+   // receives Chromosomes in Population
+   while (chr_cnt < populationSize) begin
+     
      // get Chromosome from Population Sequencer
-     pop_sequencer.get_next_item(chr);
+     pop_sequencer.seq_item_export.get_next_item(chr);
      assert($cast(alu_chr, chr));
-     alu_chr.print("TransactionSequence: ALU Chromosome");
+     
+     alu_ga_in_trans = AluGAInputTransaction::type_id::create();
+     
+     cnt = 0;
      
      // generate transactions for every chromosome 
      while (cnt < trans_count) begin
-       $write("cnt: %d\n", cnt);
-       $write("trans_count: %d\n", trans_count);
-       alu_in_trans = AluGAInputTransaction::type_id::create();
-       //start_item(alu_in_trans);
-       configureTrans(alu_chr, alu_in_trans);
-       assert(alu_in_trans.randomize());
-       alu_in_trans.print("ALU TRANSACTION");
-       //finish_item(alu_in_trans);
+       $cast(alu_ga_in_trans_c, alu_ga_in_trans.clone); 
+      
+       start_item(alu_ga_in_trans_c);
+       configureTrans(alu_chr, alu_ga_in_trans_c);
+       assert(alu_ga_in_trans_c.randomize());
+       //alu_ga_in_trans_c.print("TRANS_SEQUENCE: ALU TRANSACTION");
+       finish_item(alu_ga_in_trans_c);
+       
        cnt++; 
      end 
      
      // let Population Sequencer know about the chromosome processing 
      pop_sequencer.item_done();
+     chr_cnt++;
    end
  endtask: body
 
@@ -64,6 +70,7 @@
  */ 
  task TransactionSequence::configureSequence(TransactionSequenceConfig transaction_sequence_cfg);
    trans_count = transaction_sequence_cfg.trans_count;
+   populationSize = transaction_sequence_cfg.populationSize;  // Size of a population
  endtask: configureSequence
  
 

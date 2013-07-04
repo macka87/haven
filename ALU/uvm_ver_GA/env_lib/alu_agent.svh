@@ -41,6 +41,7 @@
    extern function new(string name = "AluAgent", uvm_component parent = null);
    extern function void build_phase(uvm_phase phase);
    extern function void connect_phase(uvm_phase phase);
+   extern function void end_of_elaboration_phase(uvm_phase phase);
    
    // Own UVM methods
    extern function void configure_transaction_sequence(TransactionSequenceConfig transaction_sequence_cfg);

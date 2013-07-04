@@ -15,11 +15,15 @@
    parameter CLK_PERIOD     = 10ns;
    parameter RESET_TIME     = 10*CLK_PERIOD;
    
+   // VE PARAMETERS
+   parameter HAS_FUNCTIONAL_COVERAGE = 1;
+   parameter HAS_ALU_SCOREBOARD      = 1;
+   
    // GENETIC ALGORITHM PARAMETERS
    // Number of generations
    parameter GENERATIONS      = 20;
    // Size of population
-   parameter POPULATION_SIZE  = 10;
+   parameter POPULATION_SIZE  = 2;
    // Number of maximal mutations per individuum
    parameter MAX_MUTATIONS    = 20;
    // File for save/load population
@@ -42,7 +46,7 @@
    parameter OPERAND_IMM_RANGES_MAX = 8;
    
    // TRANSACTION COUNT PER EACH CHROMOSOME
-   parameter TRANS_COUNT_PER_CHROM  = 200;
+   parameter TRANS_COUNT_PER_CHROM  = 2;
    parameter SEED1                  = 0;   // Seed for PRNG
    
  endpackage

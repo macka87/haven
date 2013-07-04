@@ -16,6 +16,33 @@
 
 
 /*! 
+ * Implementation of the do_copy() virtual function.
+ */
+ function void AluInputTransaction::do_copy(uvm_object rhs);
+   AluInputTransaction alu_trans;
+   
+   if(!$cast(alu_trans, rhs)) begin
+     uvm_report_error("do_copy:", "$cast failed!");
+     return;
+   end
+   
+   super.do_copy(rhs);
+   
+   rst     = alu_trans.rst;
+   act     = alu_trans.act; 
+   op      = alu_trans.op;
+   movi    = alu_trans.movi;                
+   reg_a   = alu_trans.reg_a;    
+   reg_b   = alu_trans.reg_b;    
+   mem     = alu_trans.mem;      
+   imm     = alu_trans.imm;      
+   btDelay = alu_trans.btDelay;                   
+ endfunction: do_copy  
+ 
+
+
+
+/*! 
  * Print - displays ALU Input Transaction content  
  */    
  function void AluInputTransaction::print(string name);

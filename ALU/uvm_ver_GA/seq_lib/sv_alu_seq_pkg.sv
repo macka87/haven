@@ -13,9 +13,9 @@
    `include "uvm_macros.svh"
   
    // Package imports
-   import sv_alu_param_pkg::*;
    import sv_basic_ga_pkg::*;
-  
+   import sv_alu_param_pkg::*;
+   
    // Includes
    `include "chromosome_sequence_config.svh" 
    `include "chromosome_sequence_config.sv" 
