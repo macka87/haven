@@ -24,15 +24,19 @@
    AluAgentConfig  alu_agent_cfg;
    TransactionSequenceConfig transaction_sequence_cfg;
    
+  /*! 
+   * Ports/Exports
+   */ 
+   
+   uvm_analysis_port #(AluInputTransaction) ap;
+   
   /*!
    * Component Members
    */  
    
-   uvm_analysis_port #(AluInputTransaction) ap;
-   
    TransactionSequencer  trans_sequencer;
    AluDriver             alu_driver; 
-   //AluMonitor            alu_monitor; 
+   AluMonitor            alu_monitor; 
    
   /*!
    * Methods
@@ -80,7 +84,7 @@
    // >>>>> CREATE COMPONENTS >>>>>
    trans_sequencer = TransactionSequencer::type_id::create("TransactionSequencer", this);
    alu_driver = AluDriver::type_id::create("AluDriver", this); 
-   //alu_monitor = AluMonitor::type_id::create("AluMonitor", this);
+   alu_monitor = AluMonitor::type_id::create("AluMonitor", this);
  endfunction: build_phase
 
 

@@ -16,19 +16,17 @@
    //! UVM Factory Registration Macro
    `uvm_component_utils(AluTestBase)
    
-  /*! 
-   * Data Members
-   */  
-  
   /*!
    * Component Members
    */
    
-   // The environment class
-   AluEnv          alu_env;
+   AluEnv          alu_env;        // The environment class
+  
+  /*!
+   * Data Members
+   */
    
-   // Configuration objects
-   AluEnvConfig    alu_env_cfg;
+   AluEnvConfig    alu_env_cfg;    // Configuration objects
    AluAgentConfig  alu_agent_cfg;   
 
   /*!

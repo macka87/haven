@@ -17,7 +17,10 @@
    //! UVM Factory Registration Macro
    `uvm_object_utils(AluAgentConfig)
    
-   //! Virtual interfaces for DUT
+  /*! 
+   * Virtual interfaces for DUT
+   */ 
+   
    virtual iAluIn  dut_alu_in_if;
    virtual iAluOut dut_alu_out_if;
    

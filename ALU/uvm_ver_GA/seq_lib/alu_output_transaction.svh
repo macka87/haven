@@ -22,8 +22,7 @@
    * Data Members
    */
    
-   // included data
-   logic [DATA_WIDTH-1:0] ex_alu;
+   logic [DATA_WIDTH-1:0] ex_alu;  // included data
    
   /*!
    * Methods

@@ -20,12 +20,13 @@
   /*! 
    * Data Members
    */
-   // Configuration objects
-   ChromosomeSequenceConfig chromosome_sequence_cfg;
+   
+   ChromosomeSequenceConfig chromosome_sequence_cfg;  // Configuration objects
    
   /*! 
    * Component Members
    */ 
+   
    Population          population_sequencer; 
    TransactionSequence trans_seq;  // sequence of transactions
    

@@ -23,9 +23,7 @@
    
    bit has_functional_coverage = 1;
    bit has_alu_scoreboard      = 1;
-   
-   // configuration for subcomponents
-   AluAgentConfig  alu_agent_cfg;    
+   AluAgentConfig  alu_agent_cfg;   // configuration for subcomponents    
   
   /*!
    * Methods

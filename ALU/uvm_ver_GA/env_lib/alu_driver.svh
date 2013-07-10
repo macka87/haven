@@ -18,14 +18,16 @@
    //! UVM Factory Registration Macro
    `uvm_component_utils(AluDriver)
   
-  /*!
-   * Component Members
+  /*! 
+   * Virtual interfaces for DUT
    */ 
-  
-   // reference to the input virtual interface
+   
    virtual iAluIn dut_alu_in_if;
    
-   // agent configuration
+  /*!
+   * Data Members
+   */ 
+   
    AluAgentConfig alu_agent_cfg;
    
   /*!

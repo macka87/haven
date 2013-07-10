@@ -28,9 +28,9 @@
   /*! 
    * Component Members
    */ 
+   
    Population pop_sequencer;
-    
-
+   
   /*!
    * Methods
    */

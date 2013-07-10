@@ -22,8 +22,7 @@
    * Data Members
    */
    
-   // control signals
-   logic rst;
+   logic rst;  // control signals
    
    // random values of signals
    rand logic act;                       // activation signal

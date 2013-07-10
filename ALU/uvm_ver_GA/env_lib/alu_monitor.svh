@@ -18,19 +18,23 @@
    //! UVM Factory Registration Macro
    `uvm_component_utils(AluMonitor)
 
-  /*!
-   * Component Members
+  /*! 
+   * Virtual interfaces for DUT
    */ 
-
-   // reference to the output virtual interface
+  
    virtual iAluOut dut_alu_out_if;
    
-   // analysis port for sending data received from the DUT output interface
-   // to the connected scoreboard or subscriber
-   uvm_analysis_port #(AluOutputTransaction) aport_alu_out_if;
+  /*! 
+   * Ports/Exports
+   */ 
    
-   // agent configuration
-   AluAgentConfig alu_agent_cfg;
+   uvm_analysis_port #(AluOutputTransaction) aport_alu_out_if;
+  
+  /*! 
+   * Data Members
+   */
+  
+   AluAgentConfig alu_agent_cfg; // agent configuration
    
   /*!
    * Methods
@@ -99,11 +103,11 @@
    
    forever
      begin
-       // clone output transaction
-       assert($cast(alu_out_trans_c, alu_out_trans.clone)); 
-       
        // wait for EX_ALU_VLD = 1
        waitForVld();
+       
+       // clone output transaction
+       assert($cast(alu_out_trans_c, alu_out_trans.clone));
        
        // receive the value of output
        alu_out_trans.ex_alu = dut_alu_out_if.cb.EX_ALU;
@@ -125,6 +129,6 @@
  * Wait for validity of output EX_ALU and not RESET.
  */ 
  task AluMonitor::waitForVld();
-   while (!dut_alu_out_if.cb.EX_ALU_VLD)
+   while (!(dut_alu_out_if.cb.EX_ALU_VLD === 1))  
      @(dut_alu_out_if.cb);
  endtask: waitForVld
