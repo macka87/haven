@@ -20,9 +20,6 @@
   
    // Includes  
    `include "alu_test_base.svh"
-   `include "alu_test_base.sv"
    `include "alu_ga_test.svh"
-   `include "alu_ga_test.sv"
-   
-
+     
  endpackage

@@ -25,3 +25,12 @@
    extern function new(string name = "TransactionSequencer", uvm_component parent = null);
 
  endclass: TransactionSequencer
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the TransactionSequencer object  
+ */
+ function TransactionSequencer::new(string name = "TransactionSequencer", uvm_component parent = null);
+   super.new(name, parent);
+ endfunction: new 

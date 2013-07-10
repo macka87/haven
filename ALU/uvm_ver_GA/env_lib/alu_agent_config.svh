@@ -39,3 +39,12 @@
    extern function new(string name = "AluAgentConfig");
    
  endclass: AluAgentConfig
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the AluAgentConfig object  
+ */
+ function AluAgentConfig::new(string name = "AluAgentConfig");
+   super.new(name);
+ endfunction: new

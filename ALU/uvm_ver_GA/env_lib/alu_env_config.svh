@@ -35,3 +35,12 @@
    extern function new(string name = "AluEnvConfig");
    
  endclass: AluEnvConfig
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the Alu Environment Configuration object  
+ */
+ function AluEnvConfig::new(string name = "AluEnvConfig");
+   super.new(name);
+ endfunction: new 

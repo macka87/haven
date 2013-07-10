@@ -33,3 +33,12 @@
    extern function new(string name = "TransactionSequenceConfig");
    
  endclass: TransactionSequenceConfig
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the TransactionSequenceConfig object  
+ */
+ function TransactionSequenceConfig::new(string name = "TransactionSequenceConfig");
+   super.new(name);
+ endfunction: new 

@@ -16,8 +16,6 @@
 
    // Includes
    `include "chromosome.svh"
-   `include "chromosome.sv"
    `include "population.svh"
-   `include "population.sv"
-   
+      
  endpackage : sv_basic_ga_pkg

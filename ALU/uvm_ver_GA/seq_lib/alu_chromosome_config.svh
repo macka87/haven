@@ -45,3 +45,12 @@
    extern function new(string name = "AluChromosomeConfig");
    
  endclass: AluChromosomeConfig
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the AluChromosomeConfig object  
+ */
+ function AluChromosomeConfig::new(string name = "AluChromosomeConfig");
+   super.new(name);
+ endfunction: new 

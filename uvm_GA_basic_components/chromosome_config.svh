@@ -32,3 +32,12 @@
    extern function new(string name = "ChromosomeConfig");
    
  endclass: ChromosomeConfig
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the ChromosomeConfig object  
+ */
+ function ChromosomeConfig::new(string name = "ChromosomeConfig");
+   super.new(name);
+ endfunction: new 

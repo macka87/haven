@@ -17,14 +17,10 @@
    
    // Includes
    `include "alu_agent_config.svh"
-   `include "alu_agent_config.sv"
    `include "alu_env_config.svh"
-   `include "alu_env_config.sv"
    `include "alu_driver.svh"
-   `include "alu_driver.sv"
+   `include "alu_monitor.svh"
    `include "alu_agent.svh"
-   `include "alu_agent.sv"
    `include "alu_env.svh"
-   `include "alu_env.sv"
-  
+     
  endpackage

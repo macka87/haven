@@ -25,4 +25,12 @@
    extern function new(string name = "Population", uvm_component parent = null);
    
  endclass : Population
-  
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the Population object  
+ */
+ function Population::new(string name = "Population", uvm_component parent = null);
+   super.new(name, parent);
+ endfunction: new

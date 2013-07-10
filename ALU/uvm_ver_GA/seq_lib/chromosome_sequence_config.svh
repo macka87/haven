@@ -52,3 +52,12 @@
    extern function new(string name = "ChromosomeSequenceConfig");
    
  endclass: ChromosomeSequenceConfig
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the ChromosomeSequenceConfig object  
+ */
+ function ChromosomeSequenceConfig::new(string name = "ChromosomeSequenceConfig");
+   super.new(name);
+ endfunction: new 

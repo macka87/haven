@@ -40,3 +40,29 @@
    extern function void connect_phase(uvm_phase phase);
    
  endclass: AluEnv
+ 
+ 
+
+/*! 
+ * Constructor - creates the AluEnv object  
+ */
+ function AluEnv::new(string name = "AluEnv", uvm_component parent = null);
+   super.new(name, parent);
+ endfunction: new
+ 
+
+ 
+ /*! 
+ * Build - environment configuration
+ */ 
+ function void AluEnv::build_phase(uvm_phase phase);
+   alu_agent = AluAgent::type_id::create("alu_agent", this);
+ endfunction: build_phase
+ 
+ 
+ 
+ /*! 
+ * Connect - interconnection of environment components
+ */ 
+ function void AluEnv::connect_phase(uvm_phase phase);
+ endfunction: connect_phase 

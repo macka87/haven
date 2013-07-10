@@ -28,3 +28,30 @@
    extern task main_phase(uvm_phase phase);
 
  endclass: AluTest
+ 
+ 
+ 
+/*! 
+ * Constructor - creates the AluTest object  
+ */
+ function AluTest::new(string name = "AluTest", uvm_component parent = null);
+   super.new(name, parent);
+ endfunction: new
+
+
+
+/*! 
+ * Build - test configuration
+ */ 
+ function void AluTest::build_phase(uvm_phase phase);
+   super.build_phase(phase);
+ endfunction: build_phase
+
+
+
+/*! 
+ * Main - Stimuli are generated and applied to the DUT
+ */     
+ task AluTest::main_phase(uvm_phase phase);
+ 
+ endtask: main_phase 
