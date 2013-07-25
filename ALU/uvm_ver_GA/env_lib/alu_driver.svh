@@ -23,6 +23,12 @@
    */ 
    
    virtual iAluIn dut_alu_in_if;
+  
+  /*! 
+   * Ports/Exports
+   */ 
+   
+   uvm_analysis_port #(AluInputTransaction) aport_alu_in_if;
    
   /*!
    * Data Members
@@ -62,6 +68,9 @@
  function void AluDriver::build_phase(uvm_phase phase);
    if (!uvm_config_db #(AluAgentConfig)::get(this, "", "AluAgentConfig", alu_agent_cfg)) 
      `uvm_error("MYERR", "AluAgentConfig doesn't exist!");
+     
+   // create analysis port
+   aport_alu_in_if = new("aport_alu_in_if", this); 
  endfunction: build_phase   
 
 
@@ -105,6 +114,9 @@
      dut_alu_in_if.cb.REG_B <= alu_in_trans.reg_b;
      dut_alu_in_if.cb.MEM   <= alu_in_trans.mem;
      dut_alu_in_if.cb.IMM   <= alu_in_trans.imm;
+     
+     // sends generated transaction to the scoreboard, subscriber etc.
+     if (alu_in_trans.act) aport_alu_in_if.write(alu_in_trans);
      
      // synchronise with CLK 
      @(dut_alu_in_if.cb); 

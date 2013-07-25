@@ -38,7 +38,6 @@
    // Standard UVM methods
    extern function new(string name = "TransactionSequence");
    extern task body();  
-   extern task post_body();   
    
    // Own UVM methods
    extern task configureSequence(TransactionSequenceConfig transaction_sequence_cfg);
@@ -182,13 +181,3 @@
      else offset++;
    end    
  endtask: configureTrans
-
-
-   
-/*! 
- * Post-body - implements closing of output file with transactions
- */ 
- task TransactionSequence::post_body;
-   uvm_report_info("SCOREBOARD", ":\n\nVERIFICATION ENDED CORRECTLY :)\n\n");
-   $stop();
- endtask: post_body 

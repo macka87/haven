@@ -77,9 +77,11 @@
      `uvm_error("MYERR", "iAluIn:dut_alu_in_if interface doesn't exist!");
    if (!uvm_config_db #(virtual iAluOut)::get(this, "", "AluOut_vif", alu_agent_cfg.dut_alu_out_if)) 
      `uvm_error("MYERR", "iAluOut:dut_alu_out_if interface doesn't exist!"); 
+   
+   // the ALU Env configuration is saved in the configuration database
+   uvm_config_db #(AluEnvConfig)::set(this, "*", "AluEnvConfig", alu_env_cfg);  
      
-   // the ALU agent configuration is saved in the configuration object of the 
-   // ALU environment
+   // the ALU agent configuration is saved in the configuration database
    uvm_config_db #(AluAgentConfig)::set(this, "*", "AluAgentConfig", alu_agent_cfg);  
    
    // CREATE THE ALU VERIFICATION ENVIRONMENT

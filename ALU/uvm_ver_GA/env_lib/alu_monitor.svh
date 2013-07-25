@@ -116,7 +116,7 @@
        alu_out_trans.print("MONITOR:"); 
        
        // sends generated transaction to the scoreboard, subscriber etc.
-       //aport_alu_out_if.write(tr);
+       aport_alu_out_if.write(alu_out_trans);
        
        // synchronisation with the DUT
        @(dut_alu_out_if.cb);

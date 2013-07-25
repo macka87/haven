@@ -28,7 +28,8 @@
    * Ports/Exports
    */ 
    
-   uvm_analysis_port #(AluInputTransaction) ap;
+   uvm_analysis_port #(AluInputTransaction)  ap_in;  
+   uvm_analysis_port #(AluOutputTransaction) ap_out;  
    
   /*!
    * Component Members
@@ -80,6 +81,10 @@
    
    // put configuration into the configuration space
    uvm_config_db #(TransactionSequenceConfig)::set(this, "*", "TransactionSequenceConfig", transaction_sequence_cfg);  
+   
+   // create analysis ports
+   ap_in  = new("ap_in",this);
+   ap_out = new("ap_out",this);   
      
    // >>>>> CREATE COMPONENTS >>>>>
    trans_sequencer = TransactionSequencer::type_id::create("TransactionSequencer", this);
@@ -95,6 +100,10 @@
  function void AluAgent::connect_phase(uvm_phase phase);
    // TLM connection
    alu_driver.seq_item_port.connect(trans_sequencer.seq_item_export);
+   
+   // analysis port connections
+   ap_in  = alu_driver.aport_alu_in_if;
+   ap_out = alu_monitor.aport_alu_out_if;
  endfunction: connect_phase
  
 

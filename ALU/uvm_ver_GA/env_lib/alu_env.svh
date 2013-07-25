@@ -21,15 +21,16 @@
    * Data Members
    */ 
    
-   AluEnvConfig            alu_env_cfg;
+   AluEnvConfig   alu_env_cfg;
    
   /*! 
    * Component Members
    */  
    
-   AluAgent                alu_agent;
+   AluAgent       alu_agent;
+   AluScoreboard  alu_scoreboard;
    //AluFuncCoverageMonitor  alu_func_cov_monitor;
-   //AluScoreboard           alu_scoreboard;
+   
    
   /*!
    * Methods
@@ -57,7 +58,14 @@
  * Build - environment configuration
  */ 
  function void AluEnv::build_phase(uvm_phase phase);
+   // check configuration for the Env
+   if (!uvm_config_db #(AluEnvConfig)::get(this, "", "AluEnvConfig", alu_env_cfg)) 
+     `uvm_error("MYERR", "AluEnvConfig doesn't exist!"); 
+   
    alu_agent = AluAgent::type_id::create("alu_agent", this);
+   
+   if (alu_env_cfg.has_alu_scoreboard)
+     alu_scoreboard = AluScoreboard::type_id::create("alu_scoreboard", this);
  endfunction: build_phase
  
  
@@ -66,4 +74,8 @@
  * Connect - interconnection of environment components
  */ 
  function void AluEnv::connect_phase(uvm_phase phase);
+    if (alu_env_cfg.has_alu_scoreboard) begin
+      alu_agent.ap_in.connect(alu_scoreboard.export_alu_in_if);
+      alu_agent.ap_out.connect(alu_scoreboard.export_alu_out_if);
+    end
  endfunction: connect_phase 
