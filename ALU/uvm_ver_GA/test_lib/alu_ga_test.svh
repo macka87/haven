@@ -28,6 +28,8 @@
    */ 
    
    Population          population_sequencer; 
+   
+   ChromosomeSequence  chr_seq;    // sequence of chromosomes
    TransactionSequence trans_seq;  // sequence of transactions
    
    /*!
@@ -42,6 +44,7 @@
    extern task main_phase(uvm_phase phase);
    extern function void configure_chromosome_sequence(ChromosomeSequenceConfig chromosome_sequence_cfg);
    extern task createOrLoadInitialPopulation();
+   extern task evaluateInitialPopulation();
    
  endclass: AluGATest
  
@@ -97,6 +100,9 @@
    //! Create initial population
    createOrLoadInitialPopulation();
    
+   //! Evaluate initial population
+   evaluateInitialPopulation();
+   
    
      
    /*AluSequence seq;
@@ -137,9 +143,6 @@
  *  Create or load initial population.   !!! LOAD BUDE IMPLEMENTOVANY NESKOR !!!
  */  
  task AluGATest::createOrLoadInitialPopulation();
-   ChromosomeSequence  chr_seq;    // sequence of chromosomes
-   TransactionSequence trans_seq;  // sequence of transactions
- 
    chr_seq = ChromosomeSequence::type_id::create("chr_seq");
    trans_seq = TransactionSequence::type_id::create("trans_seq");
    
@@ -147,13 +150,25 @@
    chr_seq.pop_sequencer = population_sequencer;
    trans_seq.pop_sequencer = population_sequencer;
    
+   $write("******************************************************************** \n");
+   $write("******************     INITIAL POPULATION      ********************* \n");
+   $write("******************************************************************** \n");
+      
    // start the sequences
    fork
      chr_seq.start(population_sequencer);
      trans_seq.start(alu_env.alu_agent.trans_sequencer);
    join 
-    
- endtask : createOrLoadInitialPopulation
+ endtask: createOrLoadInitialPopulation
+ 
+ 
+ 
+/*
+ *  Evaluate initial population.   
+ */  
+ task AluGATest::evaluateInitialPopulation();
+   
+ endtask: evaluateInitialPopulation 
  
  
  

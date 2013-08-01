@@ -70,8 +70,6 @@
    TransactionSequence trans_sequence;     // Transaction Sequence
    int chr_count = 0;
    
-   $write("ChromosomeSequence::body\n");
-   
    // check configuration for Chromosome Sequence
    if (!uvm_config_db #(ChromosomeSequenceConfig)::get(null, get_full_name(), "ChromosomeSequenceConfig", chrom_seq_cfg)) 
      `uvm_error("BODY", "ChromosomeSequenceConfig doesn't exist!"); 
@@ -90,7 +88,7 @@
      
      // >>>>> CLONE ALU CHROMOSOME >>>>>    
      assert($cast(alu_chromosome_c, alu_chromosome.clone));
-     uvm_report_info("BODY PHASE", alu_chromosome_c.convert2string());
+     //uvm_report_info("BODY PHASE", alu_chromosome_c.convert2string());
      
      start_item(alu_chromosome_c);
      
@@ -98,11 +96,14 @@
      assert(alu_chromosome_c.randomize());     
      
      // >>>>> PRINT CHROMOSOME >>>>>
-     //alu_chromosome_c.print("ChromosomeSequence: ALU Chromosome");  
+     alu_chromosome_c.print(chr_count, 0);  
      
      // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
      finish_item(alu_chromosome_c);
        
+     // TU POTREBUJEM VYCITAT NEJAK COVERAGE (database????)
+     
+     
      // TU BY SOM ICH MALA ULOZIT DO POLA ABY SA S NIMI DALO PRACOVAT
      
      chr_count++; 

@@ -87,7 +87,7 @@
    // Standard UVM methods
    extern function new(string name = "AluChromosome");
    extern function void do_copy(uvm_object rhs);
-   extern function void print(string name);
+   extern function void print(int num, bit full_print);
       
    // Own UVM methods
    extern function void evaluate(int coveredBins);
@@ -152,68 +152,76 @@
 /*! 
  * Print - displays Chromosome content  
  */    
- function void AluChromosome::print(string name);
+ function void AluChromosome::print(int num, bit full_print);
  
    int offset = 0;
-   if (name != "") begin
-     $write("---------------------------------------------------------\n");
-     $write("-- %s\n", name);
-     $write("---------------------------------------------------------\n");
+   
+   if (!full_print) begin
+     $write("\n\n");
+     $write("--------------------------------------------------- \n");
+     $write("--- ALU CHROMOSOME num: %d --- \n", num);
+     $write("--------------------------------------------------- \n\n\n");
    end
-       
-   $write("Structure of Chromosome:\n");
+   
+   else begin  
+     $write("\n\n");
+     $write("--------------------------------------------------- \n");
+     $write("--- ALU CHROMOSOME num: %d --- \n", num);
+     $write("--------------------------------------------------- \n\n\n");
+  
+     $write("Structure of Chromosome:\n");
               
-   $write("| MOVI w. | OP_A w. | OP_B w. | OP_MEM w. | OP_IMM w. | OP w. | DELAY w. |\n");
-       
-   $write("Chromosome real length: %d\n", this.length);
-       
-   $write("Number of MOVI values: %d\n", movi_values);
-   for (int i=0; i<movi_values; i++) 
-       $write("Movi value %d weight: %d\n", i, chromosome[offset++]);
-         
-   $write("OperandA number of ranges: %d\n", operandA_ranges);
-   for (int i=0; i<8; i++) begin
-     if (i < operandA_ranges) 
-       $write("operandA range %d weight: %d\n", i, chromosome[offset++]);
-     else offset++;
-   end  
-         
-   $write("OperandB number of ranges: %d\n", operandB_ranges);
-   for (int i=0; i<8; i++) begin
-     if (i < operandB_ranges) 
-       $write("operandB range %d weight: %d\n", i, chromosome[offset++]);
-     else offset++;
-   end 
-         
-   $write("OperandMEM number of ranges: %d\n", operandMEM_ranges);
-   for (int i=0; i<8; i++) begin
-     if (i < operandMEM_ranges)
-       $write("operandMEM range %d weight: %d\n", i, chromosome[offset++]);  
-     else offset++;
-   end 
-       
-   $write("OperandIMM number of ranges: %d\n", operandIMM_ranges);
-   for (int i=0; i<8; i++) begin
-     if (i < operandIMM_ranges)
-       $write("operandIMM range %d weight: %d\n", i, chromosome[offset++]);
-     else offset++;
-   end     
-       
-   $write("Number of operations: %d\n", operation_values);
-   for (int i=0; i<operation_values; i++) 
-     $write("Operation value %d weight: %d\n", i, chromosome[offset++]);   
+     $write("| MOVI w. | OP_A w. | OP_B w. | OP_MEM w. | OP_IMM w. | OP w. | DELAY w. |\n");
         
-   $write("Number of delay ranges: %d\n", delay_ranges);
-   for (int i=0; i<8; i++) begin
-     if(i<delay_ranges) 
-       $write("Delay %d weight: %d\n", i, chromosome[offset++]);    
-     else offset++;
-   end 
+     $write("Chromosome real length: %d\n", this.length);
        
-   $write("FITNESS: %0d\n", fitness);  
-   $write("Relative fitness: %0d\n", relativeFitness);  
-   $write("\n");
- 
+     $write("Number of MOVI values: %d\n", movi_values);
+     for (int i=0; i<movi_values; i++) 
+         $write("Movi value %d weight: %d\n", i, chromosome[offset++]);
+         
+     $write("OperandA number of ranges: %d\n", operandA_ranges);
+     for (int i=0; i<8; i++) begin
+       if (i < operandA_ranges) 
+         $write("operandA range %d weight: %d\n", i, chromosome[offset++]);
+       else offset++;
+     end  
+         
+     $write("OperandB number of ranges: %d\n", operandB_ranges);
+     for (int i=0; i<8; i++) begin
+       if (i < operandB_ranges) 
+         $write("operandB range %d weight: %d\n", i, chromosome[offset++]);
+       else offset++;
+     end 
+         
+     $write("OperandMEM number of ranges: %d\n", operandMEM_ranges);
+     for (int i=0; i<8; i++) begin
+       if (i < operandMEM_ranges)
+         $write("operandMEM range %d weight: %d\n", i, chromosome[offset++]);  
+       else offset++;
+     end 
+       
+     $write("OperandIMM number of ranges: %d\n", operandIMM_ranges);
+     for (int i=0; i<8; i++) begin
+       if (i < operandIMM_ranges)
+         $write("operandIMM range %d weight: %d\n", i, chromosome[offset++]);
+       else offset++;
+     end     
+       
+     $write("Number of operations: %d\n", operation_values);
+     for (int i=0; i<operation_values; i++) 
+       $write("Operation value %d weight: %d\n", i, chromosome[offset++]);   
+        
+     $write("Number of delay ranges: %d\n", delay_ranges);
+     for (int i=0; i<8; i++) begin
+       if(i<delay_ranges) 
+         $write("Delay %d weight: %d\n", i, chromosome[offset++]);    
+       else offset++;
+     end 
+       
+     $write("FITNESS: %0d\n", fitness);  
+     $write("Relative fitness: %0d\n", relativeFitness);  
+     $write("\n");
+   end
  endfunction: print
 
 

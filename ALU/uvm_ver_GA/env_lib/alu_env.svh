@@ -27,9 +27,10 @@
    * Component Members
    */  
    
-   AluAgent       alu_agent;
-   AluScoreboard  alu_scoreboard;
-   //AluFuncCoverageMonitor  alu_func_cov_monitor;
+   AluAgent               alu_agent;
+   AluScoreboard          alu_scoreboard;
+   AluInCoverageMonitor   alu_in_cov_monitor;
+   AluOutCoverageMonitor  alu_out_cov_monitor;
    
    
   /*!
@@ -66,6 +67,11 @@
    
    if (alu_env_cfg.has_alu_scoreboard)
      alu_scoreboard = AluScoreboard::type_id::create("alu_scoreboard", this);
+     
+   if (alu_env_cfg.has_functional_coverage) begin 
+     alu_in_cov_monitor = AluInCoverageMonitor::type_id::create("alu_in_cov_monitor", this); 
+     alu_out_cov_monitor = AluOutCoverageMonitor::type_id::create("alu_out_cov_monitor", this); 
+   end  
  endfunction: build_phase
  
  
@@ -75,7 +81,10 @@
  */ 
  function void AluEnv::connect_phase(uvm_phase phase);
     if (alu_env_cfg.has_alu_scoreboard) begin
+      // transactions broadcasts to scoreboard and coverage monitors 
       alu_agent.ap_in.connect(alu_scoreboard.export_alu_in_if);
       alu_agent.ap_out.connect(alu_scoreboard.export_alu_out_if);
+      alu_agent.ap_in.connect(alu_in_cov_monitor.analysis_export);
+      alu_agent.ap_out.connect(alu_out_cov_monitor.analysis_export);
     end
  endfunction: connect_phase 

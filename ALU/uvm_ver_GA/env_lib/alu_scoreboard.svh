@@ -103,7 +103,7 @@
      driver_fifo.get(alu_in_tr);
            
      // display received transaction
-     alu_in_tr.print("SCOREBOARD INPUT:");
+     //alu_in_tr.print("SCOREBOARD INPUT:");
        
      // selection of operand B
      priority case (alu_in_tr.movi)
@@ -137,10 +137,10 @@
                    monitor_fifo.get(alu_out_tr_real);
       
                    // display expected transaction
-                   alu_out_tr_exp_c.print("1:SCOREBOARD EXPECTED OUTPUT:");
+                   //alu_out_tr_exp_c.print("1:SCOREBOARD EXPECTED OUTPUT:");
       
                    // display received transaction
-                   alu_out_tr_real.print("1:SCOREBOARD REAL OUTPUT:");
+                   //alu_out_tr_real.print("1:SCOREBOARD REAL OUTPUT:");
        
                    // compare expected and real output transaction
                    if (!alu_out_tr_real.compare(alu_out_tr_exp)) begin
@@ -197,10 +197,10 @@
      monitor_fifo.get(alu_out_tr_real);
        
      // display expected transaction
-     alu_out_tr_exp_c.print("SCOREBOARD EXPECTED OUTPUT:");
+     //alu_out_tr_exp_c.print("SCOREBOARD EXPECTED OUTPUT:");
        
      // display received transaction
-     alu_out_tr_real.print("SCOREBOARD REAL OUTPUT:");
+     //alu_out_tr_real.print("SCOREBOARD REAL OUTPUT:");
        
      // compare expected and real output transaction
      if (!alu_out_tr_real.compare(alu_out_tr_exp_c)) begin
@@ -219,11 +219,14 @@
  * Post-body - implements closing of output file with transactions
  */ 
  function void AluScoreboard::report_phase(uvm_phase phase);
-   uvm_report_info("SCOREBOARD", ":");
+   $write("\n\n");
+   $write("-------------------------------------------------------------------- \n");
+   $write("------------------          SCOREBOARD         --------------------- \n");
+   $write("-------------------------------------------------------------------- \n");
    
    if (m_mismatches == 0) begin
      $write("\n MATCHES: %d\n\n MISMATCHES: %d\n", m_matches, m_mismatches);
-     $write("\n VERIFICATION ENDED CORRECTLY :)\n\n");
+     //$write("\n VERIFICATION ENDED CORRECTLY :)\n\n");
    end
    
    else begin

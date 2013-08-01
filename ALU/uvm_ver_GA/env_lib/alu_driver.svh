@@ -1,6 +1,6 @@
 /* *****************************************************************************
  * Project Name: HAVEN - Genetic Algorithm
- * File Name:    alu_driver.sv
+ * File Name:    alu_driver.svh
  * Description:  UVM Driver Class for ALU
  * Authors:      Marcela Simkova <isimkova@fit.vutbr.cz> 
  * Date:         26.6.2013
@@ -98,7 +98,7 @@
      seq_item_port.get_next_item(alu_in_trans);
      
      // display the content of transaction 
-     alu_in_trans.print("DRIVER: ALU_TRANSACTION");
+     //alu_in_trans.print("DRIVER: ALU_TRANSACTION");
        
      // wait for readiness of ALU to process data
      waitForAluRdy();

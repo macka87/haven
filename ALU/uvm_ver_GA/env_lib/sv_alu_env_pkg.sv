@@ -15,6 +15,7 @@
    // Package imports
    import sv_alu_seq_pkg::*;
    import sv_alu_param_pkg::*;
+   import math_pkg::*;
    
    // Includes
    `include "alu_agent_config.svh"
@@ -22,6 +23,8 @@
    `include "alu_driver.svh"
    `include "alu_monitor.svh"
    `include "alu_scoreboard.svh"
+   `include "alu_in_coverage_monitor.svh"
+   `include "alu_out_coverage_monitor.svh"
    `include "alu_agent.svh"
    `include "alu_env.svh"
      

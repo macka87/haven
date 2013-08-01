@@ -113,7 +113,7 @@
        alu_out_trans.ex_alu = dut_alu_out_if.cb.EX_ALU;
        
        // display the content of transaction 
-       alu_out_trans.print("MONITOR:"); 
+       //alu_out_trans.print("MONITOR:"); 
        
        // sends generated transaction to the scoreboard, subscriber etc.
        aport_alu_out_if.write(alu_out_trans);
