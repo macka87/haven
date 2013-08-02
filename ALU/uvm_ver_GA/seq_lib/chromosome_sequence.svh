@@ -28,6 +28,7 @@
    local int unsigned maxMutations;    // Maximum number of mutations
    local real         allsums[];
    
+   ChromosomeArray            chr_array;      // Chromosomes stored into an array
    ChromosomeSequenceConfig   chrom_seq_cfg;  // configuration object
    
   /*! 
@@ -46,7 +47,6 @@
       
    // Own UVM methods
    extern task configurePopulation(ChromosomeSequenceConfig chrom_seq_cfg);
-   extern task configureAluChromosome(AluChromosome alu_chromosome, ChromosomeSequenceConfig chrom_seq_cfg);
    
  endclass: ChromosomeSequence
  
@@ -65,8 +65,6 @@
  * Body - implements behavior of the transaction
  */ 
  task ChromosomeSequence::body;
-   AluChromosome       alu_chromosome;     // ALU Chromosome
-   AluChromosome       alu_chromosome_c;   // ALU Chromosome clone
    TransactionSequence trans_sequence;     // Transaction Sequence
    int chr_count = 0;
    
@@ -77,34 +75,18 @@
    // configure Population of Chromosomes (Chromosome Sequence)
    configurePopulation(chrom_seq_cfg);  
    
-   // create ALU Chromosome
-   alu_chromosome = AluChromosome::type_id::create("alu_chromosome");
-   
-   // configure ALU Chromosome
-   configureAluChromosome(alu_chromosome, chrom_seq_cfg);
-     
-   // generate Chromosomes in Population
+   // get population of Chromosomes from the configuration database
+   if (!uvm_config_db #(ChromosomeArray)::get(null, get_full_name(), "ChromosomeArray", chr_array))
+     `uvm_error("BODY", "Population of chromosomes doesn't exist!"); 
+  
+   // send Chromosomes from Population to Driver
    while (chr_count < populationSize) begin
      
-     // >>>>> CLONE ALU CHROMOSOME >>>>>    
-     assert($cast(alu_chromosome_c, alu_chromosome.clone));
-     //uvm_report_info("BODY PHASE", alu_chromosome_c.convert2string());
-     
-     start_item(alu_chromosome_c);
-     
-     // >>>>> RANDOM GENERATION OF CHROMOSOME >>>>>
-     assert(alu_chromosome_c.randomize());     
-     
-     // >>>>> PRINT CHROMOSOME >>>>>
-     alu_chromosome_c.print(chr_count, 0);  
-     
      // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
-     finish_item(alu_chromosome_c);
+     start_item(chr_array.alu_chromosome[chr_count]);
+     finish_item(chr_array.alu_chromosome[chr_count]);
        
-     // TU POTREBUJEM VYCITAT NEJAK COVERAGE (database????)
-     
-     
-     // TU BY SOM ICH MALA ULOZIT DO POLA ABY SA S NIMI DALO PRACOVAT
+     // >>>>> GET COVERAGE >>>>>
      
      chr_count++; 
    end
@@ -120,28 +102,3 @@
    selection      = chrom_seq_cfg.selection;       // Selection type 
    maxMutations   = chrom_seq_cfg.maxMutations;    // Maximum number of mutations
  endtask: configurePopulation
- 
- 
- 
-/*! 
- * configureAluChromosome - configure ALU Chromosome with data from the configuration object
- */ 
- task ChromosomeSequence::configureAluChromosome(AluChromosome alu_chromosome, ChromosomeSequenceConfig chrom_seq_cfg);
-   alu_chromosome.movi_values           = chrom_seq_cfg.movi_values;
-   alu_chromosome.operation_values      = chrom_seq_cfg.operation_values;
-   alu_chromosome.delay_rangesMin       = chrom_seq_cfg.delay_rangesMin;         
-   alu_chromosome.delay_rangesMax       = chrom_seq_cfg.delay_rangesMax;
-   alu_chromosome.operandA_rangesMin    = chrom_seq_cfg.operandA_rangesMin;
-   alu_chromosome.operandA_rangesMax    = chrom_seq_cfg.operandA_rangesMax;
-   alu_chromosome.operandB_rangesMin    = chrom_seq_cfg.operandB_rangesMin;
-   alu_chromosome.operandB_rangesMax    = chrom_seq_cfg.operandB_rangesMax;  
-   alu_chromosome.operandMEM_rangesMin  = chrom_seq_cfg.operandMEM_rangesMin;
-   alu_chromosome.operandMEM_rangesMax  = chrom_seq_cfg.operandMEM_rangesMax;  
-   alu_chromosome.operandIMM_rangesMin  = chrom_seq_cfg.operandIMM_rangesMin;
-   alu_chromosome.operandIMM_rangesMax  = chrom_seq_cfg.operandIMM_rangesMax;
-   
-   alu_chromosome.length = alu_chromosome.operandA_rangesMax + alu_chromosome.operandB_rangesMax + 
-                           alu_chromosome.operandMEM_rangesMax + alu_chromosome.operandIMM_rangesMax + 
-                           alu_chromosome.delay_rangesMax + alu_chromosome.movi_values + 
-                           alu_chromosome.operation_values;
- endtask: configureAluChromosome 

@@ -19,6 +19,7 @@
    // Includes
    `include "chromosome_sequence_config.svh" 
    `include "alu_chromosome.svh"
+   `include "chromosome_array.svh"
    `include "alu_input_transaction.svh"
    `include "alu_ga_input_transaction.svh"
    `include "transaction_sequence_config.svh" 

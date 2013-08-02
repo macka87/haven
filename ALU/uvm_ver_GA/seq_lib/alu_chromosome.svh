@@ -156,13 +156,9 @@
  
    int offset = 0;
    
-   if (!full_print) begin
-     $write("\n\n");
-     $write("--------------------------------------------------- \n");
-     $write("--- ALU CHROMOSOME num: %d --- \n", num);
-     $write("--------------------------------------------------- \n\n\n");
-   end
-   
+   if (!full_print) 
+     $write("\n --- ALU CHROMOSOME num: %d --- \n", num);
+      
    else begin  
      $write("\n\n");
      $write("--------------------------------------------------- \n");

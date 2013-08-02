@@ -21,6 +21,7 @@
    * Data Members
    */
    
+   ChromosomeArray          chr_array;                // Chromosomes stored into an array
    ChromosomeSequenceConfig chromosome_sequence_cfg;  // Configuration objects
    
   /*! 
@@ -28,7 +29,6 @@
    */ 
    
    Population          population_sequencer; 
-   
    ChromosomeSequence  chr_seq;    // sequence of chromosomes
    TransactionSequence trans_seq;  // sequence of transactions
    
@@ -43,8 +43,9 @@
    // Other methods
    extern task main_phase(uvm_phase phase);
    extern function void configure_chromosome_sequence(ChromosomeSequenceConfig chromosome_sequence_cfg);
+   extern task configureAluChromosome(AluChromosome alu_chromosome);
    extern task createOrLoadInitialPopulation();
-   extern task evaluateInitialPopulation();
+   extern task evaluatePopulation();
    
  endclass: AluGATest
  
@@ -65,7 +66,7 @@
  function void AluGATest::build_phase(uvm_phase phase);
    super.build_phase(phase);
    
-   // CONFIGURATION OF CHROMOSOMES IN SEQUENCE
+   // >>>>> CONFIGURATION OF POPULATION >>>>>
     
    // create configuration object for chromosome sequence
    chromosome_sequence_cfg = ChromosomeSequenceConfig::type_id::create("chromosome_sequence_cfg");
@@ -76,11 +77,23 @@
    // put configuration into the configuration space
    uvm_config_db #(ChromosomeSequenceConfig)::set(this, "*", "ChromosomeSequenceConfig", chromosome_sequence_cfg);
    
-   
-   // POPULATION 
+   // >>>>> POPULATION >>>>>
    
    // create Population Sequencer
    population_sequencer = Population::type_id::create("population_sequencer", this);
+   
+   // create array of chromosomes
+   chr_array = ChromosomeArray::type_id::create("chr_array");
+   
+   // >>>>> CHROMOSOME AND TRANSACTION SEQUENCE >>>>>
+   
+   // create chromosome and transaction sequence
+   chr_seq = ChromosomeSequence::type_id::create("chr_seq");
+   trans_seq = TransactionSequence::type_id::create("trans_seq");
+   
+   // connect sequences to their sequencers
+   chr_seq.pop_sequencer = population_sequencer;
+   trans_seq.pop_sequencer = population_sequencer;
    
  endfunction: build_phase
  
@@ -100,38 +113,11 @@
    //! Create initial population
    createOrLoadInitialPopulation();
    
-   //! Evaluate initial population
-   evaluateInitialPopulation();
-   
-   
-     
-   /*AluSequence seq;
-   seq = AluSequence::type_id::create("seq");
-   seq.start( AluEnv_h.AluSequencer_h); */
-     
-   //! Create initial population
-   //createOrLoadInitialPopulation(POPULATION_FILENAME, LOAD_POPULATION, POPULATION_SIZE, MAX_MUTATIONS);
-    
-   //! Evaluate initial population
-   //evaluateInitialPopulation();
-     
    //! Run evolution
    //for (int generation = 1; generation <= GENERATIONS; generation++) begin
-       
-     //! Create next generation and select best chromosome from initial population
-     //population.selectAndReplace(chromosome_arr[generation-1]);
-     //chromosome_arr[generation-1].display("BEST CHROMOSOME");
-       
      //! Evaluate population
-     //evaluatePopulation(generation);
+     evaluatePopulation();
    //end
-     
-   //! Save population
-   //population.save(POPULATION_FILENAME);
-    
-   //! Display best individuum from population
-   //population.getBestChromosomes(1, bestChrom);
-   //bestChrom[0].display("Best chromosome");
    
    phase.drop_objection(this); 
     
@@ -143,22 +129,27 @@
  *  Create or load initial population.   !!! LOAD BUDE IMPLEMENTOVANY NESKOR !!!
  */  
  task AluGATest::createOrLoadInitialPopulation();
-   chr_seq = ChromosomeSequence::type_id::create("chr_seq");
-   trans_seq = TransactionSequence::type_id::create("trans_seq");
-   
-   // connect sequences to their sequencers
-   chr_seq.pop_sequencer = population_sequencer;
-   trans_seq.pop_sequencer = population_sequencer;
    
    $write("******************************************************************** \n");
    $write("******************     INITIAL POPULATION      ********************* \n");
    $write("******************************************************************** \n");
-      
-   // start the sequences
-   fork
-     chr_seq.start(population_sequencer);
-     trans_seq.start(alu_env.alu_agent.trans_sequencer);
-   join 
+   
+   // create random initial population
+   chr_array.alu_chromosome = new[POPULATION_SIZE];
+   for (int i=0; i<POPULATION_SIZE; i++) begin
+     // create chromosome 
+     chr_array.alu_chromosome[i] = AluChromosome::type_id::create("alu_chromosome");
+     // configure chromosome
+     configureAluChromosome(chr_array.alu_chromosome[i]);
+     // randomize chromosome
+     assert(chr_array.alu_chromosome[i].randomize());   
+     // print chromosome
+     chr_array.alu_chromosome[i].print(i, 0);     
+   end 
+   
+   // save population of chromosomes into the configuration database
+   uvm_config_db #(ChromosomeArray)::set(this, "*", "ChromosomeArray", chr_array); 
+   
  endtask: createOrLoadInitialPopulation
  
  
@@ -166,9 +157,38 @@
 /*
  *  Evaluate initial population.   
  */  
- task AluGATest::evaluateInitialPopulation();
+ task AluGATest::evaluatePopulation();
+   // start the sequences
+   fork
+     chr_seq.start(population_sequencer);
+     trans_seq.start(alu_env.alu_agent.trans_sequencer);
+   join 
+ endtask: evaluatePopulation 
+
+
+
+/*! 
+ * configureAluChromosome - configure ALU Chromosome with data from the configuration object
+ */ 
+ task AluGATest::configureAluChromosome(AluChromosome alu_chromosome);
+   alu_chromosome.movi_values           = 3;   // num. of values for MOVI
+   alu_chromosome.operation_values      = 16;  // num. of values for OPERATION
+   alu_chromosome.delay_rangesMin       = DELAY_RANGES_MIN;         
+   alu_chromosome.delay_rangesMax       = DELAY_RANGES_MAX;
+   alu_chromosome.operandA_rangesMin    = OPERAND_A_RANGES_MIN;
+   alu_chromosome.operandA_rangesMax    = OPERAND_A_RANGES_MAX;
+   alu_chromosome.operandB_rangesMin    = OPERAND_B_RANGES_MIN;
+   alu_chromosome.operandB_rangesMax    = OPERAND_B_RANGES_MAX;  
+   alu_chromosome.operandMEM_rangesMin  = OPERAND_MEM_RANGES_MIN;
+   alu_chromosome.operandMEM_rangesMax  = OPERAND_MEM_RANGES_MAX;  
+   alu_chromosome.operandIMM_rangesMin  = OPERAND_IMM_RANGES_MIN;
+   alu_chromosome.operandIMM_rangesMax  = OPERAND_IMM_RANGES_MAX;
    
- endtask: evaluateInitialPopulation 
+   alu_chromosome.length = alu_chromosome.operandA_rangesMax + alu_chromosome.operandB_rangesMax + 
+                           alu_chromosome.operandMEM_rangesMax + alu_chromosome.operandIMM_rangesMax + 
+                           alu_chromosome.delay_rangesMax + alu_chromosome.movi_values + 
+                           alu_chromosome.operation_values;
+ endtask: configureAluChromosome 
  
  
  
@@ -185,19 +205,5 @@
    // CHROMOSOME parameters
    chromosome_sequence_cfg.fitness         = 0;    // fitness function
    chromosome_sequence_cfg.relativeFitness = 0;    // relative fitness function   
-   
-   // ALU CHROMOSOME parameters 
-   chromosome_sequence_cfg.movi_values           = 3;   // num. of values for MOVI
-   chromosome_sequence_cfg.operation_values      = 16;  // num. of values for OPERATION
-   chromosome_sequence_cfg.delay_rangesMin       = DELAY_RANGES_MIN;         
-   chromosome_sequence_cfg.delay_rangesMax       = DELAY_RANGES_MAX;
-   chromosome_sequence_cfg.operandA_rangesMin    = OPERAND_A_RANGES_MIN;
-   chromosome_sequence_cfg.operandA_rangesMax    = OPERAND_A_RANGES_MAX;
-   chromosome_sequence_cfg.operandB_rangesMin    = OPERAND_B_RANGES_MIN;
-   chromosome_sequence_cfg.operandB_rangesMax    = OPERAND_B_RANGES_MAX;  
-   chromosome_sequence_cfg.operandMEM_rangesMin  = OPERAND_MEM_RANGES_MIN;
-   chromosome_sequence_cfg.operandMEM_rangesMax  = OPERAND_MEM_RANGES_MAX;  
-   chromosome_sequence_cfg.operandIMM_rangesMin  = OPERAND_IMM_RANGES_MIN;
-   chromosome_sequence_cfg.operandIMM_rangesMax  = OPERAND_IMM_RANGES_MAX; 
    
  endfunction: configure_chromosome_sequence 
