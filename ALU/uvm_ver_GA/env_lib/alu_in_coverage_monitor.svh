@@ -34,6 +34,9 @@
    // max value 
    logic [DATA_WIDTH-1:0] max_value = pow (2, DATA_WIDTH) - 1; 
    
+   // Configuration object for the coverage storage
+   AluCoverageInfo cov_info;   
+   
   /*
    * Definitions of covergroups
    */          
@@ -144,7 +147,10 @@
  * Write - samples values on the interface.  
  */
  function void AluInCoverageMonitor::write(AluInputTransaction t);
-   real coverage;
+   
+   // get configuration object from database
+   if (!uvm_config_db #(AluCoverageInfo)::get(this, "", "AluCoverageInfo", cov_info)) 
+     `uvm_error("MYERR", "AluCoverageInfo doesn't exist!"); 
      
    alu_in_trans = t;
    pkt_cnt++;
@@ -152,10 +158,13 @@
    // sample coverage
    alu_in_covergroup.sample();
      
-   coverage = alu_in_covergroup.get_inst_coverage();
-   //coverage = $get_coverage();
+   cov_info.alu_in_coverage = alu_in_covergroup.get_inst_coverage();
+   //cov_info.alu_in_coverage = $get_coverage();
      
    // print statistics
-   uvm_report_info("ALU INPUT COVERAGE", $psprintf("%0d Packets sampled, Coverage = %f%% ", pkt_cnt, coverage));
+   uvm_report_info("ALU INPUT COVERAGE", $psprintf("%0d Packets sampled, Coverage = %f%% ", pkt_cnt, cov_info.alu_in_coverage));
+   
+   // store new coverage info into the configuration object
+   uvm_config_db #(AluCoverageInfo)::set(this, "*", "AluCoverageInfo", cov_info);
      
  endfunction: write

@@ -14,8 +14,10 @@
   
    // Package imports
    import sv_alu_seq_pkg::*;
+   import sv_alu_ga_pkg::*;
    import sv_alu_param_pkg::*;
    import math_pkg::*;
+   import sv_alu_coverage_pkg::*;
    
    // Includes
    `include "alu_agent_config.svh"

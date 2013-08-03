@@ -15,6 +15,7 @@
    // Package imports
    import sv_alu_param_pkg::*;
    import sv_basic_ga_pkg::*;
+   import sv_alu_ga_pkg::*;
    import sv_alu_seq_pkg::*;
    import sv_alu_env_pkg::*;
   

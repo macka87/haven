@@ -27,6 +27,9 @@
    
    int pkt_cnt;
    
+   // Configuration object for the coverage storage
+   AluCoverageInfo cov_info;   
+   
   /*
    * Definition of covergroups
    */
@@ -67,18 +70,24 @@
  * Write - samples values on the interface.  
  */
  function void AluOutCoverageMonitor::write(AluOutputTransaction t);
-   real coverage;
+   
+   // get configuration object from database
+   if (!uvm_config_db #(AluCoverageInfo)::get(this, "", "AluCoverageInfo", cov_info)) 
+     `uvm_error("MYERR", "AluCoverageInfo doesn't exist!"); 
      
    alu_out_trans = t;
    pkt_cnt++;
      
    // sample coverage
    alu_out_covergroup.sample();
-     
-   coverage = alu_out_covergroup.get_inst_coverage();
-   //coverage = $get_coverage();
-     
+   
+   cov_info.alu_out_coverage = alu_out_covergroup.get_inst_coverage();  
+   //cov_info.alu_out_coverage = $get_coverage();
+        
    // print statistics
-   uvm_report_info("ALU OUTPUT COVERAGE", $psprintf("%0d Packets sampled, Coverage = %f%% ", pkt_cnt, coverage));
+   uvm_report_info("ALU OUTPUT COVERAGE", $psprintf("%0d Packets sampled, Coverage = %f%% ", pkt_cnt, cov_info.alu_out_coverage));
+   
+   // store new coverage info into the configuration object
+   uvm_config_db #(AluCoverageInfo)::set(this, "*", "AluCoverageInfo", cov_info);
      
  endfunction: write

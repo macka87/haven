@@ -3,7 +3,7 @@
  * File Name:    alu_agent.svh
  * Description:  ALU Agent.
  * Authors:      Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         19.4.2013
+ * Date:         3.8.2013
  * ************************************************************************** */
 
 /*!
@@ -23,6 +23,7 @@
    
    AluAgentConfig  alu_agent_cfg;
    TransactionSequenceConfig transaction_sequence_cfg;
+   AluGATransactionSequenceConfig alu_ga_transaction_sequence_cfg;
    
   /*! 
    * Ports/Exports
@@ -51,6 +52,7 @@
       
    // Own UVM methods
    extern function void configure_transaction_sequence(TransactionSequenceConfig transaction_sequence_cfg);
+   extern function void configure_alu_ga_transaction_sequence(AluGATransactionSequenceConfig alu_ga_transaction_sequence_cfg);
    
  endclass: AluAgent
 
@@ -76,11 +78,20 @@
    // create configuration object for Transaction Sequence
    transaction_sequence_cfg = TransactionSequenceConfig::type_id::create("transaction_sequence_cfg");
    
+   // create configuration object for GA Transaction Sequence
+   alu_ga_transaction_sequence_cfg = AluGATransactionSequenceConfig::type_id::create("alu_ga_transaction_sequence_cfg");
+   
    // configure transaction sequence
    configure_transaction_sequence(transaction_sequence_cfg);
    
+   // configure GA transaction sequence
+   configure_alu_ga_transaction_sequence(alu_ga_transaction_sequence_cfg);
+   
    // put configuration into the configuration space
    uvm_config_db #(TransactionSequenceConfig)::set(this, "*", "TransactionSequenceConfig", transaction_sequence_cfg);  
+   
+   // put GA configuration into the configuration space
+   uvm_config_db #(AluGATransactionSequenceConfig)::set(this, "*", "AluGATransactionSequenceConfig", alu_ga_transaction_sequence_cfg);  
    
    // create analysis ports
    ap_in  = new("ap_in",this);
@@ -123,5 +134,14 @@
  */   
  function void AluAgent::configure_transaction_sequence(TransactionSequenceConfig transaction_sequence_cfg);
    transaction_sequence_cfg.trans_count     = alu_agent_cfg.trans_count;
-   transaction_sequence_cfg.populationSize  = alu_agent_cfg.populationSize;    // Size of a population
  endfunction: configure_transaction_sequence
+ 
+ 
+
+/*! 
+ * Configure ALU GA Transaction Sequence.
+ */   
+ function void AluAgent::configure_alu_ga_transaction_sequence(AluGATransactionSequenceConfig alu_ga_transaction_sequence_cfg);
+   alu_ga_transaction_sequence_cfg.trans_count     = alu_agent_cfg.trans_count;
+   alu_ga_transaction_sequence_cfg.populationSize  = alu_agent_cfg.populationSize;    // Size of a population
+ endfunction: configure_alu_ga_transaction_sequence 

@@ -13,18 +13,12 @@
    `include "uvm_macros.svh"
   
    // Package imports
-   import sv_basic_ga_pkg::*;
-   import sv_alu_param_pkg::*;
-   
+   import sv_alu_param_pkg::*; 
+         
    // Includes
-   `include "chromosome_sequence_config.svh" 
-   `include "alu_chromosome.svh"
-   `include "chromosome_array.svh"
    `include "alu_input_transaction.svh"
-   `include "alu_ga_input_transaction.svh"
    `include "transaction_sequence_config.svh" 
    `include "transaction_sequence.svh"
-   `include "chromosome_sequence.svh"
    `include "transaction_sequencer.svh"
    `include "alu_output_transaction.svh"
  endpackage

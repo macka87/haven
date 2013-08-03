@@ -28,9 +28,9 @@
    * Component Members
    */ 
    
-   Population          population_sequencer; 
-   ChromosomeSequence  chr_seq;    // sequence of chromosomes
-   TransactionSequence trans_seq;  // sequence of transactions
+   Population               population_sequencer; 
+   ChromosomeSequence       chr_seq;    // sequence of chromosomes
+   AluGATransactionSequence trans_seq;  // sequence of transactions
    
    /*!
    * Methods
@@ -89,7 +89,7 @@
    
    // create chromosome and transaction sequence
    chr_seq = ChromosomeSequence::type_id::create("chr_seq");
-   trans_seq = TransactionSequence::type_id::create("trans_seq");
+   trans_seq = AluGATransactionSequence::type_id::create("trans_seq");
    
    // connect sequences to their sequencers
    chr_seq.pop_sequencer = population_sequencer;
