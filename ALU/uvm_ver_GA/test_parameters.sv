@@ -24,6 +24,8 @@
    parameter GENERATIONS      = 20;
    // Size of population
    parameter POPULATION_SIZE  = 2;
+   // Elitism
+   parameter ELITISM          = 1;
    // Number of maximal mutations per individuum
    parameter MAX_MUTATIONS    = 20;
    // File for save/load population

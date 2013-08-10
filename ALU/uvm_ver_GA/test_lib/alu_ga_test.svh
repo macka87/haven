@@ -199,7 +199,8 @@
    
    // POPULATION parameters
    chromosome_sequence_cfg.populationSize  = POPULATION_SIZE; // Size of a population
-   chromosome_sequence_cfg.selection       = RANK;            // Selection type 
+   chromosome_sequence_cfg.selection       = PROPORTIONATE;   // Selection type 
+   chromosome_sequence_cfg.elitism         = ELITISM;         // Elitism 
    chromosome_sequence_cfg.maxMutations    = MAX_MUTATIONS;   // Maximum number of mutations   
    
    // CHROMOSOME parameters

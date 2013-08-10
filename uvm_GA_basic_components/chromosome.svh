@@ -26,6 +26,7 @@
    int          chromosome_parts;   // uniform parts of chromosome
    int unsigned fitness;            // fitness function
    real         relativeFitness;    // relative fitness function
+   real         roulette_part;      // occupied part of roulette in case of Roulette selection
    rand byte unsigned chromosome[]; // chromosome
    
   /*!
@@ -119,7 +120,7 @@
 
 
 /*!
- * Computes relative fitness.
+ * Computes relative fitness: USED
  */
  function void Chromosome::setRelativeFitness(int unsigned popFitness);
    relativeFitness = real'(fitness)/real'(popFitness);

@@ -90,7 +90,7 @@
    extern function void print(int num, bit full_print);
       
    // Own UVM methods
-   extern function void evaluate(int coveredBins);
+   
 
  endclass: AluChromosome
  
@@ -219,11 +219,3 @@
      $write("\n");
    end
  endfunction: print
-
-
-
-/*! 
- * Evaluate - evaluate coverage of Chromosome   
- */    
- function void AluChromosome::evaluate(int coveredBins);
- endfunction: evaluate

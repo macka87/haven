@@ -6,6 +6,7 @@
 # Date:         19.4.2013
 # ************************************************************************** */
 
+set MODELSIM modelsim.ini
 set UVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/uvm-1.1
 
 # Working library

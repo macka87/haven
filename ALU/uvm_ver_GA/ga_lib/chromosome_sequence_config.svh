@@ -23,7 +23,8 @@
    
    // POPULATION PARAMETERS
    int          populationSize  = 10;   // Size of a population
-   selection_t  selection       = RANK; // Selection type 
+   selection_t  selection       = PROPORTIONATE; // Selection type 
+   bit elitism                  = 1;    // Elitism enable by default 
    int unsigned maxMutations    = 20;   // Maximum number of mutations
    
    // CHROMOSOME PARAMETERS
