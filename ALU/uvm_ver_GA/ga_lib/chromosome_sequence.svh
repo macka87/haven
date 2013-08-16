@@ -25,10 +25,11 @@
    local selection_t  selection;       // Selection type 
    local bit          elitism;         // Elitism
    local int unsigned maxMutations;    // Maximum number of mutations
+   local int unsigned crossoverProb;   // Crossover probability
    local real         allsums[];
    
-   ChromosomeArray            old_chr_array;      // Chromosomes stored into an array
-   ChromosomeArray            new_chr_array;      // Chromosomes stored into an array
+   ChromosomeArray            old_chr_array;  // Chromosomes stored into an array
+   ChromosomeArray            new_chr_array;  // Chromosomes stored into an array
    ChromosomeSequenceConfig   chrom_seq_cfg;  // configuration object
    
    // Configuration object for the coverage storage
@@ -146,7 +147,8 @@
    elitism        = chrom_seq_cfg.elitism;         // Elitism 
    selection      = chrom_seq_cfg.selection;       // Selection type 
    maxMutations   = chrom_seq_cfg.maxMutations;    // Maximum number of mutations
- endtask: configurePopulation
+   crossoverProb  = chrom_seq_cfg.crossoverProb;   // Maximum number of mutations
+ endtask: configurePopulation                      // Crossover probability
  
  
  
@@ -187,6 +189,7 @@
  */
  function void ChromosomeSequence::selectAndReplace();
    real tmp;         // random number
+   int index;
    real portion = 0; // portion of roulette occupied by chromosomes 
    int unsigned populationFitness = 0;
    
@@ -203,7 +206,7 @@
        // compute and set occupied roulette part 
        portion += old_chr_array.alu_chromosome[i].relativeFitness;
        old_chr_array.alu_chromosome[i].roulette_part = portion;
-       $write("portion %f%%\n", portion);
+       $write("portion %f%%\n", old_chr_array.alu_chromosome[i].roulette_part);
      end  
      
      // Preserve 25% of origin population for next generation
@@ -212,14 +215,27 @@
      //   numOfParents = 1;
      
      // select parents using roulette selection
-      for (int i=1; i < populationSize; i++) begin
-        tmp = real'($urandom() & 16'hFFFF)/16'hFFFF;
-        $write("tmp = %f\n",tmp);
-        index = allsums.find_first_index(s) with (s >= tmp);
-        $write("index: %0d\n",index[0]);
-        nextPopulation[i].copy(population[index[0]]);
-      end
+     for (int i=1; i < populationSize; i++) begin
+       tmp = real'($urandom() & 16'hFFFF)/16'hFFFF;
+       $write("tmp = %f\n",tmp);
+       
+       for (int j=1; j < populationSize; j++) begin
+         if (old_chr_array.alu_chromosome[j].roulette_part > tmp) index = j;
+         break;
+       end  
+       
+       $write("index: %d\n", index);
+       new_chr_array.alu_chromosome[i] = old_chr_array.alu_chromosome[index];
+     end
      
+     // crossover neighbour chromosomes
+     for (int i=1; i < populationSize; i+=2) begin
+       if (i+1 < populationSize && $urandom_range(100) < crossoverProb) 
+         new_chr_array.alu_chromosome[i+1] = new_chr_array.alu_chromosome[i].crossover(new_chr_array.alu_chromosome[i+1]);
+     end    
      
+     // mutate chromosomes
+     for (int i=1; i < populationSize; i++)
+       void'(new_chr_array.alu_chromosome[i].mutate(maxMutations));
    end
  endfunction: selectAndReplace
