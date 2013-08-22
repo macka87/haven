@@ -120,21 +120,23 @@
      chr_count++; 
    end
    
-   // !!! prerobit old_chr_array dostupne v celej triede !! netreba predavat ako parametre 
-   
    // FIND THE BEST CHROMOSOME
    getBestChromosome(best_chromosome);
-   best_chromosome.print(0, 1);
+   //$write("BEST CHROMOSOME: index 0: \n");
+   //best_chromosome.print(0, 1);
    
    // CREATE NEW POPULATION
    new_chr_array.alu_chromosome = new[populationSize];
-   
+     
    // CHECK ELITISM
    if (elitism) new_chr_array.alu_chromosome[0] = best_chromosome;
    
    // SELECT AND REPLACE
    selectAndReplace();
-    
+   
+   // SET NEW POPULATION OF CHROMOSOMES TO THE DATABASE
+   uvm_config_db #(ChromosomeArray)::set(null, "*", "ChromosomeArray", new_chr_array); 
+       
  endtask: body
  
  
@@ -206,7 +208,7 @@
        // compute and set occupied roulette part 
        portion += old_chr_array.alu_chromosome[i].relativeFitness;
        old_chr_array.alu_chromosome[i].roulette_part = portion;
-       $write("portion %f%%\n", old_chr_array.alu_chromosome[i].roulette_part);
+       //$write("portion %f%%\n", old_chr_array.alu_chromosome[i].roulette_part);
      end  
      
      // Preserve 25% of origin population for next generation
@@ -217,25 +219,33 @@
      // select parents using roulette selection
      for (int i=1; i < populationSize; i++) begin
        tmp = real'($urandom() & 16'hFFFF)/16'hFFFF;
-       $write("tmp = %f\n",tmp);
+       //$write("tmp = %f\n",tmp);
        
-       for (int j=1; j < populationSize; j++) begin
-         if (old_chr_array.alu_chromosome[j].roulette_part > tmp) index = j;
-         break;
+       for (int j=0; j < populationSize; j++) begin
+         if (old_chr_array.alu_chromosome[j].roulette_part > tmp) begin
+           index = j;
+           break;
+         end  
        end  
        
-       $write("index: %d\n", index);
+       //$write("SELECTED CHROMOSOME: index: %d\n", index);
        new_chr_array.alu_chromosome[i] = old_chr_array.alu_chromosome[index];
+       //new_chr_array.alu_chromosome[i].print(i, 1);       
      end
      
      // crossover neighbour chromosomes
-     /*for (int i=1; i < populationSize; i+=2) begin
-       if (i+1 < populationSize && $urandom_range(100) < crossoverProb) 
-         new_chr_array.alu_chromosome[i+1] = new_chr_array.alu_chromosome[i].crossover(new_chr_array.alu_chromosome[i+1]);
-     end*/    
+     for (int i=1; i < populationSize; i+=2) begin
+       if ((i+1 < populationSize) && ($urandom_range(100) < crossoverProb)) 
+         new_chr_array.alu_chromosome[i+1] = new_chr_array.alu_chromosome[i].crossover(new_chr_array.alu_chromosome[i+1]);  
+     end   
+     
+     //$write("POPULATION AFTER CROSSOVER:\n");
+     //for (int i=0; i < populationSize; i++) begin 
+     //   new_chr_array.alu_chromosome[i].print(i, 1);     
+     //end
      
      // mutate chromosomes
-     /*for (int i=1; i < populationSize; i++)
-       void'(new_chr_array.alu_chromosome[i].mutate(maxMutations)); */
+     for (int i=1; i < populationSize; i++)
+       void'(new_chr_array.alu_chromosome[i].mutate(maxMutations)); 
    end
  endfunction: selectAndReplace

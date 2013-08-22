@@ -43,7 +43,7 @@
    // Other methods
    extern task main_phase(uvm_phase phase);
    extern function void configure_chromosome_sequence(ChromosomeSequenceConfig chromosome_sequence_cfg);
-   extern task configureAluChromosome(AluChromosome alu_chromosome);
+   extern task configureAluChromosome(AluChromosome alu_chromosome); 
    extern task createOrLoadInitialPopulation();
    extern task evaluatePopulation();
    
@@ -142,7 +142,7 @@
      // configure chromosome
      configureAluChromosome(chr_array.alu_chromosome[i]);
      // randomize chromosome
-     assert(chr_array.alu_chromosome[i].randomize());   
+     assert(chr_array.alu_chromosome[i].randomize()); 
      // print chromosome
      chr_array.alu_chromosome[i].print(i, 0);     
    end 
@@ -184,14 +184,17 @@
    alu_chromosome.operandIMM_rangesMin  = OPERAND_IMM_RANGES_MIN;
    alu_chromosome.operandIMM_rangesMax  = OPERAND_IMM_RANGES_MAX;
    
+   // !!! maximal length
    alu_chromosome.length = alu_chromosome.operandA_rangesMax + alu_chromosome.operandB_rangesMax + 
                            alu_chromosome.operandMEM_rangesMax + alu_chromosome.operandIMM_rangesMax + 
                            alu_chromosome.delay_rangesMax + alu_chromosome.movi_values + 
                            alu_chromosome.operation_values;
+                           
+   alu_chromosome.chromosome_parts     = 7;                        
  endtask: configureAluChromosome 
  
- 
- 
+
+
 /*! 
  * Function to configure population
  */ 

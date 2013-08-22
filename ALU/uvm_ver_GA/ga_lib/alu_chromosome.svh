@@ -90,7 +90,8 @@
    extern function void print(int num, bit full_print);
       
    // Own UVM methods
-   
+   extern function AluChromosome crossover(AluChromosome chrom = null);
+   extern function AluChromosome mutate(int unsigned maxMutations); 
 
  endclass: AluChromosome
  
@@ -219,3 +220,122 @@
      $write("\n");
    end
  endfunction: print
+
+
+ 
+/*!
+ * Crossovers the current value of the object instance with the specified 
+ * object instance.
+ */
+ function AluChromosome AluChromosome::crossover(AluChromosome chrom = null);
+   // temporary chromosome
+   byte unsigned tmpRange;
+   
+   byte unsigned tmpChrom[] = new[length];
+   
+   // Position of crossover
+   int pos = $urandom_range(chromosome_parts-1);
+   $write("pos: %d\n", pos);
+   
+   // | MOVI w. | OP_A w. | OP_B w. | OP_MEM w. | OP_IMM w. | OP w. | DELAY w. |
+   tmpChrom = chrom.chromosome;  
+            
+   // compare the sizes of exchanging parts
+   priority case(pos)
+     // movi part = 3
+     0 :  begin
+            for (int i=0; i<3; i++) begin
+              chrom.chromosome[i] = this.chromosome[i];
+              this.chromosome[i]  = tmpChrom[i];
+            end  
+          end  
+     // reg A part = max 8 
+     1 :  begin
+            tmpRange = chrom.operandA_ranges;
+            chrom.operandA_ranges = this.operandA_ranges;
+            this.operandA_ranges  = tmpRange;
+               
+            for (int i=3; i<11; i++) begin
+              chrom.chromosome[i] = this.chromosome[i];
+              this.chromosome[i]  = tmpChrom[i];
+            end  
+          end
+     // reg B part 
+     2 :  begin
+            tmpRange = chrom.operandB_ranges;
+            chrom.operandB_ranges   = this.operandB_ranges;
+            this.operandB_ranges    = tmpRange;
+               
+            for (int i=11; i<19; i++) begin
+              chrom.chromosome[i] = this.chromosome[i];
+              this.chromosome[i]  = tmpChrom[i];
+            end  
+          end
+     // MEM part 
+     3 :  begin
+            tmpRange = chrom.operandMEM_ranges;
+            chrom.operandMEM_ranges = this.operandMEM_ranges;
+            this.operandMEM_ranges  = tmpRange;
+               
+            for (int i=19; i<27; i++) begin
+              chrom.chromosome[i] = this.chromosome[i];
+              this.chromosome[i]  = tmpChrom[i];
+            end
+          end
+     // IMM part 
+     4 :  begin
+            tmpRange = chrom.operandIMM_ranges;
+            chrom.operandIMM_ranges = this.operandIMM_ranges;
+            this.operandIMM_ranges  = tmpRange;
+               
+            for (int i=27; i<35; i++) begin
+              chrom.chromosome[i] = this.chromosome[i];
+              this.chromosome[i]  = tmpChrom[i];
+            end
+          end
+     // OP part 
+     5 :  begin
+            for (int i=35; i<51; i++) begin
+              chrom.chromosome[i] = this.chromosome[i];
+              this.chromosome[i]  = tmpChrom[i];
+            end  
+          end
+     // DELAY part 
+     6 :  begin
+            tmpRange = chrom.delay_ranges;
+            chrom.delay_ranges      = this.delay_ranges;
+            this.delay_ranges       = tmpRange;
+               
+            for (int i=51; i<55; i++) begin
+              chrom.chromosome[i] = this.chromosome[i];
+              this.chromosome[i]  = tmpChrom[i];
+            end
+          end
+   endcase       
+      
+   return chrom;  
+ endfunction: crossover
+ 
+ 
+ 
+/*
+ * Mutates the current value of the object instance.
+ */
+function AluChromosome AluChromosome::mutate(int unsigned maxMutations);  
+   // Number of mutations
+   int mutationCount = $urandom_range(maxMutations,1);
+   // Positon of mutation
+   int byte_pos;
+   int bit_pos;
+   bit old_value;
+      
+   for (int i=0; i < mutationCount; i++) begin
+     byte_pos = $urandom_range(length - 1);
+     bit_pos  = $urandom_range(7);
+        
+     old_value = chromosome[byte_pos][bit_pos];
+     chromosome[byte_pos][bit_pos] = !old_value; // bit conversion
+   end
+      
+   return this;
+ endfunction : mutate

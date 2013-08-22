@@ -23,7 +23,7 @@
    // Number of generations
    parameter GENERATIONS      = 20;
    // Size of population
-   parameter POPULATION_SIZE  = 2;
+   parameter POPULATION_SIZE  = 5;
    // Elitism
    parameter ELITISM          = 1;
    // Number of maximal mutations per individuum
