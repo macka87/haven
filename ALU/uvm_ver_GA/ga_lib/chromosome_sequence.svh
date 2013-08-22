@@ -229,13 +229,13 @@
      end
      
      // crossover neighbour chromosomes
-     for (int i=1; i < populationSize; i+=2) begin
+     /*for (int i=1; i < populationSize; i+=2) begin
        if (i+1 < populationSize && $urandom_range(100) < crossoverProb) 
          new_chr_array.alu_chromosome[i+1] = new_chr_array.alu_chromosome[i].crossover(new_chr_array.alu_chromosome[i+1]);
-     end    
+     end*/    
      
      // mutate chromosomes
-     for (int i=1; i < populationSize; i++)
-       void'(new_chr_array.alu_chromosome[i].mutate(maxMutations));
+     /*for (int i=1; i < populationSize; i++)
+       void'(new_chr_array.alu_chromosome[i].mutate(maxMutations)); */
    end
  endfunction: selectAndReplace

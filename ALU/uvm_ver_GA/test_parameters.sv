@@ -28,6 +28,8 @@
    parameter ELITISM          = 1;
    // Number of maximal mutations per individuum
    parameter MAX_MUTATIONS    = 20;
+   // Crossover probability
+   parameter CROSSOVER_PROB   = 80;
    // File for save/load population
    parameter string POPULATION_FILENAME = "pop";
    // Load or create new population on evolution start

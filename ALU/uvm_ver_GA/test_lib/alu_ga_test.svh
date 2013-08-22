@@ -202,6 +202,7 @@
    chromosome_sequence_cfg.selection       = PROPORTIONATE;   // Selection type 
    chromosome_sequence_cfg.elitism         = ELITISM;         // Elitism 
    chromosome_sequence_cfg.maxMutations    = MAX_MUTATIONS;   // Maximum number of mutations   
+   chromosome_sequence_cfg.crossoverProb   = CROSSOVER_PROB;  // Crossover probability
    
    // CHROMOSOME parameters
    chromosome_sequence_cfg.fitness         = 0;    // fitness function

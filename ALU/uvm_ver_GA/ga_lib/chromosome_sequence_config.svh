@@ -26,6 +26,7 @@
    selection_t  selection       = PROPORTIONATE; // Selection type 
    bit elitism                  = 1;    // Elitism enable by default 
    int unsigned maxMutations    = 20;   // Maximum number of mutations
+   int unsigned crossoverProb   = 80;   // Crossover probability
    
    // CHROMOSOME PARAMETERS
    int unsigned fitness         = 0;    // fitness function
