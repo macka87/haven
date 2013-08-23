@@ -17,12 +17,6 @@ set FL_SCOREBOARD_BASE     "$COMP_BASE/hw_ver/fl_hw_scoreboard"
 set FL_FILTER_BASE         "$COMP_BASE/hw_ver/fl_filter"
 set FL_WATCH_BASE          "$COMP_BASE/fl_tools/debug/watch"
 
-# HW_SW_CODASIP
-set PROGRAM_DRIVER_BASE    "$COMP_BASE/hw_ver/program_driver"
-#set HALT_MONITOR_BASE      "$COMP_BASE/hw_ver/halt_monitor"
-#set MEMORY_MONITOR_BASE    "$COMP_BASE/hw_ver/memory_monitor"
-#set PORTOUT_MONITOR_BASE   "$COMP_BASE/hw_ver/portout_monitor"
-
 # Source files
 set MOD "$MOD $ENTITY_BASE/verification_engine_ent.vhd"
 
@@ -45,33 +39,6 @@ if { $ARCHGRP == "CORE" } {
 
    set COMPONENTS [concat $COMPONENTS [list \
      [ list "VER_CORE"           $VER_CORE_BASE         "FULL"] \
-   ]]
-}
-
-##############################################################################
-# The HW_SW_CODASIP architecture contains:
-#
-#   * program driver
-#   * DUT (Codix)
-#   * memory monitor
-#   * halt monitor
-#   * portout monitor
-#   * fl adder
-##############################################################################
-if { $ARCHGRP == "HW_SW_CODASIP" } {
-
-  # Source the HAVEN package
-  set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
-
-  set MOD "$MOD $ENTITY_BASE/verification_engine_core.vhd"
-
-   set COMPONENTS [concat $COMPONENTS [list \
-     [ list "PROGRAM_DRIVER"       $PROGRAM_DRIVER_BASE  "FULL"] \
-     [ list "MEMORY_MONITOR"       $MEMORY_MONITOR_BASE  "FULL"] \
-     [ list "HALT_MONITOR_BASE"    $HALT_MONITOR_BASE    "FULL"] \
-     [ list "PORTOUT_MONITOR_BASE" $PORTOUT_MONITOR_BASE "FULL"] \
-     [ list "FL_ADDER_BASE"        $FL_ADDER_BASE        "FULL"] \
-
    ]]
 }
 

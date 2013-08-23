@@ -30,8 +30,8 @@ package haven_const is
    -- verification engine -> haven/combov2/comp/verification_engine_codix
    -- verification core   -> haven/combov2/comp/verification_core_codix
    --
-   constant VER_CORE0_TYPE    : core_type := codasip_codix;
-   constant VER_CORE1_TYPE    : core_type := codasip_codix;
+   constant VER_CORE0_TYPE    : core_type := core_fifo;
+   constant VER_CORE1_TYPE    : core_type := core_fifo;
 
    -- parameters of VERIFICATION_COREs
    constant VER_CORE0_USE_OBSERVERS   : boolean := false;

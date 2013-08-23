@@ -81,12 +81,12 @@ set STAT          "FULL"
 # There are several ARCHGRPs for the Verification Engine, see
 # comp/verification_engine/Modules.tcl
 #set VER_ENGINE    "HW_GEN"
-#set VER_ENGINE    "HW_GEN_CORE"
+set VER_ENGINE    "HW_GEN_CORE"
 #set VER_ENGINE    "HW_FULL"
 # This option is obsolete!!! Build HW_GEN_CORE instead!!!
 #set VER_ENGINE    "CORE"
 
-set VER_ENGINE    "CODIX"
+#set VER_ENGINE    "CODIX"
 
 # Base directories
 set PACODAG_BASE        "$COMP_BASE/pacodag"
@@ -101,7 +101,8 @@ set NETWORK_MOD_BASE    "$NETCOPE_BASE/comp/network_mod"
 set DMA_MOD_BASE        "$COMP_BASE/proc/dma_mod/dma_mod_$DMA_MOD" 
 set TS_ASYNC_BASE       "$COMP_BASE/tsu/tsu_async"
 set STAT_BASE           "$COMP_BASE/fl_tools/debug/stat"
-set VER_ENGINE_BASE     "$COMP_BASE/verification_engine_codix"
+#set VER_ENGINE_BASE     "$COMP_BASE/verification_engine_codix"
+set VER_ENGINE_BASE     "$COMP_BASE/verification_engine"
 
 # List of instances
 set PACODAG_INST     [list [list "PACODAG_I"             "FULL"]]
