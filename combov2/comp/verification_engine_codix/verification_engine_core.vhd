@@ -146,7 +146,17 @@ begin
       TX_EOP_N      => fl_ver_core_tx_eop_n,
       TX_EOF_N      => fl_ver_core_tx_eof_n,
       TX_SRC_RDY_N  => fl_ver_core_tx_src_rdy_n,
-      TX_DST_RDY_N  => fl_ver_core_tx_dst_rdy_n
+      TX_DST_RDY_N  => fl_ver_core_tx_dst_rdy_n,
+      
+      -- MI32 interface
+      MI32_DWR      => MI32_DWR,
+      MI32_ADDR     => MI32_ADDR,
+      MI32_RD       => MI32_RD,
+      MI32_WR       => MI32_WR, 
+      MI32_BE       => MI32_BE,
+      MI32_DRD      => MI32_DRD,
+      MI32_ARDY     => MI32_ARDY,
+      MI32_DRDY     => MI32_DRDY
 
    );
 

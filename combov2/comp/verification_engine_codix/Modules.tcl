@@ -26,23 +26,6 @@ set COMPONENTS [list \
 ]
 
 ##############################################################################
-# The CORE architecture contains:
-#
-#   * driver
-#   * DUT
-#   * monitor
-#   * assertion checker at the output interface
-#   * signal observer
-##############################################################################
-if { $ARCHGRP == "CORE" } {
-  set MOD "$MOD $ENTITY_BASE/verification_engine_core.vhd"
-
-   set COMPONENTS [concat $COMPONENTS [list \
-     [ list "VER_CORE"           $VER_CORE_BASE         "FULL"] \
-   ]]
-}
-
-##############################################################################
 # The CODIX architecture contains:
 #
 #   * program driver
@@ -62,78 +45,5 @@ if { $ARCHGRP == "CODIX" } {
 
    set COMPONENTS [concat $COMPONENTS [list \
      [ list "VER_CORE"             $VER_CORE_BASE        "FULL"] \
-   ]]
-}
-
-##############################################################################
-# The HW_GEN architecture contains:
-#
-#   * random number generator
-#   * FrameLink adapter
-##############################################################################
-if { $ARCHGRP == "HW_GEN" } {
-  # Source the HAVEN package
-  set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
-
-  set MOD "$MOD $ENTITY_BASE/verification_engine_hw_gen.vhd"
-
-   set COMPONENTS [concat $COMPONENTS [list \
-     [ list "FL_RAND_GEN"      $FL_RAND_GEN_BASE    "FULL"] \
-   ]]
-}
-
-##############################################################################
-# The HW_GEN_CORE architecture contains CORE and HW_GEN, namely:
-#
-#   * random number generator
-#   * FrameLink adapter
-#   * FrameLink command unit
-#   * driver
-#   * DUT
-#   * monitor
-#   * assertion checker at the output interface
-#   * signal observer
-##############################################################################
-if { $ARCHGRP == "HW_GEN_CORE" } {
-  # Source the HAVEN package
-  set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
-
-  set MOD "$MOD $ENTITY_BASE/verification_engine_hw_gen_core.vhd"
-
-   set COMPONENTS [concat $COMPONENTS [list \
-     [ list "VER_CORE"           $VER_CORE_BASE         "FULL"] \
-     [ list "FL_RAND_GEN"        $FL_RAND_GEN_BASE      "FULL"] \
-     [ list "FL_COM_UNIT"        $FL_COM_UNIT_BASE      "FULL"] \
-   ]]
-}
-
-##############################################################################
-# The HW_FULL architecture contains 2 COREs, HW_GEN, and SCOREBOARD, namely:
-#
-#   * random number generator
-#   * FrameLink adapter
-#   * FrameLink command unit
-#   * 2 verification cores, in each:
-#     * driver
-#     * DUT
-#     * monitor
-#     * assertion checker at the output interface
-#     * signal observer
-#     * FrameLink filter
-#   * Scoreboard
-##############################################################################
-if { $ARCHGRP == "HW_FULL" } {
-  # Source the HAVEN package
-  set PACKAGES "$PACKAGES $FIRMWARE_BASE/pkg/haven_const.vhd"
-
-  set MOD "$MOD $ENTITY_BASE/verification_engine_hw_full.vhd"
-
-   set COMPONENTS [concat $COMPONENTS [list \
-     [ list "VER_CORE"           $VER_CORE_BASE         "FULL"] \
-     [ list "FL_RAND_GEN"        $FL_RAND_GEN_BASE      "FULL"] \
-     [ list "FL_COM_UNIT"        $FL_COM_UNIT_BASE      "FULL"] \
-     [ list "FL_SCOREBOARD"      $FL_SCOREBOARD_BASE    "FULL"] \
-     [ list "FL_FILTER"          $FL_FILTER_BASE        "FULL"] \
-     [ list "FL_WATCH"           $FL_WATCH_BASE         "FULL"] \
    ]]
 }

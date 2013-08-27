@@ -41,6 +41,17 @@ entity verification_engine is
       TX_SOP_N           : out std_logic;
       TX_EOP_N           : out std_logic;
       TX_SRC_RDY_N       : out std_logic;
-      TX_DST_RDY_N       :  in std_logic
+      TX_DST_RDY_N       :  in std_logic;
+      
+      -- MI32 interface
+      MI32_DWR           :  in std_logic_vector(31 downto 0);
+      MI32_ADDR          :  in std_logic_vector(31 downto 0);
+      MI32_RD            :  in std_logic;
+      MI32_WR            :  in std_logic;
+      MI32_BE            :  in std_logic_vector(3 downto 0);
+      MI32_DRD           : out std_logic_vector(31 downto 0);
+      MI32_ARDY          : out std_logic;
+      MI32_DRDY          : out std_logic
+      
    );
 end entity;

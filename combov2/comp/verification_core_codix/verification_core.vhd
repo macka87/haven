@@ -22,8 +22,6 @@ architecture arch of verification_core is
 -- ==========================================================================
 --                                    CONSTANTS
 -- ==========================================================================
-   constant ENV_DATA_WIDTH  : integer := FL_DATA_WIDTH;
-   constant DUT_DATA_WIDTH  : integer := CODIX_DATA_WIDTH;
 
 -- ==========================================================================
 --                                     SIGNALS
