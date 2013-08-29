@@ -10,7 +10,26 @@ set MODELSIM modelsim.ini
 set UVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/uvm-1.1
 
 # Working library
+if [file exists work] {
+    vdel -all
+}
 vlib work
+
+# Get the simulator installation directory.
+quietly set INSTALL_HOME [ file dirname [file normalize $::env(MODEL_TECH)]]
+
+# Set the compiler and linker paths.
+if {$tcl_platform(platform) eq "windows"} {
+	source $INSTALL_HOME/examples/c_windows/setup/setup_compiler_and_linker_paths_mingwgcc.tcl
+	if {$is64bit == 1 } {
+		quietly set RESFILE create_ucdb64.res
+	} else {
+		quietly set RESFILE create_ucdb32.res
+	}
+} else {
+	source $INSTALL_HOME/examples/c_posix/setup/setup_compiler_and_linker_paths_gcc.tcl
+	quietly set RESFILE ""
+}
 
 # DUT compilation
 vcom -93 -explicit -work work ../mult/mult.vhd
@@ -21,34 +40,46 @@ vlog -cover sbce test_parameters.sv
 vlog -cover sbce math_pkg.sv
 vlog -cover sbce alu_dut_if.sv
 vlog -cover sbce +incdir+$UVM_HOME/src+../../uvm_GA_basic_components/  ../../uvm_GA_basic_components/sv_basic_ga_pkg.sv
-vlog -cover sbce +incdir+$UVM_HOME/src+ga_lib/   ga_lib/sv_alu_ga_pkg.sv
 vlog -cover sbce +incdir+$UVM_HOME/src+ga_lib/   ga_lib/sv_alu_coverage_pkg.sv
 vlog -cover sbce +incdir+$UVM_HOME/src+seq_lib/  seq_lib/sv_alu_seq_pkg.sv
+vlog -cover sbce +incdir+$UVM_HOME/src+ga_lib/   ga_lib/sv_alu_ga_pkg.sv
 vlog -cover sbce +incdir+$UVM_HOME/src+env_lib/  env_lib/sv_alu_env_pkg.sv
 vlog -cover sbce +incdir+$UVM_HOME/src+test_lib/ test_lib/sv_alu_test_pkg.sv
 vlog -cover sbce top_level.sv
 
+# Compile the C source(s).
+onerror {resume}
+quietly set LD $UCDB_LD
+echo $CC -std=c99 create_ucdb.c
+eval $CC -std=c99 create_ucdb.c
+echo $LD create_ucdb create_ucdb.o $UCDBLIB $RESFILE
+eval $LD create_ucdb create_ucdb.o $UCDBLIB $RESFILE
+
+# Run the UCDB application.
+echo create_ucdb
+./create_ucdb
+
 # Set path to testbench instance of the DUT 
-set TOP_MODULE "Top_TB"
+#set TOP_MODULE "Top_TB"
 
 # Start of the simulation
-vsim -coverage -t 1ps -lib work $TOP_MODULE
+#vsim -coverage -t 1ps -lib work $TOP_MODULE
 
 # Suppress warnings from arithm library
-puts "Std Arith Warnings - Disabled"
-set  StdArithNoWarnings 1
+#puts "Std Arith Warnings - Disabled"
+#set  StdArithNoWarnings 1
 
 # View a simulation wave
-source "./signals.fdo"
-view wave
+#source "./signals.fdo"
+#view wave
 
 # Definition of signals in a wave window
-add wave -divider "ALU"  
-basic     BASIC    /$TOP_MODULE/VHDL_DUT_U
-alu_in    ALU_IN   /$TOP_MODULE/VHDL_DUT_U
-alu_out   ALU_OUT  /$TOP_MODULE/VHDL_DUT_U
+#add wave -divider "ALU"  
+#basic     BASIC    /$TOP_MODULE/VHDL_DUT_U
+#alu_in    ALU_IN   /$TOP_MODULE/VHDL_DUT_U
+#alu_out   ALU_OUT  /$TOP_MODULE/VHDL_DUT_U
 
-view structure
-view signals
-restart -f
-run -all
+#view structure
+#view signals
+#restart -f
+#run -all
