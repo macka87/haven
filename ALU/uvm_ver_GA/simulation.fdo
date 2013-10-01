@@ -60,26 +60,26 @@ echo create_ucdb
 ./create_ucdb
 
 # Set path to testbench instance of the DUT 
-#set TOP_MODULE "Top_TB"
+set TOP_MODULE "Top_TB"
 
 # Start of the simulation
-#vsim -coverage -t 1ps -lib work $TOP_MODULE
+vsim -coverage -t 1ps -lib work $TOP_MODULE
 
 # Suppress warnings from arithm library
-#puts "Std Arith Warnings - Disabled"
-#set  StdArithNoWarnings 1
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
 
 # View a simulation wave
-#source "./signals.fdo"
-#view wave
+source "./signals.fdo"
+view wave
 
 # Definition of signals in a wave window
-#add wave -divider "ALU"  
-#basic     BASIC    /$TOP_MODULE/VHDL_DUT_U
-#alu_in    ALU_IN   /$TOP_MODULE/VHDL_DUT_U
-#alu_out   ALU_OUT  /$TOP_MODULE/VHDL_DUT_U
+add wave -divider "ALU"  
+basic     BASIC    /$TOP_MODULE/VHDL_DUT_U
+alu_in    ALU_IN   /$TOP_MODULE/VHDL_DUT_U
+alu_out   ALU_OUT  /$TOP_MODULE/VHDL_DUT_U
 
-#view structure
-#view signals
-#restart -f
-#run -all
+view structure
+view signals
+restart -f
+run -all

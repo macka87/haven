@@ -58,10 +58,11 @@
      } 
      
      // operation coverpoint
-     operationH: coverpoint alu_in_trans.op;
+     //operationH: coverpoint alu_in_trans.op;
+     operationH: coverpoint operation;
      
      // combinations of operations
-     op_after_op: coverpoint alu_in_trans.op {
+     op_after_op: coverpoint operation {
        bins op_after_op[] = ([0:$] => [0:$]); 
      }
      
@@ -153,6 +154,9 @@
      `uvm_error("MYERR", "AluCoverageInfo doesn't exist!"); 
      
    alu_in_trans = t;
+   
+   $cast(operation, t.op);
+   
    pkt_cnt++;
      
    // sample coverage
