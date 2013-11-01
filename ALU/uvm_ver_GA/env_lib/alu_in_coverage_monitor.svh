@@ -59,7 +59,25 @@
      
      // operation coverpoint
      //operationH: coverpoint alu_in_trans.op;
-     operationH: coverpoint operation;
+     //operationH: coverpoint operation;
+     operationH: coverpoint operation {
+       bins o_add = {ADD};
+       bins o_sub = {SUB};
+       bins o_mult = {MULT};
+       bins o_shift_right = {SHIFT_RIGHT};
+       bins o_shift_left = {SHIFT_LEFT};
+       bins o_rotate_right = {ROTATE_RIGHT};
+       bins o_rotate_left = {ROTATE_LEFT};
+       bins o_not = {NOT};
+       bins o_and = {AND};
+       bins o_or = {OR};
+       bins o_xor = {XOR};
+       bins o_nand = {NAND};
+       bins o_nor = {NOR};
+       bins o_xnor = {XNOR};
+       bins o_inc = {INC};
+       bins o_dec = {DEC};
+     }
      
      // combinations of operations
      op_after_op: coverpoint operation {
@@ -103,23 +121,25 @@
      }
      
      // all operations with ACT
-     op_act_cross : cross operationH, actH;
+     //op_act_cross : cross operationH, actH;
      
      // all movi variations with ACT
-     movi_act_cross : cross moviH, actH;
+     //movi_act_cross : cross moviH, actH;
      
      // all operations x movi x ACT
-     op_movi_act_cross : cross operationH, moviH, actH;
+     //op_movi_act_cross : cross operationH, moviH, actH;
      
      // all corner values x movi x act
-     opA_movi_act_cross : cross opA, moviH, actH;
-     opB_movi_act_cross : cross opB, moviH, actH;
-     opIMM_movi_act_cross : cross opIMM, moviH, actH;
-     opMEM_movi_act_cross : cross opMEM, moviH, actH;
-     
+     //opA_movi_act_cross : cross opA, moviH, actH;
+     //opB_movi_act_cross : cross opB, moviH, actH;
+     //opIMM_movi_act_cross : cross opIMM, moviH, actH;
+     //opMEM_movi_act_cross : cross opMEM, moviH, actH; 
+                                                        
      option.per_instance=1; // Also per instance statistics
+     option.name = "alu_in_covergroup";
+     option.cross_num_print_missing = 1000;
    
-   endgroup
+   endgroup 
    
   /*!
    * Methods
@@ -163,8 +183,7 @@
    alu_in_covergroup.sample();
      
    cov_info.alu_in_coverage = alu_in_covergroup.get_inst_coverage();
-   //cov_info.alu_in_coverage = $get_coverage();
-     
+        
    // print statistics
    uvm_report_info("ALU INPUT COVERAGE", $psprintf("%0d Packets sampled, Coverage = %f%% ", pkt_cnt, cov_info.alu_in_coverage));
    

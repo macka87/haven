@@ -484,7 +484,7 @@ example_code(const char* ucdbfile)
     filehandle_class_in = create_filehandle(db, "/env_lib/alu_in_coverage_monitor.svh");
     alu_in_class = create_class(db, inst_env_pkg, "AluInCoverageMonitor", filehandle_class_in, 0);
     /* create UCDB_COVERGROUP */
-    cvg_in = create_covergroup(db, alu_in_class, "alu_in_covergroup", filehandle_class_in, 44);
+    cvg_in = create_covergroup(db, alu_in_class, "#alu_in_covergroup#", filehandle_class_in, 44);
     /* create UCDB_COVERPOINT */
     cvp_actH = create_coverpoint(db, cvg_in, "actH", filehandle_class_in, 47, 0);
     create_coverpoint_bin(db, cvp_actH, "act1", filehandle_class_in, 48, 100, 0, "1");
@@ -520,7 +520,10 @@ example_code(const char* ucdbfile)
    
     cvp_opA = create_coverpoint(db, cvg_in, "opA", filehandle_class_in, 69, 0);
     create_coverpoint_bin(db, cvp_opA, "zeros", filehandle_class_in, 71, 1, 0, "0");
-    
+    create_coverpoint_bin(db, cvp_opA, "ones", filehandle_class_in, 72, 1, 0, "256");
+    create_coverpoint_bin(db, cvp_opA, "small_values", filehandle_class_in, 73, 1, 0, "{[1:15]}");
+    create_coverpoint_bin(db, cvp_opA, "big_values", filehandle_class_in, 74, 1, 0, "{[241:255]}");
+    create_coverpoint_bin(db, cvp_opA, "other_values", filehandle_class_in, 75, 1, 0, "default");
     
     cvp_opB = create_coverpoint(db, cvg_in, "opB", filehandle_class_in, 78, 0);
     cvp_opIMM = create_coverpoint(db, cvg_in, "opIMM", filehandle_class_in, 87, 0);
@@ -529,8 +532,6 @@ example_code(const char* ucdbfile)
     /* create UCDB_CLASS */
     filehandle_class_out = create_filehandle(db, "/env_lib/alu_out_coverage_monitor.svh");
     alu_out_class = create_class(db, inst_env_pkg, "AluOutCoverageMonitor", filehandle_class_out, 0);  
-    
-       
     
     /*    
     cvg = create_covergroup(db,instance,"alu_in_covergroup",filehandle,44);

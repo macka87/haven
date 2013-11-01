@@ -35,7 +35,7 @@
    */ 
    
    AluAgentConfig alu_agent_cfg;
-   
+      
   /*!
    * Methods
    */
@@ -117,7 +117,7 @@
      
      // sends generated transaction to the scoreboard, subscriber etc.
      if (alu_in_trans.act) aport_alu_in_if.write(alu_in_trans);
-     
+              
      // synchronise with CLK 
      @(dut_alu_in_if.cb); 
      

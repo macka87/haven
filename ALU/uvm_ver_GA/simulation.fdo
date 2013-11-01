@@ -19,17 +19,17 @@ vlib work
 quietly set INSTALL_HOME [ file dirname [file normalize $::env(MODEL_TECH)]]
 
 # Set the compiler and linker paths.
-if {$tcl_platform(platform) eq "windows"} {
-	source $INSTALL_HOME/examples/c_windows/setup/setup_compiler_and_linker_paths_mingwgcc.tcl
-	if {$is64bit == 1 } {
-		quietly set RESFILE create_ucdb64.res
-	} else {
-		quietly set RESFILE create_ucdb32.res
-	}
-} else {
-	source $INSTALL_HOME/examples/c_posix/setup/setup_compiler_and_linker_paths_gcc.tcl
-	quietly set RESFILE ""
-}
+#if {$tcl_platform(platform) eq "windows"} {
+#	source $INSTALL_HOME/examples/c_windows/setup/setup_compiler_and_linker_paths_mingwgcc.tcl
+#	if {$is64bit == 1 } {
+#		quietly set RESFILE create_ucdb64.res
+#	} else {
+#		quietly set RESFILE create_ucdb32.res
+#	}
+#} else {
+#	source $INSTALL_HOME/examples/c_posix/setup/setup_compiler_and_linker_paths_gcc.tcl
+#	quietly set RESFILE ""
+#}
 
 # DUT compilation
 vcom -93 -explicit -work work ../mult/mult.vhd
@@ -48,16 +48,16 @@ vlog -cover sbce +incdir+$UVM_HOME/src+test_lib/ test_lib/sv_alu_test_pkg.sv
 vlog -cover sbce top_level.sv
 
 # Compile the C source(s).
-onerror {resume}
-quietly set LD $UCDB_LD
-echo $CC -std=c99 create_ucdb.c
-eval $CC -std=c99 create_ucdb.c
-echo $LD create_ucdb create_ucdb.o $UCDBLIB $RESFILE
-eval $LD create_ucdb create_ucdb.o $UCDBLIB $RESFILE
+#onerror {resume}
+#quietly set LD $UCDB_LD
+#echo $CC -std=c99 create_ucdb.c
+#eval $CC -std=c99 create_ucdb.c
+#echo $LD create_ucdb create_ucdb.o $UCDBLIB $RESFILE
+#eval $LD create_ucdb create_ucdb.o $UCDBLIB $RESFILE
 
 # Run the UCDB application.
-echo create_ucdb
-./create_ucdb
+#echo create_ucdb
+#./create_ucdb
 
 # Set path to testbench instance of the DUT 
 set TOP_MODULE "Top_TB"

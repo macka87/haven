@@ -77,6 +77,7 @@
    AluChromosome best_chromosome;
    TransactionSequence trans_sequence;     // Transaction Sequence
    string ucdb_file, num;
+   int idx;
    int chr_count = 0;
    
    
@@ -97,33 +98,42 @@
    // store new coverage info into the configuration object
    uvm_config_db #(AluCoverageInfo)::set(null, "*", "AluCoverageInfo", cov_info);
       
+   //$set_coverage_db_name("alu.ucdb");
+   $write("EVALUATION OF ONE POPULATION: \n");
+   
+   //$load_coverage_db("alu_empty.ucdb");
+   //$set_coverage_db_name("alu_empty.ucdb");
   
    // SEND CHROMOSOMES FROM POPULATION TO DRIVER
    while (chr_count < populationSize) begin
      
      // >>>>> RESET SIMULATION >>>>>
-     //$load_coverage_db("alu_coverage_report.ucdb");
+     $load_coverage_db("alu_empty.ucdb");
+     //$set_coverage_db_name ("alu_two.ucdb");
      
      // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
      start_item(old_chr_array.alu_chromosome[chr_count]);
      finish_item(old_chr_array.alu_chromosome[chr_count]);
        
-     // >>>>> GET COVERAGE AND RESET VALUES >>>>>
+     // >>>>> GET COVERAGE >>>>>
      evaluateFitness(cov_info, old_chr_array.alu_chromosome[chr_count]); 
-         
-     //num.itoa(chr_count);
-     //ucdb_file = {"coverage_report_", num, ".ucdb"};
-     //$write("%s\n", ucdb_file);
-     //$set_coverage_db_name(ucdb_file);
-     //$system("./coverage_save.sh");
      
      chr_count++; 
    end
+   
+   //$load_coverage_db("alu_empty.ucdb");
    
    // FIND THE BEST CHROMOSOME
    getBestChromosome(best_chromosome);
    //$write("BEST CHROMOSOME: index 0: \n");
    //best_chromosome.print(0, 1);
+   
+   // SIMULATE THE BEST CHROMOSOME ONES MORE AND STORE COVERAGE INTO THE UCDB
+   /*$write(">>>>> BEST CHROMOSOME EVALUATION: <<<<<\n");
+   $load_coverage_db("alu_empty.ucdb");
+   start_item(best_chromosome);
+   finish_item(best_chromosome);
+   evaluateFitness(cov_info, best_chromosome);*/ 
    
    // CREATE NEW POPULATION
    new_chr_array.alu_chromosome = new[populationSize];
@@ -180,7 +190,10 @@
      end
    end
         
-   best_chromosome = old_chr_array.alu_chromosome[idx]; 
+   best_chromosome = old_chr_array.alu_chromosome[idx];  
+   
+   $write("best chromosome index: %d\n", idx);
+   $write("bestFitness: %d\n", bestFitness);
  endfunction: getBestChromosome 
  
  

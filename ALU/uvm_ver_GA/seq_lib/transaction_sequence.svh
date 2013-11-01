@@ -22,8 +22,8 @@
    */ 
    
    int trans_count;
-   TransactionSequenceConfig transaction_sequence_cfg; 
-   
+   TransactionSequenceConfig transaction_sequence_cfg;
+     
   /*!
    * Methods
    */
@@ -68,11 +68,11 @@
      assert($cast(alu_in_trans_c, alu_in_trans.clone)); 
      start_item(alu_in_trans_c);
      assert(alu_in_trans_c.randomize());
+     
      //alu_in_trans_c.print("TRANS_SEQUENCE: ALU TRANSACTION");
      finish_item(alu_in_trans_c);
      cnt++; 
    end 
-   
  endtask: body
 
 

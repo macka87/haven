@@ -82,6 +82,8 @@
    // send Chromosomes from Population to Driver
    while (chr_count < populationSize) begin
      
+     // >>>>> LOAD UCDB 
+     
      // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
      start_item(chr_array.alu_chromosome[chr_count]);
      finish_item(chr_array.alu_chromosome[chr_count]);

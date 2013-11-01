@@ -21,7 +21,7 @@
    
    // GENETIC ALGORITHM PARAMETERS
    // Number of generations
-   parameter GENERATIONS      = 20;
+   parameter GENERATIONS      = 1;
    // Size of population
    parameter POPULATION_SIZE  = 5;
    // Elitism

@@ -101,7 +101,7 @@
     
      // receive input transaction from Driver
      driver_fifo.get(alu_in_tr);
-           
+      
      // display received transaction
      //alu_in_tr.print("SCOREBOARD INPUT:");
        
