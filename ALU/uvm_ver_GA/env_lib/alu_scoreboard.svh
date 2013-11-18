@@ -143,7 +143,7 @@
                    //alu_out_tr_real.print("1:SCOREBOARD REAL OUTPUT:");
        
                    // compare expected and real output transaction
-                   if (!alu_out_tr_real.compare(alu_out_tr_exp)) begin
+                   if (!alu_out_tr_real.compare(alu_out_tr_exp_c)) begin
                      $sformat(msg, "Expected and real output transaction do not match!!!\n");
                      uvm_report_fatal("SCOREBOARD", msg);
                      m_mismatches++;

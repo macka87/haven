@@ -121,19 +121,19 @@
      }
      
      // all operations with ACT
-     //op_act_cross : cross operationH, actH;
+     op_act_cross : cross operationH, actH;
      
      // all movi variations with ACT
-     //movi_act_cross : cross moviH, actH;
+     movi_act_cross : cross moviH, actH;
      
      // all operations x movi x ACT
-     //op_movi_act_cross : cross operationH, moviH, actH;
+     op_movi_act_cross : cross operationH, moviH, actH;
      
      // all corner values x movi x act
-     //opA_movi_act_cross : cross opA, moviH, actH;
-     //opB_movi_act_cross : cross opB, moviH, actH;
-     //opIMM_movi_act_cross : cross opIMM, moviH, actH;
-     //opMEM_movi_act_cross : cross opMEM, moviH, actH; 
+     opA_movi_act_cross : cross opA, moviH, actH;
+     opB_movi_act_cross : cross opB, moviH, actH;
+     opIMM_movi_act_cross : cross opIMM, moviH, actH;
+     opMEM_movi_act_cross : cross opMEM, moviH, actH; 
                                                         
      option.per_instance=1; // Also per instance statistics
      option.name = "alu_in_covergroup";

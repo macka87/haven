@@ -23,6 +23,9 @@
    
    AluEnvConfig   alu_env_cfg;
    
+   // Object for the coverage storage
+   AluCoverageInfo cov_info; 
+   
   /*! 
    * Component Members
    */  
@@ -69,6 +72,12 @@
      alu_scoreboard = AluScoreboard::type_id::create("alu_scoreboard", this);
      
    if (alu_env_cfg.has_functional_coverage) begin 
+     // create object for coverage info
+     cov_info = AluCoverageInfo::type_id::create("cov_info");
+   
+     // set coverage info into the configuration object
+     uvm_config_db #(AluCoverageInfo)::set(null, "*", "AluCoverageInfo", cov_info);
+   
      alu_in_cov_monitor = AluInCoverageMonitor::type_id::create("alu_in_cov_monitor", this); 
      alu_out_cov_monitor = AluOutCoverageMonitor::type_id::create("alu_out_cov_monitor", this); 
    end  

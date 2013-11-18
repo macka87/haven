@@ -97,13 +97,13 @@
    forever begin
      seq_item_port.get_next_item(alu_in_trans);
      
-     // display the content of transaction 
-     //alu_in_trans.print("DRIVER: ALU_TRANSACTION");
-       
      // wait for readiness of ALU to process data
      waitForAluRdy();
             
      alu_in_trans.rst = dut_alu_in_if.RST;
+     
+     // display the content of transaction 
+     //alu_in_trans.print("DRIVER: ALU_TRANSACTION");
        
      // set input signals of DUT
      // sends values from transaction on the virtual interface

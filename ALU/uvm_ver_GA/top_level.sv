@@ -58,8 +58,10 @@
      uvm_config_db #(virtual iAluIn)::set(null, "uvm_test_top", "AluIn_vif", dut_alu_in_if);
      uvm_config_db #(virtual iAluOut)::set(null, "uvm_test_top", "AluOut_vif", dut_alu_out_if);
 
-     // start running of the test 
-     run_test("AluGATest");
+     
+     if (VERSION == 1) run_test("AluGATest");  // start running test with GA
+     else run_test("AluTest"); // start running test without GA
+     
      $stop;
    end
    

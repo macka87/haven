@@ -17,6 +17,11 @@
    //! UVM Factory Registration Macro
    `uvm_component_utils(AluTest)
 
+   /*! 
+   * Component Members
+   */ 
+   TransactionSequence trans_seq;  // sequence of transactions
+
    /*!
    * Methods
    */
@@ -45,6 +50,8 @@
  */ 
  function void AluTest::build_phase(uvm_phase phase);
    super.build_phase(phase);
+   
+   trans_seq = TransactionSequence::type_id::create("trans_seq");
  endfunction: build_phase
 
 
@@ -53,5 +60,9 @@
  * Main - Stimuli are generated and applied to the DUT
  */     
  task AluTest::main_phase(uvm_phase phase);
- 
+    phase.raise_objection(this); 
+    
+    trans_seq.start(alu_env.alu_agent.trans_sequencer); 
+    
+    phase.drop_objection(this); 
  endtask: main_phase 

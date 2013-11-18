@@ -51,7 +51,7 @@
       
    // Own UVM methods
    extern task configurePopulation(ChromosomeSequenceConfig chrom_seq_cfg);
-   extern task evaluateFitness(AluCoverageInfo cov_info, AluChromosome alu_chromosome); 
+   extern task evaluateFitness(AluChromosome alu_chromosome); 
    extern function void getBestChromosome(inout AluChromosome best_chromosome);
    extern function void selectAndReplace();
  endclass: ChromosomeSequence
@@ -92,12 +92,6 @@
    if (!uvm_config_db #(ChromosomeArray)::get(null, get_full_name(), "ChromosomeArray", old_chr_array))
      `uvm_error("BODY", "Population of chromosomes doesn't exist!"); 
   
-   // create configuration object for coverage info
-   cov_info = AluCoverageInfo::type_id::create("cov_info");
-   
-   // store new coverage info into the configuration object
-   uvm_config_db #(AluCoverageInfo)::set(null, "*", "AluCoverageInfo", cov_info);
-      
    //$set_coverage_db_name("alu.ucdb");
    $write("EVALUATION OF ONE POPULATION: \n");
    
@@ -108,7 +102,7 @@
    while (chr_count < populationSize) begin
      
      // >>>>> RESET SIMULATION >>>>>
-     $load_coverage_db("alu_empty.ucdb");
+     //$load_coverage_db("alu_empty.ucdb");
      //$set_coverage_db_name ("alu_two.ucdb");
      
      // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
@@ -116,7 +110,7 @@
      finish_item(old_chr_array.alu_chromosome[chr_count]);
        
      // >>>>> GET COVERAGE >>>>>
-     evaluateFitness(cov_info, old_chr_array.alu_chromosome[chr_count]); 
+     evaluateFitness(old_chr_array.alu_chromosome[chr_count]); 
      
      chr_count++; 
    end
@@ -167,7 +161,12 @@
 /*! 
  * evaluateFitness - counts fitness value for every chromosome
  */ 
- task ChromosomeSequence::evaluateFitness(AluCoverageInfo cov_info, AluChromosome alu_chromosome); 
+ task ChromosomeSequence::evaluateFitness(AluChromosome alu_chromosome); 
+   
+   // get configuration object from database
+   if (!uvm_config_db #(AluCoverageInfo)::get(null, get_full_name(), "AluCoverageInfo", cov_info)) 
+     `uvm_error("MYERR", "AluCoverageInfo doesn't exist!"); 
+   
    $write("CHROMOSOME: ALU_IN_COVERAGE: %f%%\n", cov_info.alu_in_coverage);  
    $write("CHROMOSOME: ALU_OUT_COVERAGE: %f%%\n", cov_info.alu_out_coverage);
    

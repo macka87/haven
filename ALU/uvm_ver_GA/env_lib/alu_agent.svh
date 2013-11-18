@@ -142,6 +142,6 @@
  * Configure ALU GA Transaction Sequence.
  */   
  function void AluAgent::configure_alu_ga_transaction_sequence(AluGATransactionSequenceConfig alu_ga_transaction_sequence_cfg);
-   alu_ga_transaction_sequence_cfg.trans_count     = alu_agent_cfg.trans_count;
+   alu_ga_transaction_sequence_cfg.trans_count     = alu_agent_cfg.trans_count_per_chrom;
    alu_ga_transaction_sequence_cfg.populationSize  = alu_agent_cfg.populationSize;    // Size of a population
  endfunction: configure_alu_ga_transaction_sequence 

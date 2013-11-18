@@ -8,6 +8,9 @@
 
  package sv_alu_param_pkg;
    
+   // VERSION
+   parameter VERSION        = 1; // 0 == without GA, 1 == with GA
+   
    // DUT GENERICS
    parameter DATA_WIDTH     = 8; // data width
    
@@ -52,5 +55,8 @@
    // TRANSACTION COUNT PER EACH CHROMOSOME
    parameter TRANS_COUNT_PER_CHROM  = 2;
    parameter SEED1                  = 0;   // Seed for PRNG
+   
+   // TRANSACTION COUNT FOR CLASSICAL RUN
+   parameter TRANS_COUNT            = 6345;
    
  endpackage

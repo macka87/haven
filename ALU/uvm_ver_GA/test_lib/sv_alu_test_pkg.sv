@@ -22,5 +22,6 @@
    // Includes  
    `include "alu_test_base.svh"
    `include "alu_ga_test.svh"
+   `include "alu_test.svh"
      
  endpackage
