@@ -47,6 +47,7 @@
    extern function new(string name = "AluInputTransaction");
    extern function void print(string name);
    extern function void do_copy(uvm_object rhs);
+   extern function void fwrite(int fileDescr);
   
  endclass: AluInputTransaction
  
@@ -136,3 +137,12 @@
    $write("IMM: %b\n", imm);
    $write("\n");
  endfunction: print
+ 
+ 
+
+/*! 
+ * Write to file  
+ */ 
+ function void AluInputTransaction::fwrite(int fileDescr);
+   $fwrite(fileDescr, "%b %b %b %b %b %b %b %b\n", 1'b0, act, op, movi, reg_a, reg_b, mem, imm);
+ endfunction: fwrite

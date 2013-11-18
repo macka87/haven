@@ -23,6 +23,7 @@
    
    int trans_count;
    TransactionSequenceConfig transaction_sequence_cfg;
+   int output_file;  // output file where transactions are stored
      
   /*!
    * Methods
@@ -30,7 +31,9 @@
   
    // Standard UVM methods
    extern function new(string name = "TransactionSequence");
-   extern task body();  
+   extern task pre_body();
+   extern task body();
+   extern task post_body();  
    
    // Own UVM methods
    extern task configureSequence(TransactionSequenceConfig transaction_sequence_cfg);
@@ -45,6 +48,19 @@
  function TransactionSequence::new(string name = "TransactionSequence");
    super.new(name);
  endfunction: new   
+
+
+
+/*! 
+ * Pre-body - implements opening of output file where transactions are stored
+ */ 
+ task TransactionSequence::pre_body;
+   output_file = $fopen("alu_trans_file.txt", "w");
+   
+   if (output_file == 0) 
+     `uvm_error("PRE_BODY", "Output file where ALU transactions should be stored is corrupted!!!\n"); 
+   
+ endtask : pre_body
 
 
 
@@ -72,6 +88,10 @@
      assert(alu_in_trans_c.randomize());
      
      //alu_in_trans_c.print("TRANS_SEQUENCE: ALU TRANSACTION");
+     
+     // store transactions into external file
+     alu_in_trans_c.fwrite(output_file);
+     
      finish_item(alu_in_trans_c);
      cnt++; 
    end 
@@ -79,7 +99,16 @@
 
 
 
- /*! 
+/*! 
+ * Post-body - implements closing of output file with transactions
+ */ 
+ task TransactionSequence::post_body;
+   $fclose(output_file); 
+ endtask : post_body
+
+
+
+/*! 
  * configureSequence - configure Sequence with data from the configuration object
  */ 
  task TransactionSequence::configureSequence(TransactionSequenceConfig transaction_sequence_cfg);
