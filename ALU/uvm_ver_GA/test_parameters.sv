@@ -9,7 +9,7 @@
  package sv_alu_param_pkg;
    
    // VERSION
-   parameter VERSION        = 1; // 0 == without GA, 1 == with GA
+   parameter VERSION        = 0; // 0 == without GA, 1 == with GA
    
    // DUT GENERICS
    parameter DATA_WIDTH     = 8; // data width
