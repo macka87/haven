@@ -96,14 +96,17 @@
    $write("EVALUATION OF ONE POPULATION: \n");
    
    //$load_coverage_db("alu_empty.ucdb");
-   //$set_coverage_db_name("alu_empty.ucdb");
+   //$set_coverage_db_name("alu_two.ucdb");
   
    // SEND CHROMOSOMES FROM POPULATION TO DRIVER
    while (chr_count < populationSize) begin
      
      // >>>>> RESET SIMULATION >>>>>
-     //$load_coverage_db("alu_empty.ucdb");
+     //$load_coverage_db("alu_one1.ucdb");
      //$set_coverage_db_name ("alu_two.ucdb");
+     
+     // EVALUATE HISTORY OF BEST CHROMOSOMES
+     evaluateHistory();
      
      // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
      start_item(old_chr_array.alu_chromosome[chr_count]);
@@ -121,6 +124,8 @@
    getBestChromosome(best_chromosome);
    //$write("BEST CHROMOSOME: index 0: \n");
    //best_chromosome.print(0, 1);
+   
+   // STORE THE BEST CHROMOSOME INTO THE HISTORY FILE
    
    // SIMULATE THE BEST CHROMOSOME ONES MORE AND STORE COVERAGE INTO THE UCDB
    /*$write(">>>>> BEST CHROMOSOME EVALUATION: <<<<<\n");

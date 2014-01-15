@@ -9,7 +9,7 @@
  package sv_alu_param_pkg;
    
    // VERSION
-   parameter VERSION        = 0; // 0 == without GA, 1 == with GA
+   parameter VERSION        = 1; // 0 == without GA, 1 == with GA
    
    // DUT GENERICS
    parameter DATA_WIDTH     = 8; // data width
@@ -26,7 +26,7 @@
    // Number of generations
    parameter GENERATIONS      = 1;
    // Size of population
-   parameter POPULATION_SIZE  = 5;
+   parameter POPULATION_SIZE  = 10;
    // Elitism
    parameter ELITISM          = 1;
    // Number of maximal mutations per individuum
