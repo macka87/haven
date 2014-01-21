@@ -1,0 +1,65 @@
+# *****************************************************************************
+# Project Name: Genetic Algorithm for ALU 
+# File Name:    alu.fdo
+# Description:  Simulation starting script.
+# Authors:      Marcela Simkova <isimkova@fit.vutbr.cz> 
+# Date:         21.1.2014
+# ************************************************************************** */
+
+set MODELSIM modelsim.ini
+#set UVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/uvm-1.1
+
+# Working library
+if [file exists work] {
+    vdel -all
+}
+vlib work
+
+# Get the simulator installation directory.
+quietly set INSTALL_HOME [ file dirname [file normalize $::env(MODEL_TECH)]]
+
+# DUT compilation
+vcom -93 -explicit -work work ../mult/mult.vhd
+vcom -93 -explicit -work work ../alu/alu.vhd
+
+# Verification environment compilation
+vlog -cover sbce test_parameters.sv
+vlog -cover sbce math_pkg.sv
+vlog -cover sbce alu_dut_if.sv
+vlog -cover sbce +incdir+seq_lib/  seq_lib/sv_alu_seq_pkg.sv
+vlog -cover sbce +incdir+env_lib/  env_lib/sv_alu_env_pkg.sv
+vlog -cover sbce +incdir+test_lib/ test_lib/sv_alu_test_pkg.sv
+vlog -cover sbce top_level.sv
+
+
+#vlog -cover sbce +incdir+$UVM_HOME/src+../../uvm_GA_basic_components/  ../../uvm_GA_basic_components/sv_basic_ga_pkg.sv
+#vlog -cover sbce +incdir+$UVM_HOME/src+env_lib/  env_lib/sv_alu_coverage_pkg.sv
+#vlog -cover sbce +incdir+$UVM_HOME/src+seq_lib/  seq_lib/sv_alu_seq_pkg.sv
+#vlog -cover sbce +incdir+$UVM_HOME/src+ga_lib/   ga_lib/sv_alu_ga_pkg.sv
+#vlog -cover sbce +incdir+$UVM_HOME/src+env_lib/  env_lib/sv_alu_env_pkg.sv
+#vlog -cover sbce +incdir+$UVM_HOME/src+test_lib/ test_lib/sv_alu_test_pkg.sv
+
+# Set path to testbench instance of the DUT 
+set TOP_MODULE "Top_TB"
+
+# Start of the simulation
+vsim -coverage -t 1ps -lib work $TOP_MODULE
+
+# Suppress warnings from arithm library
+puts "Std Arith Warnings - Disabled"
+set  StdArithNoWarnings 1
+
+# View a simulation wave
+source "./signals.fdo"
+view wave
+
+# Definition of signals in a wave window
+add wave -divider "ALU"  
+basic     BASIC    /$TOP_MODULE/VHDL_DUT_U
+alu_in    ALU_IN   /$TOP_MODULE/VHDL_DUT_U
+alu_out   ALU_OUT  /$TOP_MODULE/VHDL_DUT_U
+
+view structure
+view signals
+restart -f
+run -all
