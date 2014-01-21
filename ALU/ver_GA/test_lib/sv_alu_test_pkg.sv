@@ -6,6 +6,8 @@
  * Date:         19.4.2013
  * ************************************************************************** */
 
+ `include "alu_dut_if.sv"
+
  package sv_alu_test_pkg;
    
    // Standard UVM import & include

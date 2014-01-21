@@ -18,6 +18,12 @@
    * Data Members
    */ 
    
+  /*
+   * Virtual interfaces
+   */    
+   virtual iAluIn  dut_alu_in_if;  // ALU input interface
+   virtual iAluOut dut_alu_out_if; // ALU output interface   
+   
   
   /*! 
    * Channels
@@ -38,10 +44,18 @@
    */
    
    // User-defined
+   extern function new(virtual iAluIn dut_alu_in_if, virtual iAluOut dut_alu_out_if);
    extern function void create_structure();
    extern task run();
  endclass: AluAgent
 
+
+ function AluAgent::new(virtual iAluIn  dut_alu_in_if,
+                      virtual iAluOut dut_alu_out_if
+                      );
+   this.dut_alu_in_if = dut_alu_in_if;  //! Store pointer interface 
+   this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface  
+ endfunction: new  
 
 
 /*! 
@@ -54,7 +68,7 @@
    trans_sequencer = new();
    trans_sequencer.inputMbx = inputMbx;
    
-   alu_driver = new(); 
+   alu_driver = new(dut_alu_in_if); 
    alu_driver.inputMbx = inputMbx;
    
    alu_monitor = new();

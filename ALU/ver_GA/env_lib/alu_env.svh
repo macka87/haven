@@ -23,6 +23,12 @@
    // Object for the coverage storage
    //AluCoverageInfo cov_info; 
    
+  /*
+   * Virtual interfaces
+   */    
+   virtual iAluIn  dut_alu_in_if;  // ALU input interface
+   virtual iAluOut dut_alu_out_if; // ALU output interface  
+   
   /*! 
    * Component Members
    */  
@@ -39,18 +45,26 @@
    
    
    // User-defined methods
+   extern function new(virtual iAluIn dut_alu_in_if, virtual iAluOut dut_alu_out_if);
    extern function void create_structure();
    extern task run();
    
  endclass: AluEnv
- 
+
+
+ function AluEnv::new(virtual iAluIn  dut_alu_in_if,
+                      virtual iAluOut dut_alu_out_if
+                      );
+   this.dut_alu_in_if = dut_alu_in_if;  //! Store pointer interface 
+   this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface  
+ endfunction: new  
  
 
 /*! 
  * Constructor - create and configure
  */
  function void AluEnv::create_structure();
-   alu_agent = new();
+   alu_agent = new(dut_alu_in_if, dut_alu_out_if);
  endfunction: create_structure
  
  

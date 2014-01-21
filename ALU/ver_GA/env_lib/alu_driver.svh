@@ -38,13 +38,16 @@
    */
    
    // User-defined methods
+   extern function new(virtual iAluIn dut_alu_in_if);
    extern function void create_structure();
    extern task run();
    extern task waitForAluRdy();
    
  endclass: AluDriver
 
-
+ function AluDriver::new(virtual iAluIn  dut_alu_in_if);
+   this.dut_alu_in_if = dut_alu_in_if;  //! Store pointer interface 
+ endfunction: new 
 
 /*! 
  * Constructor - create and configure

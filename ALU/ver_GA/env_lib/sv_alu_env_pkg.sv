@@ -6,6 +6,8 @@
  * Date:         21.1.2014 
  * ************************************************************************** */
 
+ `include "alu_dut_if.sv"
+
  package sv_alu_env_pkg;
 
    // Package imports

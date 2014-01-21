@@ -22,8 +22,8 @@
   /*
    * Virtual interfaces
    */    
-   iAluIn  dut_alu_in_if   (CLK, RST);  // ALU input interface
-   iAluOut dut_alu_out_if  (CLK, RST);  // ALU output interface 
+   virtual iAluIn  dut_alu_in_if;  // ALU input interface
+   virtual iAluOut dut_alu_out_if; // ALU output interface 
   
   
   /*!
@@ -38,6 +38,7 @@
    */
    
    // User-defined methods
+   extern function new(virtual iAluIn dut_alu_in_if, virtual iAluOut dut_alu_out_if);
    extern function void create_structure();
    extern task run();
    //extern function void configure_env(AluEnvConfig cfg);
@@ -45,9 +46,9 @@
  endclass: AluTest
  
 
- function void new (virtual iAluIn  dut_alu_in_if,
-                   virtual iAluOut dut_alu_out_if
-                  );
+ function AluTest::new(virtual iAluIn  dut_alu_in_if,
+                       virtual iAluOut dut_alu_out_if
+                       );
    this.dut_alu_in_if = dut_alu_in_if;  //! Store pointer interface 
    this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface  
  endfunction: new  
@@ -72,7 +73,7 @@
    //configure_alu_agent(alu_agent_cfg);
    
    // CREATE THE ALU VERIFICATION ENVIRONMENT
-   alu_env = new();
+   alu_env = new(dut_alu_in_if, dut_alu_out_if);
    
  endfunction: create_structure 
  
