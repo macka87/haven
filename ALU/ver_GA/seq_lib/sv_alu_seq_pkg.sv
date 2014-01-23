@@ -14,5 +14,5 @@
    // Includes
    `include "alu_input_transaction.svh"
    `include "transaction_sequencer.svh"
-   /*`include "alu_output_transaction.svh"*/
+   `include "alu_output_transaction.svh"
  endpackage

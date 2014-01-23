@@ -25,6 +25,7 @@
    * Channels
    */ 
    mailbox #(AluInputTransaction) inputMbx; 
+   mailbox #(AluInputTransaction) sbInMbx; 
    
   /*!
    * Data Members
@@ -36,7 +37,6 @@
    
    // User-defined methods
    extern function new(virtual iAluIn dut_alu_in_if);
-   extern function void create_structure();
    extern task run();
    extern task waitForAluRdy();
    
@@ -54,16 +54,6 @@
 
 
 /*! 
- * Create and configure
- */ 
- function void AluDriver::create_structure();
-   // create analysis port
-   //inputMbx = new();
- endfunction: create_structure
-
-
-
-/*! 
  * Run - starts driver processing.
  */  
  task AluDriver::run();
@@ -71,8 +61,6 @@
    int cnt = 0;
    
    $write("\n\n########## DRIVER ##########\n\n");
-   
-   create_structure();
    
    // synchronise with CLK 
    @(dut_alu_in_if.cb); 
@@ -90,7 +78,7 @@
        
      // set input signals of DUT
      // sends values from transaction on the virtual interface
-     dut_alu_in_if.cb.ACT   <= alu_in_trans.act;        
+     dut_alu_in_if.cb.ACT   <= "1";        
      dut_alu_in_if.cb.OP    <= alu_in_trans.op;
      dut_alu_in_if.cb.MOVI  <= alu_in_trans.movi;
      dut_alu_in_if.cb.REG_A <= alu_in_trans.reg_a;
@@ -100,6 +88,7 @@
      
      // sends generated transaction to the scoreboard, subscriber etc.
      //if (alu_in_trans.act) aport_alu_in_if.write(alu_in_trans);
+     sbInMbx.put(alu_in_trans);
               
      // synchronise with CLK 
      @(dut_alu_in_if.cb); 

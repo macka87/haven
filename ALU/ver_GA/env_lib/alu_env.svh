@@ -29,8 +29,8 @@
    */  
    
    AluAgent               alu_agent;
-   /*AluScoreboard          alu_scoreboard;
-   AluInCoverageMonitor   alu_in_cov_monitor;
+   
+   /*AluInCoverageMonitor   alu_in_cov_monitor;
    AluOutCoverageMonitor  alu_out_cov_monitor; */
    
    

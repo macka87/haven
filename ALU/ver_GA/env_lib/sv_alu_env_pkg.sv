@@ -20,7 +20,7 @@
    // Includes
    `include "alu_driver.svh"
    `include "alu_monitor.svh"
-   //`include "alu_scoreboard.svh"
+   `include "alu_scoreboard.svh"
    //`include "alu_in_coverage_monitor.svh"
    //`include "alu_out_coverage_monitor.svh"
    `include "alu_agent.svh"

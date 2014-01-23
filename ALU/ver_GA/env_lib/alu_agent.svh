@@ -29,6 +29,8 @@
    * Channels
    */  
    mailbox #(AluInputTransaction) inputMbx; 
+   mailbox #(AluInputTransaction) sbInMbx;
+   mailbox #(AluOutputTransaction) outputMbx;
    
   
   /*!
@@ -38,6 +40,7 @@
    TransactionSequencer  trans_sequencer;
    AluDriver             alu_driver; 
    AluMonitor            alu_monitor; 
+   AluScoreboard         alu_scoreboard;
    
   /*!
    * Methods
@@ -68,14 +71,22 @@
  */ 
  function void AluAgent::create_structure();
    // >>>>> CREATE COMPONENTS >>>>>
-   inputMbx = new();
+   inputMbx  = new();
+   sbInMbx   = new();
+   outputMbx = new();
   
    trans_sequencer = new();
    alu_driver = new(dut_alu_in_if); 
-   alu_monitor = new();
+   alu_monitor = new(dut_alu_out_if);
+   alu_scoreboard = new();
    
    trans_sequencer.inputMbx = inputMbx;
+   alu_driver.sbInMbx = sbInMbx;
    alu_driver.inputMbx = inputMbx;
+   alu_monitor.outputMbx = outputMbx;
+   
+   alu_scoreboard.sbInMbx = sbInMbx; 
+   alu_scoreboard.sbOutMbx =  outputMbx; 
  endfunction: create_structure
 
 
@@ -95,5 +106,11 @@
    
      // run driver
      alu_driver.run();
+     
+     // run monitor
+     alu_monitor.run();
+     
+     // run scoreboard
+     alu_scoreboard.run();
    join;  
  endtask: run

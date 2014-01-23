@@ -50,7 +50,7 @@
  
  
 /*! 
- * Implementation of the do_copy() virtual function.
+ * Implementation of the clone function.
  */
  function AluInputTransaction AluInputTransaction::clone(AluInputTransaction rhs = null);
  

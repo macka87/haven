@@ -3,7 +3,7 @@
  * File Name:    alu_monitor.sv
  * Description:  Monitor Class for ALU
  * Authors:      Marcela Simkova <isimkova@fit.vutbr.cz> 
- * Date:         21.1.2014
+ * Date:         23.1.2014
  * ************************************************************************** */
 
 /*!
@@ -22,8 +22,9 @@
    virtual iAluOut dut_alu_out_if;
    
   /*! 
-   * Ports/Exports
+   * Channels
    */ 
+   mailbox #(AluOutputTransaction) outputMbx;
    
   /*! 
    * Data Members
@@ -34,46 +35,65 @@
    */
    
    // User-defined methods
+   extern function new(virtual iAluOut dut_alu_out_if);
    extern task run();
    extern task waitForVld();
    
  endclass: AluMonitor
 
- 
+
+
+/*! 
+ *  Constructor
+ */
+ function AluMonitor::new(virtual iAluOut dut_alu_out_if);
+   this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface 
+ endfunction: new 
+
+
 
 /*! 
  * Run - starts monitor processing.
  */  
  task AluMonitor::run(); 
-   /*AluOutputTransaction alu_out_trans, alu_out_trans_c;    
+   AluOutputTransaction alu_out_trans, alu_out_trans_c;  
+   int cnt = 0;  
+   
+   $write("\n\n########## MONITOR ##########\n\n");
    
    // check RESET
    while (dut_alu_out_if.RST) 
      @(dut_alu_out_if.cb); 
    
    // create output transaction  
-   alu_out_trans = AluOutputTransaction::type_id::create();  
+   alu_out_trans = new();  
    
-   forever
-     begin
-       // wait for EX_ALU_VLD = 1
-       waitForVld();
+   $write("before count\n");
+   
+   while (cnt < TRANS_COUNT) begin
+     
+     // wait for EX_ALU_VLD = 1
+     waitForVld();
        
-       // clone output transaction
-       assert($cast(alu_out_trans_c, alu_out_trans.clone));
+     // clone output transaction
+     alu_out_trans_c = alu_out_trans.clone(); 
        
-       // receive the value of output
-       alu_out_trans.ex_alu = dut_alu_out_if.cb.EX_ALU;
+     // receive the value of output
+     alu_out_trans_c.ex_alu = dut_alu_out_if.cb.EX_ALU;
        
-       // display the content of transaction 
-       //alu_out_trans.print("MONITOR:"); 
+     // display the content of transaction 
+     alu_out_trans_c.print("MONITOR:"); 
        
-       // sends generated transaction to the scoreboard, subscriber etc.
-       aport_alu_out_if.write(alu_out_trans);
+     outputMbx.put(alu_out_trans_c);
+     
+     cnt++;
        
-       // synchronisation with the DUT
-       @(dut_alu_out_if.cb);
-     end*/
+     // sends generated transaction to the scoreboard, subscriber etc.
+     //aport_alu_out_if.write(alu_out_trans);
+      
+     // synchronisation with the DUT
+     @(dut_alu_out_if.cb);
+   end
  endtask: run 
  
 
@@ -82,6 +102,6 @@
  * Wait for validity of output EX_ALU and not RESET.
  */ 
  task AluMonitor::waitForVld();
-   /*while (!(dut_alu_out_if.cb.EX_ALU_VLD === 1))  
-     @(dut_alu_out_if.cb);*/
+   while (!(dut_alu_out_if.cb.EX_ALU_VLD === 1))  
+     @(dut_alu_out_if.cb);
  endtask: waitForVld
