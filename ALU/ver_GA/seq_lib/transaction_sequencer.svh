@@ -41,7 +41,7 @@
    AluInputTransaction alu_in_trans, alu_in_trans_c;
    int cnt = 0;
    
-   $write("\n\n########## TRANSACTION SEQUENCER ##########\n\n");
+   //$write("\n\n########## TRANSACTION SEQUENCER ##########\n\n");
    
    alu_in_trans = new();
    
@@ -49,7 +49,7 @@
      alu_in_trans_c = alu_in_trans.clone();               
      
      assert(alu_in_trans_c.randomize());
-     alu_in_trans_c.print("TRANS_SEQUENCE: ALU TRANSACTION");
+     //alu_in_trans_c.print("TRANS_SEQUENCE: ALU TRANSACTION");
      inputMbx.put(alu_in_trans_c);
      cnt++; 
    end 

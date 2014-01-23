@@ -41,7 +41,7 @@
    AluDriver             alu_driver; 
    AluMonitor            alu_monitor; 
    AluScoreboard         alu_scoreboard;
-   
+        
   /*!
    * Methods
    */
@@ -58,8 +58,8 @@
  *  Constructor
  */
  function AluAgent::new(virtual iAluIn  dut_alu_in_if,
-                      virtual iAluOut dut_alu_out_if
-                      );
+                        virtual iAluOut dut_alu_out_if
+                       );
    this.dut_alu_in_if = dut_alu_in_if;    //! Store pointer interface 
    this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface  
  endfunction: new  
@@ -71,21 +71,21 @@
  */ 
  function void AluAgent::create_structure();
    // >>>>> CREATE COMPONENTS >>>>>
-   inputMbx  = new();
-   sbInMbx   = new();
-   outputMbx = new();
+   inputMbx  = new(1);
+   sbInMbx   = new(1);
+   outputMbx = new(1);
   
    trans_sequencer = new();
-   alu_driver = new(dut_alu_in_if); 
-   alu_monitor = new(dut_alu_out_if);
-   alu_scoreboard = new();
+   alu_driver          = new(dut_alu_in_if); 
+   alu_monitor         = new(dut_alu_out_if);
+   alu_scoreboard      = new();
    
    trans_sequencer.inputMbx = inputMbx;
-   alu_driver.sbInMbx = sbInMbx;
-   alu_driver.inputMbx = inputMbx;
-   alu_monitor.outputMbx = outputMbx;
+   alu_driver.sbInMbx       = sbInMbx;
+   alu_driver.inputMbx      = inputMbx;
+   alu_monitor.outputMbx    = outputMbx;
    
-   alu_scoreboard.sbInMbx = sbInMbx; 
+   alu_scoreboard.sbInMbx  = sbInMbx; 
    alu_scoreboard.sbOutMbx =  outputMbx; 
  endfunction: create_structure
 
@@ -112,5 +112,6 @@
      
      // run scoreboard
      alu_scoreboard.run();
+     
    join;  
  endtask: run

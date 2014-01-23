@@ -29,7 +29,7 @@
    
    // Clocking block for coverage
    clocking cover_cb @(posedge CLK);
-     input ACT, ALU_RDY, OP, MOVI, REG_A, REG_B, IMM, MEM;  
+     input RST, ACT, ALU_RDY, OP, MOVI, REG_A, REG_B, IMM, MEM;  
    endclocking: cover_cb;
 
    // DUT Modport

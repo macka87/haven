@@ -17,8 +17,8 @@
    * Component Members
    */
    
-   AluEnv          alu_env;        // The environment class
-   
+   AluAgent              alu_agent;        // The agent class
+      
   /*
    * Virtual interfaces
    */    
@@ -61,7 +61,7 @@
  function void AluTest::create_structure();
  
    // CREATE THE ALU VERIFICATION ENVIRONMENT
-   alu_env = new(dut_alu_in_if, dut_alu_out_if);
+   alu_agent = new(dut_alu_in_if, dut_alu_out_if);
    
  endfunction: create_structure 
  
@@ -76,9 +76,9 @@
    
    // create environment 
    create_structure(); 
-    
-   // run environment
-   alu_env.run(); 
    
+   // run environment
+   alu_agent.run(); 
+      
    $stop;
  endtask: run

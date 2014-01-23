@@ -29,6 +29,21 @@
   /*! 
    * Data Members
    */
+   
+  AluOutputTransaction alu_out_trans_c;
+  
+  /*
+   * Definition of covergroups
+   */
+   
+   covergroup alu_out_covergroup;
+    
+     alu_output_00_FF: coverpoint alu_out_trans_c.ex_alu {
+       bins zeros = {0};
+       bins ones  = {8'hFF}; 
+     } 
+     
+   endgroup 
   
   /*!
    * Methods
@@ -48,6 +63,7 @@
  */
  function AluMonitor::new(virtual iAluOut dut_alu_out_if);
    this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface 
+   alu_out_covergroup = new();
  endfunction: new 
 
 
@@ -56,7 +72,7 @@
  * Run - starts monitor processing.
  */  
  task AluMonitor::run(); 
-   AluOutputTransaction alu_out_trans, alu_out_trans_c;  
+   AluOutputTransaction alu_out_trans;  
    int cnt = 0;  
    
    $write("\n\n########## MONITOR ##########\n\n");
@@ -68,8 +84,6 @@
    // create output transaction  
    alu_out_trans = new();  
    
-   $write("before count\n");
-   
    while (cnt < TRANS_COUNT) begin
      
      // wait for EX_ALU_VLD = 1
@@ -80,12 +94,18 @@
        
      // receive the value of output
      alu_out_trans_c.ex_alu = dut_alu_out_if.cb.EX_ALU;
-       
+     
      // display the content of transaction 
      alu_out_trans_c.print("MONITOR:"); 
        
      outputMbx.put(alu_out_trans_c);
      
+     // sample coverage
+     alu_out_covergroup.sample();
+     
+     // print statistics
+     $write("ALU OUTPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_out_covergroup.get_inst_coverage());
+       
      cnt++;
        
      // sends generated transaction to the scoreboard, subscriber etc.
