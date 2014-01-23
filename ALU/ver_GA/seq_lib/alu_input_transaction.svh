@@ -42,7 +42,7 @@
   
    // User-defined methods
    extern function void print(string name);
-   extern function void do_copy(AluInputTransaction alu_trans);
+   extern function AluInputTransaction clone(AluInputTransaction rhs = null);
    extern function void fwrite(int fileDescr);
   
  endclass: AluInputTransaction
@@ -52,17 +52,27 @@
 /*! 
  * Implementation of the do_copy() virtual function.
  */
- function void AluInputTransaction::do_copy(AluInputTransaction alu_trans);
-   rst     = alu_trans.rst;
-   act     = alu_trans.act; 
-   op      = alu_trans.op;
-   movi    = alu_trans.movi;                
-   reg_a   = alu_trans.reg_a;    
-   reg_b   = alu_trans.reg_b;    
-   mem     = alu_trans.mem;      
-   imm     = alu_trans.imm;      
-   btDelay = alu_trans.btDelay;                   
- endfunction: do_copy  
+ function AluInputTransaction AluInputTransaction::clone(AluInputTransaction rhs = null);
+ 
+   AluInputTransaction alu_trans;
+   
+   if (rhs == null)
+     alu_trans = new();
+   else 
+     $cast(alu_trans, rhs);
+     
+   alu_trans.rst     = rst;
+   alu_trans.act     = act; 
+   alu_trans.op      = op;
+   alu_trans.movi    = movi;                
+   alu_trans.reg_a   = reg_a;    
+   alu_trans.reg_b   = reg_b;    
+   alu_trans.mem     = mem;      
+   alu_trans.imm     = imm;      
+   alu_trans.btDelay = btDelay;   
+   
+   return alu_trans;                
+ endfunction: clone 
  
 
 

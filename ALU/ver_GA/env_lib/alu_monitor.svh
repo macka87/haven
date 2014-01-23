@@ -25,35 +25,20 @@
    * Ports/Exports
    */ 
    
-   
-  
   /*! 
    * Data Members
    */
   
-  
-   
   /*!
    * Methods
    */
    
    // User-defined methods
-   extern function void create_structure();
    extern task run();
    extern task waitForVld();
    
  endclass: AluMonitor
- 
- 
- 
-/*! 
- * Constructor - create and configure  
- */ 
- function void AluMonitor::create_structure();
-   // create analysis port
-   
- endfunction: create_structure
- 
+
  
 
 /*! 

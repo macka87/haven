@@ -26,13 +26,10 @@
    */ 
    mailbox #(AluInputTransaction) inputMbx; 
    
-   
   /*!
    * Data Members
    */ 
    
-  
-      
   /*!
    * Methods
    */
@@ -45,16 +42,23 @@
    
  endclass: AluDriver
 
+
+
+/*! 
+ *  Constructor
+ */
  function AluDriver::new(virtual iAluIn  dut_alu_in_if);
    this.dut_alu_in_if = dut_alu_in_if;  //! Store pointer interface 
  endfunction: new 
 
+
+
 /*! 
- * Constructor - create and configure
+ * Create and configure
  */ 
  function void AluDriver::create_structure();
    // create analysis port
-   
+   //inputMbx = new();
  endfunction: create_structure
 
 
@@ -64,13 +68,16 @@
  */  
  task AluDriver::run();
    AluInputTransaction alu_in_trans;
+   int cnt = 0;
    
    $write("\n\n########## DRIVER ##########\n\n");
+   
+   create_structure();
    
    // synchronise with CLK 
    @(dut_alu_in_if.cb); 
    
-   forever begin
+   while (cnt < TRANS_COUNT) begin
      inputMbx.get(alu_in_trans);
      
      // wait for readiness of ALU to process data
@@ -97,6 +104,8 @@
      // synchronise with CLK 
      @(dut_alu_in_if.cb); 
      
+     cnt++;
+     
    end  
  endtask: run
  
@@ -107,5 +116,5 @@
  */
  task AluDriver::waitForAluRdy();
    while (!dut_alu_in_if.cb.ALU_RDY || dut_alu_in_if.RST) 
-     @(dut_alu_in_if.cb); 
+     @(dut_alu_in_if.cb);
  endtask: waitForAluRdy  

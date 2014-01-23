@@ -10,10 +10,6 @@
 
  package sv_alu_test_pkg;
    
-   // Standard UVM import & include
-   //import uvm_pkg::*;
-   //`include "uvm_macros.svh"
-   
    // Package imports
    import sv_alu_param_pkg::*;
    //import sv_basic_ga_pkg::*;

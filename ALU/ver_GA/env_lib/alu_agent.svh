@@ -50,29 +50,35 @@
  endclass: AluAgent
 
 
+
+/*! 
+ *  Constructor
+ */
  function AluAgent::new(virtual iAluIn  dut_alu_in_if,
                       virtual iAluOut dut_alu_out_if
                       );
-   this.dut_alu_in_if = dut_alu_in_if;  //! Store pointer interface 
+   this.dut_alu_in_if = dut_alu_in_if;    //! Store pointer interface 
    this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface  
  endfunction: new  
 
 
+
 /*! 
- * Constructor - create and configure environment
+ * Create and configure environment
  */ 
  function void AluAgent::create_structure();
    // >>>>> CREATE COMPONENTS >>>>>
    inputMbx = new();
   
    trans_sequencer = new();
-   trans_sequencer.inputMbx = inputMbx;
-   
    alu_driver = new(dut_alu_in_if); 
-   alu_driver.inputMbx = inputMbx;
-   
    alu_monitor = new();
+   
+   trans_sequencer.inputMbx = inputMbx;
+   alu_driver.inputMbx = inputMbx;
  endfunction: create_structure
+
+
 
 /*! 
  * Main run
@@ -81,14 +87,13 @@
    // create agent objects
    create_structure();
    
-    $write("\n\n########## ALU_AGENT ##########\n\n");
+   $write("\n\n########## ALU_AGENT ##########\n\n");
    
-   // run transaction sequencer
-   trans_sequencer.run();
+   fork 
+     // run transaction sequencer
+     trans_sequencer.run();
    
-   // run driver
-   alu_driver.run();
- endtask: run  
- 
-  
-
+     // run driver
+     alu_driver.run();
+   join;  
+ endtask: run
