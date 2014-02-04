@@ -1,4 +1,4 @@
-# the name of the output
+# the name of the output Ondra
 CO=acc_ver
 
 # names of files other than sources the change of which should recompile the
