@@ -180,7 +180,7 @@
    @(dut_alu_in_if.cb); 
    
    while (cnt < TRANS_COUNT) begin
-     inputMbx.get(alu_in_trans);
+     inputMbx.get(alu_in_trans);   
      
      // wait for readiness of ALU to process data
      waitForAluRdy();
@@ -192,7 +192,8 @@
        
      // set input signals of DUT
      // sends values from transaction on the virtual interface
-     dut_alu_in_if.cb.ACT   <= "1";        
+     
+     dut_alu_in_if.cb.ACT   <= 1;   
      dut_alu_in_if.cb.OP    <= alu_in_trans.op;
      dut_alu_in_if.cb.MOVI  <= alu_in_trans.movi;
      dut_alu_in_if.cb.REG_A <= alu_in_trans.reg_a;
@@ -206,7 +207,7 @@
      // print statistics
      $write("ALU INPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_in_covergroup.get_inst_coverage());
      
-     // sends generated transaction to the scoreboard, subscriber etc.
+        // sends generated transaction to the scoreboard, subscriber etc.
      //if (alu_in_trans.act) aport_alu_in_if.write(alu_in_trans);
      sbInMbx.put(alu_in_trans);
               
@@ -224,6 +225,7 @@
  * Wait for ALU_RDY
  */
  task AluDriver::waitForAluRdy();
-   while (!dut_alu_in_if.cb.ALU_RDY || dut_alu_in_if.RST) 
+   while (!dut_alu_in_if.cb.ALU_RDY || dut_alu_in_if.RST) begin
      @(dut_alu_in_if.cb);
+   end 
  endtask: waitForAluRdy  

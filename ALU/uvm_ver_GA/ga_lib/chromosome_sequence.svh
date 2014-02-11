@@ -106,7 +106,7 @@
      //$set_coverage_db_name ("alu_two.ucdb");
      
      // EVALUATE HISTORY OF BEST CHROMOSOMES
-     evaluateHistory();
+     //evaluateHistory();
      
      // >>>>> SEND CHROMOSOME TO THE TRANSACTION SEQUENCE >>>>>
      start_item(old_chr_array.alu_chromosome[chr_count]);

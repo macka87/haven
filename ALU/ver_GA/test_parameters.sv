@@ -57,6 +57,6 @@
    parameter SEED1                  = 0;   // Seed for PRNG
    
    // TRANSACTION COUNT FOR CLASSICAL RUN
-   parameter TRANS_COUNT            = 50;
+   parameter TRANS_COUNT            = 1000;
    
  endpackage

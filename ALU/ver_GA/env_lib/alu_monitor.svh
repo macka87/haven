@@ -84,7 +84,8 @@
    // create output transaction  
    alu_out_trans = new();  
    
-   while (cnt < TRANS_COUNT) begin
+   //while (cnt < TRANS_COUNT) begin
+   forever begin
      
      // wait for EX_ALU_VLD = 1
      waitForVld();
