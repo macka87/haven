@@ -26,18 +26,12 @@ vcom -93 -explicit -work work ../alu/alu.vhd
 vlog -cover sbce test_parameters.sv
 vlog -cover sbce math_pkg.sv
 vlog -cover sbce alu_dut_if.sv
+vlog -cover sbce +incdir+env_lib/  env_lib/sv_alu_coverage_pkg.sv
 vlog -cover sbce +incdir+seq_lib/  seq_lib/sv_alu_seq_pkg.sv
 vlog -cover sbce +incdir+env_lib/  env_lib/sv_alu_env_pkg.sv
+vlog -cover sbce +incdir+ga_lib/   ga_lib/sv_alu_ga_pkg.sv
 vlog -cover sbce +incdir+test_lib/ test_lib/sv_alu_test_pkg.sv
 vlog -cover sbce top_level.sv
-
-
-#vlog -cover sbce +incdir+$UVM_HOME/src+../../uvm_GA_basic_components/  ../../uvm_GA_basic_components/sv_basic_ga_pkg.sv
-#vlog -cover sbce +incdir+$UVM_HOME/src+env_lib/  env_lib/sv_alu_coverage_pkg.sv
-#vlog -cover sbce +incdir+$UVM_HOME/src+seq_lib/  seq_lib/sv_alu_seq_pkg.sv
-#vlog -cover sbce +incdir+$UVM_HOME/src+ga_lib/   ga_lib/sv_alu_ga_pkg.sv
-#vlog -cover sbce +incdir+$UVM_HOME/src+env_lib/  env_lib/sv_alu_env_pkg.sv
-#vlog -cover sbce +incdir+$UVM_HOME/src+test_lib/ test_lib/sv_alu_test_pkg.sv
 
 # Set path to testbench instance of the DUT 
 set TOP_MODULE "Top_TB"

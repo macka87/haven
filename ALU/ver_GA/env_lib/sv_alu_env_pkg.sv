@@ -12,8 +12,8 @@
 
    // Package imports
    import sv_alu_seq_pkg::*;
-   //import sv_alu_ga_pkg::*;
    import sv_alu_param_pkg::*;
+   import sv_alu_coverage_pkg::*;
    import math_pkg::*;
      
    // Includes

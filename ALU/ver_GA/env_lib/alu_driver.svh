@@ -18,7 +18,6 @@
   /*! 
    * Virtual interfaces for DUT
    */ 
-   
    virtual iAluIn dut_alu_in_if;
   
   /*! 
@@ -26,10 +25,12 @@
    */ 
    mailbox #(AluInputTransaction) inputMbx; 
    mailbox #(AluInputTransaction) sbInMbx; 
+   mailbox #(AluCoverageInfo) coverageMbx; 
    
   /*!
    * Data Members
    */ 
+   AluCoverageInfo cov_info;
    
    // Enumeration for operation
    typedef enum logic [3:0] {ADD, SUB, MULT, SHIFT_RIGHT, SHIFT_LEFT, ROTATE_RIGHT, ROTATE_LEFT, NOT, AND, OR, XOR, NAND, NOR, XNOR, INC, DEC} t_operation;
@@ -153,7 +154,6 @@
    extern function new(virtual iAluIn dut_alu_in_if);
    extern task run();
    extern task waitForAluRdy();
-   
  endclass: AluDriver
 
 
@@ -164,6 +164,7 @@
  function AluDriver::new(virtual iAluIn dut_alu_in_if);
    this.dut_alu_in_if = dut_alu_in_if;  //! Store pointer interface 
    alu_in_covergroup = new();
+   cov_info = new();                    // coverage information
  endfunction: new 
 
 
@@ -174,13 +175,14 @@
  task AluDriver::run();
    int cnt = 0;
    
-   $write("\n\n########## DRIVER ##########\n\n");
+   //$write("\n\n########## DRIVER ##########\n\n");
    
    // synchronise with CLK 
    @(dut_alu_in_if.cb); 
    
-   while (cnt < TRANS_COUNT) begin
-     inputMbx.get(alu_in_trans);   
+   //while (cnt < trans_count) begin
+   forever begin
+     inputMbx.get(alu_in_trans);
      
      // wait for readiness of ALU to process data
      waitForAluRdy();
@@ -207,7 +209,13 @@
      // print statistics
      $write("ALU INPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_in_covergroup.get_inst_coverage());
      
-        // sends generated transaction to the scoreboard, subscriber etc.
+     // store coverage info 
+     if ((cnt+1)%TRANS_COUNT == 0) begin
+       cov_info.alu_in_coverage = alu_in_covergroup.get_inst_coverage();
+       coverageMbx.put(cov_info);
+     end
+     
+     // sends generated transaction to the scoreboard, subscriber etc.
      //if (alu_in_trans.act) aport_alu_in_if.write(alu_in_trans);
      sbInMbx.put(alu_in_trans);
               
@@ -215,8 +223,8 @@
      @(dut_alu_in_if.cb); 
      
      cnt++;
-     
-   end  
+   end 
+   
  endtask: run
  
  
@@ -228,4 +236,4 @@
    while (!dut_alu_in_if.cb.ALU_RDY || dut_alu_in_if.RST) begin
      @(dut_alu_in_if.cb);
    end 
- endtask: waitForAluRdy  
+ endtask: waitForAluRdy

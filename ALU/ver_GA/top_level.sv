@@ -59,7 +59,7 @@
    //! TEST
    initial begin
      alu_test = new(dut_alu_in_if, dut_alu_out_if);
-     alu_ga_test = new();
+     alu_ga_test = new(dut_alu_in_if, dut_alu_out_if);
      
      if (VERSION == 0) alu_test.run();
      else if (VERSION == 1)  alu_ga_test.run(); 

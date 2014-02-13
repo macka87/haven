@@ -12,42 +12,74 @@
  * This class represents GA test for ALU.
  */
  class AluGATest;  
-    
+  
+  /*!
+   * Component Members
+   */
+   
+   AluGAAgent           alu_ga_agent;          // The agent class
+   ChromosomeSequencer  chromosome_sequencer;  // sequencer for chromosomes
+  
+  /*
+   * Virtual interfaces
+   */    
+   virtual iAluIn  dut_alu_in_if;  // ALU input interface
+   virtual iAluOut dut_alu_out_if; // ALU output interface 
+   
+  /*! 
+   * Channels
+   */  
+   mailbox #(AluChromosome) chromosomeMbx;  
+   mailbox #(AluCoverageInfo) coverageMbx;
+  
   /*! 
    * Data Members
    */
-   
-   //ChromosomeArray          chr_array;                // Chromosomes stored into an array
-   //ChromosomeSequenceConfig chromosome_sequence_cfg;  // Configuration objects
-   
-  /*! 
-   * Component Members
-   */ 
-   
-   //Population               population_sequencer; 
-   //ChromosomeSequence       chr_seq;    // sequence of chromosomes
-   //AluGATransactionSequence trans_seq;  // sequence of transactions
+   AluChromosomeArray chr_array;  // Chromosomes stored into an array
    
    /*!
    * Methods
    */
-   
-   // User-defined methods
+   extern function new(virtual iAluIn dut_alu_in_if, virtual iAluOut dut_alu_out_if);
    extern function void create_structure();
    extern task run();
-   //extern function void configure_chromosome_sequence(ChromosomeSequenceConfig chromosome_sequence_cfg);
-   //extern task configureAluChromosome(AluChromosome alu_chromosome); 
-   //extern task createOrLoadInitialPopulation();
-   //extern task evaluatePopulation();
-   
+   extern task createOrLoadInitialPopulation();
+   extern task configureAluChromosome(AluChromosome alu_chromosome);
  endclass: AluGATest
  
- 
+
+
+/*! 
+ *  Constructor
+ */
+ function AluGATest::new(virtual iAluIn  dut_alu_in_if,
+                         virtual iAluOut dut_alu_out_if
+                         );
+   this.dut_alu_in_if = dut_alu_in_if;    //! Store pointer interface 
+   this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface  
+   
+   chr_array = new();
+ endfunction: new   
+
+
  
 /*! 
  *  Constructor - create and configure environment
  */ 
  function void AluGATest::create_structure();
+   // >>>>> CREATE COMPONENTS >>>>>
+   chromosomeMbx  = new(1);
+   coverageMbx    = new(1);
+ 
+   chromosome_sequencer  = new(chr_array);
+   alu_ga_agent = new(dut_alu_in_if, dut_alu_out_if);
+   
+   chromosome_sequencer.chromosomeMbx = chromosomeMbx;
+   alu_ga_agent.chromosomeMbx = chromosomeMbx;
+   
+   chromosome_sequencer.coverageMbx = coverageMbx;
+   alu_ga_agent.coverageMbx = coverageMbx;
+   
  endfunction: create_structure
  
 
@@ -59,14 +91,25 @@
    // ------------------------------------------------------------------------
    $write("\n\n########## GENETIC ALGORITHM ##########\n\n");
     
+   // create environment 
+   create_structure(); 
+   
    //! Create initial population
-   //createOrLoadInitialPopulation();
+   createOrLoadInitialPopulation();
    
    //! Run evolution
    //for (int generation = 1; generation <= GENERATIONS; generation++) begin
-     //! Evaluate population
-     //evaluatePopulation();
-   //end
+     
+     
+   fork  
+     // run sequencer
+     chromosome_sequencer.run();
+   
+     // run environment
+     alu_ga_agent.run();
+   join;
+   
+   $stop; 
  endtask: run  
 
 
@@ -74,7 +117,7 @@
 /*
  *  Create or load initial population.   !!! LOAD BUDE IMPLEMENTOVANY NESKOR !!!
  */  
- /*task AluGATest::createOrLoadInitialPopulation();
+ task AluGATest::createOrLoadInitialPopulation();
    
    $write("******************************************************************** \n");
    $write("******************     INITIAL POPULATION      ********************* \n");
@@ -84,7 +127,7 @@
    chr_array.alu_chromosome = new[POPULATION_SIZE];
    for (int i=0; i<POPULATION_SIZE; i++) begin
      // create chromosome 
-     chr_array.alu_chromosome[i] = AluChromosome::type_id::create("alu_chromosome");
+     chr_array.alu_chromosome[i] = new();
      // configure chromosome
      configureAluChromosome(chr_array.alu_chromosome[i]);
      // randomize chromosome
@@ -92,31 +135,14 @@
      // print chromosome
      chr_array.alu_chromosome[i].print(i, 0);     
    end 
-   
-   // save population of chromosomes into the configuration database
-   uvm_config_db #(ChromosomeArray)::set(this, "*", "ChromosomeArray", chr_array); 
-   
- endtask: createOrLoadInitialPopulation */
+ endtask: createOrLoadInitialPopulation
  
- 
- 
-/*
- *  Evaluate initial population.   
- */  
- /*task AluGATest::evaluatePopulation();
-   // start the sequences
-   fork
-     chr_seq.start(population_sequencer);
-     trans_seq.start(alu_env.alu_agent.trans_sequencer);
-   join 
- endtask: evaluatePopulation*/ 
-
 
 
 /*! 
  * configureAluChromosome - configure ALU Chromosome with data from the configuration object
  */ 
- /*task AluGATest::configureAluChromosome(AluChromosome alu_chromosome);
+ task AluGATest::configureAluChromosome(AluChromosome alu_chromosome);
    alu_chromosome.movi_values           = 3;   // num. of values for MOVI
    alu_chromosome.operation_values      = 16;  // num. of values for OPERATION
    alu_chromosome.delay_rangesMin       = DELAY_RANGES_MIN;         
@@ -137,24 +163,4 @@
                            alu_chromosome.operation_values;
                            
    alu_chromosome.chromosome_parts     = 7;                        
- endtask: configureAluChromosome*/ 
- 
-
-
-/*! 
- * Function to configure population
- */ 
- /*function void AluGATest::configure_chromosome_sequence(ChromosomeSequenceConfig chromosome_sequence_cfg);
-   
-   // POPULATION parameters
-   chromosome_sequence_cfg.populationSize  = POPULATION_SIZE; // Size of a population
-   chromosome_sequence_cfg.selection       = PROPORTIONATE;   // Selection type 
-   chromosome_sequence_cfg.elitism         = ELITISM;         // Elitism 
-   chromosome_sequence_cfg.maxMutations    = MAX_MUTATIONS;   // Maximum number of mutations   
-   chromosome_sequence_cfg.crossoverProb   = CROSSOVER_PROB;  // Crossover probability
-   
-   // CHROMOSOME parameters
-   chromosome_sequence_cfg.fitness         = 0;    // fitness function
-   chromosome_sequence_cfg.relativeFitness = 0;    // relative fitness function   
-   
- endfunction: configure_chromosome_sequence*/ 
+ endtask: configureAluChromosome 

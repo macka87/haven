@@ -31,6 +31,7 @@
    */
    
   AluOutputTransaction alu_out_trans_c;
+  AluCoverageInfo cov_info;
   
   /*
    * Definition of covergroups
@@ -53,7 +54,6 @@
    extern function new(virtual iAluOut dut_alu_out_if);
    extern task run();
    extern task waitForVld();
-   
  endclass: AluMonitor
 
 
@@ -75,7 +75,7 @@
    AluOutputTransaction alu_out_trans;  
    int cnt = 0;  
    
-   $write("\n\n########## MONITOR ##########\n\n");
+   //$write("\n\n########## MONITOR ##########\n\n");
    
    // check RESET
    while (dut_alu_out_if.RST) 
@@ -106,15 +106,13 @@
      
      // print statistics
      $write("ALU OUTPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_out_covergroup.get_inst_coverage());
-       
+     
      cnt++;
        
-     // sends generated transaction to the scoreboard, subscriber etc.
-     //aport_alu_out_if.write(alu_out_trans);
-      
      // synchronisation with the DUT
      @(dut_alu_out_if.cb);
    end
+   
  endtask: run 
  
 
@@ -125,4 +123,4 @@
  task AluMonitor::waitForVld();
    while (!(dut_alu_out_if.cb.EX_ALU_VLD === 1))  
      @(dut_alu_out_if.cb);
- endtask: waitForVld
+ endtask: waitForVld   

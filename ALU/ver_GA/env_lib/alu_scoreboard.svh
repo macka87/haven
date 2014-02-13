@@ -22,19 +22,20 @@
    */ 
    mailbox #(AluInputTransaction) sbInMbx;
    mailbox #(AluOutputTransaction) sbOutMbx;
-   
+     
   /*!
    * Data Members
    */  
    
    int m_matches, m_mismatches;
+   int trans_count;
    
   /*!
    * Methods
    */
    
    // User-defined methods
-   extern function new();
+   extern function new(int trans_count);
    extern task run();
    extern function void report();
    
@@ -45,9 +46,10 @@
 /*! 
  * Constructor 
  */
- function AluScoreboard::new();
+ function AluScoreboard::new(int trans_count);
    m_matches    = 0;
    m_mismatches = 0;
+   this.trans_count = trans_count;
  endfunction: new
  
  
@@ -66,7 +68,8 @@
    // create expected output transaction
    alu_out_tr_exp = new();
      
-   while (cnt < TRANS_COUNT) begin
+   //forever begin  
+   while (cnt < trans_count) begin
     
      // receive input transaction from Driver
      sbInMbx.get(alu_in_tr);
@@ -181,7 +184,7 @@
      cnt++;
    end
    
-   report();  
+   report();
  endtask: run
  
  
@@ -205,5 +208,5 @@
      $write("\n SCOREBOARD MISMATCHES OCCURED IN VERIFICATION. \n\n");
    end
    
-   $stop();
+   //$stop();
  endfunction: report

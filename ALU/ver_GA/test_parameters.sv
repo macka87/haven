@@ -9,7 +9,7 @@
  package sv_alu_param_pkg;
    
    // VERSION
-   parameter VERSION        = 0; // 0 == without GA, 1 == with GA
+   parameter VERSION        = 1; // 0 == without GA, 1 == with GA
    
    // DUT GENERICS
    parameter DATA_WIDTH     = 8; // data width
@@ -26,9 +26,11 @@
    // Number of generations
    parameter GENERATIONS      = 1;
    // Size of population
-   parameter POPULATION_SIZE  = 10;
+   parameter POPULATION_SIZE  = 5;
    // Elitism
    parameter ELITISM          = 1;
+   // Selection
+   parameter SELECTION        = 0; // 0 == proportionate
    // Number of maximal mutations per individuum
    parameter MAX_MUTATIONS    = 20;
    // Crossover probability
@@ -52,11 +54,7 @@
    parameter OPERAND_IMM_RANGES_MIN = 1;
    parameter OPERAND_IMM_RANGES_MAX = 8;
    
-   // TRANSACTION COUNT PER EACH CHROMOSOME
-   parameter TRANS_COUNT_PER_CHROM  = 2;
-   parameter SEED1                  = 0;   // Seed for PRNG
-   
    // TRANSACTION COUNT FOR CLASSICAL RUN
-   parameter TRANS_COUNT            = 1000;
+   parameter TRANS_COUNT            = 1;
    
  endpackage
