@@ -23,10 +23,16 @@
    parameter HAS_ALU_SCOREBOARD      = 1;
    
    // GENETIC ALGORITHM PARAMETERS
+   // File with parameters and chromosomes
+   parameter CHROMOSOMES_FILE = "chromosomes.txt";
+   
+   // File with best chromosomes
+   parameter BEST_CHROMOSOMES_FILE = "best_chromosomes.txt";
+   
    // Number of generations
    parameter GENERATIONS      = 1;
    // Size of population
-   parameter POPULATION_SIZE  = 5;
+   parameter POPULATION_SIZE  = 2;
    // Elitism
    parameter ELITISM          = 1;
    // Selection

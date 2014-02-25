@@ -29,9 +29,8 @@
   /*! 
    * Data Members
    */
-   
-  AluOutputTransaction alu_out_trans_c;
-  AluCoverageInfo cov_info;
+   AluOutputTransaction alu_out_trans_c;
+   AluCoverageInfo cov_info;
   
   /*
    * Definition of covergroups
@@ -84,9 +83,7 @@
    // create output transaction  
    alu_out_trans = new();  
    
-   //while (cnt < TRANS_COUNT) begin
    forever begin
-     
      // wait for EX_ALU_VLD = 1
      waitForVld();
        
@@ -112,7 +109,6 @@
      // synchronisation with the DUT
      @(dut_alu_out_if.cb);
    end
-   
  endtask: run 
  
 

@@ -7,7 +7,6 @@
 # ************************************************************************** */
 
 set MODELSIM modelsim.ini
-#set UVM_HOME /opt/modelsim10.0c/modeltech/verilog_src/uvm-1.1
 
 # Working library
 if [file exists work] {
@@ -55,5 +54,21 @@ alu_out   ALU_OUT  /$TOP_MODULE/VHDL_DUT_U
 
 view structure
 view signals
+
+# NORMAL VERIFICATION: TO DO - rozlisit v tomto skripte na urovni parametru
+
+# GA VERIFICATION: Repeat simulation for GENERATION x POPULATION_SIZE times
+set GENERATIONS 1
+set POPULATION_SIZE 2
+set SIZE [expr {$GENERATIONS * $POPULATION_SIZE}]
+
+for {set i 0} {$i<$SIZE} {incr i} {
+
 restart -f
+
+onbreak resume
 run -all
+
+}
+
+exit

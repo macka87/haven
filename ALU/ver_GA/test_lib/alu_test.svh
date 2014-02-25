@@ -71,6 +71,7 @@
  * Main run
  */     
  task AluTest::run();
+ 
    // ------------------------------------------------------------------------
    $write("\n\n########## NORMAL TEST ##########\n\n");
    
@@ -79,6 +80,5 @@
    
    // run environment
    alu_agent.run(); 
-      
-   $stop;
+ 
  endtask: run

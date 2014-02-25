@@ -24,7 +24,7 @@
    // Clocking block  
    clocking cb @(posedge CLK);
      input ALU_RDY;
-     output ACT, OP, MOVI, REG_A, REG_B, IMM, MEM;  
+     output RST, ACT, OP, MOVI, REG_A, REG_B, IMM, MEM;  
    endclocking: cb;
    
    // Clocking block for coverage

@@ -90,6 +90,8 @@
 
    extern function AluChromosome clone(AluChromosome rhs = null);
    extern function void print(int num, bit full_print);
+   extern function void writeToFile(int file_id);
+   extern function void readFromFile(int file_id);
    extern function AluChromosome crossover(AluChromosome chrom = null);
    extern function AluChromosome mutate(int unsigned maxMutations); 
    extern function void setRelativeFitness(int unsigned popFitness);
@@ -137,7 +139,7 @@
      
    return alu_chr;  
  endfunction: clone  
- 
+
 
 
 /*! 
@@ -212,6 +214,45 @@
  endfunction: print
 
 
+
+/*!
+ * Write chromosome to external file
+ */
+ function void AluChromosome::writeToFile(int file_id);
+ 
+   $fwrite(file_id, "%x %x %x %x %x %x %x %x ", length, movi_values, operandA_ranges, operandB_ranges, operandMEM_ranges, operandIMM_ranges, operation_values, delay_ranges);
+   
+   for (int i=0; i<length; i++) 
+     $fwrite(file_id, "%x ", chromosome[i]);
+     
+   $fwrite(file_id, "\n");  
+ endfunction: writeToFile
+ 
+ 
+ 
+/*!
+ * Read chromosome from external file
+ */
+ function void AluChromosome::readFromFile(int file_id);
+   int res;
+   
+   res = $fscanf(file_id, "%x %x %x %x %x %x %x %x", length, movi_values, operandA_ranges, operandB_ranges, operandMEM_ranges, operandIMM_ranges, operation_values, delay_ranges);
+   
+   $write("length %d\n", length);
+   
+   chromosome = new[length];
+   for (int i=0; i<length; i++) 
+     res = $fscanf(file_id, "%x ", chromosome[i]);
+     
+   $write("%x %x %x %x %x %x %x %x\n", length, movi_values, operandA_ranges, operandB_ranges, operandMEM_ranges, operandIMM_ranges, operation_values, delay_ranges);
+   
+   for (int i=0; i<length; i++) 
+     $write("%x ", chromosome[i]);
+     
+   $write("\n");  
+ endfunction: readFromFile 
+
+ 
 
 /*!
  * Computes relative fitness: USED

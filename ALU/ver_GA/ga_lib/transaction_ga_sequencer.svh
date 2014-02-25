@@ -17,6 +17,8 @@
   /*! 
    * Data Members
    */ 
+   bit enabled;
+   
   
   /*! 
    * Channels
@@ -29,12 +31,22 @@
    */
   
    // User-defined methods
+   extern function new();
    extern task run();
    extern task configureGATrans(AluChromosome alu_chr, AluGAInputTransaction alu_in_trans);
 
  endclass: TransactionGASequencer
 
 
+
+/*! 
+ *  Constructor
+ */
+ function TransactionGASequencer::new();
+   enabled = 1;
+ endfunction: new 
+ 
+ 
  
 /*! 
  * Generate transactions
@@ -48,7 +60,8 @@
    
    //$write("\n\n########## TRANSACTION GA SEQUENCER ##########\n\n");
    
-   forever begin
+   //forever begin
+   //while (enabled) begin   
    
      // get chromosome from Population Sequencer
      chromosomeMbx.get(alu_chromosome);   
@@ -81,8 +94,10 @@
      
      chr_cnt++;
      cnt = 0;
-   end  
-   write("TRANSATION SEQUENCER TERMINATING\n"); 
+     
+     wait(!enabled);
+   //end  
+   $write("TRANSATION SEQUENCER TERMINATING\n"); 
  endtask: run 
  
  

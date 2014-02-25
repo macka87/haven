@@ -14,9 +14,10 @@
 
  module Top_TB;
 
-   //import sv_alu_env_pkg::*;
    import sv_alu_test_pkg::*;   
    import sv_alu_param_pkg::*;
+  
+   logic pokus;
   
    //! clock and reset signals
    logic CLK;                           
@@ -63,6 +64,8 @@
      
      if (VERSION == 0) alu_test.run();
      else if (VERSION == 1)  alu_ga_test.run(); 
+ 
+     $stop;	
    end
 
    

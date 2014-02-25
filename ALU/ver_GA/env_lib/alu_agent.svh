@@ -116,5 +116,8 @@
      // run scoreboard
      alu_scoreboard.run();
      
-   join_any;  
+   join_any; 
+
+   // ends all running processes
+   disable fork; 
  endtask: run

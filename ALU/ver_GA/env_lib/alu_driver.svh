@@ -180,7 +180,6 @@
    // synchronise with CLK 
    @(dut_alu_in_if.cb); 
    
-   //while (cnt < trans_count) begin
    forever begin
      inputMbx.get(alu_in_trans);
      
@@ -224,7 +223,6 @@
      
      cnt++;
    end 
-   
  endtask: run
  
  

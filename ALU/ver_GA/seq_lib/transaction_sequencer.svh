@@ -45,7 +45,6 @@
    
    alu_in_trans = new();
    
-   //while (cnt < TRANS_COUNT) begin
    forever begin
      alu_in_trans_c = alu_in_trans.clone();               
      

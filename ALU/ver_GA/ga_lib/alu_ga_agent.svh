@@ -80,7 +80,7 @@
    trans_ga_sequencer  = new();
    alu_driver          = new(dut_alu_in_if); 
    alu_monitor         = new(dut_alu_out_if);
-   alu_scoreboard      = new(POPULATION_SIZE*TRANS_COUNT);
+   alu_scoreboard      = new(TRANS_COUNT);
    
    trans_ga_sequencer.chromosomeMbx = chromosomeMbx;
    trans_ga_sequencer.inputMbx      = inputMbx;
@@ -102,7 +102,7 @@
    // create agent objects
    create_structure();
    
-   //$write("\n\n########## ALU_GA_AGENT ##########\n\n");
+   $write("\n\n########## ALU_GA_AGENT ##########\n\n");
    
    fork 
      // run transaction GA sequencer
@@ -119,5 +119,6 @@
      
    join_any;
    
-   $write("AGENT TERMINATING\n"); 
+   // ends all running processes
+   disable fork; 
  endtask: run
