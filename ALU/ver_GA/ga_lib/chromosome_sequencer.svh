@@ -179,10 +179,10 @@
      end
      
      // crossover neighbour chromosomes
-     for (int i=1; i < POPULATION_SIZE; i+=2) begin
+     /*for (int i=1; i < POPULATION_SIZE; i+=2) begin
        if ((i+1 < POPULATION_SIZE) && ($urandom_range(100) < CROSSOVER_PROB)) 
          new_chromosome_array.alu_chromosome[i+1] = new_chromosome_array.alu_chromosome[i].crossover(new_chromosome_array.alu_chromosome[i+1]);  
-     end   
+     end*/   
      
      //$write("POPULATION AFTER CROSSOVER:\n");
      //for (int i=0; i < populationSize; i++) begin 

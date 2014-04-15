@@ -92,7 +92,7 @@
    extern function void print(int num, bit full_print);
    extern function void writeToFile(int file_id);
    extern function void readFromFile(int file_id);
-   extern function AluChromosome crossover(AluChromosome chrom = null);
+   extern function void crossover(inout AluChromosome chrom);
    extern function AluChromosome mutate(int unsigned maxMutations); 
    extern function void setRelativeFitness(int unsigned popFitness);
  endclass: AluChromosome
@@ -267,10 +267,9 @@
  * Crossovers the current value of the object instance with the specified 
  * object instance.
  */
- function AluChromosome AluChromosome::crossover(AluChromosome chrom = null);
+ function void AluChromosome::crossover(inout AluChromosome chrom);
    // temporary chromosome
    byte unsigned tmpRange;
-   
    byte unsigned tmpChrom[] = new[length];
    
    // Position of crossover
@@ -278,7 +277,20 @@
    $write("pos: %d\n", pos);
    
    // | MOVI w. | OP_A w. | OP_B w. | OP_MEM w. | OP_IMM w. | OP w. | DELAY w. |
-   tmpChrom = chrom.chromosome;  
+   tmpChrom = chrom.chromosome; 
+
+   /*$write("I-th CHROMOSOME:\n");
+   $write("%x %x %x %x %x %x %x %x\n", this.length, this.movi_values, this.operandA_ranges, this.operandB_ranges, this.operandMEM_ranges, this.operandIMM_ranges, this.operation_values, this.delay_ranges);
+   for (int i=0; i<length; i++) 
+     $write("%x ", this.chromosome[i]);
+   $write("\n"); 
+
+   $write("(I+1)-th CHROMOSOME:\n");
+   $write("%x %x %x %x %x %x %x %x\n", chrom.length, chrom.movi_values, chrom.operandA_ranges, chrom.operandB_ranges, chrom.operandMEM_ranges, chrom.operandIMM_ranges, chrom.operation_values, chrom.delay_ranges);
+   for (int i=0; i<length; i++) 
+     $write("%x ", chrom.chromosome[i]);    
+   $write("\n"); */
+ 
             
    // compare the sizes of exchanging parts
    priority case(pos)
@@ -351,9 +363,21 @@
               this.chromosome[i]  = tmpChrom[i];
             end
           end
-   endcase       
-      
-   return chrom;  
+   endcase   
+
+   /*$write("I-th CHROMOSOME:\n");
+   $write("%x %x %x %x %x %x %x %x\n", this.length, this.movi_values, this.operandA_ranges, this.operandB_ranges, this.operandMEM_ranges, this.operandIMM_ranges, this.operation_values, this.delay_ranges);
+   for (int i=0; i<length; i++) 
+     $write("%x ", this.chromosome[i]);
+   $write("\n"); 
+
+   $write("(I+1)-th CHROMOSOME:\n");
+   $write("%x %x %x %x %x %x %x %x\n", chrom.length, chrom.movi_values, chrom.operandA_ranges, chrom.operandB_ranges, chrom.operandMEM_ranges, chrom.operandIMM_ranges, chrom.operation_values, chrom.delay_ranges);
+   for (int i=0; i<length; i++) 
+     $write("%x ", chrom.chromosome[i]);    
+   $write("\n");  */  
+   
+   //return chrom;  
  endfunction: crossover
  
  
@@ -368,6 +392,8 @@ function AluChromosome AluChromosome::mutate(int unsigned maxMutations);
    int byte_pos;
    int bit_pos;
    bit old_value;
+
+   $write("mutation count: %d\n", mutationCount);
       
    for (int i=0; i < mutationCount; i++) begin
      byte_pos = $urandom_range(length - 1);

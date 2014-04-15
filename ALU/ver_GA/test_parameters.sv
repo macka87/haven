@@ -28,19 +28,27 @@
    
    // File with best chromosomes
    parameter BEST_CHROMOSOMES_FILE = "best_chromosomes.txt";
+
+   // File with fitness values
+   parameter FITNESS_FILE = "fitness.txt";
    
    // Number of generations
    parameter GENERATIONS      = 1;
    // Size of population
-   parameter POPULATION_SIZE  = 2;
+   parameter POPULATION_SIZE  = 5;
    // Elitism
    parameter ELITISM          = 1;
    // Selection
    parameter SELECTION        = 0; // 0 == proportionate
-   // Number of maximal mutations per individuum
-   parameter MAX_MUTATIONS    = 20;
+   
    // Crossover probability
    parameter CROSSOVER_PROB   = 80;
+   // Mutation probability
+   parameter MUTATION_PROB    = 50;
+
+   // Number of maximal mutations per individuum
+   parameter MAX_MUTATIONS    = 20;
+
    // File for save/load population
    parameter string POPULATION_FILENAME = "pop";
    // Load or create new population on evolution start
@@ -61,6 +69,6 @@
    parameter OPERAND_IMM_RANGES_MAX = 8;
    
    // TRANSACTION COUNT FOR CLASSICAL RUN
-   parameter TRANS_COUNT            = 1;
+   parameter TRANS_COUNT            = 10;
    
  endpackage

@@ -59,7 +59,7 @@ view signals
 
 # GA VERIFICATION: Repeat simulation for GENERATION x POPULATION_SIZE times
 set GENERATIONS 1
-set POPULATION_SIZE 2
+set POPULATION_SIZE 5
 set SIZE [expr {$GENERATIONS * $POPULATION_SIZE}]
 
 for {set i 0} {$i<$SIZE} {incr i} {
