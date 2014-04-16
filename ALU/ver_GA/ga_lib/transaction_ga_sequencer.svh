@@ -55,16 +55,28 @@
    AluChromosome alu_chromosome;
    AluGAInputTransaction alu_ga_in_trans, alu_ga_in_trans_c;
    AluInputTransaction alu_in_trans, alu_in_trans_c;
+   int num;
+   process proc;
    int cnt = 0;
    int chr_cnt = 0;
    
+   
    //$write("\n\n########## TRANSACTION GA SEQUENCER ##########\n\n");
    
+   //treba tu nastavit seed pre generator, aby to bolo spravodlive vyhodnotenie
+   proc = process::self();
+   proc.srandom(SEED); 
+   
+   num = chromosomeMbx.num();
+   $write("chromosomeMbx num %d\n", num);
+   
    //forever begin
-   //while (enabled) begin   
+   while (num>0) begin   
    
      // get chromosome from Population Sequencer
      chromosomeMbx.get(alu_chromosome);   
+     
+     $write("GETTING CHROMOSOME!!!!!!!!!!!!!!!\n");
    
      // create AluGAInputTransaction and AluTransaction
      alu_ga_in_trans = new();
@@ -96,7 +108,10 @@
      cnt = 0;
      
      wait(!enabled);
-   //end  
+     
+     num = chromosomeMbx.num();
+     $write("chromosomeMbx num %d\n", num);
+   end  
    $write("TRANSATION SEQUENCER TERMINATING\n"); 
  endtask: run 
  

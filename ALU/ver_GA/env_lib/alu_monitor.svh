@@ -94,7 +94,7 @@
      alu_out_trans_c.ex_alu = dut_alu_out_if.cb.EX_ALU;
      
      // display the content of transaction 
-     alu_out_trans_c.print("MONITOR:"); 
+     //alu_out_trans_c.print("MONITOR:"); 
        
      outputMbx.put(alu_out_trans_c);
      
@@ -102,7 +102,7 @@
      alu_out_covergroup.sample();
      
      // print statistics
-     $write("ALU OUTPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_out_covergroup.get_inst_coverage());
+     //$write("ALU OUTPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_out_covergroup.get_inst_coverage());
      
      cnt++;
        

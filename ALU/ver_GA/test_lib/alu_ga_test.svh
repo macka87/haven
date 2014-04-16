@@ -34,8 +34,8 @@
   /*! 
    * Data Members
    */
-   AluChromosomeArray chromosome_array; 
-   AluChromosomeArray new_chromosome_array;
+   AluChromosomeArray chromosome_array;         // aktualne pole chromozomov
+   AluChromosomeArray new_chromosome_array;     // nova populacia
    AluCoverageInfo cov_info;
         
    /*!
@@ -50,6 +50,7 @@
    extern function void readChromosomeArrayFromFile(int file_id);
    extern function void getBestChromosome(inout AluChromosome best_chromosome);
    extern function void selectAndReplace();
+   extern task readEvaluateBestChromosomes(int population_number);
  endclass: AluGATest
  
 
@@ -73,7 +74,7 @@
  */ 
  function void AluGATest::create_structure();
    // >>>>> CREATE COMPONENTS >>>>>
-   chromosomeMbx  = new(1);
+   chromosomeMbx  = new(0);            // unbounded???
    coverageMbx    = new(1);
  
    //chromosome_sequencer  = new(chr_array);
@@ -97,6 +98,7 @@
    int population_number;
    int chromosome_number;
    AluChromosome best_chromosome;
+   
   
    // ------------------------------------------------------------------------
    $write("\n\n########## GENETIC ALGORITHM ##########\n\n");
@@ -163,6 +165,8 @@
      // rewrite number of generation and chromosome for the next run
      file_id = $fopen(CHROMOSOMES_FILE, "r+");
      
+     
+     // ak sa jedna o nultu generaciu a chromozom = POPULATION_SIZE-1, tak ohodnot posledny chromozom, aplikuj selekciu na vytvorenie novej generacie, uloz best chromozom do separatneho suboru a nove chromozomy, uloz nove cislo generacie
      if (chromosome_number == POPULATION_SIZE-1) begin 
        $fwrite(file_id, "%x\n", (population_number+1));
        $fwrite(file_id, "%x\n", 0);
@@ -181,16 +185,10 @@
        // select and replace
        selectAndReplace();
 
-
-
        // write new chromosomes into the file - najskor test, potom priamo do suboru CHROMOSOMES_FILE
-       /*file_id2 = $fopen("test.txt", "a+");
        for (int i=0; i<POPULATION_SIZE; i++) begin
-         new_chromosome_array.alu_chromosome[i].writeToFile(file_id2);   
+         new_chromosome_array.alu_chromosome[i].writeToFile(file_id);   
        end
-       $fclose(file_id2);*/
-
-
      end  
      else begin
        $fwrite(file_id, "%x\n", 0);
@@ -199,11 +197,60 @@
      $fclose(file_id);
    end
    
-   
-   // ak sa jedna o nultu generaciu a chromozom = POPULATION_SIZE-1, tak ohodnot posledny chromozom, aplikuj selekciu a vytvorenie novej generacie, uloz best chromozom do separatneho suboru a nove chromozomy, uloz nove cislo generacie
-   
    // ak sa jedna o generaciu >0, nacitaj chromozom zodpovedajuceho cisla, pocet best chromozomes posla cisla generacie. Vyhodnot simulaciou best chromozomes a hned za nimi ohodnot novy chromozom + uloz fitness
+   else if (population_number > 0 && chromosome_number >= 0) begin
+      
+      // read the best chromosomes from previous populations into an array and evaluate them
+      readEvaluateBestChromosomes(population_number);
+      
+      // read chromosomes into an array -> MOZNO OPTIMALIZOVAT TAK, ze iba pri chromosome_number == 0 nacitat
+      readChromosomeArrayFromFile(file_id);
+      $fclose(file_id);
+      
+      // evaluate x-th chromosome of y-th population
+      chromosomeMbx.put(chromosome_array.alu_chromosome[chromosome_number]);
+            
+      // run agent
+      alu_ga_agent.run();
+      
+      // get coverage information
+      coverageMbx.get(cov_info);
+       
+      // see coverage
+      evaluateFitness(chromosome_array.alu_chromosome[chromosome_number]);
+       
+      // rewrite number of generation and chromosome for the next run
+      file_id = $fopen(CHROMOSOMES_FILE, "r+");
+      
+      if (chromosome_number == POPULATION_SIZE-1) begin 
+       $fwrite(file_id, "%x\n", (population_number+1));
+       $fwrite(file_id, "%x\n", 0);
+       /*
+       // find the best chromosome
+       getBestChromosome(best_chromosome);
+       $write("best chromosome fitness %d\n", best_chromosome.fitness);
    
+       // create new population
+       new_chromosome_array = new();
+       new_chromosome_array.alu_chromosome = new[POPULATION_SIZE];
+     
+       // check elitism
+       if (ELITISM) new_chromosome_array.alu_chromosome[0] = best_chromosome;
+   
+       // select and replace
+       selectAndReplace();
+
+       // write new chromosomes into the file - najskor test, potom priamo do suboru CHROMOSOMES_FILE
+       for (int i=0; i<POPULATION_SIZE; i++) begin
+         new_chromosome_array.alu_chromosome[i].writeToFile(file_id);   
+       end */
+       end  
+     else begin
+       $fwrite(file_id, "%x\n", population_number);
+       $fwrite(file_id, "%x\n", (chromosome_number+1));
+     end  
+     $fclose(file_id); 
+   end
  endtask: run  
 
 
@@ -250,7 +297,29 @@
    end    
  endfunction: readChromosomeArrayFromFile
 
-
+/*
+ * Read best chromosomes from external file
+ */   
+ task AluGATest::readEvaluateBestChromosomes(int population_number);
+    int file_id;   
+    AluChromosome best_chromosome;
+    
+    $write("READ AND EVALUATE BEST CHROMOSOMES FROM PREVIOUS POPULATION\n");
+    
+    file_id = $fopen(BEST_CHROMOSOMES_FILE, "r+"); 
+    
+    for (int i=0; i<population_number; i++) begin
+      // create chromosome 
+      best_chromosome = new();
+      // read the content of chromosome
+      best_chromosome.readFromFile(file_id);
+      
+      // malo by stacit vzdy nacitany chromozom ulozit fo mailboxu
+      chromosomeMbx.put(best_chromosome);
+    end 
+    
+    $fclose(file_id);
+ endtask: readEvaluateBestChromosomes
 
 /*! 
  * configureAluChromosome - configure ALU Chromosome with data from the configuration object
@@ -289,11 +358,12 @@
    $write("CHROMOSOME: ALU_IN_COVERAGE: %f%%\n", cov_info.alu_in_coverage);  
    $write("CHROMOSOME: ALU_OUT_COVERAGE: %f%%\n", cov_info.alu_out_coverage);
    
-   alu_chromosome.fitness = cov_info.alu_in_coverage + cov_info.alu_out_coverage; 
+   //alu_chromosome.fitness = cov_info.alu_in_coverage + cov_info.alu_out_coverage; 
    
    // store fitness value into the external file - cez append?
    file_id = $fopen(FITNESS_FILE, "a+");
-   $fwrite(file_id, "%x\n", alu_chromosome.fitness);
+   //$fwrite(file_id, "%x\n", alu_chromosome.fitness);
+   $fwrite(file_id, "%x\n", cov_info.alu_in_coverage);
    $fclose(file_id);  
  endtask: evaluateFitness 
  

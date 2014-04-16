@@ -33,7 +33,7 @@
    parameter FITNESS_FILE = "fitness.txt";
    
    // Number of generations
-   parameter GENERATIONS      = 1;
+   parameter GENERATIONS      = 2;
    // Size of population
    parameter POPULATION_SIZE  = 5;
    // Elitism
@@ -70,5 +70,5 @@
    
    // TRANSACTION COUNT FOR CLASSICAL RUN
    parameter TRANS_COUNT            = 10;
-   
+   parameter SEED                   = 0;
  endpackage
