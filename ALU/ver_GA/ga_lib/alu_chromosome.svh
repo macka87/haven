@@ -21,7 +21,8 @@
    
    int          length;             // length of chromosome
    int          chromosome_parts;   // uniform parts of chromosome
-   int unsigned fitness;            // fitness function
+   //int unsigned fitness;            // fitness function
+   real         fitness;
    real         relativeFitness;    // relative fitness function
    real         roulette_part;      // occupied part of roulette in case of Roulette selection
    rand byte unsigned chromosome[]; // chromosome
@@ -207,7 +208,7 @@
        else offset++;
      end 
        
-     $write("FITNESS: %0d\n", fitness);  
+     $write("FITNESS: %f%%\n", fitness);  
      $write("Relative fitness: %0d\n", relativeFitness);  
      $write("\n");
    end

@@ -18,7 +18,8 @@
    * Data Members
    */ 
    AluCoverageInfo cov_info;
-   
+   int population_number;
+      
   /*
    * Virtual interfaces
    */    
@@ -49,7 +50,7 @@
    */
    
    // User-defined
-   extern function new(virtual iAluIn dut_alu_in_if, virtual iAluOut dut_alu_out_if);
+   extern function new(virtual iAluIn dut_alu_in_if, virtual iAluOut dut_alu_out_if, int population_number);
    extern function void create_structure();
    extern task run();
  endclass: AluGAAgent
@@ -60,10 +61,12 @@
  *  Constructor
  */
  function AluGAAgent::new(virtual iAluIn  dut_alu_in_if,
-                        virtual iAluOut dut_alu_out_if
-                       );
+                          virtual iAluOut dut_alu_out_if,
+                          int population_number
+                          );
    this.dut_alu_in_if = dut_alu_in_if;    //! Store pointer interface 
-   this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface  
+   this.dut_alu_out_if = dut_alu_out_if;  //! Store pointer interface 
+   this.population_number = population_number; 
  endfunction: new  
 
 
@@ -78,9 +81,9 @@
    outputMbx = new(1);
      
    trans_ga_sequencer  = new();
-   alu_driver          = new(dut_alu_in_if); 
+   alu_driver          = new(dut_alu_in_if, (population_number+1)*TRANS_COUNT); 
    alu_monitor         = new(dut_alu_out_if);
-   alu_scoreboard      = new(TRANS_COUNT);
+   alu_scoreboard      = new((population_number+1)*TRANS_COUNT);
    
    trans_ga_sequencer.chromosomeMbx = chromosomeMbx;
    trans_ga_sequencer.inputMbx      = inputMbx;

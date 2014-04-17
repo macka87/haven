@@ -12,7 +12,7 @@
  * This class represents GA test for ALU.
  */
  class AluGATest;  
-  
+   
   /*!
    * Component Members
    */
@@ -42,11 +42,11 @@
    * Methods
    */
    extern function new(virtual iAluIn dut_alu_in_if, virtual iAluOut dut_alu_out_if);
-   extern function void create_structure();
+   extern function void create_structure(int population_number);
    extern task run();
    extern task createOrLoadInitialPopulation(int file_id);
    extern task configureAluChromosome(AluChromosome alu_chromosome);
-   extern task evaluateFitness(AluChromosome alu_chromosome); 
+   extern task evaluateFitness(AluChromosome alu_chromosome, int chromosome_number); 
    extern function void readChromosomeArrayFromFile(int file_id);
    extern function void getBestChromosome(inout AluChromosome best_chromosome);
    extern function void selectAndReplace();
@@ -72,13 +72,13 @@
 /*! 
  *  Constructor - create and configure environment
  */ 
- function void AluGATest::create_structure();
+ function void AluGATest::create_structure(int population_number);
    // >>>>> CREATE COMPONENTS >>>>>
    chromosomeMbx  = new(0);            // unbounded???
    coverageMbx    = new(1);
  
    //chromosome_sequencer  = new(chr_array);
-   alu_ga_agent = new(dut_alu_in_if, dut_alu_out_if);
+   alu_ga_agent = new(dut_alu_in_if, dut_alu_out_if, population_number);
    
    //chromosome_sequencer.chromosomeMbx = chromosomeMbx;
    alu_ga_agent.chromosomeMbx = chromosomeMbx;
@@ -118,7 +118,7 @@
    $write("CHROMOSOME NUMBER: %d\n", chromosome_number);
    
    // create mailboxes and agent
-   create_structure();
+   create_structure(population_number);
    
    // ak sa jedna o nultu generaciu a nulty chromozom, vygeneruj init populaciu chromozomov, zapis ich do suboru a nulty chromozom ohodnot a uloz fitness 
    if (population_number == 0 && chromosome_number == 0) begin
@@ -135,7 +135,7 @@
      coverageMbx.get(cov_info);
        
      // see coverage
-     evaluateFitness(chromosome_array.alu_chromosome[0]);
+     evaluateFitness(chromosome_array.alu_chromosome[0], chromosome_number);
      
      // rewrite number of generation and chromosome for the next run
      file_id = $fopen(CHROMOSOMES_FILE, "r+");
@@ -160,7 +160,7 @@
      coverageMbx.get(cov_info);
        
      // see coverage
-     evaluateFitness(chromosome_array.alu_chromosome[chromosome_number]);
+     evaluateFitness(chromosome_array.alu_chromosome[chromosome_number], chromosome_number);
      
      // rewrite number of generation and chromosome for the next run
      file_id = $fopen(CHROMOSOMES_FILE, "r+");
@@ -189,6 +189,13 @@
        for (int i=0; i<POPULATION_SIZE; i++) begin
          new_chromosome_array.alu_chromosome[i].writeToFile(file_id);   
        end
+       
+       file_id2 = $fopen("test.txt", "a+");
+       for (int i=0; i<POPULATION_SIZE; i++) begin
+         new_chromosome_array.alu_chromosome[i].writeToFile(file_id2);   
+       end
+       $fclose(file_id2);
+     
      end  
      else begin
        $fwrite(file_id, "%x\n", 0);
@@ -217,7 +224,7 @@
       coverageMbx.get(cov_info);
        
       // see coverage
-      evaluateFitness(chromosome_array.alu_chromosome[chromosome_number]);
+      evaluateFitness(chromosome_array.alu_chromosome[chromosome_number], chromosome_number);
        
       // rewrite number of generation and chromosome for the next run
       file_id = $fopen(CHROMOSOMES_FILE, "r+");
@@ -225,7 +232,7 @@
       if (chromosome_number == POPULATION_SIZE-1) begin 
        $fwrite(file_id, "%x\n", (population_number+1));
        $fwrite(file_id, "%x\n", 0);
-       /*
+       
        // find the best chromosome
        getBestChromosome(best_chromosome);
        $write("best chromosome fitness %d\n", best_chromosome.fitness);
@@ -243,7 +250,14 @@
        // write new chromosomes into the file - najskor test, potom priamo do suboru CHROMOSOMES_FILE
        for (int i=0; i<POPULATION_SIZE; i++) begin
          new_chromosome_array.alu_chromosome[i].writeToFile(file_id);   
-       end */
+       end 
+       
+       file_id2 = $fopen("test.txt", "a+");
+       for (int i=0; i<POPULATION_SIZE; i++) begin
+         new_chromosome_array.alu_chromosome[i].writeToFile(file_id2);   
+       end
+       $fclose(file_id2);
+       
        end  
      else begin
        $fwrite(file_id, "%x\n", population_number);
@@ -259,6 +273,7 @@
  *  Create or load initial population.  
  */  
  task AluGATest::createOrLoadInitialPopulation(int file_id);
+   int file_id2;
    
    $write("******************************************************************** \n");
    $write("******************     INITIAL POPULATION      ********************* \n");
@@ -266,6 +281,8 @@
    
    // create random initial population
    chromosome_array.alu_chromosome = new[POPULATION_SIZE];
+   file_id2 = $fopen("test.txt", "a+");
+          
    for (int i=0; i<POPULATION_SIZE; i++) begin
      // create chromosome 
      chromosome_array.alu_chromosome[i] = new();
@@ -276,8 +293,11 @@
      // print chromosome
      chromosome_array.alu_chromosome[i].print(i, 0); 
      // store chromosomes into the chromosomes.txt file
-     chromosome_array.alu_chromosome[i].writeToFile(file_id);    
+     chromosome_array.alu_chromosome[i].writeToFile(file_id); 
+     chromosome_array.alu_chromosome[i].writeToFile(file_id2);      
    end 
+   
+   $fclose(file_id2);
  endtask: createOrLoadInitialPopulation
  
 
@@ -352,7 +372,7 @@
  /*! 
  * evaluateFitness - counts fitness value for every chromosome
  */ 
- task AluGATest::evaluateFitness(AluChromosome alu_chromosome); 
+ task AluGATest::evaluateFitness(AluChromosome alu_chromosome, int chromosome_number); 
    int file_id;   
 
    $write("CHROMOSOME: ALU_IN_COVERAGE: %f%%\n", cov_info.alu_in_coverage);  
@@ -361,9 +381,11 @@
    //alu_chromosome.fitness = cov_info.alu_in_coverage + cov_info.alu_out_coverage; 
    
    // store fitness value into the external file - cez append?
-   file_id = $fopen(FITNESS_FILE, "a+");
+   if (chromosome_number == 0) file_id = $fopen(FITNESS_FILE, "w+");
+   else file_id = $fopen(FITNESS_FILE, "a+");
+   
    //$fwrite(file_id, "%x\n", alu_chromosome.fitness);
-   $fwrite(file_id, "%x\n", cov_info.alu_in_coverage);
+   $fwrite(file_id, "%f\n", cov_info.alu_in_coverage);
    $fclose(file_id);  
  endtask: evaluateFitness 
  
@@ -375,14 +397,14 @@
  function void AluGATest::getBestChromosome(inout AluChromosome best_chromosome);
    int file_id, res; 
    int idx;
-   int unsigned bestFitness = 0;
+   real bestFitness = 0;
 
    // read fitness values of all chromosomes in array (they are already read in readChromosomeArrayFromFile function)
-   file_id = $fopen(FITNESS_FILE, "a+");
+   file_id = $fopen(FITNESS_FILE, "r");
 
    for (int i=0; i<POPULATION_SIZE; i++) begin
       // read fitness and store it into the chromosome array field 
-      res = $fscanf(file_id, "%x\n", chromosome_array.alu_chromosome[i].fitness);
+      res = $fscanf(file_id, "%f\n", chromosome_array.alu_chromosome[i].fitness);
    end 
 
    $fclose(file_id);

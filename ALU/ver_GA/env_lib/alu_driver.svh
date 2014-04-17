@@ -31,6 +31,7 @@
    * Data Members
    */ 
    AluCoverageInfo cov_info;
+   int trans_count;
    
    // Enumeration for operation
    typedef enum logic [3:0] {ADD, SUB, MULT, SHIFT_RIGHT, SHIFT_LEFT, ROTATE_RIGHT, ROTATE_LEFT, NOT, AND, OR, XOR, NAND, NOR, XNOR, INC, DEC} t_operation;
@@ -151,7 +152,7 @@
    */
    
    // User-defined methods
-   extern function new(virtual iAluIn dut_alu_in_if);
+   extern function new(virtual iAluIn dut_alu_in_if, int trans_count);
    extern task run();
    extern task waitForAluRdy();
  endclass: AluDriver
@@ -161,8 +162,9 @@
 /*! 
  *  Constructor
  */
- function AluDriver::new(virtual iAluIn dut_alu_in_if);
+ function AluDriver::new(virtual iAluIn dut_alu_in_if, int trans_count);
    this.dut_alu_in_if = dut_alu_in_if;  //! Store pointer interface 
+   this.trans_count = trans_count;
    alu_in_covergroup = new();
    cov_info = new();                    // coverage information
  endfunction: new 
@@ -209,7 +211,7 @@
      $write("ALU INPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_in_covergroup.get_inst_coverage());
      
      // store coverage info 
-     if ((cnt+1)%TRANS_COUNT == 0) begin
+     if ((cnt+1)%trans_count == 0) begin
        cov_info.alu_in_coverage = alu_in_covergroup.get_inst_coverage();
        coverageMbx.put(cov_info);
      end
@@ -217,7 +219,7 @@
      // sends generated transaction to the scoreboard, subscriber etc.
      //if (alu_in_trans.act) aport_alu_in_if.write(alu_in_trans);
      sbInMbx.put(alu_in_trans);
-              
+     
      // synchronise with CLK 
      @(dut_alu_in_if.cb); 
      

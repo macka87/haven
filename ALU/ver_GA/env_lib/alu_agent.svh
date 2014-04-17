@@ -78,7 +78,7 @@
    coverageMbx= new(1);
   
    trans_sequencer = new();
-   alu_driver          = new(dut_alu_in_if); 
+   alu_driver          = new(dut_alu_in_if, TRANS_COUNT); 
    alu_monitor         = new(dut_alu_out_if);
    alu_scoreboard      = new(TRANS_COUNT);
    

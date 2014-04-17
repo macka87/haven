@@ -68,7 +68,6 @@
    proc.srandom(SEED); 
    
    num = chromosomeMbx.num();
-   $write("chromosomeMbx num %d\n", num);
    
    //forever begin
    while (num>0) begin   
@@ -76,8 +75,6 @@
      // get chromosome from Population Sequencer
      chromosomeMbx.get(alu_chromosome);   
      
-     $write("GETTING CHROMOSOME!!!!!!!!!!!!!!!\n");
-   
      // create AluGAInputTransaction and AluTransaction
      alu_ga_in_trans = new();
      alu_in_trans = new();
@@ -100,18 +97,18 @@
    
        // sent AluInputTransaction using mailbox to driver
        inputMbx.put(alu_in_trans_c);
-       
+             
        cnt++;
      end
      
      chr_cnt++;
      cnt = 0;
      
-     wait(!enabled);
-     
      num = chromosomeMbx.num();
-     $write("chromosomeMbx num %d\n", num);
    end  
+   
+   wait(!enabled);
+   
    $write("TRANSATION SEQUENCER TERMINATING\n"); 
  endtask: run 
  

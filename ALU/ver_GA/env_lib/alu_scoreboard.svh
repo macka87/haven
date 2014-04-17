@@ -67,10 +67,10 @@
      
    // create expected output transaction
    alu_out_tr_exp = new();
-     
+  
    //forever begin  
    while (cnt < trans_count) begin
-    
+   
      // receive input transaction from Driver
      sbInMbx.get(alu_in_tr);
       
