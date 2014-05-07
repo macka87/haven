@@ -387,12 +387,13 @@
  * Mutates the current value of the object instance.
  */
 function AluChromosome AluChromosome::mutate(int unsigned maxMutations);  
-   // Number of mutations
-   int mutationCount = $urandom_range(maxMutations,1);
    // Positon of mutation
    int byte_pos;
    int bit_pos;
    bit old_value;
+   
+   // Number of mutations
+   int mutationCount = $urandom_range(maxMutations);
 
    $write("mutation count: %d\n", mutationCount);
       

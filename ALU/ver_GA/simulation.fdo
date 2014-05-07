@@ -58,7 +58,7 @@ view signals
 # NORMAL VERIFICATION: TO DO - rozlisit v tomto skripte na urovni parametru
 
 # GA VERIFICATION: Repeat simulation for GENERATION x POPULATION_SIZE times
-set GENERATIONS 2
+set GENERATIONS 5
 set POPULATION_SIZE 5
 set SIZE [expr {$GENERATIONS * $POPULATION_SIZE}]
 

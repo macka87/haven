@@ -33,13 +33,14 @@
    parameter FITNESS_FILE = "fitness.txt";
    
    // Number of generations
-   parameter GENERATIONS      = 2;
+   parameter GENERATIONS      = 5;
    // Size of population
    parameter POPULATION_SIZE  = 5;
    // Elitism
    parameter ELITISM          = 1;
    // Selection
    parameter SELECTION        = 0; // 0 == proportionate
+   parameter TOURNAMENT_POOL_SIZE = 2;
    
    // Crossover probability
    parameter CROSSOVER_PROB   = 80;
@@ -69,6 +70,6 @@
    parameter OPERAND_IMM_RANGES_MAX = 8;
    
    // TRANSACTION COUNT FOR CLASSICAL RUN
-   parameter TRANS_COUNT            = 10;
+   parameter TRANS_COUNT            = 100;
    parameter SEED                   = 0;
  endpackage
