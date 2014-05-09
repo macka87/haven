@@ -239,18 +239,18 @@
    
    res = $fscanf(file_id, "%x %x %x %x %x %x %x %x", length, movi_values, operandA_ranges, operandB_ranges, operandMEM_ranges, operandIMM_ranges, operation_values, delay_ranges);
    
-   $write("length %d\n", length);
+   //$write("length %d\n", length);
    
    chromosome = new[length];
    for (int i=0; i<length; i++) 
      res = $fscanf(file_id, "%x ", chromosome[i]);
      
-   $write("%x %x %x %x %x %x %x %x\n", length, movi_values, operandA_ranges, operandB_ranges, operandMEM_ranges, operandIMM_ranges, operation_values, delay_ranges);
+   /*$write("%x %x %x %x %x %x %x %x\n", length, movi_values, operandA_ranges, operandB_ranges, operandMEM_ranges, operandIMM_ranges, operation_values, delay_ranges);
    
    for (int i=0; i<length; i++) 
      $write("%x ", chromosome[i]);
      
-   $write("\n");  
+   $write("\n"); */ 
  endfunction: readFromFile 
 
  
@@ -275,7 +275,7 @@
    
    // Position of crossover
    int pos = $urandom_range(chromosome_parts-1);
-   $write("pos: %d\n", pos);
+   //$write("pos: %d\n", pos);
    
    // | MOVI w. | OP_A w. | OP_B w. | OP_MEM w. | OP_IMM w. | OP w. | DELAY w. |
    tmpChrom = chrom.chromosome; 
@@ -395,7 +395,7 @@ function AluChromosome AluChromosome::mutate(int unsigned maxMutations);
    // Number of mutations
    int mutationCount = $urandom_range(maxMutations);
 
-   $write("mutation count: %d\n", mutationCount);
+   //$write("mutation count: %d\n", mutationCount);
       
    for (int i=0; i < mutationCount; i++) begin
      byte_pos = $urandom_range(length - 1);

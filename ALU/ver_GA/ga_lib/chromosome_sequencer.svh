@@ -60,7 +60,7 @@
    AluChromosome best_chromosome;
    int chr_count = 0;
    
-   $write("EVALUATION OF ONE POPULATION: \n");
+   //$write("EVALUATION OF ONE POPULATION: \n");
    
    // send chromosomes to transaction sequencer
    while (chr_count < POPULATION_SIZE) begin

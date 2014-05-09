@@ -26,9 +26,14 @@
    virtual iAluOut dut_alu_out_if; // ALU output interface 
   
   /*!
-   * Data Members
+   * Channel
    */
+   mailbox #(AluCoverageInfo) coverageMbx;
    
+  /*!
+   * Data Members
+   */     
+   AluCoverageInfo cov_info;
    
   /*!
    * Methods
@@ -59,10 +64,13 @@
  *  Create and configure environment
  */ 
  function void AluTest::create_structure();
- 
+   coverageMbx    = new(1);
+   
    // CREATE THE ALU VERIFICATION ENVIRONMENT
    alu_agent = new(dut_alu_in_if, dut_alu_out_if);
    
+   //chromosome_sequencer.coverageMbx = coverageMbx;
+   alu_agent.coverageMbx = coverageMbx;
  endfunction: create_structure 
  
  
@@ -78,7 +86,20 @@
    // create environment 
    create_structure(); 
    
+   // time measuring
+   $write("START TIME: ");
+   $system("date");
+   
    // run environment
    alu_agent.run(); 
+   
+   // get coverage information
+   coverageMbx.get(cov_info);
  
+   $write("ALU_IN_COVERAGE: %f%%\n", cov_info.alu_in_coverage);   
+ 
+   // time measuring
+   $write("END TIME: ");
+   $system("date");
+   
  endtask: run

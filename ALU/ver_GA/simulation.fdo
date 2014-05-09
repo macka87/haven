@@ -55,20 +55,24 @@ alu_out   ALU_OUT  /$TOP_MODULE/VHDL_DUT_U
 view structure
 view signals
 
-# NORMAL VERIFICATION: TO DO - rozlisit v tomto skripte na urovni parametru
+# NORMAL VERIFICATION: 0, GA VERIFICATION: 1 
+set VERSION 0
 
-# GA VERIFICATION: Repeat simulation for GENERATION x POPULATION_SIZE times
-set GENERATIONS 5
-set POPULATION_SIZE 5
-set SIZE [expr {$GENERATIONS * $POPULATION_SIZE}]
+if {$VERSION == 0} {
+  restart -f
+  run -all
+} else {
+  # GA VERIFICATION: Repeat simulation for GENERATION x POPULATION_SIZE times
+  set GENERATIONS 20
+  set POPULATION_SIZE 10
+  set SIZE [expr {$GENERATIONS * $POPULATION_SIZE}]
 
-for {set i 0} {$i<$SIZE} {incr i} {
+  for {set i 0} {$i<$SIZE} {incr i} {
+    restart -f
+    onbreak resume
+    run -all
 
-restart -f
-
-onbreak resume
-run -all
-
+  }
 }
 
 exit

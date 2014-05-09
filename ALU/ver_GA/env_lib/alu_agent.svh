@@ -75,7 +75,7 @@
    inputMbx  = new(1);
    sbInMbx   = new(1);
    outputMbx = new(1);
-   coverageMbx= new(1);
+   //coverageMbx= new(1);
   
    trans_sequencer = new();
    alu_driver          = new(dut_alu_in_if, TRANS_COUNT); 

@@ -208,7 +208,7 @@
      alu_in_covergroup.sample();
      
      // print statistics
-     $write("ALU INPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_in_covergroup.get_inst_coverage());
+     //$write("ALU INPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_in_covergroup.get_inst_coverage());
      
      // store coverage info 
      if ((cnt+1)%trans_count == 0) begin

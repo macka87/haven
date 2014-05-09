@@ -132,14 +132,22 @@
      chromosomeMbx.put(chromosome_array.alu_chromosome[0]);
      $fclose(file_id);
      
+     // time measuring
+     //$write("START TIME: ");
+     //$system("date");
+     
      // run agent
      alu_ga_agent.run();
-       
+     
      // get coverage information
      coverageMbx.get(cov_info);
        
      // see coverage
      evaluateFitness(chromosome_array.alu_chromosome[0], chromosome_number);
+     
+     // time measuring
+     //$write("END TIME: ");
+     //$system("date");
      
      // rewrite number of generation and chromosome for the next run
      file_id = $fopen(CHROMOSOMES_FILE, "r+");
@@ -157,18 +165,25 @@
      // evaluate x-th chromosome of initial population
      chromosomeMbx.put(chromosome_array.alu_chromosome[chromosome_number]);
      
+     // time measuring
+     //$write("START TIME: ");
+     //$system("date");
+     
      // run agent
      alu_ga_agent.run();
-       
+     
      // get coverage information
      coverageMbx.get(cov_info);
        
      // see coverage
      evaluateFitness(chromosome_array.alu_chromosome[chromosome_number], chromosome_number);
      
+     // time measuring
+     //$write("END TIME: ");
+     //$system("date");
+     
      // rewrite number of generation and chromosome for the next run
      file_id = $fopen(CHROMOSOMES_FILE, "r+");
-     
      
      // ak sa jedna o nultu generaciu a chromozom = POPULATION_SIZE-1, tak ohodnot posledny chromozom, aplikuj selekciu na vytvorenie novej generacie, uloz best chromozom do separatneho suboru a nove chromozomy, uloz nove cislo generacie
      if (chromosome_number == POPULATION_SIZE-1) begin 
@@ -194,11 +209,11 @@
          new_chromosome_array.alu_chromosome[i].writeToFile(file_id);   
        end
        
-       file_id2 = $fopen("test.txt", "a+");
+       /*file_id2 = $fopen("test.txt", "a+");
        for (int i=0; i<POPULATION_SIZE; i++) begin
          new_chromosome_array.alu_chromosome[i].writeToFile(file_id2);   
        end
-       $fclose(file_id2);
+       $fclose(file_id2); */
      
      end  
      else begin
@@ -220,6 +235,10 @@
       
       // evaluate x-th chromosome of y-th population
       chromosomeMbx.put(chromosome_array.alu_chromosome[chromosome_number]);
+      
+      // time measuring
+      //$write("START TIME: ");
+      //$system("date");
             
       // run agent
       alu_ga_agent.run();
@@ -229,6 +248,10 @@
        
       // see coverage
       evaluateFitness(chromosome_array.alu_chromosome[chromosome_number], chromosome_number);
+      
+      // time measuring
+      //$write("END TIME: ");
+      //$system("date");
        
       // rewrite number of generation and chromosome for the next run
       file_id = $fopen(CHROMOSOMES_FILE, "r+");
@@ -256,11 +279,11 @@
          new_chromosome_array.alu_chromosome[i].writeToFile(file_id);   
        end 
        
-       file_id2 = $fopen("test.txt", "a+");
+       /*file_id2 = $fopen("test.txt", "a+");
        for (int i=0; i<POPULATION_SIZE; i++) begin
          new_chromosome_array.alu_chromosome[i].writeToFile(file_id2);   
        end
-       $fclose(file_id2);
+       $fclose(file_id2);*/
        
        end  
      else begin
@@ -285,7 +308,7 @@
    
    // create random initial population
    chromosome_array.alu_chromosome = new[POPULATION_SIZE];
-   file_id2 = $fopen("test.txt", "a+");
+   //file_id2 = $fopen("test.txt", "a+");
           
    for (int i=0; i<POPULATION_SIZE; i++) begin
      // create chromosome 
@@ -295,13 +318,13 @@
      // randomize chromosome
      assert(chromosome_array.alu_chromosome[i].randomize()); 
      // print chromosome
-     chromosome_array.alu_chromosome[i].print(i, 0); 
+     //chromosome_array.alu_chromosome[i].print(i, 0); 
      // store chromosomes into the chromosomes.txt file
      chromosome_array.alu_chromosome[i].writeToFile(file_id); 
-     chromosome_array.alu_chromosome[i].writeToFile(file_id2);      
+     //chromosome_array.alu_chromosome[i].writeToFile(file_id2);      
    end 
    
-   $fclose(file_id2);
+   //$fclose(file_id2);
  endtask: createOrLoadInitialPopulation
  
 
@@ -328,7 +351,7 @@
     int file_id;   
     AluChromosome best_chromosome;
     
-    $write("READ AND EVALUATE BEST CHROMOSOMES FROM PREVIOUS POPULATION\n");
+    //$write("READ AND EVALUATE BEST CHROMOSOMES FROM PREVIOUS POPULATION\n");
     
     file_id = $fopen(BEST_CHROMOSOMES_FILE, "r+"); 
     
@@ -380,7 +403,7 @@
    int file_id;   
 
    $write("CHROMOSOME: ALU_IN_COVERAGE: %f%%\n", cov_info.alu_in_coverage);  
-   $write("CHROMOSOME: ALU_OUT_COVERAGE: %f%%\n", cov_info.alu_out_coverage);
+   //$write("CHROMOSOME: ALU_OUT_COVERAGE: %f%%\n", cov_info.alu_out_coverage);
    
    //alu_chromosome.fitness = cov_info.alu_in_coverage + cov_info.alu_out_coverage; 
    
@@ -430,7 +453,7 @@
    */
 
    best_chromosome = chromosome_array.alu_chromosome[idx];
-   $write("best chromosome index: %d\n", idx);   
+   //$write("best chromosome index: %d\n", idx);   
 
    // store best fitness chromosome into the special file: BEST_CHROMOSOMES_FILE     
    file_id = $fopen(BEST_CHROMOSOMES_FILE, "a+");  
@@ -448,8 +471,9 @@
    real tmp;         // random number
    int tmp2;
    int index;
-   real tournament_pool[TOURNAMENT_POOL_SIZE];
-   int x[$];
+   //real tournament_pool[TOURNAMENT_POOL_SIZE];
+   //int x[$];
+   real bestFitness;
    real portion = 0; // portion of roulette occupied by chromosomes 
    int unsigned populationFitness = 0;
    int file_id_select, file_id_cross, file_id_mutate;
@@ -470,16 +494,16 @@
        // compute and set occupied roulette part 
        portion += chromosome_array.alu_chromosome[i].relativeFitness;
        chromosome_array.alu_chromosome[i].roulette_part = portion;
-       $write("portion %f%%\n", chromosome_array.alu_chromosome[i].roulette_part);
+       //$write("portion %f%%\n", chromosome_array.alu_chromosome[i].roulette_part);
      end  
      
      // select parents using roulette selection
      for (int i=1; i < POPULATION_SIZE; i++) begin  // i=1 because of elitism
        tmp = real'($urandom() & 16'hFFFF)/16'hFFFF;
-       $write("tmp = %f\n",tmp);
+       //$write("tmp = %f\n",tmp);
 
        tmp2 = $urandom_range(100);
-       $write("tmp2 = %d\n",tmp2);
+       //$write("tmp2 = %d\n",tmp2);
        
        for (int j=0; j < POPULATION_SIZE; j++) begin
          if (chromosome_array.alu_chromosome[j].roulette_part > tmp) begin
@@ -488,82 +512,88 @@
          end  
        end  
        
-       $write("SELECTED CHROMOSOME: index: %d\n", index);
+       //$write("SELECTED CHROMOSOME: index: %d\n", index);
        new_chromosome_array.alu_chromosome[i] = chromosome_array.alu_chromosome[index].clone();  //clone - to bol ten zasadny problem koli ktoremu to nefungovalo
      end
 
      // print selected population
-     $write("NEW POPULATION AFTER SELECTION\n");
+     //$write("NEW POPULATION AFTER SELECTION\n");
           
-     file_id_select = $fopen("test_selection.txt", "a+");
+     /*file_id_select = $fopen("test_selection.txt", "a+");
           
      for (int i=0; i < POPULATION_SIZE; i++) 
        new_chromosome_array.alu_chromosome[i].writeToFile(file_id_select); 
           
-     $fclose(file_id_select);
+     $fclose(file_id_select); */
    end
    
    // TOURNAMENT SELECTION
-   /*if (SELECTION == 1) begin
+   if (SELECTION == 1) begin
   
      // select parents using tournament selection
      for (int i=1; i < POPULATION_SIZE; i++) begin  // i=1 because of elitism
        
-       for(int j=0; j<TOURNAMENT_POOL_SIZE; j++)
-         tournament_pool[j] = $urandom_range(POPULATION_SIZE-1);
+       bestFitness = 0;
+       
+       for(int j=0; j<TOURNAMENT_POOL_SIZE; j++) begin
+         tmp2 = $urandom_range(POPULATION_SIZE-1); // select chromosome by random to pool
+         //$write("tournament candidate: %d\n", tmp2);
+         if (chromosome_array.alu_chromosome[tmp2].fitness > bestFitness) begin 
+           index = tmp2;
+           bestFitness = chromosome_array.alu_chromosome[tmp2].fitness;
+         end  
+       end
+       //x = tournament_pool.min with (chromosome_array.alu_chromosome[item].fitness);
     
-       x = tournament_pool.min with (chromosome_array.alu_chromosome[item].fitness);
- 
-       $write("SELECTED CHROMOSOME: index: %d\n", x);
-       new_chromosome_array.alu_chromosome[i] = chromosome_array.alu_chromosome[x].clone();  //clone - to bol ten zasadny problem koli ktoremu to nefungovalo
-     
+       //$write("SELECTED CHROMOSOME: index: %d\n", index);
+       new_chromosome_array.alu_chromosome[i] = chromosome_array.alu_chromosome[index].clone();  //clone - to bol ten zasadny problem koli ktoremu to nefungovalo
      end
      
      // print selected population
-     $write("NEW POPULATION AFTER SELECTION\n");
+     //$write("NEW POPULATION AFTER SELECTION\n");
           
-     file_id_select = $fopen("test_selection.txt", "a+");
+     /*file_id_select = $fopen("test_selection.txt", "a+");
           
      for (int i=0; i < POPULATION_SIZE; i++) 
        new_chromosome_array.alu_chromosome[i].writeToFile(file_id_select); 
           
-     $fclose(file_id_select);
-   end */
+     $fclose(file_id_select); */
+   end
    
    // CROSSOVER NEIGHBOUR CHROMOSOMES
    
    while (h<POPULATION_SIZE)  begin
      if ((h+1 < POPULATION_SIZE) && ($urandom_range(100) < CROSSOVER_PROB)) begin
-       $write("crossover of chromosomes: %d and %d\n", (h+1), h);
+       //$write("crossover of chromosomes: %d and %d\n", (h+1), h);
        new_chromosome_array.alu_chromosome[h].crossover(new_chromosome_array.alu_chromosome[h+1]); 
      end   
      h=h+2;
    end   
      
-   $write("NEW POPULATION AFTER CROSSOVER\n");
+   //$write("NEW POPULATION AFTER CROSSOVER\n");
        
-   file_id_cross = $fopen("test_crossover.txt", "a+");
+   /*file_id_cross = $fopen("test_crossover.txt", "a+");
           
    for (int i=0; i < POPULATION_SIZE; i++) 
      new_chromosome_array.alu_chromosome[i].writeToFile(file_id_cross); 
      
-   $fclose(file_id_cross);
+   $fclose(file_id_cross);*/
      
    // MUTATE CHROMOSOMES
    
    for (int i=1; i < POPULATION_SIZE; i++) begin
 	   if ($urandom_range(100) < MUTATION_PROB) begin    
-		   $write("Mutation for chromosome %d\n", i);		
+		   //$write("Mutation for chromosome %d\n", i);		
 		   void'(new_chromosome_array.alu_chromosome[i].mutate(MAX_MUTATIONS)); 
 	   end
    end
        
-   $write("NEW POPULATION AFTER MUTATION\n");  
+   //$write("NEW POPULATION AFTER MUTATION\n");  
      
-   file_id_mutate = $fopen("test_mutation.txt", "a+");
+   /*file_id_mutate = $fopen("test_mutation.txt", "a+");
           
    for (int i=0; i < POPULATION_SIZE; i++) 
        new_chromosome_array.alu_chromosome[i].writeToFile(file_id_mutate); 
-   $fclose(file_id_mutate);
+   $fclose(file_id_mutate); */
 
  endfunction: selectAndReplace
