@@ -30,6 +30,7 @@
    //! Normal test
    AluTest   alu_test;
    AluGATest alu_ga_test;
+   AluRSTest alu_rs_test;
   
    //! DUT 
    ALU_ENT #(
@@ -61,9 +62,11 @@
    initial begin
      alu_test = new(dut_alu_in_if, dut_alu_out_if);
      alu_ga_test = new(dut_alu_in_if, dut_alu_out_if);
+     alu_rs_test = new(dut_alu_in_if, dut_alu_out_if);
      
      if (VERSION == 0) alu_test.run();
      else if (VERSION == 1)  alu_ga_test.run(); 
+     else if (VERSION == 2)  alu_rs_test.run(); 
  
      $stop;	
    end

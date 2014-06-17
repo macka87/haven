@@ -9,7 +9,7 @@
  package sv_alu_param_pkg;
    
    // VERSION
-   parameter VERSION        = 0; // 0 == without GA, 1 == with GA
+   parameter VERSION        = 2; // 0 == without GA, 1 == with GA, 2 == random search
    
    // DUT GENERICS
    parameter DATA_WIDTH     = 8; // data width
@@ -33,9 +33,9 @@
    parameter FITNESS_FILE = "fitness.txt";
    
    // Number of generations
-   parameter GENERATIONS      = 20;
+   parameter GENERATIONS      = 15;
    // Size of population
-   parameter POPULATION_SIZE  = 10;
+   parameter POPULATION_SIZE  = 20;
    // Elitism
    parameter ELITISM          = 1;
    // Selection
@@ -45,10 +45,10 @@
    // Crossover probability
    parameter CROSSOVER_PROB   = 80;
    // Mutation probability
-   parameter MUTATION_PROB    = 80;      //50
+   parameter MUTATION_PROB    = 60;      //50
 
    // Number of maximal mutations per individuum
-   parameter MAX_MUTATIONS    = 30;      //20
+   parameter MAX_MUTATIONS    = 50;      //20
 
    // File for save/load population
    parameter string POPULATION_FILENAME = "pop";
@@ -69,7 +69,10 @@
    parameter OPERAND_IMM_RANGES_MIN = 1;
    parameter OPERAND_IMM_RANGES_MAX = 8;
    
+   // RANDOM SEARCH PARAMETERS
+   parameter TRANS_RS               = 100;
+   
    // TRANSACTION COUNT FOR CLASSICAL RUN
-   parameter TRANS_COUNT            = 3961;
-   parameter SEED                   = 0;
+   parameter TRANS_COUNT            = 8000;
+   parameter SEED                   = 123456;
  endpackage

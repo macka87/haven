@@ -29,6 +29,7 @@ vlog -cover sbce +incdir+env_lib/  env_lib/sv_alu_coverage_pkg.sv
 vlog -cover sbce +incdir+seq_lib/  seq_lib/sv_alu_seq_pkg.sv
 vlog -cover sbce +incdir+env_lib/  env_lib/sv_alu_env_pkg.sv
 vlog -cover sbce +incdir+ga_lib/   ga_lib/sv_alu_ga_pkg.sv
+vlog -cover sbce +incdir+rs_lib/   rs_lib/sv_alu_rs_pkg.sv
 vlog -cover sbce +incdir+test_lib/ test_lib/sv_alu_test_pkg.sv
 vlog -cover sbce top_level.sv
 
@@ -55,16 +56,16 @@ alu_out   ALU_OUT  /$TOP_MODULE/VHDL_DUT_U
 view structure
 view signals
 
-# NORMAL VERIFICATION: 0, GA VERIFICATION: 1 
-set VERSION 0
+# NORMAL VERIFICATION: 0, GA VERIFICATION: 1, RS VERIFICATION: 2 
+set VERSION 2
 
-if {$VERSION == 0} {
+if {$VERSION == 0 || $VERSION == 2} {
   restart -f
   run -all
 } else {
   # GA VERIFICATION: Repeat simulation for GENERATION x POPULATION_SIZE times
-  set GENERATIONS 20
-  set POPULATION_SIZE 10
+  set GENERATIONS 15
+  set POPULATION_SIZE 20
   set SIZE [expr {$GENERATIONS * $POPULATION_SIZE}]
 
   for {set i 0} {$i<$SIZE} {incr i} {

@@ -176,6 +176,7 @@
  */  
  task AluDriver::run();
    int cnt = 0;
+   int file_id;	
    
    //$write("\n\n########## DRIVER ##########\n\n");
    
@@ -210,6 +211,17 @@
      // print statistics
      //$write("ALU INPUT COVERAGE: %0d Packets sampled, Coverage = %f%%\n", cnt, alu_in_covergroup.get_inst_coverage());
      
+     /*if ((cnt+1)%100 == 0) begin
+       file_id = $fopen("random.txt", "a+");
+       $fwrite(file_id, "%f\n", alu_in_covergroup.get_inst_coverage());	
+       $fclose(file_id);   	
+     end*/
+	
+  
+     if ((cnt+1)%100 == 0) begin
+       $write("%f\n", alu_in_covergroup.get_inst_coverage());
+     end
+
      // store coverage info 
      if ((cnt+1)%trans_count == 0) begin
        cov_info.alu_in_coverage = alu_in_covergroup.get_inst_coverage();

@@ -13,11 +13,13 @@
    // Package imports
    import sv_alu_param_pkg::*;
    import sv_alu_ga_pkg::*;
+   import sv_alu_rs_pkg::*;
    import sv_alu_coverage_pkg::*;
    import sv_alu_env_pkg::*;
   
    // Includes  
    `include "alu_ga_test.svh"
+   `include "alu_rs_test.svh"
    `include "alu_test.svh"
      
  endpackage
